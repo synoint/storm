@@ -5,6 +5,8 @@ namespace Syno\Storm\Document;
 use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Component\Validator\Constraints as Assert;
+
 
 /**
  * @ODM\Document(repositoryClass="Syno\Storm\Repository\Survey", collection="survey"))
@@ -18,16 +20,21 @@ class Survey
      * @var int
      *
      * @ODM\Field(type="int")
+     * @Assert\Positive
      */
     private $stormMakerSurveyId;
 
-    /** @ODM\Field(type="string") */
+    /**
+     * @ODM\Field(type="string")
+     * @Assert\NotBlank
+     */
     private $slug;
 
     /**
      * @var int
      *
      * @ODM\Field(type="int")
+     * @Assert\Positive
      */
     private $version;
 

@@ -2,15 +2,15 @@
 
 namespace Syno\Storm\Document;
 
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * @ODM\Document(collection="question"))
+ * @ODM\Document(collection="answer"))
  */
-class Question
+class Answer
 {
     /**
      * @ODM\Id
@@ -23,13 +23,22 @@ class Question
      * @ODM\Field(type="int")
      * @Assert\Positive
      */
-    private $stormMakerQuestionId;
+    private $stormMakerAnswerId;
 
     /**
      * @ODM\Field(type="string")
-     * @Assert\NotBlank
      */
     private $code;
+
+    /**
+     * @ODM\Field(type="string")
+     */
+    private $rowCode;
+
+    /**
+     * @ODM\Field(type="string")
+     */
+    private $columnCode;
 
     /**
      * @var int
@@ -40,16 +49,6 @@ class Question
     private $sortOrder;
 
     /**
-     * @var bool
-     *
-     * @ODM\Field(type="boolean")
-     * @Assert\NotNull
-     */
-    private $required;
-
-    /**
-     * @var string
-     *
      * @ODM\Field(type="string")
      * @Assert\NotBlank
      */
@@ -61,20 +60,7 @@ class Question
      * @ODM\Field(type="int")
      * @Assert\Positive
      */
-    private $questionTypeId;
-
-    /**
-     * @var Collection
-     *
-     * @ODM\ReferenceMany(targetDocument="Answer")
-     */
-    private $answers;
-
-
-    public function __construct()
-    {
-        $this->answers = new ArrayCollection();
-    }
+    private $answerFieldTypeId;
 
     /**
      * @return mixed
@@ -87,7 +73,7 @@ class Question
     /**
      * @param mixed $id
      *
-     * @return Question
+     * @return Answer
      */
     public function setId($id)
     {
@@ -99,19 +85,19 @@ class Question
     /**
      * @return int
      */
-    public function getStormMakerQuestionId(): int
+    public function getStormMakerAnswerId(): int
     {
-        return $this->stormMakerQuestionId;
+        return $this->stormMakerAnswerId;
     }
 
     /**
-     * @param int $stormMakerQuestionId
+     * @param int $stormMakerAnswerId
      *
-     * @return Question
+     * @return Answer
      */
-    public function setStormMakerQuestionId(int $stormMakerQuestionId): Question
+    public function setStormMakerAnswerId(int $stormMakerAnswerId): Answer
     {
-        $this->stormMakerQuestionId = $stormMakerQuestionId;
+        $this->stormMakerAnswerId = $stormMakerAnswerId;
 
         return $this;
     }
@@ -127,11 +113,51 @@ class Question
     /**
      * @param mixed $code
      *
-     * @return Question
+     * @return Answer
      */
     public function setCode($code)
     {
         $this->code = $code;
+
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getRowCode()
+    {
+        return $this->rowCode;
+    }
+
+    /**
+     * @param mixed $rowCode
+     *
+     * @return Answer
+     */
+    public function setRowCode($rowCode)
+    {
+        $this->rowCode = $rowCode;
+
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getColumnCode()
+    {
+        return $this->columnCode;
+    }
+
+    /**
+     * @param mixed $columnCode
+     *
+     * @return Answer
+     */
+    public function setColumnCode($columnCode)
+    {
+        $this->columnCode = $columnCode;
 
         return $this;
     }
@@ -147,31 +173,11 @@ class Question
     /**
      * @param int $sortOrder
      *
-     * @return Question
+     * @return Answer
      */
-    public function setSortOrder(int $sortOrder): Question
+    public function setSortOrder(int $sortOrder): Answer
     {
         $this->sortOrder = $sortOrder;
-
-        return $this;
-    }
-
-    /**
-     * @return bool
-     */
-    public function isRequired(): bool
-    {
-        return $this->required;
-    }
-
-    /**
-     * @param bool $required
-     *
-     * @return Question
-     */
-    public function setRequired(bool $required): Question
-    {
-        $this->required = $required;
 
         return $this;
     }
@@ -187,7 +193,7 @@ class Question
     /**
      * @param mixed $text
      *
-     * @return Question
+     * @return Answer
      */
     public function setText($text)
     {
@@ -199,19 +205,19 @@ class Question
     /**
      * @return int
      */
-    public function getQuestionTypeId(): int
+    public function getAnswerFieldTypeId(): int
     {
-        return $this->questionTypeId;
+        return $this->answerFieldTypeId;
     }
 
     /**
-     * @param int $questionTypeId
+     * @param int $answerFieldTypeId
      *
-     * @return Question
+     * @return Answer
      */
-    public function setQuestionTypeId(int $questionTypeId): Question
+    public function setAnswerFieldTypeId(int $answerFieldTypeId): Answer
     {
-        $this->questionTypeId = $questionTypeId;
+        $this->answerFieldTypeId = $answerFieldTypeId;
 
         return $this;
     }
@@ -227,7 +233,7 @@ class Question
     /**
      * @param Collection $answers
      *
-     * @return Question
+     * @return Answer
      */
     public function setAnswers(Collection $answers): Question
     {

@@ -5,9 +5,10 @@ namespace Syno\Storm\Document;
 use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * @ODM\Document(repositoryClass="Syno\Storm\Repository\Page", collection="page"))
+ * @ODM\Document(collection="page"))
  */
 class Page
 {
@@ -20,13 +21,23 @@ class Page
      * @var int
      *
      * @ODM\Field(type="int")
+     * @Assert\Positive
      */
     private $stormMakerPageId;
 
     /**
      * @ODM\Field(type="string")
+     * @Assert\NotBlank
      */
     private $code;
+
+    /**
+     * @var int
+     *
+     * @ODM\Field(type="int")
+     * @Assert\NotBlank
+     */
+    private $sortOrder;
 
     /**
      * @ODM\Field(type="string")
@@ -40,9 +51,6 @@ class Page
      */
     private $questions;
 
-    /**
-     * Survey constructor.
-     */
     public function __construct()
     {
         $this->questions = new ArrayCollection();
@@ -104,6 +112,26 @@ class Page
     public function setCode($code)
     {
         $this->code = $code;
+
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getSortOrder(): int
+    {
+        return $this->sortOrder;
+    }
+
+    /**
+     * @param int $sortOrder
+     *
+     * @return Page
+     */
+    public function setSortOrder(int $sortOrder): Page
+    {
+        $this->sortOrder = $sortOrder;
 
         return $this;
     }
