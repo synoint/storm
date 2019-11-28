@@ -21,3 +21,7 @@ services:
     Syno\Storm\Controller\:
         resource: '../src/Syno/Storm/Controller'
         tags: ['controller.service_arguments']
+
+    Syno\Storm\EventSubscriber\ApiAuthenticationSubscriber:
+        arguments:
+            $apiAccessToken: '%env(STORM_API_TOKEN)%'

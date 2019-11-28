@@ -7,7 +7,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
 
 
-class IndexController extends AbstractController
+class IndexController extends AbstractController implements TokenAuthenticatedController
 {
     /**
      * This is used to check availability of API
