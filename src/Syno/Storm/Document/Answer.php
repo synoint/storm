@@ -49,18 +49,33 @@ class Answer
     private $sortOrder;
 
     /**
-     * @ODM\Field(type="string")
-     * @Assert\NotBlank
-     */
-    private $text;
-
-    /**
      * @var int
      *
      * @ODM\Field(type="int")
      * @Assert\Positive
      */
     private $answerFieldTypeId;
+
+    /**
+     * @var string|null
+     *
+     * @ODM\Field(type="string")
+     */
+    private $label;
+
+    /**
+     * @var string|null
+     *
+     * @ODM\Field(type="string")
+     */
+    private $rowLabel;
+
+    /**
+     * @var string|null
+     *
+     * @ODM\Field(type="string")
+     */
+    private $columnLabel;
 
     /**
      * @return mixed
@@ -183,26 +198,6 @@ class Answer
     }
 
     /**
-     * @return mixed
-     */
-    public function getText()
-    {
-        return $this->text;
-    }
-
-    /**
-     * @param mixed $text
-     *
-     * @return Answer
-     */
-    public function setText($text)
-    {
-        $this->text = $text;
-
-        return $this;
-    }
-
-    /**
      * @return int
      */
     public function getAnswerFieldTypeId(): int
@@ -223,22 +218,64 @@ class Answer
     }
 
     /**
-     * @return Collection
+     * @return null|string
      */
-    public function getAnswers(): Collection
+    public function getLabel(): ?string
     {
-        return $this->answers;
+        return $this->label;
     }
 
     /**
-     * @param Collection $answers
+     * @param null|string $label
      *
      * @return Answer
      */
-    public function setAnswers(Collection $answers): Question
+    public function setLabel(?string $label): Answer
     {
-        $this->answers = $answers;
+        $this->label = $label;
 
         return $this;
     }
+
+    /**
+     * @return null|string
+     */
+    public function getRowLabel(): ?string
+    {
+        return $this->rowLabel;
+    }
+
+    /**
+     * @param null|string $rowLabel
+     *
+     * @return Answer
+     */
+    public function setRowLabel(?string $rowLabel): Answer
+    {
+        $this->rowLabel = $rowLabel;
+
+        return $this;
+    }
+
+    /**
+     * @return null|string
+     */
+    public function getColumnLabel(): ?string
+    {
+        return $this->columnLabel;
+    }
+
+    /**
+     * @param null|string $columnLabel
+     *
+     * @return Answer
+     */
+    public function setColumnLabel(?string $columnLabel): Answer
+    {
+        $this->columnLabel = $columnLabel;
+
+        return $this;
+    }
+
+
 }
