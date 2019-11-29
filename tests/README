@@ -1,0 +1,5 @@
+# Execute API Test suite
+./bin/phpunit --testsuite=api
+
+# Execute Unit Test
+./bin/phpunit --testsuite=unit
