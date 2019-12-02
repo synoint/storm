@@ -20,7 +20,9 @@ class PageType extends AbstractType
             ->add('sortOrder', IntegerType::class)
             ->add('content', TextType::class, ['required' => false])
             ->add('questions', CollectionType::class, [
-                'entry_type' => QuestionType::class
+                'entry_type' => QuestionType::class,
+                'by_reference'  => false,
+                'allow_add'     => true
             ]);
         ;
     }

@@ -9,7 +9,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 
 /**
- * @ODM\Document(repositoryClass="Syno\Storm\Repository\Survey", collection="survey"))
+ * @ODM\Document(collection="survey"))
  */
 class Survey
 {
@@ -41,7 +41,7 @@ class Survey
     /**
      * @var Collection
      *
-     * @ODM\ReferenceMany(targetDocument="Page")
+     * @ODM\ReferenceMany(targetDocument="Page", storeAs="id", cascade={"persist", "remove"})
      */
     private $pages;
 
@@ -76,7 +76,7 @@ class Survey
     /**
      * @return int
      */
-    public function getStormMakerSurveyId(): int
+    public function getStormMakerSurveyId():? int
     {
         return $this->stormMakerSurveyId;
     }
@@ -116,7 +116,7 @@ class Survey
     /**
      * @return int
      */
-    public function getVersion(): int
+    public function getVersion():? int
     {
         return $this->version;
     }
@@ -152,6 +152,5 @@ class Survey
 
         return $this;
     }
-
 
 }

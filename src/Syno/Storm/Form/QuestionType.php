@@ -22,8 +22,11 @@ class QuestionType extends AbstractType
             ->add('required', HiddenType::class)
             ->add('text', TextType::class)
             ->add('questionTypeId', IntegerType::class)
+
             ->add('answers', CollectionType::class, [
-                'entry_type' => AnswerType::class
+                'entry_type' => AnswerType::class,
+                'by_reference'  => false,
+                'allow_add'     => true
             ]);
         ;
     }

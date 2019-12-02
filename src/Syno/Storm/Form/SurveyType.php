@@ -19,7 +19,9 @@ class SurveyType extends AbstractType
             ->add('slug', TextType::class)
             ->add('version', IntegerType::class)
             ->add('pages', CollectionType::class, [
-                'entry_type' => PageType::class
+                'entry_type' => PageType::class,
+                'by_reference'  => false,
+                'allow_add'     => true
             ]);
         ;
     }
@@ -29,7 +31,7 @@ class SurveyType extends AbstractType
         $resolver->setDefaults(
             [
                 'data_class'      => Document\Survey::class,
-                'csrf_protection' => false
+                'csrf_protection' => false,
             ]
         );
     }

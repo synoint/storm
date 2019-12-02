@@ -2,19 +2,37 @@
 
 namespace Syno\Storm\Services;
 
-use Syno\Storm\Repository;
+use Doctrine\ODM\MongoDB\DocumentManager;
+use Syno\Storm\Document;
 
 class Survey
 {
-    /** @var Repository\Survey */
-    private $repository;
+    /** @var DocumentManager */
+    private $dm;
 
     /**
-     * @param Repository\Survey $repository
+     * @param DocumentManager $documentManager
      */
-    public function __construct(Repository\Survey $repository)
+    public function __construct(DocumentManager $documentManager)
     {
-        $this->repository = $repository;
+        $this->dm = $documentManager;
+    }
+
+    /**
+     * @return Document\Survey
+     */
+    public function getNew(): Document\Survey
+    {
+        return new Document\Survey();
+    }
+
+    /**
+     * @param Document\Survey $survey
+     */
+    public function save(Document\Survey $survey)
+    {
+        $this->dm->persist($survey);
+        $this->dm->flush();
     }
 
 

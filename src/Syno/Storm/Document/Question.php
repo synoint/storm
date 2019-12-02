@@ -12,6 +12,12 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class Question
 {
+    const TYPE_SINGLE_CHOICE          = 1;
+    const TYPE_MULTIPLE_CHOICE        = 2;
+    const TYPE_SINGLE_CHOICE_MATRIX   = 3;
+    const TYPE_MULTIPLE_CHOICE_MATRIX = 4;
+    const TYPE_TEXT                   = 5;
+
     /**
      * @ODM\Id
      */
@@ -45,7 +51,7 @@ class Question
      * @ODM\Field(type="boolean")
      * @Assert\NotNull
      */
-    private $required;
+    private $required = true;
 
     /**
      * @var string
@@ -66,7 +72,7 @@ class Question
     /**
      * @var Collection
      *
-     * @ODM\ReferenceMany(targetDocument="Answer")
+     * @ODM\ReferenceMany(targetDocument="Answer", storeAs="id", cascade={"persist", "remove"})
      */
     private $answers;
 
@@ -99,7 +105,7 @@ class Question
     /**
      * @return int
      */
-    public function getStormMakerQuestionId(): int
+    public function getStormMakerQuestionId():? int
     {
         return $this->stormMakerQuestionId;
     }
@@ -109,7 +115,7 @@ class Question
      *
      * @return Question
      */
-    public function setStormMakerQuestionId(int $stormMakerQuestionId): Question
+    public function setStormMakerQuestionId(int $stormMakerQuestionId): self
     {
         $this->stormMakerQuestionId = $stormMakerQuestionId;
 
@@ -139,7 +145,7 @@ class Question
     /**
      * @return int
      */
-    public function getSortOrder(): int
+    public function getSortOrder():? int
     {
         return $this->sortOrder;
     }
@@ -149,7 +155,7 @@ class Question
      *
      * @return Question
      */
-    public function setSortOrder(int $sortOrder): Question
+    public function setSortOrder(int $sortOrder): self
     {
         $this->sortOrder = $sortOrder;
 
@@ -169,7 +175,7 @@ class Question
      *
      * @return Question
      */
-    public function setRequired(bool $required): Question
+    public function setRequired(bool $required): self
     {
         $this->required = $required;
 
@@ -199,7 +205,7 @@ class Question
     /**
      * @return int
      */
-    public function getQuestionTypeId(): int
+    public function getQuestionTypeId():? int
     {
         return $this->questionTypeId;
     }
@@ -209,7 +215,7 @@ class Question
      *
      * @return Question
      */
-    public function setQuestionTypeId(int $questionTypeId): Question
+    public function setQuestionTypeId(int $questionTypeId): self
     {
         $this->questionTypeId = $questionTypeId;
 
@@ -225,11 +231,11 @@ class Question
     }
 
     /**
-     * @param Collection $answers
+     * @param $answers
      *
      * @return Question
      */
-    public function setAnswers(Collection $answers): Question
+    public function setAnswers($answers): self
     {
         $this->answers = $answers;
 

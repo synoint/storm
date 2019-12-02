@@ -47,7 +47,7 @@ class Page
     /**
      * @var Collection
      *
-     * @ODM\ReferenceMany(targetDocument="Question")
+     * @ODM\ReferenceMany(targetDocument="Question", storeAs="id", cascade={"persist", "remove"})
      */
     private $questions;
 
@@ -79,7 +79,7 @@ class Page
     /**
      * @return int
      */
-    public function getStormMakerPageId(): int
+    public function getStormMakerPageId():? int
     {
         return $this->stormMakerPageId;
     }
@@ -119,7 +119,7 @@ class Page
     /**
      * @return int
      */
-    public function getSortOrder(): int
+    public function getSortOrder():? int
     {
         return $this->sortOrder;
     }
@@ -165,11 +165,11 @@ class Page
     }
 
     /**
-     * @param Collection $questions
+     * @param $questions
      *
      * @return Page
      */
-    public function setQuestions(Collection $questions): Page
+    public function setQuestions($questions): Page
     {
         $this->questions = $questions;
 

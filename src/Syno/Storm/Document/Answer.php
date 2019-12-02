@@ -12,6 +12,12 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class Answer
 {
+    const FIELD_TYPE_TEXT     = 1;
+    const FIELD_TYPE_TEXTAREA = 2;
+    const FIELD_TYPE_RADIO    = 3;
+    const FIELD_TYPE_CHECKBOX = 4;
+    const FIELD_TYPE_SELECT   = 5;
+
     /**
      * @ODM\Id
      */
@@ -100,7 +106,7 @@ class Answer
     /**
      * @return int
      */
-    public function getStormMakerAnswerId(): int
+    public function getStormMakerAnswerId():? int
     {
         return $this->stormMakerAnswerId;
     }
@@ -180,7 +186,7 @@ class Answer
     /**
      * @return int
      */
-    public function getSortOrder(): int
+    public function getSortOrder():? int
     {
         return $this->sortOrder;
     }
@@ -200,7 +206,7 @@ class Answer
     /**
      * @return int
      */
-    public function getAnswerFieldTypeId(): int
+    public function getAnswerFieldTypeId():? int
     {
         return $this->answerFieldTypeId;
     }
@@ -220,7 +226,7 @@ class Answer
     /**
      * @return null|string
      */
-    public function getLabel(): ?string
+    public function getLabel():? string
     {
         return $this->label;
     }
