@@ -8,6 +8,9 @@ use Syno\Storm\Document;
 
 final class SurveyTest extends WebTestCase
 {
+    const STORM_MAKER_SURVEY_ID = 123456;
+    const VERSION               = 1;
+
     /** @var KernelBrowser */
     protected $client;
 
@@ -20,12 +23,12 @@ final class SurveyTest extends WebTestCase
         );
     }
 
-    public function testSave()
+    public function testCreate()
     {
         $data = [
-            'stormMakerSurveyId' => 123456,
+            'stormMakerSurveyId' => self::STORM_MAKER_SURVEY_ID,
             'slug'               => 'test_slug',
-            'version'            => 1,
+            'version'            => self::VERSION,
             'pages'              => [
                 $this->getPage1(),
                 $this->getPage2(),
@@ -47,8 +50,32 @@ final class SurveyTest extends WebTestCase
         $surveyId = $this->client->getResponse()->getContent();
         $this->assertIsString($surveyId);
         $this->assertTrue(26 === strlen($surveyId));
+    }
 
-        return $surveyId;
+    /**
+     * @depends testCreate
+     */
+    public function testRetrieve()
+    {
+        $this->client->request('GET', sprintf('/api/survey/%d/%d', self::STORM_MAKER_SURVEY_ID, self::VERSION));
+        $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
+        $survey = json_decode($this->client->getResponse()->getContent(), true);
+
+        $this->assertArrayHasKey('id', $survey);
+        $this->assertArrayHasKey('stormMakerSurveyId', $survey);
+        $this->assertArrayHasKey('version', $survey);
+
+        $this->assertEquals(self::STORM_MAKER_SURVEY_ID, $survey['stormMakerSurveyId']);
+        $this->assertEquals(self::VERSION, $survey['version']);
+    }
+
+    /**
+     * @depends testRetrieve
+     */
+    public function testDelete()
+    {
+        $this->client->request('DELETE', sprintf('/api/survey/%d/%d', self::STORM_MAKER_SURVEY_ID, self::VERSION));
+        $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
     }
 
     protected function getPage1()

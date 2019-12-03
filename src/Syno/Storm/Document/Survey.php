@@ -6,12 +6,12 @@ use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Validator\Constraints as Assert;
-
+use JsonSerializable;
 
 /**
  * @ODM\Document(collection="survey"))
  */
-class Survey
+class Survey implements JsonSerializable
 {
     /** @ODM\Id */
     private $id;
@@ -41,16 +41,17 @@ class Survey
     /**
      * @var Collection
      *
-     * @ODM\ReferenceMany(targetDocument="Page", storeAs="id", cascade={"persist", "remove"})
+     * @ODM\EmbedMany(targetDocument="Page")
      */
     private $pages;
 
-    /**
-     * Survey constructor.
-     */
-    public function __construct()
+    public function jsonSerialize()
     {
-        $this->pages = new ArrayCollection();
+        return [
+            'id'                 => $this->id,
+            'stormMakerSurveyId' => $this->stormMakerSurveyId,
+            'version'            => $this->version
+        ];
     }
 
     /**
@@ -136,17 +137,17 @@ class Survey
     /**
      * @return Collection
      */
-    public function getPages(): Collection
+    public function getPages()
     {
         return $this->pages;
     }
 
     /**
-     * @param Collection $pages
+     * @param $pages
      *
      * @return Survey
      */
-    public function setPages(Collection $pages): Survey
+    public function setPages($pages): Survey
     {
         $this->pages = $pages;
 

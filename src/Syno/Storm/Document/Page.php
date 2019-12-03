@@ -8,7 +8,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * @ODM\Document(collection="page"))
+ * @ODM\EmbeddedDocument
  */
 class Page
 {
@@ -47,7 +47,7 @@ class Page
     /**
      * @var Collection
      *
-     * @ODM\ReferenceMany(targetDocument="Question", storeAs="id", cascade={"persist", "remove"})
+     * @ODM\EmbedMany(targetDocument="Question")
      */
     private $questions;
 

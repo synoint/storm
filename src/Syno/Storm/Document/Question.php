@@ -8,7 +8,7 @@ use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * @ODM\Document(collection="question"))
+ * @ODM\EmbeddedDocument
  */
 class Question
 {
@@ -72,7 +72,7 @@ class Question
     /**
      * @var Collection
      *
-     * @ODM\ReferenceMany(targetDocument="Answer", storeAs="id", cascade={"persist", "remove"})
+     * @ODM\EmbedMany(targetDocument="Answer")
      */
     private $answers;
 
