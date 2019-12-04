@@ -72,7 +72,7 @@ class Question
     /**
      * @var Collection
      *
-     * @ODM\EmbedMany(targetDocument="Answer")
+     * @ODM\EmbedMany(targetDocument=Answer::class)
      */
     private $answers;
 

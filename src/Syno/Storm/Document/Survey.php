@@ -41,9 +41,14 @@ class Survey implements JsonSerializable
     /**
      * @var Collection
      *
-     * @ODM\EmbedMany(targetDocument="Page")
+     * @ODM\EmbedMany(targetDocument=Page::class)
      */
     private $pages;
+
+    public function __construct()
+    {
+        $this->pages = new ArrayCollection();
+    }
 
     public function jsonSerialize()
     {

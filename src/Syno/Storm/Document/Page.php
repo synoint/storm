@@ -47,7 +47,7 @@ class Page
     /**
      * @var Collection
      *
-     * @ODM\EmbedMany(targetDocument="Question")
+     * @ODM\EmbedMany(targetDocument=Question::class)
      */
     private $questions;
 
