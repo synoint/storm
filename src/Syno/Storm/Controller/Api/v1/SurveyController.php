@@ -7,6 +7,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Syno\Storm\Form;
+use Syno\Storm\Http\ApiResponse;
 use Syno\Storm\Services\Survey;
 use Syno\Storm\Traits\FormAware;
 use Syno\Storm\Controller\Api\TokenAuthenticatedController;
@@ -56,7 +57,7 @@ class SurveyController extends AbstractController implements TokenAuthenticatedC
             return $this->json($survey->getId(), 201);
         }
 
-        return $this->json($this->getFormErrors($form), 400);
+        return new ApiResponse('Survey creation failed!', null, $this->getFormErrors($form), 400);
     }
 
     /**
