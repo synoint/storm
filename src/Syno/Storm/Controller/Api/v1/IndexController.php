@@ -1,11 +1,11 @@
 <?php
 
-namespace Syno\Storm\Controller\Api;
+namespace Syno\Storm\Controller\Api\v1;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
-
+use Syno\Storm\Controller\Api\TokenAuthenticatedController;
 
 class IndexController extends AbstractController implements TokenAuthenticatedController
 {
