@@ -11,6 +11,9 @@ use Syno\Storm\Services\Survey;
 use Syno\Storm\Traits\FormAware;
 use Syno\Storm\Controller\Api\TokenAuthenticatedController;
 
+/**
+ * @Route("/api/v1/survey")
+ */
 class SurveyController extends AbstractController implements TokenAuthenticatedController
 {
     use FormAware;
@@ -32,7 +35,7 @@ class SurveyController extends AbstractController implements TokenAuthenticatedC
      * @param Request $request
      *
      * @Route(
-     *     "/api/survey",
+     *     "",
      *     name="storm_api.survey.create",
      *     methods={"POST"}
      * )
@@ -61,7 +64,7 @@ class SurveyController extends AbstractController implements TokenAuthenticatedC
      * @param int $version
      *
      * @Route(
-     *     "/api/survey/{stormMakerSurveyId}/{version}",
+     *     "/{stormMakerSurveyId}/{version}",
      *     name="storm_api.survey.retrieve",
      *     requirements={"id"="\d+"},
      *     methods={"GET"}
@@ -87,7 +90,7 @@ class SurveyController extends AbstractController implements TokenAuthenticatedC
      * @param int $version
      *
      * @Route(
-     *     "/api/survey/{stormMakerSurveyId}/{version}",
+     *     "/{stormMakerSurveyId}/{version}",
      *     name="storm_api.survey.delete",
      *     requirements={"id"="\d+"},
      *     methods={"DELETE"}

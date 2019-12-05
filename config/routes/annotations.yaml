@@ -1,8 +1,3 @@
 controllers:
     resource: ../../src/Syno/Storm/Controller/
     type: annotation
-
-v1_controllers:
-    resource: ../../src/Syno/Storm/Controller/Api/v1
-    type: annotation
-    prefix: '/v1'

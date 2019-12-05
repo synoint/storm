@@ -7,12 +7,15 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
 use Syno\Storm\Controller\Api\TokenAuthenticatedController;
 
+/**
+ * @Route("/api/v1")
+ */
 class IndexController extends AbstractController implements TokenAuthenticatedController
 {
     /**
      * This is used to check availability of API
      *
-     * @Route("/api/", name="storm_api.index")
+     * @Route("", name="storm_api.index")
      *
      * @return JsonResponse
      */
