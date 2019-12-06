@@ -12,7 +12,7 @@ final class AuthTest extends WebTestCase
             'HTTP_ACCESS_TOKEN' => getenv('STORM_API_TOKEN'),
         ]);
 
-        $client->request('GET', '/api/');
+        $client->request('GET', '/api/v1');
         $this->assertTrue($client->getResponse()->isSuccessful());
 
         $this->assertTrue(

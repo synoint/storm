@@ -39,7 +39,7 @@ final class SurveyTest extends WebTestCase
 
         $this->client->request(
             'POST',
-            '/api/survey',
+            '/api/v1/survey',
             [],
             [],
             [],
@@ -57,7 +57,7 @@ final class SurveyTest extends WebTestCase
      */
     public function testRetrieve()
     {
-        $this->client->request('GET', sprintf('/api/survey/%d/%d', self::STORM_MAKER_SURVEY_ID, self::VERSION));
+        $this->client->request('GET', sprintf('/api/v1/survey/%d/%d', self::STORM_MAKER_SURVEY_ID, self::VERSION));
         $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
         $survey = json_decode($this->client->getResponse()->getContent(), true);
 
@@ -74,7 +74,7 @@ final class SurveyTest extends WebTestCase
      */
     public function testDelete()
     {
-        $this->client->request('DELETE', sprintf('/api/survey/%d/%d', self::STORM_MAKER_SURVEY_ID, self::VERSION));
+        $this->client->request('DELETE', sprintf('/api/v1/survey/%d/%d', self::STORM_MAKER_SURVEY_ID, self::VERSION));
         $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
     }
 
