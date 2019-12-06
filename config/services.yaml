@@ -29,17 +29,3 @@ services:
     Syno\Storm\Api\EventSubscriber\ApiAuthenticationSubscriber:
         arguments:
             $apiAccessToken: '%env(STORM_API_TOKEN)%'
-
-    Syno\Storm\Api\v1\EventListener\ExceptionListener:
-        tags:
-            - { name: kernel.event_listener, event: kernel.exception }
-
-    Syno\Storm\Api\Serializer\FormExceptionNormalizer:
-        tags: ['serializer.normalizer']
-
-    Syno\Storm\Api\Serializer\ProblemNormalizer:
-        tags: ['serializer.normalizer']
-
-    Syno\Storm\Api\Factory\NormalizerFactory:
-        arguments: [!tagged serializer.normalizer]
-        public: true
