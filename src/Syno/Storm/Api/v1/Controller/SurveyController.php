@@ -1,6 +1,6 @@
 <?php
 
-namespace Syno\Storm\Controller\Api\v1;
+namespace Syno\Storm\Api\v1\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -10,7 +10,7 @@ use Syno\Storm\Form;
 use Syno\Storm\Http\ApiResponse;
 use Syno\Storm\Services\Survey;
 use Syno\Storm\Traits\FormAware;
-use Syno\Storm\Controller\Api\TokenAuthenticatedController;
+use Syno\Storm\Api\Controller\TokenAuthenticatedController;
 
 /**
  * @Route("/api/v1/survey")

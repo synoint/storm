@@ -1,6 +1,6 @@
 <?php
 
-namespace Syno\Storm\Exception;
+namespace Syno\Storm\Api\Exception;
 
 use Symfony\Component\Form\FormErrorIterator;
 use Symfony\Component\Form\FormInterface;

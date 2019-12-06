@@ -1,8 +1,8 @@
 <?php
 
-namespace Syno\Storm\EventSubscriber;
+namespace Syno\Storm\Api\EventSubscriber;
 
-use Syno\Storm\Controller\Api\TokenAuthenticatedController;
+use Syno\Storm\Api\Controller\TokenAuthenticatedController;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\ControllerEvent;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;

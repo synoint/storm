@@ -1,11 +1,11 @@
 <?php
 
-namespace Syno\Storm\Controller\Api\v1;
+namespace Syno\Storm\Api\v1\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
-use Syno\Storm\Controller\Api\TokenAuthenticatedController;
+use Syno\Storm\Api\Controller\TokenAuthenticatedController;
 
 /**
  * @Route("/api/v1")

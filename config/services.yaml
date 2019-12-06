@@ -18,21 +18,28 @@ services:
         resource: '../src/Syno/Storm/*'
         exclude: '../src/Syno/Storm/{DependencyInjection,Entity,Document,Migrations,Tests,Kernel.php,Connection.php}'
 
-    Syno\Storm\Controller\:
-        resource: '../src/Syno/Storm/Controller'
+    Syno\Storm\Api\Controller\:
+        resource: '../src/Syno/Storm/Api/Controller'
         tags: ['controller.service_arguments']
 
-    Syno\Storm\EventSubscriber\ApiAuthenticationSubscriber:
+    Syno\Storm\Api\v1\Controller\:
+        resource: '../src/Syno/Storm/Api/v1/Controller'
+        tags: ['controller.service_arguments']
+
+    Syno\Storm\Api\EventSubscriber\ApiAuthenticationSubscriber:
         arguments:
             $apiAccessToken: '%env(STORM_API_TOKEN)%'
 
-    Syno\Storm\EventListener\ExceptionListener:
+    Syno\Storm\Api\v1\EventListener\ExceptionListener:
         tags:
             - { name: kernel.event_listener, event: kernel.exception }
 
-    Syno\Storm\Serializer\FormExceptionNormalizer:
+    Syno\Storm\Api\Serializer\FormExceptionNormalizer:
         tags: ['serializer.normalizer']
 
-    Syno\Storm\Factory\NormalizerFactory:
+    Syno\Storm\Api\Serializer\ProblemNormalizer:
+        tags: ['serializer.normalizer']
+
+    Syno\Storm\Api\Factory\NormalizerFactory:
         arguments: [!tagged serializer.normalizer]
         public: true

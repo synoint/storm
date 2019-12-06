@@ -1,12 +1,12 @@
 <?php
-namespace Syno\Storm\EventListener;
+namespace Syno\Storm\Api\v1\EventListener;
 
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\ExceptionEvent;
 use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
 
-use Syno\Storm\Http\ApiResponse;
-use Syno\Storm\Factory\NormalizerFactory;
+use Syno\Storm\Api\v1\Http\ApiResponse;
+use Syno\Storm\Api\Factory\NormalizerFactory;
 
 class ExceptionListener
 {

@@ -1,6 +1,6 @@
 <?php
 
-namespace Syno\Storm\Controller;
+namespace Syno\Storm\Api\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;

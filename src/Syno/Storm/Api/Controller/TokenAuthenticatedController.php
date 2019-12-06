@@ -1,6 +1,6 @@
 <?php
 
-namespace Syno\Storm\Controller\Api;
+namespace Syno\Storm\Api\Controller;
 
 interface TokenAuthenticatedController
 {

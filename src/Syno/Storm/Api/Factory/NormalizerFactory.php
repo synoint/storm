@@ -1,6 +1,6 @@
 <?php
 
-namespace Syno\Storm\Factory;
+namespace Syno\Storm\Api\Factory;
 
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 

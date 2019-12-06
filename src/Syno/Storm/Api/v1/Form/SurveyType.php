@@ -1,6 +1,6 @@
 <?php
 
-namespace Syno\Storm\Form;
+namespace Syno\Storm\Api\v1\Form;
 
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;

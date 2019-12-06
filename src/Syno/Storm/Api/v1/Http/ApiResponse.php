@@ -1,5 +1,5 @@
 <?php
-namespace Syno\Storm\Http;
+namespace Syno\Storm\Api\v1\Http;
 
 use Symfony\Component\HttpFoundation\JsonResponse;
 

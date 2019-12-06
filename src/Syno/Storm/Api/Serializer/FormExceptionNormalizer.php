@@ -1,8 +1,8 @@
 <?php
 
-namespace Syno\Storm\Serializer;
+namespace Syno\Storm\Api\Serializer;
 
-use Syno\Storm\Exception\FormException;
+use Syno\Storm\Api\Exception\FormException;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 
 class FormExceptionNormalizer implements NormalizerInterface
