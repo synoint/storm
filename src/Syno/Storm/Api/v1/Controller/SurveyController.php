@@ -46,7 +46,7 @@ class SurveyController extends AbstractController implements TokenAuthenticatedC
     public function create(Request $request)
     {
         $data = json_decode($request->getContent(), true);
-        //$this->removeVersionIfExists($data);
+        $this->removeVersionIfExists($data);
 
         $survey = $this->surveyService->getNew();
         $form = $this->createForm(Form\SurveyType::class, $survey);

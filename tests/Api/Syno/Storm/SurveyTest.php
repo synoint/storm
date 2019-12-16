@@ -74,8 +74,8 @@ final class SurveyTest extends WebTestCase
      */
     public function testDelete()
     {
-        //$this->client->request('DELETE', sprintf('/api/v1/survey/%d/%d', self::STORM_MAKER_SURVEY_ID, self::VERSION));
-        //$this->assertEquals(200, $this->client->getResponse()->getStatusCode());
+        $this->client->request('DELETE', sprintf('/api/v1/survey/%d/%d', self::STORM_MAKER_SURVEY_ID, self::VERSION));
+        $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
     }
 
     protected function getPage1()
