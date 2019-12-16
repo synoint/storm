@@ -1,3 +1,7 @@
+storm_controllers:
+    resource: ../../src/Syno/Storm/Controller/
+    type: annotation
+
 api_controllers:
     resource: ../../src/Syno/Storm/Api/Controller/
     type: annotation
