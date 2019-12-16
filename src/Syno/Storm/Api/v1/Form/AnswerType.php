@@ -14,7 +14,7 @@ class AnswerType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('stormMakerAnswerId', IntegerType::class)
+            ->add('answerId', IntegerType::class)
             ->add('code', TextType::class, ['required' => false])
             ->add('rowCode', TextType::class, ['required' => false])
             ->add('columnCode', TextType::class, ['required' => false])

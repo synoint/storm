@@ -27,7 +27,7 @@ class Answer
      * @ODM\Field(type="int")
      * @Assert\Positive
      */
-    private $stormMakerAnswerId;
+    private $answerId;
 
     /**
      * @ODM\Field(type="string")
@@ -104,19 +104,19 @@ class Answer
     /**
      * @return int
      */
-    public function getStormMakerAnswerId():? int
+    public function getAnswerId():? int
     {
-        return $this->stormMakerAnswerId;
+        return $this->answerId;
     }
 
     /**
-     * @param int $stormMakerAnswerId
+     * @param int $answerId
      *
      * @return Answer
      */
-    public function setStormMakerAnswerId(int $stormMakerAnswerId): Answer
+    public function setAnswerId(int $answerId): Answer
     {
-        $this->stormMakerAnswerId = $stormMakerAnswerId;
+        $this->answerId = $answerId;
 
         return $this;
     }

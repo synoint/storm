@@ -23,7 +23,7 @@ class Page
      * @ODM\Field(type="int")
      * @Assert\Positive
      */
-    private $stormMakerPageId;
+    private $pageId;
 
     /**
      * @ODM\Field(type="string")
@@ -79,19 +79,19 @@ class Page
     /**
      * @return int
      */
-    public function getStormMakerPageId():? int
+    public function getPageId():? int
     {
-        return $this->stormMakerPageId;
+        return $this->pageId;
     }
 
     /**
-     * @param int $stormMakerPageId
+     * @param int $pageId
      *
      * @return Page
      */
-    public function setStormMakerPageId(int $stormMakerPageId): Page
+    public function setPageId(int $pageId): Page
     {
-        $this->stormMakerPageId = $stormMakerPageId;
+        $this->pageId = $pageId;
 
         return $this;
     }

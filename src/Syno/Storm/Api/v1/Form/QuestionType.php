@@ -16,7 +16,7 @@ class QuestionType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('stormMakerQuestionId', IntegerType::class)
+            ->add('questionId', IntegerType::class)
             ->add('code', TextType::class)
             ->add('sortOrder', IntegerType::class)
             ->add('required', HiddenType::class)

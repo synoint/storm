@@ -81,64 +81,64 @@ final class SurveyTest extends WebTestCase
     protected function getPage1()
     {
         return [
-            'stormMakerPageId' => 1234561,
-            'code'             => 'P1',
-            'sortOrder'        => 1,
-            'content'          => 'content for page 1',
-            'questions'        => [
+            'pageId'    => 1234561,
+            'code'      => 'P1',
+            'sortOrder' => 1,
+            'content'   => 'content for page 1',
+            'questions' => [
                 [
-                    'stormMakerQuestionId' => 12345611,
-                    'code'                 => 'P1Q1',
-                    'sortOrder'            => 1,
-                    'required'             => true,
-                    'text'                 => 'Single choice question',
-                    'questionTypeId'       => Document\Question::TYPE_SINGLE_CHOICE,
-                    'answers'              => [
+                    'questionId'     => 12345611,
+                    'code'           => 'P1Q1',
+                    'sortOrder'      => 1,
+                    'required'       => true,
+                    'text'           => 'Single choice question',
+                    'questionTypeId' => Document\Question::TYPE_SINGLE_CHOICE,
+                    'answers'        => [
                         [
-                            'stormMakerAnswerId' => 123456111,
-                            'code'               => 'A1',
-                            'sortOrder'          => 1,
-                            'answerFieldTypeId'  => Document\Answer::FIELD_TYPE_RADIO,
-                            'label'              => 'Yes',
+                            'answerId'          => 123456111,
+                            'code'              => 'A1',
+                            'sortOrder'         => 1,
+                            'answerFieldTypeId' => Document\Answer::FIELD_TYPE_RADIO,
+                            'label'             => 'Yes',
                         ],
                         [
-                            'stormMakerAnswerId' => 123456112,
-                            'code'               => 'A2',
-                            'sortOrder'          => 2,
-                            'answerFieldTypeId'  => Document\Answer::FIELD_TYPE_RADIO,
-                            'label'              => 'No',
+                            'answerId'          => 123456112,
+                            'code'              => 'A2',
+                            'sortOrder'         => 2,
+                            'answerFieldTypeId' => Document\Answer::FIELD_TYPE_RADIO,
+                            'label'             => 'No',
                         ],
 
                     ]
                 ],
                 [
-                    'stormMakerQuestionId' => 12345612,
-                    'code'                 => 'P1Q2',
-                    'sortOrder'            => 2,
-                    'required'             => true,
-                    'text'                 => 'Multiple choice question',
-                    'questionTypeId'       => Document\Question::TYPE_MULTIPLE_CHOICE,
-                    'answers'              => [
+                    'questionId'     => 12345612,
+                    'code'           => 'P1Q2',
+                    'sortOrder'      => 2,
+                    'required'       => true,
+                    'text'           => 'Multiple choice question',
+                    'questionTypeId' => Document\Question::TYPE_MULTIPLE_CHOICE,
+                    'answers'        => [
                         [
-                            'stormMakerAnswerId' => 123456121,
-                            'code'               => 'A1',
-                            'sortOrder'          => 1,
-                            'answerFieldTypeId'  => Document\Answer::FIELD_TYPE_CHECKBOX,
-                            'label'              => 'Checkbox 1',
+                            'answerId'          => 123456121,
+                            'code'              => 'A1',
+                            'sortOrder'         => 1,
+                            'answerFieldTypeId' => Document\Answer::FIELD_TYPE_CHECKBOX,
+                            'label'             => 'Checkbox 1',
                         ],
                         [
-                            'stormMakerAnswerId' => 123456122,
-                            'code'               => 'A2',
-                            'sortOrder'          => 2,
-                            'answerFieldTypeId'  => Document\Answer::FIELD_TYPE_CHECKBOX,
-                            'label'              => 'Checkbox 2',
+                            'answerId'          => 123456122,
+                            'code'              => 'A2',
+                            'sortOrder'         => 2,
+                            'answerFieldTypeId' => Document\Answer::FIELD_TYPE_CHECKBOX,
+                            'label'             => 'Checkbox 2',
                         ],
                         [
-                            'stormMakerAnswerId' => 123456123,
-                            'code'               => 'A3',
-                            'sortOrder'          => 3,
-                            'answerFieldTypeId'  => Document\Answer::FIELD_TYPE_CHECKBOX,
-                            'label'              => 'Checkbox 3',
+                            'answerId'          => 123456123,
+                            'code'              => 'A3',
+                            'sortOrder'         => 3,
+                            'answerFieldTypeId' => Document\Answer::FIELD_TYPE_CHECKBOX,
+                            'label'             => 'Checkbox 3',
                         ],
                     ]
                 ]
@@ -150,51 +150,51 @@ final class SurveyTest extends WebTestCase
     protected function getPage2()
     {
         return [
-            'stormMakerPageId' => 1234562,
-            'code'             => 'P2',
-            'sortOrder'        => 2,
-            'questions'        => [
+            'pageId'    => 1234562,
+            'code'      => 'P2',
+            'sortOrder' => 2,
+            'questions' => [
                 [
-                    'stormMakerQuestionId' => 12345621,
-                    'code'                 => 'P2Q1',
-                    'sortOrder'            => 1,
-                    'required'             => true,
-                    'text'                 => 'Single choice matrix',
-                    'questionTypeId'       => Document\Question::TYPE_SINGLE_CHOICE_MATRIX,
-                    'answers'              => [
+                    'questionId'     => 12345621,
+                    'code'           => 'P2Q1',
+                    'sortOrder'      => 1,
+                    'required'       => true,
+                    'text'           => 'Single choice matrix',
+                    'questionTypeId' => Document\Question::TYPE_SINGLE_CHOICE_MATRIX,
+                    'answers'        => [
                         [
-                            'stormMakerAnswerId' => 123456211,
+                            'answerId'          => 123456211,
                             'rowCode'           => 'R1',
                             'columnCode'        => 'C1',
-                            'sortOrder'          => 1,
-                            'answerFieldTypeId'  => Document\Answer::FIELD_TYPE_RADIO,
+                            'sortOrder'         => 1,
+                            'answerFieldTypeId' => Document\Answer::FIELD_TYPE_RADIO,
                             'rowLabel'          => 'Row 1',
                             'columnLabel'       => 'Column 1',
                         ],
                         [
-                            'stormMakerAnswerId' => 123456212,
+                            'answerId'          => 123456212,
                             'rowCode'           => 'R1',
                             'columnCode'        => 'C2',
-                            'sortOrder'          => 2,
-                            'answerFieldTypeId'  => Document\Answer::FIELD_TYPE_RADIO,
+                            'sortOrder'         => 2,
+                            'answerFieldTypeId' => Document\Answer::FIELD_TYPE_RADIO,
                             'rowLabel'          => 'Row 1',
                             'columnLabel'       => 'Column 2',
                         ],
                         [
-                            'stormMakerAnswerId' => 123456213,
+                            'answerId'          => 123456213,
                             'rowCode'           => 'R2',
                             'columnCode'        => 'C1',
-                            'sortOrder'          => 3,
-                            'answerFieldTypeId'  => Document\Answer::FIELD_TYPE_RADIO,
+                            'sortOrder'         => 3,
+                            'answerFieldTypeId' => Document\Answer::FIELD_TYPE_RADIO,
                             'rowLabel'          => 'Row 2',
                             'columnLabel'       => 'Column 1',
                         ],
                         [
-                            'stormMakerAnswerId' => 123456214,
+                            'answerId'          => 123456214,
                             'rowCode'           => 'R2',
                             'columnCode'        => 'C2',
-                            'sortOrder'          => 4,
-                            'answerFieldTypeId'  => Document\Answer::FIELD_TYPE_RADIO,
+                            'sortOrder'         => 4,
+                            'answerFieldTypeId' => Document\Answer::FIELD_TYPE_RADIO,
                             'rowLabel'          => 'Row 2',
                             'columnLabel'       => 'Column 2',
                         ],
@@ -207,51 +207,51 @@ final class SurveyTest extends WebTestCase
     protected function getPage3()
     {
         return [
-            'stormMakerPageId' => 1234563,
-            'code'             => 'P3',
-            'sortOrder'        => 3,
-            'questions'        => [
+            'pageId'    => 1234563,
+            'code'      => 'P3',
+            'sortOrder' => 3,
+            'questions' => [
                 [
-                    'stormMakerQuestionId' => 12345631,
-                    'code'                 => 'P3Q1',
-                    'sortOrder'            => 1,
-                    'required'             => true,
-                    'text'                 => 'Multiple choice matrix',
-                    'questionTypeId'       => Document\Question::TYPE_MULTIPLE_CHOICE_MATRIX,
-                    'answers'              => [
+                    'questionId'     => 12345631,
+                    'code'           => 'P3Q1',
+                    'sortOrder'      => 1,
+                    'required'       => true,
+                    'text'           => 'Multiple choice matrix',
+                    'questionTypeId' => Document\Question::TYPE_MULTIPLE_CHOICE_MATRIX,
+                    'answers'        => [
                         [
-                            'stormMakerAnswerId' => 123456311,
+                            'answerId'          => 123456311,
                             'rowCode'           => 'R1',
                             'columnCode'        => 'C1',
-                            'sortOrder'          => 1,
-                            'answerFieldTypeId'  => Document\Answer::FIELD_TYPE_CHECKBOX,
+                            'sortOrder'         => 1,
+                            'answerFieldTypeId' => Document\Answer::FIELD_TYPE_CHECKBOX,
                             'rowLabel'          => 'Row 1',
                             'columnLabel'       => 'Column 1',
                         ],
                         [
-                            'stormMakerAnswerId' => 123456312,
+                            'answerId'          => 123456312,
                             'rowCode'           => 'R1',
                             'columnCode'        => 'C2',
-                            'sortOrder'          => 2,
-                            'answerFieldTypeId'  => Document\Answer::FIELD_TYPE_CHECKBOX,
+                            'sortOrder'         => 2,
+                            'answerFieldTypeId' => Document\Answer::FIELD_TYPE_CHECKBOX,
                             'rowLabel'          => 'Row 1',
                             'columnLabel'       => 'Column 2',
                         ],
                         [
-                            'stormMakerAnswerId' => 123456313,
+                            'answerId'          => 123456313,
                             'rowCode'           => 'R2',
                             'columnCode'        => 'C1',
-                            'sortOrder'          => 3,
-                            'answerFieldTypeId'  => Document\Answer::FIELD_TYPE_CHECKBOX,
+                            'sortOrder'         => 3,
+                            'answerFieldTypeId' => Document\Answer::FIELD_TYPE_CHECKBOX,
                             'rowLabel'          => 'Row 2',
                             'columnLabel'       => 'Column 1',
                         ],
                         [
-                            'stormMakerAnswerId' => 123456314,
+                            'answerId'          => 123456314,
                             'rowCode'           => 'R2',
                             'columnCode'        => 'C2',
-                            'sortOrder'          => 4,
-                            'answerFieldTypeId'  => Document\Answer::FIELD_TYPE_CHECKBOX,
+                            'sortOrder'         => 4,
+                            'answerFieldTypeId' => Document\Answer::FIELD_TYPE_CHECKBOX,
                             'rowLabel'          => 'Row 2',
                             'columnLabel'       => 'Column 2',
                         ],
@@ -264,24 +264,24 @@ final class SurveyTest extends WebTestCase
     protected function getPage4()
     {
         return [
-            'stormMakerPageId' => 1234564,
-            'code'             => 'P4',
-            'sortOrder'        => 4,
-            'questions'        => [
+            'pageId'    => 1234564,
+            'code'      => 'P4',
+            'sortOrder' => 4,
+            'questions' => [
                 [
-                    'stormMakerQuestionId' => 12345641,
-                    'code'                 => 'P4Q1',
-                    'sortOrder'            => 1,
-                    'required'             => true,
-                    'text'                 => 'Text question',
-                    'questionTypeId'       => Document\Question::TYPE_TEXT,
-                    'answers'              => [
+                    'questionId'     => 12345641,
+                    'code'           => 'P4Q1',
+                    'sortOrder'      => 1,
+                    'required'       => true,
+                    'text'           => 'Text question',
+                    'questionTypeId' => Document\Question::TYPE_TEXT,
+                    'answers'        => [
                         [
-                            'stormMakerAnswerId' => 123456411,
-                            'code'               => 'A1',
-                            'sortOrder'          => 1,
-                            'answerFieldTypeId'  => Document\Answer::FIELD_TYPE_TEXT,
-                            'label'              => 'Text label'
+                            'answerId'          => 123456411,
+                            'code'              => 'A1',
+                            'sortOrder'         => 1,
+                            'answerFieldTypeId' => Document\Answer::FIELD_TYPE_TEXT,
+                            'label'             => 'Text label'
                         ],
                     ]
                 ]

@@ -15,7 +15,7 @@ class PageType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('stormMakerPageId', IntegerType::class)
+            ->add('pageId', IntegerType::class)
             ->add('code', TextType::class)
             ->add('sortOrder', IntegerType::class)
             ->add('content', TextType::class, ['required' => false])
