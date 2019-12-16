@@ -25,12 +25,6 @@ class Survey implements JsonSerializable
     private $surveyId;
 
     /**
-     * @ODM\Field(type="string")
-     * @Assert\NotBlank
-     */
-    private $slug;
-
-    /**
      * @var int
      *
      * @ODM\Field(type="int")
@@ -110,26 +104,6 @@ class Survey implements JsonSerializable
     public function setSurveyId(int $surveyId): Survey
     {
         $this->surveyId = $surveyId;
-
-        return $this;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getSlug()
-    {
-        return $this->slug;
-    }
-
-    /**
-     * @param mixed $slug
-     *
-     * @return Survey
-     */
-    public function setSlug($slug)
-    {
-        $this->slug = $slug;
 
         return $this;
     }

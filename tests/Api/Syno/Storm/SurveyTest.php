@@ -28,7 +28,6 @@ final class SurveyTest extends WebTestCase
     {
         $data = [
             'surveyId' => self::SURVEY_ID,
-            'slug'     => 'test_slug',
             'version'  => self::VERSION,
             'pages'    => [
                 $this->getPage1(),

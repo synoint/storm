@@ -27,9 +27,9 @@ class SurveyTest extends TestCase
         $this->assertEquals(123456789, $this->document->getSurveyId());
     }
 
-    public function testGetSlug()
+    public function testGetVersion()
     {
-        $this->document->setSlug('slug');
-        $this->assertEquals('slug', $this->document->getSlug());
+        $this->document->setVersion(2);
+        $this->assertEquals(2, $this->document->getVersion());
     }
 }

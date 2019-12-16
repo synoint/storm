@@ -16,7 +16,6 @@ class SurveyType extends AbstractType
     {
         $builder
             ->add('surveyId', IntegerType::class)
-            ->add('slug', TextType::class)
             ->add('version', IntegerType::class)
             ->add('pages', CollectionType::class, [
                 'entry_type' => PageType::class,

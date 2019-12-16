@@ -36,13 +36,11 @@ final class SurveyPublishTest extends WebTestCase
         $surveys = [
             [
                 'surveyId' => self::SURVEY_ID,
-                'slug'     => 'publish_test',
                 'version'  => 1,
                 'pages'    => []
             ],
             [
                 'surveyId' => self::SURVEY_ID,
-                'slug'     => 'publish_test',
                 'version'  => 2,
                 'pages'    => []
             ]
