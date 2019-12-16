@@ -8,15 +8,15 @@ use Syno\Storm\Document;
 
 final class SurveyTest extends WebTestCase
 {
-    const STORM_MAKER_SURVEY_ID = 123456;
-    const VERSION               = 1;
+    const SURVEY_ID = 123456;
+    const VERSION   = 1;
 
     /** @var KernelBrowser */
-    protected $client;
+    protected static $client;
 
     public function setUp()
     {
-        $this->client = static::createClient(
+        self::$client = static::createClient(
             [], [
                   'HTTP_ACCESS_TOKEN' => getenv('STORM_API_TOKEN'),
               ]
@@ -26,10 +26,10 @@ final class SurveyTest extends WebTestCase
     public function testCreate()
     {
         $data = [
-            'stormMakerSurveyId' => self::STORM_MAKER_SURVEY_ID,
-            'slug'               => 'test_slug',
-            'version'            => self::VERSION,
-            'pages'              => [
+            'surveyId' => self::SURVEY_ID,
+            'slug'     => 'test_slug',
+            'version'  => self::VERSION,
+            'pages'    => [
                 $this->getPage1(),
                 $this->getPage2(),
                 $this->getPage3(),
@@ -37,7 +37,7 @@ final class SurveyTest extends WebTestCase
             ]
         ];
 
-        $this->client->request(
+        self::$client->request(
             'POST',
             '/api/v1/survey',
             [],
@@ -46,8 +46,8 @@ final class SurveyTest extends WebTestCase
             json_encode($data)
         );
 
-        $this->assertEquals(201, $this->client->getResponse()->getStatusCode());
-        $surveyId = $this->client->getResponse()->getContent();
+        $this->assertEquals(201, self::$client->getResponse()->getStatusCode());
+        $surveyId = self::$client->getResponse()->getContent();
         $this->assertIsString($surveyId);
         $this->assertTrue(26 === strlen($surveyId));
     }
@@ -57,15 +57,15 @@ final class SurveyTest extends WebTestCase
      */
     public function testRetrieve()
     {
-        $this->client->request('GET', sprintf('/api/v1/survey/%d/%d', self::STORM_MAKER_SURVEY_ID, self::VERSION));
-        $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
-        $survey = json_decode($this->client->getResponse()->getContent(), true);
+        self::$client->request('GET', sprintf('/api/v1/survey/%d/%d', self::SURVEY_ID, self::VERSION));
+        $this->assertEquals(200, self::$client->getResponse()->getStatusCode());
+        $survey = json_decode(self::$client->getResponse()->getContent(), true);
 
         $this->assertArrayHasKey('id', $survey);
-        $this->assertArrayHasKey('stormMakerSurveyId', $survey);
+        $this->assertArrayHasKey('surveyId', $survey);
         $this->assertArrayHasKey('version', $survey);
 
-        $this->assertEquals(self::STORM_MAKER_SURVEY_ID, $survey['stormMakerSurveyId']);
+        $this->assertEquals(self::SURVEY_ID, $survey['surveyId']);
         $this->assertEquals(self::VERSION, $survey['version']);
     }
 
@@ -74,8 +74,8 @@ final class SurveyTest extends WebTestCase
      */
     public function testDelete()
     {
-        $this->client->request('DELETE', sprintf('/api/v1/survey/%d/%d', self::STORM_MAKER_SURVEY_ID, self::VERSION));
-        $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
+        self::$client->request('DELETE', sprintf('/api/v1/survey/%d/%d', self::SURVEY_ID, self::VERSION));
+        $this->assertEquals(200, self::$client->getResponse()->getStatusCode());
     }
 
     protected function getPage1()

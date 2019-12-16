@@ -21,10 +21,10 @@ class SurveyTest extends TestCase
         $this->assertEquals(123, $this->document->getId());
     }
 
-    public function testGetStormMakerSurveyId()
+    public function testGetSurveyId()
     {
-        $this->document->setStormMakerSurveyId(123456789);
-        $this->assertEquals(123456789, $this->document->getStormMakerSurveyId());
+        $this->document->setSurveyId(123456789);
+        $this->assertEquals(123456789, $this->document->getSurveyId());
     }
 
     public function testGetSlug()

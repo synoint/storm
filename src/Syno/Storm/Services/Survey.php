@@ -36,32 +36,32 @@ class Survey
     }
 
     /**
-     * @param int $stormMakerSurveyId
+     * @param int $surveyId
      * @param int $version
      *
      * @return null|Document\Survey
      */
-    public function findByStormMakerIdAndVersion(int $stormMakerSurveyId, int $version)
+    public function findBySurveyIdAndVersion(int $surveyId, int $version)
     {
         return $this->dm->getRepository(Document\Survey::class)->findOneBy(
             [
-                'stormMakerSurveyId' => $stormMakerSurveyId,
+                'surveyId' => $surveyId,
                 'version' => $version,
             ]
         );
     }
 
     /**
-     * @param int $stormMakerSurveyId
+     * @param int $surveyId
      * @param int $version
      *
      * @return null|Document\Survey
      */
-    public function publish(int $stormMakerSurveyId, int $version):? Document\Survey
+    public function publish(int $surveyId, int $version):? Document\Survey
     {
         $result = null;
         $surveys = $this->dm->getRepository(Document\Survey::class)->findBy(
-            ['stormMakerSurveyId' => $stormMakerSurveyId]
+            ['surveyId' => $surveyId]
         );
 
         foreach ($surveys as &$survey) {

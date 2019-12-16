@@ -61,11 +61,11 @@ class SurveyController extends AbstractController implements TokenAuthenticatedC
     }
 
     /**
-     * @param int $stormMakerSurveyId
+     * @param int $surveyId
      * @param int $version
      *
      * @Route(
-     *     "/{stormMakerSurveyId}/{version}",
+     *     "/{surveyId}/{version}",
      *     name="storm_api.survey.retrieve",
      *     requirements={"id"="\d+"},
      *     methods={"GET"}
@@ -73,12 +73,12 @@ class SurveyController extends AbstractController implements TokenAuthenticatedC
      *
      * @return JsonResponse
      */
-    public function retrieve(int $stormMakerSurveyId, int $version)
+    public function retrieve(int $surveyId, int $version)
     {
-        $survey = $this->surveyService->findByStormMakerIdAndVersion($stormMakerSurveyId, $version);
+        $survey = $this->surveyService->findBySurveyIdAndVersion($surveyId, $version);
         if (!$survey) {
             return $this->json(
-                sprintf('Survey with ID: %d, version: %d was not found', $stormMakerSurveyId, $version),
+                sprintf('Survey with ID: %d, version: %d was not found', $surveyId, $version),
                 404
             );
         }
@@ -87,11 +87,11 @@ class SurveyController extends AbstractController implements TokenAuthenticatedC
     }
 
     /**
-     * @param int $stormMakerSurveyId
+     * @param int $surveyId
      * @param int $version
      *
      * @Route(
-     *     "/{stormMakerSurveyId}/{version}",
+     *     "/{surveyId}/{version}",
      *     name="storm_api.survey.delete",
      *     requirements={"id"="\d+", "version"="\d+"},
      *     methods={"DELETE"}
@@ -99,12 +99,12 @@ class SurveyController extends AbstractController implements TokenAuthenticatedC
      *
      * @return JsonResponse
      */
-    public function delete(int $stormMakerSurveyId, int $version)
+    public function delete(int $surveyId, int $version)
     {
-        $survey = $this->surveyService->findByStormMakerIdAndVersion($stormMakerSurveyId, $version);
+        $survey = $this->surveyService->findBySurveyIdAndVersion($surveyId, $version);
         if (!$survey) {
             return $this->json(
-                sprintf('Survey with ID: %d, version: %d was not found', $stormMakerSurveyId, $version),
+                sprintf('Survey with ID: %d, version: %d was not found', $surveyId, $version),
                 404
             );
         }
@@ -115,11 +115,11 @@ class SurveyController extends AbstractController implements TokenAuthenticatedC
     }
 
     /**
-     * @param int $stormMakerSurveyId
+     * @param int $surveyId
      * @param int $version
      *
      * @Route(
-     *     "/{stormMakerSurveyId}/{version}",
+     *     "/{surveyId}/{version}",
      *     name="storm_api.survey.publish",
      *     requirements={"id"="\d+", "version"="\d+"},
      *     methods={"PUT"}
@@ -127,12 +127,12 @@ class SurveyController extends AbstractController implements TokenAuthenticatedC
      *
      * @return JsonResponse
      */
-    public function publish(int $stormMakerSurveyId, int $version)
+    public function publish(int $surveyId, int $version)
     {
-        $survey = $this->surveyService->publish($stormMakerSurveyId, $version);
+        $survey = $this->surveyService->publish($surveyId, $version);
         if (!$survey) {
             return $this->json(
-                sprintf('Survey with ID: %d, version: %d was not found', $stormMakerSurveyId, $version),
+                sprintf('Survey with ID: %d, version: %d was not found', $surveyId, $version),
                 404
             );
         }
@@ -145,8 +145,8 @@ class SurveyController extends AbstractController implements TokenAuthenticatedC
      */
     protected function removeVersionIfExists(array $params)
     {
-        if (!empty($params['stormMakerSurveyId']) && !empty($params['version'])) {
-            $survey = $this->surveyService->findByStormMakerIdAndVersion($params['stormMakerSurveyId'], $params['version']);
+        if (!empty($params['surveyId']) && !empty($params['version'])) {
+            $survey = $this->surveyService->findBySurveyIdAndVersion($params['surveyId'], $params['version']);
             if ($survey) {
                 $this->surveyService->delete($survey);
             }

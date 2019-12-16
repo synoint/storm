@@ -15,7 +15,7 @@ class SurveyType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('stormMakerSurveyId', IntegerType::class)
+            ->add('surveyId', IntegerType::class)
             ->add('slug', TextType::class)
             ->add('version', IntegerType::class)
             ->add('pages', CollectionType::class, [

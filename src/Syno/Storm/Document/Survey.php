@@ -22,7 +22,7 @@ class Survey implements JsonSerializable
      * @ODM\Field(type="int")
      * @Assert\Positive
      */
-    private $stormMakerSurveyId;
+    private $surveyId;
 
     /**
      * @ODM\Field(type="string")
@@ -61,10 +61,10 @@ class Survey implements JsonSerializable
     public function jsonSerialize()
     {
         return [
-            'id'                 => $this->id,
-            'stormMakerSurveyId' => $this->stormMakerSurveyId,
-            'version'            => $this->version,
-            'published'          => $this->published
+            'id'        => $this->id,
+            'surveyId'  => $this->surveyId,
+            'version'   => $this->version,
+            'published' => $this->published
         ];
     }
 
@@ -91,19 +91,19 @@ class Survey implements JsonSerializable
     /**
      * @return int
      */
-    public function getStormMakerSurveyId():? int
+    public function getSurveyId():? int
     {
-        return $this->stormMakerSurveyId;
+        return $this->surveyId;
     }
 
     /**
-     * @param int $stormMakerSurveyId
+     * @param int $surveyId
      *
      * @return Survey
      */
-    public function setStormMakerSurveyId(int $stormMakerSurveyId): Survey
+    public function setSurveyId(int $surveyId): Survey
     {
-        $this->stormMakerSurveyId = $stormMakerSurveyId;
+        $this->surveyId = $surveyId;
 
         return $this;
     }
