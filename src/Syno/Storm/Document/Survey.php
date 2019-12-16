@@ -47,6 +47,11 @@ class Survey implements JsonSerializable
     private $published = false;
 
     /**
+     * @ODM\Field(type="string")
+     */
+    private $theme = 'materialize';
+
+    /**
      * @var Collection
      *
      * @ODM\EmbedMany(targetDocument=Page::class)
@@ -64,7 +69,8 @@ class Survey implements JsonSerializable
             'id'        => $this->id,
             'surveyId'  => $this->surveyId,
             'version'   => $this->version,
-            'published' => $this->published
+            'published' => $this->published,
+            'theme'     => $this->theme,
         ];
     }
 
@@ -184,6 +190,26 @@ class Survey implements JsonSerializable
     public function setPages($pages): Survey
     {
         $this->pages = $pages;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getTheme(): string
+    {
+        return $this->theme;
+    }
+
+    /**
+     * @param string $theme
+     *
+     * @return Survey
+     */
+    public function setTheme(string $theme): Survey
+    {
+        $this->theme = $theme;
 
         return $this;
     }
