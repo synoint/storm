@@ -52,6 +52,32 @@ class Survey
     }
 
     /**
+     * @param int $stormMakerSurveyId
+     * @param int $version
+     *
+     * @return null|Document\Survey
+     */
+    public function publish(int $stormMakerSurveyId, int $version):? Document\Survey
+    {
+        $result = null;
+        $surveys = $this->dm->getRepository(Document\Survey::class)->findBy(
+            ['stormMakerSurveyId' => $stormMakerSurveyId]
+        );
+
+        foreach ($surveys as &$survey) {
+            if ($survey->getVersion() === $version) {
+                $survey->setPublished(true);
+                $result = $survey;
+            } elseif ($survey->isPublished()) {
+                $survey->setPublished(false);
+            }
+        }
+        $this->dm->flush();
+
+        return $result;
+    }
+
+    /**
      * @param Document\Survey $survey
      */
     public function delete(Document\Survey $survey)

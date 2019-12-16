@@ -93,7 +93,7 @@ class SurveyController extends AbstractController implements TokenAuthenticatedC
      * @Route(
      *     "/{stormMakerSurveyId}/{version}",
      *     name="storm_api.survey.delete",
-     *     requirements={"id"="\d+"},
+     *     requirements={"id"="\d+", "version"="\d+"},
      *     methods={"DELETE"}
      * )
      *
@@ -110,6 +110,32 @@ class SurveyController extends AbstractController implements TokenAuthenticatedC
         }
 
         $this->surveyService->delete($survey);
+
+        return $this->json('ok');
+    }
+
+    /**
+     * @param int $stormMakerSurveyId
+     * @param int $version
+     *
+     * @Route(
+     *     "/{stormMakerSurveyId}/{version}",
+     *     name="storm_api.survey.publish",
+     *     requirements={"id"="\d+", "version"="\d+"},
+     *     methods={"PUT"}
+     * )
+     *
+     * @return JsonResponse
+     */
+    public function publish(int $stormMakerSurveyId, int $version)
+    {
+        $survey = $this->surveyService->publish($stormMakerSurveyId, $version);
+        if (!$survey) {
+            return $this->json(
+                sprintf('Survey with ID: %d, version: %d was not found', $stormMakerSurveyId, $version),
+                404
+            );
+        }
 
         return $this->json('ok');
     }

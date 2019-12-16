@@ -39,6 +39,14 @@ class Survey implements JsonSerializable
     private $version;
 
     /**
+     * @var bool
+     *
+     * @ODM\Field(type="boolean")
+     * @Assert\NotNull
+     */
+    private $published = false;
+
+    /**
      * @var Collection
      *
      * @ODM\EmbedMany(targetDocument=Page::class)
@@ -55,7 +63,8 @@ class Survey implements JsonSerializable
         return [
             'id'                 => $this->id,
             'stormMakerSurveyId' => $this->stormMakerSurveyId,
-            'version'            => $this->version
+            'version'            => $this->version,
+            'published'          => $this->published
         ];
     }
 
@@ -135,6 +144,26 @@ class Survey implements JsonSerializable
     public function setVersion(int $version): Survey
     {
         $this->version = $version;
+
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isPublished(): bool
+    {
+        return $this->published;
+    }
+
+    /**
+     * @param bool $published
+     *
+     * @return Survey
+     */
+    public function setPublished(bool $published): Survey
+    {
+        $this->published = $published;
 
         return $this;
     }
