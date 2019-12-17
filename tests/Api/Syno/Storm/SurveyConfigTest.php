@@ -38,7 +38,8 @@ final class SurveyConfigTest extends WebTestCase
             'version'  => self::VERSION,
             'pages'    => [],
             'config'   => [
-                'privacyConsentEnabled' => true
+                'privacyConsentEnabled' => true,
+                'theme' => 'test_theme'
             ]
         ];
 
@@ -61,9 +62,14 @@ final class SurveyConfigTest extends WebTestCase
     {
         self::$client->request('GET', sprintf('/api/v1/survey/%d/%d', self::SURVEY_ID, self::VERSION));
         $survey = json_decode(self::$client->getResponse()->getContent(), true);
+
         $this->assertArrayHasKey('config', $survey);
         $this->assertIsArray($survey['config']);
+
         $this->assertArrayHasKey('privacyConsentEnabled', $survey['config']);
         $this->assertTrue($survey['config']['privacyConsentEnabled']);
+
+        $this->assertArrayHasKey('theme', $survey['config']);
+        $this->assertEquals('test_theme', $survey['config']['theme']);
     }
 }

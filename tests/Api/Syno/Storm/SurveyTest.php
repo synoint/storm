@@ -10,7 +10,6 @@ final class SurveyTest extends WebTestCase
 {
     const SURVEY_ID     = 123456;
     const VERSION       = 1;
-    const DEFAULT_THEME = 'materialize';
 
     /** @var KernelBrowser */
     protected static $client;
@@ -65,11 +64,9 @@ final class SurveyTest extends WebTestCase
         $this->assertArrayHasKey('surveyId', $survey);
         $this->assertArrayHasKey('version', $survey);
         $this->assertArrayHasKey('published', $survey);
-        $this->assertArrayHasKey('theme', $survey);
 
         $this->assertEquals(self::SURVEY_ID, $survey['surveyId']);
         $this->assertEquals(self::VERSION, $survey['version']);
-        $this->assertEquals(self::DEFAULT_THEME, $survey['theme']);
     }
 
     /**

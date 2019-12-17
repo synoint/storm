@@ -17,10 +17,16 @@ class Config implements JsonSerializable
      */
     public $privacyConsentEnabled;
 
+    /**
+     * @ODM\Field(type="string")
+     */
+    public $theme = 'materialize';
+
     public function jsonSerialize()
     {
         return [
-            'privacyConsentEnabled' => $this->privacyConsentEnabled
+            'privacyConsentEnabled' => $this->privacyConsentEnabled,
+            'theme'                 => $this->theme
         ];
     }
 }

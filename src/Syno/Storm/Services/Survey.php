@@ -23,7 +23,10 @@ class Survey
      */
     public function getNew(): Document\Survey
     {
-        return new Document\Survey();
+        $survey = new Document\Survey();
+        $survey->setConfig(new Document\Config());
+
+        return $survey;
     }
 
     /**
