@@ -5,12 +5,14 @@ namespace Syno\Storm\Api\v1\Controller;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Syno\Storm\Api\v1\Form;
 use Syno\Storm\Api\v1\Http\ApiResponse;
 use Syno\Storm\Services\Survey;
 use Syno\Storm\Traits\FormAware;
 use Syno\Storm\Api\Controller\TokenAuthenticatedController;
+use Syno\Storm\Traits\JsonRequestAware;
 
 /**
  * @Route("/api/v1/survey")
@@ -18,6 +20,7 @@ use Syno\Storm\Api\Controller\TokenAuthenticatedController;
 class SurveyController extends AbstractController implements TokenAuthenticatedController
 {
     use FormAware;
+    use JsonRequestAware;
 
     /** @var Survey */
     private $surveyService;
@@ -45,11 +48,12 @@ class SurveyController extends AbstractController implements TokenAuthenticatedC
      */
     public function create(Request $request)
     {
-        $data = json_decode($request->getContent(), true);
+        $data = $this->getJson($request);
         $this->removeVersionIfExists($data);
 
         $survey = $this->surveyService->getNew();
-        $form = $this->createForm(Form\SurveyType::class, $survey);
+
+        $form   = $this->createForm(Form\SurveyType::class, $survey);
         $form->submit($data);
         if ($form->isValid()) {
             $this->surveyService->save($survey);
@@ -152,6 +156,5 @@ class SurveyController extends AbstractController implements TokenAuthenticatedC
             }
         }
     }
-
 
 }

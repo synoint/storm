@@ -17,18 +17,8 @@ trait FormAware {
         $errors = array();
 
         // Global
-        foreach ($form->getErrors() as $error) {
-            $errors[$form->getName()][] = $error->getMessage();
-        }
-
-        // Fields
-        /** @var FormInterface $child */
-        foreach ($form as $child) {
-            if (!$child->isValid()) {
-                foreach ($child->getErrors() as $error) {
-                    $errors[$child->getName()][] = $error->getMessage();
-                }
-            }
+        foreach ($form->getErrors(true) as $error) {
+            $errors[$error->getOrigin()->getName()][] = $error->getMessage();
         }
 
         return $errors;

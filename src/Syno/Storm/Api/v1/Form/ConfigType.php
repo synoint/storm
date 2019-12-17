@@ -1,0 +1,25 @@
+<?php
+
+namespace Syno\Storm\Api\v1\Form;
+
+use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
+use Syno\Storm\Document;
+
+class ConfigType extends AbstractType
+{
+    public function buildForm(FormBuilderInterface $builder, array $options)
+    {
+        $builder->add('privacyConsentEnabled', CheckboxType::class, ['required' => false]);
+    }
+
+    public function configureOptions(OptionsResolver $resolver)
+    {
+        $resolver->setDefaults([
+           'data_class'      => Document\Config::class,
+           'csrf_protection' => false
+        ]);
+    }
+}

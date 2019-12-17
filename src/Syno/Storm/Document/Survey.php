@@ -52,6 +52,13 @@ class Survey implements JsonSerializable
      */
     private $pages;
 
+    /**
+     * @var Config
+     *
+     * @ODM\EmbedOne(targetDocument=Config::class)
+     */
+    private $config;
+
     public function __construct()
     {
         $this->pages = new ArrayCollection();
@@ -65,6 +72,7 @@ class Survey implements JsonSerializable
             'version'   => $this->version,
             'published' => $this->published,
             'theme'     => $this->theme,
+            'config'    => $this->config
         ];
     }
 
@@ -184,6 +192,26 @@ class Survey implements JsonSerializable
     public function setTheme(string $theme): Survey
     {
         $this->theme = $theme;
+
+        return $this;
+    }
+
+    /**
+     * @return Config
+     */
+    public function getConfig():? Config
+    {
+        return $this->config;
+    }
+
+    /**
+     * @param Config $config
+     *
+     * @return Survey
+     */
+    public function setConfig(Config $config): Survey
+    {
+        $this->config = $config;
 
         return $this;
     }

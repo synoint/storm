@@ -2,13 +2,12 @@
 
 namespace Syno\Storm\Api\v1\Form;
 
-use Symfony\Component\Form\Extension\Core\Type\IntegerType;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
-use Symfony\Component\Form\Extension\Core\Type\CollectionType;
-use Syno\Storm\Document;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\CollectionType;
+use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Syno\Storm\Document;
 
 class SurveyType extends AbstractType
 {
@@ -21,8 +20,8 @@ class SurveyType extends AbstractType
                 'entry_type' => PageType::class,
                 'by_reference'  => false,
                 'allow_add'     => true
-            ]);
-        ;
+            ])
+            ->add('config', ConfigType::class);
     }
 
     public function configureOptions(OptionsResolver $resolver)
