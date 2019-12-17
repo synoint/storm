@@ -6,7 +6,7 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Syno\Storm\Document;
 
-final class SurveyPublishTest extends WebTestCase
+final class SurveyActionTest extends WebTestCase
 {
     const SURVEY_ID = 23456;
 
@@ -78,7 +78,7 @@ final class SurveyPublishTest extends WebTestCase
     public function testPublish()
     {
         // publish v1
-        self::$client->request('PUT', sprintf('/api/v1/survey/%d/%d', self::SURVEY_ID, 1));
+        self::$client->request('PUT', sprintf('/api/v1/survey/%d/%d/publish', self::SURVEY_ID, 1));
 
         self::$client->request('GET', sprintf('/api/v1/survey/%d/%d', self::SURVEY_ID, 1));
         $survey1 = json_decode(self::$client->getResponse()->getContent(), true);
@@ -89,7 +89,7 @@ final class SurveyPublishTest extends WebTestCase
         $this->assertFalse($survey2['published']);
 
         // publish v2
-        self::$client->request('PUT', sprintf('/api/v1/survey/%d/%d', self::SURVEY_ID, 2));
+        self::$client->request('PUT', sprintf('/api/v1/survey/%d/%d/publish', self::SURVEY_ID, 2));
 
         self::$client->request('GET', sprintf('/api/v1/survey/%d/%d', self::SURVEY_ID, 1));
         $survey1 = json_decode(self::$client->getResponse()->getContent(), true);
@@ -98,5 +98,40 @@ final class SurveyPublishTest extends WebTestCase
         self::$client->request('GET', sprintf('/api/v1/survey/%d/%d', self::SURVEY_ID, 2));
         $survey2 = json_decode(self::$client->getResponse()->getContent(), true);
         $this->assertTrue($survey2['published']);
+    }
+
+    /**
+     * @depends testCreate
+     */
+    public function testSurveysAreNotInDebugModeByDefault()
+    {
+        foreach ([1, 2] as $version) {
+            self::$client->request('GET', sprintf('/api/v1/survey/%d/%d', self::SURVEY_ID, $version));
+            $survey = json_decode(self::$client->getResponse()->getContent(), true);
+            $this->assertArrayHasKey('config', $survey);
+            $this->assertArrayHasKey('debugMode', $survey['config']);
+            $this->assertFalse($survey['config']['debugMode']);
+            $this->assertEmpty($survey['config']['debugToken']);
+        }
+    }
+
+    /**
+     * @depends testSurveysAreNotInDebugModeByDefault
+     */
+    public function testDebugMode()
+    {
+        // enable debug mode for v2
+        self::$client->request('PUT', sprintf('/api/v1/survey/%d/%d/debug/enable', self::SURVEY_ID, 2));
+        self::$client->request('GET', sprintf('/api/v1/survey/%d/%d', self::SURVEY_ID, 2));
+        $survey = json_decode(self::$client->getResponse()->getContent(), true);
+        $this->assertTrue($survey['config']['debugMode']);
+        $this->assertNotEmpty($survey['config']['debugToken']);
+
+        // disable debug mode
+        self::$client->request('PUT', sprintf('/api/v1/survey/%d/%d/debug/disable', self::SURVEY_ID, 2));
+        self::$client->request('GET', sprintf('/api/v1/survey/%d/%d', self::SURVEY_ID, 2));
+        $survey = json_decode(self::$client->getResponse()->getContent(), true);
+        $this->assertFalse($survey['config']['debugMode']);
+        $this->assertEmpty($survey['config']['debugToken']);
     }
 }

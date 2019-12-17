@@ -15,6 +15,20 @@ class Config implements JsonSerializable
      *
      * @ODM\Field(type="boolean")
      */
+    public $debugMode = false;
+
+    /**
+     * @var string
+     *
+     * @ODM\Field(type="string")
+     */
+    public $debugToken;
+
+    /**
+     * @var bool
+     *
+     * @ODM\Field(type="boolean")
+     */
     public $privacyConsentEnabled;
 
     /**
@@ -25,6 +39,8 @@ class Config implements JsonSerializable
     public function jsonSerialize()
     {
         return [
+            'debugMode'             => $this->debugMode,
+            'debugToken'            => $this->debugToken,
             'privacyConsentEnabled' => $this->privacyConsentEnabled,
             'theme'                 => $this->theme
         ];

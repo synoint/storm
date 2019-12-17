@@ -123,7 +123,7 @@ class SurveyController extends AbstractController implements TokenAuthenticatedC
      * @param int $version
      *
      * @Route(
-     *     "/{surveyId}/{version}",
+     *     "/{surveyId}/{version}/publish",
      *     name="storm_api.survey.publish",
      *     requirements={"id"="\d+", "version"="\d+"},
      *     methods={"PUT"}
@@ -133,12 +133,47 @@ class SurveyController extends AbstractController implements TokenAuthenticatedC
      */
     public function publish(int $surveyId, int $version)
     {
-        $survey = $this->surveyService->publish($surveyId, $version);
+        $survey = $this->surveyService->findBySurveyIdAndVersion($surveyId, $version);
         if (!$survey) {
             return $this->json(
                 sprintf('Survey with ID: %d, version: %d was not found', $surveyId, $version),
                 404
             );
+        }
+        $this->surveyService->publish($survey);
+
+
+        return $this->json('ok');
+    }
+
+    /**
+     * @param int    $surveyId
+     * @param int    $version
+     * @param string $toggle
+     *
+     * @Route(
+     *     "/{surveyId}/{version}/debug/{toggle}",
+     *     name="storm_api.survey.debug",
+     *     requirements={"id"="\d+", "version"="\d+", "toggle"="enable|disable"},
+     *     methods={"PUT"}
+     * )
+     *
+     * @return JsonResponse
+     */
+    public function toggleDebugMode(int $surveyId, int $version, string $toggle)
+    {
+        $survey = $this->surveyService->findBySurveyIdAndVersion($surveyId, $version);
+        if (!$survey) {
+            return $this->json(
+                sprintf('Survey with ID: %d, version: %d was not found', $surveyId, $version),
+                404
+            );
+        }
+
+        if ('enable' === $toggle) {
+            $this->surveyService->enableDebugMode($survey);
+        } elseif ('disable' === $toggle) {
+            $this->surveyService->disableDebugMode($survey);
         }
 
         return $this->json('ok');

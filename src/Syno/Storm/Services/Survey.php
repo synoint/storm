@@ -55,29 +55,22 @@ class Survey
     }
 
     /**
-     * @param int $surveyId
-     * @param int $version
-     *
-     * @return null|Document\Survey
+     * @param Document\Survey $survey
      */
-    public function publish(int $surveyId, int $version):? Document\Survey
+    public function publish(Document\Survey $survey)
     {
-        $result = null;
         $surveys = $this->dm->getRepository(Document\Survey::class)->findBy(
-            ['surveyId' => $surveyId]
+            ['surveyId' => $survey->getSurveyId()]
         );
 
-        foreach ($surveys as &$survey) {
-            if ($survey->getVersion() === $version) {
-                $survey->setPublished(true);
-                $result = $survey;
-            } elseif ($survey->isPublished()) {
-                $survey->setPublished(false);
+        foreach ($surveys as &$savedSurvey) {
+            if ($savedSurvey->getVersion() === $survey->getVersion()) {
+                $savedSurvey->setPublished(true);
+            } elseif ($savedSurvey->isPublished()) {
+                $savedSurvey->setPublished(false);
             }
         }
         $this->dm->flush();
-
-        return $result;
     }
 
     /**
@@ -86,6 +79,20 @@ class Survey
     public function delete(Document\Survey $survey)
     {
         $this->dm->remove($survey);
+        $this->dm->flush();
+    }
+
+    public function enableDebugMode(Document\Survey $survey)
+    {
+        $survey->getConfig()->debugMode = true;
+        $survey->getConfig()->debugToken = bin2hex(random_bytes(rand(16,20)));
+        $this->dm->flush();
+    }
+
+    public function disableDebugMode(Document\Survey $survey)
+    {
+        $survey->getConfig()->debugMode = false;
+        $survey->getConfig()->debugToken = null;
         $this->dm->flush();
     }
 
