@@ -1,0 +1,24 @@
+{% extends '/materialize/layout/base.twig' %}
+
+{% block title %}Syno Storm - Error{% endblock %}
+
+{% block body %}
+
+    <main class="container announcement_container">
+        <header class="pt-5">
+            <img class="synoint_logo" src="{{ asset('build/images/syno_logo.png') }}" alt="synoint" />
+        </header>
+        <div class="col s6 offset-s3" style="text-align: center; margin-top: 140px">
+            <h2>Ooops!</h2>
+            <h5 class="p-3 red-text darken-2">
+                {{ status_text }}.
+            </h5>
+
+            {% if app.request.attributes.surveyId is defined %}
+                <p>Continue to <a href="{{path('survey.index', {'surveyId': app.request.attributes.surveyId}) }}">survey</a> </p>
+            {% endif %}
+
+        </div>
+    </main>
+
+{% endblock %}

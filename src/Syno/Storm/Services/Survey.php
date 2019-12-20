@@ -55,6 +55,21 @@ class Survey
     }
 
     /**
+     * @param int $surveyId
+     *
+     * @return null|Document\Survey
+     */
+    public function getPublished(int $surveyId)
+    {
+        return $this->dm->getRepository(Document\Survey::class)->findOneBy(
+            [
+                'surveyId' => $surveyId,
+                'published' => true
+            ]
+        );
+    }
+
+    /**
      * @param Document\Survey $survey
      */
     public function publish(Document\Survey $survey)

@@ -1,0 +1,35 @@
+{% extends '/materialize/layout/base.twig' %}
+
+{% block title %}Syno Storm{% endblock %}
+
+{% block body %}
+
+    <header class="nav-wrapper container mt-4 center">
+        <!-- <img class="header_logo" src="" alt="Logo"> -->
+    </header>
+
+    <main class="container">
+
+        <form action="" method="post">
+
+            {% for question in page.questions %}
+                <section class="container center">
+                    <h5 class="my-5">
+                        {{ question.text }}
+                    </h5>
+                </section>
+            {% endfor %}
+
+            <section class="container center btn-container mt-5">
+                <a class="btn waves-effect waves-light btn-small blue accent-3 disabled" id="previous-question">Previous</a>
+                <button type="submit" class="btn waves-effect waves-light btn-small blue accent-3" id="next-question">
+                    Next
+                </button>
+            </section>
+
+        </form>
+    </main>
+
+    {% include 'materialize/page/_footer.twig' %}
+
+{% endblock %}

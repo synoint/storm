@@ -6,6 +6,7 @@
 parameters:
     env(MONGODB_URL): ''
     env(MONGODB_DB): ''
+    app.route_prefix: '/{_locale}'
 
 services:
     # default configuration for services in *this* file
