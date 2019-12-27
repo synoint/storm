@@ -3,9 +3,12 @@
 namespace Syno\Storm\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Syno\Storm\Document;
+use Syno\Storm\Form\PageType;
 use Syno\Storm\Services\Survey;
 use Syno\Storm\Services\SurveySession;
 
@@ -30,8 +33,9 @@ class PageController extends AbstractController
 
 
     /**
-     * @param int $surveyId
-     * @param int $pageId
+     * @param int     $surveyId
+     * @param int     $pageId
+     * @param Request $request
      *
      * @Route(
      *     "%app.route_prefix%/s/{surveyId}/{pageId}",
@@ -42,7 +46,7 @@ class PageController extends AbstractController
      *
      * @return Response
      */
-    public function display(int $surveyId, int $pageId): Response
+    public function display(int $surveyId, int $pageId, Request $request): Response
     {
         $survey = $this->getSurvey($surveyId);
         $page = $survey->getPage($pageId);
@@ -51,8 +55,28 @@ class PageController extends AbstractController
             throw $this->createNotFoundException('This page is no longer available');
         }
 
-        return $this->render($survey->getConfig()->theme . '/page/display.twig', [
+        $form = $this->createForm(PageType::class, null, [
             'page' => $page
+        ]);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $nextPage = $survey->getNextPage($pageId);
+            if (null === $nextPage) {
+                return $this->redirectToRoute('survey.complete', [
+                    'surveyId' => $surveyId
+                ]);
+            }
+
+            return $this->redirectToRoute('page.display', [
+                'surveyId' => $surveyId,
+                'pageId'   => $survey->getNextPage($pageId)
+            ]);
+        }
+
+        return $this->render($survey->getConfig()->theme . '/page/display.twig', [
+            'page' => $page,
+            'form' => $form->createView()
         ]);
     }
 

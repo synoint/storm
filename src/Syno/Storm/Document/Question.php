@@ -231,6 +231,20 @@ class Question
     }
 
     /**
+     * @return array
+     */
+    public function getChoices(): array
+    {
+        $choices = [];
+        /** @var Answer $answer */
+        foreach ($this->getAnswers() as $answer) {
+            $choices[$answer->getLabel()] = $answer->getId();
+        }
+
+        return $choices;
+    }
+
+    /**
      * @param $answers
      *
      * @return Question

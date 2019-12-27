@@ -160,6 +160,26 @@ class SurveyController extends AbstractController
     }
 
     /**
+     * @param int     $surveyId
+     * @param Request $request
+     *
+     * @Route(
+     *     "%app.route_prefix%/s/{surveyId}/thank_you",
+     *     name="survey.completed",
+     *     requirements={"surveyId"="\d+"},
+     *     methods={"GET"}
+     * )
+     *
+     * @return Response|RedirectResponse
+     */
+    public function complete(int $surveyId)
+    {
+        $survey = $this->getSurvey($surveyId);
+
+        return $this->render($survey->getConfig()->theme . '/survey/complete.twig');
+    }
+
+    /**
      * @param int $surveyId
      *
      * @return Document\Survey

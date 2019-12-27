@@ -178,6 +178,29 @@ class Survey implements JsonSerializable
     }
 
     /**
+     * @param int $pageId
+     *
+     * @return Page|null
+     */
+    public function getNextPage(int $pageId)
+    {
+        $result = null;
+        $pick = false;
+        /** @var Page $page */
+        foreach ($this->pages as $page) {
+            if ($pick) {
+                $result = $page;
+                break;
+            }
+            if ($pageId === $page->getPageId()) {
+                $pick = true;
+            }
+        }
+
+        return $result;
+    }
+
+    /**
      * @param $pages
      *
      * @return Survey
