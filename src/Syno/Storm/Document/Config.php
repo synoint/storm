@@ -34,7 +34,7 @@ class Config implements JsonSerializable
     /**
      * @ODM\Field(type="string")
      */
-    public $theme = 'materialize';
+    public $theme = 'b4';
 
     public function jsonSerialize()
     {

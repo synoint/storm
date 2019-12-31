@@ -222,6 +222,11 @@ class Question
         return $this;
     }
 
+    public function isMatrix()
+    {
+        return in_array($this->questionTypeId, [self::TYPE_SINGLE_CHOICE_MATRIX, self::TYPE_MULTIPLE_CHOICE_MATRIX]);
+    }
+
     /**
      * @return Collection
      */
@@ -254,5 +259,64 @@ class Question
         $this->answers = $answers;
 
         return $this;
+    }
+
+    public function getRows()
+    {
+        $result = [];
+        /** @var Answer $answer */
+        foreach ($this->answers as $answer) {
+            if (!empty($answer->getRowCode())) {
+                $result[$answer->getRowCode()] = $answer->getRowLabel();
+            }
+        }
+
+        return $result;
+    }
+
+    public function getColumns()
+    {
+        $result = [];
+        /** @var Answer $answer */
+        foreach ($this->answers as $answer) {
+            if (!empty($answer->getColumnCode())) {
+                $result[$answer->getColumnCode()] = $answer->getColumnLabel();
+            }
+        }
+
+        return $result;
+    }
+
+    /**
+     * @param string $rowCode
+     * @param string $columnCode
+     *
+     * @return mixed
+     */
+    public function getMatrixAnswer(string $rowCode, string $columnCode)
+    {
+        /** @var Answer $answer */
+        foreach ($this->answers as $answer) {
+            if ($rowCode === $answer->getRowCode() && $columnCode === $answer->getColumnCode()) {
+                return $answer;
+            }
+        }
+
+        throw new \InvalidArgumentException(
+            sprintf('No answer ID was found by row: %s and column: %s', $rowCode, $columnCode)
+        );
+    }
+
+    public function getMatrixAnswerInputName(string $rowCode)
+    {
+        if (self::TYPE_SINGLE_CHOICE_MATRIX === $this->questionTypeId) {
+            return 'a_' . $rowCode;
+        }
+
+        if (self::TYPE_MULTIPLE_CHOICE_MATRIX === $this->questionTypeId) {
+            return 'a_' . $rowCode . '[]';
+        }
+
+        throw new \LogicException(sprintf('This question is not a matrix type question'));
     }
 }

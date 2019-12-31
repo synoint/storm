@@ -11,7 +11,7 @@ class SingleChoiceRadio extends AbstractType
     {
         $resolver->setDefaults(
             [
-                'expanded' => true,
+                'expanded' => true
             ]
         );
     }

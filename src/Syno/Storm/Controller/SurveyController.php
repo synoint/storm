@@ -136,10 +136,10 @@ class SurveyController extends AbstractController
      * @param Request $request
      *
      * @Route(
-     *     "%app.route_prefix%/s/{surveyId}/privacy_consent",
+     *     "%app.route_prefix%/privacy_consent/{surveyId}",
      *     name="survey.privacy_consent",
      *     requirements={"surveyId"="\d+"},
-     *     methods={"GET"}
+     *     methods={"GET", "POST"}
      * )
      *
      * @return Response|RedirectResponse
@@ -152,11 +152,13 @@ class SurveyController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             return $this->redirectToRoute('page.display', [
                 'surveyId' => $surveyId,
-                'pageId'   => $survey->getPages()->first()->getId()
+                'pageId'   => $survey->getPages()->first()->getPageId()
             ]);
         }
 
-        return $this->render($survey->getConfig()->theme . '/survey/privacy_consent.twig');
+        return $this->render($survey->getConfig()->theme . '/survey/privacy_consent.twig', [
+            'form' => $form->createView()
+        ]);
     }
 
     /**
@@ -164,8 +166,8 @@ class SurveyController extends AbstractController
      * @param Request $request
      *
      * @Route(
-     *     "%app.route_prefix%/s/{surveyId}/thank_you",
-     *     name="survey.completed",
+     *     "%app.route_prefix%/{surveyId}/thank_you",
+     *     name="survey.complete",
      *     requirements={"surveyId"="\d+"},
      *     methods={"GET"}
      * )

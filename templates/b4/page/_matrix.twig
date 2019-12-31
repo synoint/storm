@@ -1,0 +1,57 @@
+<p>
+    {{ question.text }}
+</p>
+<table class="table table-borderless table-hover">
+    <thead>
+        <tr>
+            <td>&nbsp;</td>
+            {% for column in question.getColumns() %}
+                <th scope="col">
+                    {{ column }}
+                </th>
+            {% endfor %}
+        </tr>
+    </thead>
+    <tbody>
+        {% for rowCode,rowLabel in question.getRows() %}
+            <tr>
+                <th scope="row">{{ rowLabel }}</th>
+                {% for columnCode,columnLabel in question.getColumns() %}
+                    {% set answer = question.getMatrixAnswer(rowCode, columnCode) %}
+                    {% set inputName = question.getMatrixAnswerInputName(rowCode) %}
+                    <td>
+
+                    {% if constant('Syno\\Storm\\Document\\Answer::FIELD_TYPE_TEXT') == answer.answerFieldTypeId %}
+
+                        <input type="text" name="{{ inputName }}" value="">
+
+                    {% elseif constant('Syno\\Storm\\Document\\Answer::FIELD_TYPE_TEXTAREA') == answer.answerFieldTypeId %}
+
+                        <textarea name="{{ inputName }}"></textarea>
+
+                    {% elseif constant('Syno\\Storm\\Document\\Answer::FIELD_TYPE_RADIO') == answer.answerFieldTypeId %}
+
+                        <input type="radio"
+                               name="{{ inputName }}"
+                               value="{{ answer.answerId }}" />
+
+                    {% elseif constant('Syno\\Storm\\Document\\Answer::FIELD_TYPE_CHECKBOX') == answer.answerFieldTypeId %}
+
+                        <input type="checkbox"
+                               name="{{ inputName }}"
+                               value="{{ answer.answerId }}" />
+
+                    {% elseif constant('Syno\\Storm\\Document\\Answer::FIELD_TYPE_SELECT') == answer.answerFieldTypeId %}
+
+                        {# NOT SUPPORTED YET #}
+                        <select name="{{ inputName }}">
+                            <option value="">select</option>
+                        </select>
+
+                    {% endif %}
+                    </td>
+                {% endfor %}
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>

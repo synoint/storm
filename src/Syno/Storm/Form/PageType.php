@@ -32,14 +32,12 @@ class PageType extends AbstractType
                     if ($this->displayInSelect($question->getAnswers())) {
                         $builder->add('q_' . $question->getId(), SingleChoiceSelect::class, [
                             'choices'  => $question->getChoices(),
-                            'required' => $question->isRequired(),
-//                            'block_name' => 'single_choice_select',
+                            'required' => $question->isRequired()
                         ]);
                     } else {
                         $builder->add('q_' . $question->getId(), SingleChoiceRadio::class, [
                             'choices'  => $question->getChoices(),
-                            'required' => $question->isRequired(),
-//                            'block_prefix' => 'single_choice_radio',
+                            'required' => $question->isRequired()
                         ]);
                     }
                     break;
@@ -51,33 +49,19 @@ class PageType extends AbstractType
                     break;
 
                 case Document\Question::TYPE_SINGLE_CHOICE_MATRIX:
-                    /** @var Document\Answer $answer */
-                    foreach ($question->getAnswers() as $answer) {
-                        if ($answer->getAnswerFieldTypeId() === Document\Answer::FIELD_TYPE_RADIO) {
-                            $builder->add('q_' . $question->getId() . '_' . $answer->getRowCode(), RadioType::class, [
-                                'value' => $answer->getId()
-                            ]);
-                        }
-                    }
-                    break;
-
                 case Document\Question::TYPE_MULTIPLE_CHOICE_MATRIX:
-                    /** @var Document\Answer $answer */
-                    foreach ($question->getAnswers() as $answer) {
-                        if ($answer->getAnswerFieldTypeId() === Document\Answer::FIELD_TYPE_CHECKBOX) {
-                            $builder->add('q_' . $question->getId() . '_' . $answer->getRowCode(), CheckboxType::class, [
-                                'value' => $answer->getId()
-                            ]);
-                        }
-                    }
                     break;
                 case Document\Question::TYPE_TEXT:
                     /** @var Document\Answer $answer */
                     foreach ($question->getAnswers() as $answer) {
                         if ($answer->getAnswerFieldTypeId() === Document\Answer::FIELD_TYPE_TEXT) {
-                            $builder->add('a_' . $question->getId(), TextType::class);
+                            $builder->add('q_' . $question->getId(), TextType::class, [
+                                'required' => $question->isRequired()
+                            ]);
                         } elseif ($answer->getAnswerFieldTypeId() === Document\Answer::FIELD_TYPE_TEXTAREA) {
-                            $builder->add('a_' . $question->getId(), TextareaType::class);
+                            $builder->add('q_' . $question->getId(), TextareaType::class, [
+                                'required' => $question->isRequired()
+                            ]);
                         }
                     }
 

@@ -16,6 +16,6 @@ class IndexController extends AbstractController
      */
     public function index(): Response
     {
-        return $this->render('materialize/index/index.twig');
+        return $this->render('b4/index/index.twig');
     }
 }

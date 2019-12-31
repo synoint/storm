@@ -38,10 +38,10 @@ class PageController extends AbstractController
      * @param Request $request
      *
      * @Route(
-     *     "%app.route_prefix%/s/{surveyId}/{pageId}",
+     *     "%app.route_prefix%/p/{surveyId}/{pageId}",
      *     name="page.display",
-     *     requirements={"surveyId"="\d+"},
-     *     methods={"GET"}
+     *     requirements={"surveyId"="\d+", "pageId"="\d+"},
+     *     methods={"GET","POST"}
      * )
      *
      * @return Response
@@ -70,13 +70,14 @@ class PageController extends AbstractController
 
             return $this->redirectToRoute('page.display', [
                 'surveyId' => $surveyId,
-                'pageId'   => $survey->getNextPage($pageId)
+                'pageId'   => $nextPage->getPageId()
             ]);
         }
 
         return $this->render($survey->getConfig()->theme . '/page/display.twig', [
-            'page' => $page,
-            'form' => $form->createView()
+            'page'               => $page,
+            'form'               => $form->createView(),
+            'backButtonDisabled' => $survey->isFirstPage($pageId)
         ]);
     }
 

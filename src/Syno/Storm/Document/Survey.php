@@ -159,6 +159,18 @@ class Survey implements JsonSerializable
     }
 
     /**
+     * @param $pages
+     *
+     * @return Survey
+     */
+    public function setPages($pages): Survey
+    {
+        $this->pages = $pages;
+
+        return $this;
+    }
+
+    /**
      * @param int $pageId
      *
      * @return Page|null
@@ -201,15 +213,13 @@ class Survey implements JsonSerializable
     }
 
     /**
-     * @param $pages
+     * @param int $pageId
      *
-     * @return Survey
+     * @return bool
      */
-    public function setPages($pages): Survey
+    public function isFirstPage(int $pageId)
     {
-        $this->pages = $pages;
-
-        return $this;
+        return $pageId === $this->pages->first()->getPageId();
     }
 
     /**
