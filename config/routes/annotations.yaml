@@ -1,10 +1,8 @@
 storm_controllers:
     resource: ../../src/Syno/Storm/Controller/
     type: annotation
-
-api_controllers:
-    resource: ../../src/Syno/Storm/Api/Controller/
-    type: annotation
+    requirements:
+        _locale: '%app.available_locales%'
 
 api_v1_controllers:
     resource: ../../src/Syno/Storm/Api/v1/Controller/

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Tests\Api\Syno\Storm;
+namespace App\Tests\Api\v1\Syno\Storm;
 
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;

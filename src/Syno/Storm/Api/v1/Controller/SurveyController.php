@@ -40,7 +40,7 @@ class SurveyController extends AbstractController implements TokenAuthenticatedC
      *
      * @Route(
      *     "",
-     *     name="storm_api.survey.create",
+     *     name="storm_api.v1.survey.create",
      *     methods={"POST"}
      * )
      *
@@ -70,7 +70,7 @@ class SurveyController extends AbstractController implements TokenAuthenticatedC
      *
      * @Route(
      *     "/{surveyId}/{version}",
-     *     name="storm_api.survey.retrieve",
+     *     name="storm_api.v1.survey.retrieve",
      *     requirements={"id"="\d+"},
      *     methods={"GET"}
      * )
@@ -96,7 +96,7 @@ class SurveyController extends AbstractController implements TokenAuthenticatedC
      *
      * @Route(
      *     "/{surveyId}/{version}",
-     *     name="storm_api.survey.delete",
+     *     name="storm_api.v1.survey.delete",
      *     requirements={"id"="\d+", "version"="\d+"},
      *     methods={"DELETE"}
      * )
@@ -124,7 +124,7 @@ class SurveyController extends AbstractController implements TokenAuthenticatedC
      *
      * @Route(
      *     "/{surveyId}/{version}/publish",
-     *     name="storm_api.survey.publish",
+     *     name="storm_api.v1.survey.publish",
      *     requirements={"id"="\d+", "version"="\d+"},
      *     methods={"PUT"}
      * )
@@ -153,7 +153,7 @@ class SurveyController extends AbstractController implements TokenAuthenticatedC
      *
      * @Route(
      *     "/{surveyId}/{version}/debug/{toggle}",
-     *     name="storm_api.survey.debug",
+     *     name="storm_api.v1.survey.debug",
      *     requirements={"id"="\d+", "version"="\d+", "toggle"="enable|disable"},
      *     methods={"PUT"}
      * )
