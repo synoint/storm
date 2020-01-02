@@ -44,7 +44,7 @@ class PageController extends AbstractController
      *     methods={"GET","POST"}
      * )
      *
-     * @return Response
+     * @return Response|RedirectResponse
      */
     public function display(int $surveyId, int $pageId, Request $request): Response
     {

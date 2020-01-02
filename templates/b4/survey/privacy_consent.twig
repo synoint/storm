@@ -1,6 +1,6 @@
 {% extends '/b4/layout/base.twig' %}
 
-{% block title %}Announcement regarding your personal data{% endblock %}
+{% block title %}{{ 'privacy_consent.title'|trans }}{% endblock %}
 
 {% block body %}
 
@@ -9,79 +9,64 @@
             <img src="{{ asset('build/images/syno_logo.png') }}" alt="Syno International Logo" class="syno-logo" />
         </div>
 
-        <h3 class="pt-3 text-uppercase">Announcement regarding your personal data</h3>
-        <div class="row pt-3 text-justify">
-            <div class="col">
-                <h4 class="my-3 text-uppercase">About us</h4>
+        <h1 class="pt-3 text-center">{{ 'privacy_consent.title'|trans }}</h1>
+        <div class="row pt-4 text-justify pb-5">
+            <div class="col-sm-12 col-lg-6">
+                <h4 class="my-3">{{ 'privacy_consent.about_us'|trans }}</h4>
                 <p>
-                    Syno International is a group of companies (which consists of UAB Syno
-                    International (parent company) and Syno Japan Inc. (Syno Japan),
-                    Syno Poland sp. zo.o. (Syno Poland), Asia Syno International PTE.
-                    LTD. (Syno Asia) and Syno International Inc. (Syno Korea)
-                    (subsidiaries)) which provide data collection, processing, reporting
-                    and reward solutions.
+                    {{ 'privacy_consent.p1'|trans }}
                 </p>
                 <p>
-                    Due to the fact that Syno International processes your personal data, we note
-                    that your privacy is the most important and natural matter in our
-                    company and we will process your personal data in a reliable,
-                    legitimate and the most secure way.
+                    {{ 'privacy_consent.p2'|trans }}
                 </p>
                 <p>
-                    Please be advised that as of May 25, 2018 throughout the European
-                    Union (EU) and other countries that voluntarily joins and declares
-                    compliance, the EU General Data Protection Regulation (GDPR) will be
-                    directly applicable, which aims - to ensure a strong and unified
-                    data protection standards. In this regard, we are responsibly
-                    preparing for application of GDPR and treat your personal data
-                    entrusted to us very carefully. Our goal is to continue to be your
-                    reliable partner, so we ask you to review, get acquainted and agree
-                    to our prepared legal documents related to the processing of your
-                    personal data.
+                    {{ 'privacy_consent.p3'|trans }}
                 </p>
-
                 <p>
-                    We also kindly ask you to follow the terms and conditions referred
-                    in the documents.
+                    {{ 'privacy_consent.p4'|trans }}
                 </p>
             </div>
 
-            <div class="col">
-                <h4 class="my-3 text-uppercase">Your consent and permission</h4>
+            <div class="col-sm-12 col-lg-6">
+                <h4 class="my-3">{{ 'privacy_consent.your_consent_and_permission'|trans }}</h4>
                 <p>
-                    By clicking "Accept", you agree and confirm permission that Syno International
-                    processes your personal data and you confirm your consent that you
-                    have read, got acquainted, understood and do not disagree to
-                    personal data processing operations and objectives of Syno International that
-                    are defined in the following legal documents:
+                    {{ 'privacy_consent.p5'|trans }}
                 </p>
 
                 <ul class="list-unstyled ml-3">
                     <li>
-                        <a href="https://www.synoint.com/privacy-policy/" target="_blank">Privacy Policy</a>
-                    </li>
-
-                    <li>
-                        <a href="https://www.synoint.com/security-policy/" target="_blank">Security Policy</a>
+                        <a href="https://www.synoint.com/privacy-policy/" target="_blank">
+                            {{ 'privacy_consent.privacy_policy'|trans }}
+                        </a>
                     </li>
                     <li>
-                        <a href="https://www.synoint.com/cookies-policy/" target="_blank">Cookies Policy</a>
+                        <a href="https://www.synoint.com/security-policy/" target="_blank">
+                            {{ 'privacy_consent.security_policy'|trans }}
+                        </a>
                     </li>
                     <li>
-                        <a href="https://www.synoint.com/dpo/" target="_blank">Data Protection Officers</a>
+                        <a href="https://www.synoint.com/cookies-policy/" target="_blank">
+                            {{ 'privacy_consent.cookies_policy'|trans }}
+                        </a>
                     </li>
                     <li>
-                        <a href="https://www.synoint.com/terms-of-use/" target="_blank">Terms of Use</a>
+                        <a href="https://www.synoint.com/dpo/" target="_blank">
+                            {{ 'privacy_consent.data_protection_officers'|trans }}
+                        </a>
                     </li>
-
+                    <li>
+                        <a href="https://www.synoint.com/terms-of-use/" target="_blank">
+                            {{ 'privacy_consent.terms_of_use'|trans }}
+                        </a>
+                    </li>
                     <li>
                         <a href="https://www.synoint.com/quality-documentation/" target="_blank">
-                            Quality documentation</a>
+                            {{ 'privacy_consent.quality_documentation'|trans }}
+                        </a>
                     </li>
                 </ul>
                 <p>
-                    Your consent can be easily cancelled at any time by writing an email
-                    to:
+                    {{ 'privacy_consent.p6'|trans }}
                 </p>
 
                 <ul class="ml-3 list-unstyled">
@@ -89,23 +74,23 @@
                         <a href="mailto:data.protection@synoint.com" target="_blank">
                             data.protection@synoint.com
                         </a>
-                        (If it is related to the processing of personal data)
+                        ({{ 'privacy_consent.email_comment_data_protection'|trans }})
                     </li>
                     <li>
                         <a href="mailto:info@synoint.com" target="_blank">
                             info@synoint.com
                         </a>
-                        (If there is a contractual relationship with SynoInt).
+                        ({{ 'privacy_consent.email_comment_info'|trans }}).
                     </li>
                 </ul>
-                <div class="mt-5">
+                <div class="mt-5 text-center">
                     {{ form_start(form) }}
                     {{
                         form_row(
                             form.accept,
                             {
-                                'attr': {'class': 'btn btn-primary'},
-                                'label': 'Accept'
+                                'attr': {'class': 'btn btn-lg btn-outline-primary'},
+                                'label': 'privacy_consent.button.accept'|trans
                             }
                         )
                     }}

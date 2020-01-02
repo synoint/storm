@@ -1,6 +1,6 @@
 {% extends '/b4/layout/base.twig' %}
 
-{% block title %}Survey completed!{% endblock %}
+{% block title %}{{ 'survey_completed.page_title'|trans }}{% endblock %}
 
 {% block body %}
 
@@ -10,9 +10,9 @@
                 <path d="M2 20 L12 28 30 4"></path>
             </svg>
             <h1 class="my-5 display-4">
-                Thank You!
+                {{ 'survey_completed.thank_you'|trans }}
             </h1>
-            <p>Your answers have been received.</p>
+            <p>{{ 'survey_completed.answers_received'|trans }}</p>
         </div>
     </div>
 

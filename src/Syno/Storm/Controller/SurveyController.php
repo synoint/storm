@@ -162,8 +162,7 @@ class SurveyController extends AbstractController
     }
 
     /**
-     * @param int     $surveyId
-     * @param Request $request
+     * @param int $surveyId
      *
      * @Route(
      *     "%app.route_prefix%/{surveyId}/thank_you",

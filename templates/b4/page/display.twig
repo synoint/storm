@@ -42,9 +42,17 @@
                         <div class="col text-center">
                             <a class="btn btn-outline-secondary {% if backButtonDisabled %}disabled{% endif %}"
                                onclick="window.history.go(-1); return false;">
-                                Back
+                                {{ 'page.button.back'|trans }}
                             </a>
-                            {{ form_widget(form.next, {'attr': {'class': 'btn btn-outline-primary'}}) }}
+                            {{
+                                form_widget(
+                                    form.next,
+                                    {
+                                        'attr': {'class': 'btn btn-outline-primary'},
+                                        'label': 'page.button.next'|trans
+                                    }
+                                )
+                            }}
                         </div>
 
                     </div>
