@@ -48,11 +48,14 @@ class PageController extends AbstractController
      */
     public function display(int $surveyId, int $pageId, Request $request): Response
     {
-        $survey = $this->getSurvey($surveyId);
-        $page = $survey->getPage($pageId);
+        $survey = $this->surveyService->getPublished($surveyId);
+        if (!$survey) {
+            return $this->redirectToRoute('survey.unavailable', ['surveyId' => $surveyId]);
+        }
 
+        $page = $survey->getPage($pageId);
         if (!$page) {
-            throw $this->createNotFoundException('This page is no longer available');
+            return $this->redirectToRoute('page.unavailable', ['surveyId' => $surveyId, 'pageId' => $pageId]);
         }
 
         $form = $this->createForm(PageType::class, null, [
@@ -84,15 +87,17 @@ class PageController extends AbstractController
     /**
      * @param int $surveyId
      *
-     * @return Document\Survey
+     * @Route(
+     *     "%app.route_prefix%/p/{surveyId}/{pageId}/unavailable",
+     *     name="page.unavailable",
+     *     requirements={"surveyId"="\d+", "pageId"="\d+"},
+     *     methods={"GET"}
+     * )
+     *
+     * @return Response|RedirectResponse
      */
-    protected function getSurvey(int $surveyId)
+    public function unavailable(int $surveyId)
     {
-        $survey = $this->surveyService->getPublished($surveyId);
-        if (!$survey) {
-            throw $this->createNotFoundException('This survey is no longer available');
-        }
-
-        return $survey;
+        return $this->render(Document\Config::DEFAULT_THEME . '/page/unavailable.twig');
     }
 }

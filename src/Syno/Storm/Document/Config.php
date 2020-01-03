@@ -10,6 +10,8 @@ use JsonSerializable;
  */
 class Config implements JsonSerializable
 {
+    const DEFAULT_THEME = 'b4';
+
     /**
      * @var bool
      *
@@ -34,7 +36,12 @@ class Config implements JsonSerializable
     /**
      * @ODM\Field(type="string")
      */
-    public $theme = 'b4';
+    public $theme;
+
+    public function __construct()
+    {
+        $this->theme = self::DEFAULT_THEME;
+    }
 
     public function jsonSerialize()
     {

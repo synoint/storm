@@ -44,7 +44,7 @@ class Survey
      *
      * @return null|Document\Survey
      */
-    public function findBySurveyIdAndVersion(int $surveyId, int $version)
+    public function findBySurveyIdAndVersion(int $surveyId, int $version):? object
     {
         return $this->dm->getRepository(Document\Survey::class)->findOneBy(
             [
@@ -57,9 +57,32 @@ class Survey
     /**
      * @param int $surveyId
      *
+     * @return int
+     */
+    public function findLatestVersion(int $surveyId)
+    {
+        $result = null;
+        $surveys = $this->dm->getRepository(Document\Survey::class)->findBy(
+            ['surveyId' => $surveyId],
+            ['version' => 'DESC'],
+            1
+        );
+
+        if ($surveys) {
+            /** @var Document\Survey $lastSurvey */
+            $latestSurvey = $surveys[0];
+            $result = $latestSurvey->getVersion();
+        }
+
+        return $result;
+    }
+
+    /**
+     * @param int $surveyId
+     *
      * @return null|Document\Survey
      */
-    public function getPublished(int $surveyId)
+    public function getPublished(int $surveyId):? object
     {
         return $this->dm->getRepository(Document\Survey::class)->findOneBy(
             [

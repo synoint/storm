@@ -10,12 +10,9 @@
                 <path d="M16 3 L30 29 2 29 Z M16 11 L16 19 M16 23 L16 25" />
             </svg>
             <h1 class="my-5 display-4">
-                {{ status_text }}.
+                {{ 'error_page.oops'|trans }}
             </h1>
-
-            {% if app.request.attributes.surveyId is defined %}
-                <p>Continue to <a href="{{path('survey.index', {'surveyId': app.request.attributes.surveyId}) }}">survey</a> </p>
-            {% endif %}
+            <p>{{ 'error_page.survey_unavailable'|trans }}</p>
         </div>
     </div>
 

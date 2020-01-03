@@ -47,7 +47,10 @@ class SurveyController extends AbstractController
      */
     public function index(int $surveyId): Response
     {
-        $survey = $this->getSurvey($surveyId);
+        $survey = $this->surveyService->getPublished($surveyId);
+        if (!$survey) {
+            return $this->redirectToRoute('survey.unavailable', ['surveyId' => $surveyId]);
+        }
 
         $this->surveySessionService->startSession($surveyId, 'live');
 
@@ -76,13 +79,12 @@ class SurveyController extends AbstractController
      */
     public function test(int $surveyId, Request $request): Response
     {
-        $survey = $this->getSurvey($surveyId);
+        $survey = $this->surveyService->getPublished($surveyId);
+        if (!$survey) {
+            return $this->redirectToRoute('survey.unavailable', ['surveyId' => $surveyId]);
+        }
 
         $this->surveySessionService->startSession($surveyId, 'test');
-
-        if ($survey->getConfig()->privacyConsentEnabled) {
-            return $this->redirectToRoute('survey.privacy_consent', ['surveyId' => $surveyId]);
-        }
 
         return $this->redirectToRoute('page.display', [
             'surveyId' => $surveyId,
@@ -92,10 +94,11 @@ class SurveyController extends AbstractController
 
     /**
      * @param int     $surveyId
+     * @param int     $versionId
      * @param Request $request
      *
      * @Route(
-     *     "%app.route_prefix%/d/{surveyId}",
+     *     "%app.route_prefix%/d/{surveyId}/{versionId}",
      *     name="survey.debug",
      *     requirements={"surveyId"="\d+"},
      *     methods={"GET"}
@@ -103,14 +106,18 @@ class SurveyController extends AbstractController
      *
      * @return Response|RedirectResponse
      */
-    public function debug(int $surveyId, Request $request): Response
+    public function debug(Request $request, int $surveyId, int $versionId = null): Response
     {
         $debugToken = $request->query->getAlnum('token');
         if (empty($debugToken)) {
             throw new HttpException(400, 'Empty debug token, please provide the token in the URL');
         }
 
-        $survey = $this->getSurvey($surveyId);
+        if (null === $versionId) {
+            $versionId = $this->surveyService->findLatestVersion($surveyId);
+        }
+
+        $survey = $this->surveyService->findBySurveyIdAndVersion($surveyId, $versionId);
         if (false === $survey->getConfig()->debugMode) {
             throw new HttpException(403, 'This survey cannot be accessed in debug mode');
         }
@@ -120,10 +127,6 @@ class SurveyController extends AbstractController
         }
 
         $this->surveySessionService->startSession($surveyId, 'debug');
-
-        if ($survey->getConfig()->privacyConsentEnabled) {
-            return $this->redirectToRoute('survey.privacy_consent', ['surveyId' => $surveyId]);
-        }
 
         return $this->redirectToRoute('page.display', [
             'surveyId' => $surveyId,
@@ -146,7 +149,11 @@ class SurveyController extends AbstractController
      */
     public function privacyConsent(int $surveyId, Request $request)
     {
-        $survey = $this->getSurvey($surveyId);
+        $survey = $this->surveyService->getPublished($surveyId);
+        if (!$survey) {
+            return $this->redirectToRoute('survey.unavailable', ['surveyId' => $surveyId]);
+        }
+
         $form = $this->createForm(PrivacyConsentType::class);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
@@ -175,7 +182,10 @@ class SurveyController extends AbstractController
      */
     public function complete(int $surveyId)
     {
-        $survey = $this->getSurvey($surveyId);
+        $survey = $this->surveyService->getPublished($surveyId);
+        if (!$survey) {
+            return $this->redirectToRoute('survey.unavailable', ['surveyId' => $surveyId]);
+        }
 
         return $this->render($survey->getConfig()->theme . '/survey/complete.twig');
     }
@@ -183,15 +193,17 @@ class SurveyController extends AbstractController
     /**
      * @param int $surveyId
      *
-     * @return Document\Survey
+     * @Route(
+     *     "%app.route_prefix%/{surveyId}/unavailable",
+     *     name="survey.unavailable",
+     *     requirements={"surveyId"="\d+"},
+     *     methods={"GET"}
+     * )
+     *
+     * @return Response|RedirectResponse
      */
-    protected function getSurvey(int $surveyId)
+    public function unavailable(int $surveyId)
     {
-        $survey = $this->surveyService->getPublished($surveyId);
-        if (!$survey) {
-            throw $this->createNotFoundException('This survey is no longer available');
-        }
-
-        return $survey;
+        return $this->render(Document\Config::DEFAULT_THEME . '/survey/unavailable.twig');
     }
 }

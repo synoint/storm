@@ -22,6 +22,8 @@ survey_completed.page_title: 'Survey completed!'
 survey_completed.thank_you: 'Thank You!'
 survey_completed.answers_received: 'Your answers have been received.'
 error_page.page_title: 'An error has occurred'
-error_page.oops: 'Oops!'
+error_page.oops: Oops!
 error_page.continue: 'Continue to'
 error_page.survey: survey
+error_page.survey_unavailable: 'This survey is no longer available.'
+error_page.page_unavailable: 'This page is no longer available.'
