@@ -19,14 +19,7 @@ class Response
      *
      * @ODM\Field(type="string")
      */
-    private $urlValue;
-
-    /**
-     * @var string
-     *
-     * @ODM\Field(type="string")
-     */
-    private $cookieValue;
+    private $uid;
 
     /**
      * @var int
@@ -68,7 +61,7 @@ class Response
      *
      * @ODM\Field(type="boolean")
      */
-    private $completed;
+    private $completed = false;
 
     /**
      * @var \DateTime
@@ -87,6 +80,7 @@ class Response
     {
         $this->userAgents = new ArrayCollection();
         $this->hiddenValues = new ArrayCollection();
+        $this->createdAt = new \DateTime();
     }
 
     /**
@@ -112,39 +106,19 @@ class Response
     /**
      * @return string
      */
-    public function getUrlValue(): string
+    public function getUid(): string
     {
-        return $this->urlValue;
+        return $this->uid;
     }
 
     /**
-     * @param string $urlValue
+     * @param string $uid
      *
      * @return Response
      */
-    public function setUrlValue(string $urlValue): Response
+    public function setUid(string $uid): Response
     {
-        $this->urlValue = $urlValue;
-
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getCookieValue(): string
-    {
-        return $this->cookieValue;
-    }
-
-    /**
-     * @param string $cookieValue
-     *
-     * @return Response
-     */
-    public function setCookieValue(string $cookieValue): Response
-    {
-        $this->cookieValue = $cookieValue;
+        $this->uid = $uid;
 
         return $this;
     }
@@ -285,6 +259,26 @@ class Response
     public function setCreatedAt(\DateTime $createdAt): Response
     {
         $this->createdAt = $createdAt;
+
+        return $this;
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getUserAgents(): ArrayCollection
+    {
+        return $this->userAgents;
+    }
+
+    /**
+     * @param ArrayCollection $userAgents
+     *
+     * @return Response
+     */
+    public function setUserAgents(ArrayCollection $userAgents): Response
+    {
+        $this->userAgents = $userAgents;
 
         return $this;
     }

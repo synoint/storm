@@ -2,6 +2,7 @@
 
 namespace Syno\Storm\Controller;
 
+use PhpParser\Comment\Doc;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -33,9 +34,9 @@ class PageController extends AbstractController
 
 
     /**
-     * @param int     $surveyId
-     * @param int     $pageId
-     * @param Request $request
+     * @param Document\Survey $survey
+     * @param Document\Page   $page
+     * @param Request         $request
      *
      * @Route(
      *     "%app.route_prefix%/p/{surveyId}/{pageId}",
@@ -44,35 +45,25 @@ class PageController extends AbstractController
      *     methods={"GET","POST"}
      * )
      *
-     * @return Response|RedirectResponse
+     * @return Response
      */
-    public function index(int $surveyId, int $pageId, Request $request): Response
+    public function index(Document\Survey $survey, Document\Page $page, Request $request): Response
     {
-        $survey = $this->surveyService->getPublished($surveyId);
-        if (!$survey) {
-            return $this->redirectToRoute('survey.unavailable');
-        }
-
-        $page = $survey->getPage($pageId);
-        if (!$page) {
-            return $this->redirectToRoute('page.unavailable');
-        }
-
         $form = $this->createForm(PageType::class, null, [
             'page' => $page
         ]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $nextPage = $survey->getNextPage($pageId);
+            $nextPage = $survey->getNextPage($page->getPageId());
             if (null === $nextPage) {
                 return $this->redirectToRoute('survey.complete', [
-                    'surveyId' => $surveyId
+                    'surveyId' => $survey->getSurveyId()
                 ]);
             }
 
             return $this->redirectToRoute('page.index', [
-                'surveyId' => $surveyId,
+                'surveyId' => $survey->getSurveyId(),
                 'pageId'   => $nextPage->getPageId()
             ]);
         }
@@ -80,12 +71,12 @@ class PageController extends AbstractController
         return $this->render($survey->getConfig()->theme . '/page/display.twig', [
             'page'               => $page,
             'form'               => $form->createView(),
-            'backButtonDisabled' => $survey->isFirstPage($pageId)
+            'backButtonDisabled' => $survey->isFirstPage($page->getPageId())
         ]);
     }
 
     /**
-     * @Route("%app.route_prefix%/page/unavailable", name="page.unavailable")
+     * @Route("%app.route_prefix%/p/unavailable", name="page.unavailable")
      *
      * @return Response|RedirectResponse
      */
