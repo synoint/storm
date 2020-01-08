@@ -39,23 +39,23 @@ class PageController extends AbstractController
      *
      * @Route(
      *     "%app.route_prefix%/p/{surveyId}/{pageId}",
-     *     name="page.display",
+     *     name="page.index",
      *     requirements={"surveyId"="\d+", "pageId"="\d+"},
      *     methods={"GET","POST"}
      * )
      *
      * @return Response|RedirectResponse
      */
-    public function display(int $surveyId, int $pageId, Request $request): Response
+    public function index(int $surveyId, int $pageId, Request $request): Response
     {
         $survey = $this->surveyService->getPublished($surveyId);
         if (!$survey) {
-            return $this->redirectToRoute('survey.unavailable', ['surveyId' => $surveyId]);
+            return $this->redirectToRoute('survey.unavailable');
         }
 
         $page = $survey->getPage($pageId);
         if (!$page) {
-            return $this->redirectToRoute('page.unavailable', ['surveyId' => $surveyId, 'pageId' => $pageId]);
+            return $this->redirectToRoute('page.unavailable');
         }
 
         $form = $this->createForm(PageType::class, null, [
@@ -71,7 +71,7 @@ class PageController extends AbstractController
                 ]);
             }
 
-            return $this->redirectToRoute('page.display', [
+            return $this->redirectToRoute('page.index', [
                 'surveyId' => $surveyId,
                 'pageId'   => $nextPage->getPageId()
             ]);
@@ -85,18 +85,11 @@ class PageController extends AbstractController
     }
 
     /**
-     * @param int $surveyId
-     *
-     * @Route(
-     *     "%app.route_prefix%/p/{surveyId}/{pageId}/unavailable",
-     *     name="page.unavailable",
-     *     requirements={"surveyId"="\d+", "pageId"="\d+"},
-     *     methods={"GET"}
-     * )
+     * @Route("%app.route_prefix%/page/unavailable", name="page.unavailable")
      *
      * @return Response|RedirectResponse
      */
-    public function unavailable(int $surveyId)
+    public function unavailable()
     {
         return $this->render(Document\Config::DEFAULT_THEME . '/page/unavailable.twig');
     }

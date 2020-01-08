@@ -12,10 +12,6 @@
             <h1 class="my-5 display-4">
                 {{ status_text }}.
             </h1>
-
-            {% if app.request.attributes.surveyId is defined %}
-                <p>Continue to <a href="{{path('survey.index', {'surveyId': app.request.attributes.surveyId}) }}">survey</a> </p>
-            {% endif %}
         </div>
     </div>
 

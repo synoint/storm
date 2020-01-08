@@ -21,7 +21,12 @@ class SurveyType extends AbstractType
                 'by_reference'  => false,
                 'allow_add'     => true
             ])
-            ->add('config', ConfigType::class);
+            ->add('config', ConfigType::class)
+            ->add('hiddenValues', CollectionType::class, [
+                'entry_type' => HiddenValueType::class,
+                'by_reference'  => false,
+                'allow_add'     => true
+            ]);
     }
 
     public function configureOptions(OptionsResolver $resolver)

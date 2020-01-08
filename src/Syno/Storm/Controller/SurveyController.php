@@ -49,8 +49,14 @@ class SurveyController extends AbstractController
     {
         $survey = $this->surveyService->getPublished($surveyId);
         if (!$survey) {
-            return $this->redirectToRoute('survey.unavailable', ['surveyId' => $surveyId]);
+            return $this->redirectToRoute('survey.unavailable');
         }
+
+        $surveyResponse = new Document\Response();
+        $surveyResponse
+            ->setSurveyId($surveyId)
+            ->setSurveyVersion($survey->getVersion())
+            ->setMode('live');
 
         $this->surveySessionService->startSession($surveyId, 'live');
 
@@ -58,7 +64,7 @@ class SurveyController extends AbstractController
             return $this->redirectToRoute('survey.privacy_consent', ['surveyId' => $surveyId]);
         }
 
-        return $this->redirectToRoute('page.display', [
+        return $this->redirectToRoute('page.index', [
             'surveyId' => $surveyId,
             'pageId'   => $survey->getPages()->first()->getPageId()
         ]);
@@ -77,16 +83,16 @@ class SurveyController extends AbstractController
      *
      * @return RedirectResponse
      */
-    public function test(int $surveyId, Request $request): Response
+    public function test(Request $request, int $surveyId): Response
     {
         $survey = $this->surveyService->getPublished($surveyId);
         if (!$survey) {
-            return $this->redirectToRoute('survey.unavailable', ['surveyId' => $surveyId]);
+            return $this->redirectToRoute('survey.unavailable');
         }
 
         $this->surveySessionService->startSession($surveyId, 'test');
 
-        return $this->redirectToRoute('page.display', [
+        return $this->redirectToRoute('page.index', [
             'surveyId' => $surveyId,
             'pageId'   => $survey->getPages()->first()->getPageId()
         ]);
@@ -128,7 +134,7 @@ class SurveyController extends AbstractController
 
         $this->surveySessionService->startSession($surveyId, 'debug');
 
-        return $this->redirectToRoute('page.display', [
+        return $this->redirectToRoute('page.index', [
             'surveyId' => $surveyId,
             'pageId'   => $survey->getPages()->first()->getPageId()
         ]);
@@ -139,7 +145,7 @@ class SurveyController extends AbstractController
      * @param Request $request
      *
      * @Route(
-     *     "%app.route_prefix%/privacy_consent/{surveyId}",
+     *     "%app.route_prefix%/privacy-consent/{surveyId}",
      *     name="survey.privacy_consent",
      *     requirements={"surveyId"="\d+"},
      *     methods={"GET", "POST"}
@@ -147,17 +153,17 @@ class SurveyController extends AbstractController
      *
      * @return Response|RedirectResponse
      */
-    public function privacyConsent(int $surveyId, Request $request)
+    public function privacyConsent(Request $request, int $surveyId)
     {
         $survey = $this->surveyService->getPublished($surveyId);
         if (!$survey) {
-            return $this->redirectToRoute('survey.unavailable', ['surveyId' => $surveyId]);
+            return $this->redirectToRoute('survey.unavailable');
         }
 
         $form = $this->createForm(PrivacyConsentType::class);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            return $this->redirectToRoute('page.display', [
+            return $this->redirectToRoute('page.index', [
                 'surveyId' => $surveyId,
                 'pageId'   => $survey->getPages()->first()->getPageId()
             ]);
@@ -172,7 +178,7 @@ class SurveyController extends AbstractController
      * @param int $surveyId
      *
      * @Route(
-     *     "%app.route_prefix%/{surveyId}/thank_you",
+     *     "%app.route_prefix%/c/{surveyId}",
      *     name="survey.complete",
      *     requirements={"surveyId"="\d+"},
      *     methods={"GET"}
@@ -184,25 +190,18 @@ class SurveyController extends AbstractController
     {
         $survey = $this->surveyService->getPublished($surveyId);
         if (!$survey) {
-            return $this->redirectToRoute('survey.unavailable', ['surveyId' => $surveyId]);
+            return $this->redirectToRoute('survey.unavailable');
         }
 
         return $this->render($survey->getConfig()->theme . '/survey/complete.twig');
     }
 
     /**
-     * @param int $surveyId
-     *
-     * @Route(
-     *     "%app.route_prefix%/{surveyId}/unavailable",
-     *     name="survey.unavailable",
-     *     requirements={"surveyId"="\d+"},
-     *     methods={"GET"}
-     * )
+     * @Route("%app.route_prefix%/survey/unavailable", name="survey.unavailable")
      *
      * @return Response|RedirectResponse
      */
-    public function unavailable(int $surveyId)
+    public function unavailable()
     {
         return $this->render(Document\Config::DEFAULT_THEME . '/survey/unavailable.twig');
     }

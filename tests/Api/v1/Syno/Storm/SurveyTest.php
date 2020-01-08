@@ -33,7 +33,8 @@ final class SurveyTest extends WebTestCase
                 $this->getPage2(),
                 $this->getPage3(),
                 $this->getPage4()
-            ]
+            ],
+            'hiddenValues' => $this->getHiddenValues()
         ];
 
         self::$client->request(
@@ -64,6 +65,8 @@ final class SurveyTest extends WebTestCase
         $this->assertArrayHasKey('surveyId', $survey);
         $this->assertArrayHasKey('version', $survey);
         $this->assertArrayHasKey('published', $survey);
+        $this->assertArrayHasKey('config', $survey);
+        $this->assertArrayHasKey('hiddenValues', $survey);
 
         $this->assertEquals(self::SURVEY_ID, $survey['surveyId']);
         $this->assertEquals(self::VERSION, $survey['version']);
@@ -286,6 +289,42 @@ final class SurveyTest extends WebTestCase
                     ]
                 ]
             ]
+        ];
+    }
+
+    protected function getHiddenValues()
+    {
+        return [
+            [
+                'name'     => 'Panelist ID',
+                'code'     => 'P',
+                'urlParam' => 'p',
+                'type'     => 'INT'
+            ],
+            [
+                'name'     => 'Age',
+                'code'     => 'AGE',
+                'urlParam' => 'age',
+                'type'     => 'INT'
+            ],
+            [
+                'name'     => 'Year of birth',
+                'code'     => 'YOB',
+                'urlParam' => 'yob',
+                'type'     => 'INT'
+            ],
+            [
+                'name'     => 'Gender',
+                'code'     => 'G',
+                'urlParam' => 'g',
+                'type'     => 'INT'
+            ],
+            [
+                'name'     => 'Postal code',
+                'code'     => 'PC',
+                'urlParam' => 'pc',
+                'type'     => 'STRING'
+            ],
         ];
     }
 }
