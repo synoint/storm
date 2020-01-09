@@ -24,8 +24,6 @@ class ResponseUserAgent
     public $userAgent;
 
     /**
-     * @var \DateTime
-     *
      * @ODM\Field(type="timestamp")
      */
     public $createdAt;
@@ -38,7 +36,7 @@ class ResponseUserAgent
     {
         $this->ipAddress = $ipAddress;
         $this->userAgent = $userAgent;
-        $this->createdAt = new \DateTime();
+        $this->createdAt = time();
     }
 
 

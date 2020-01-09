@@ -12,6 +12,8 @@ use Syno\Storm\Services\Survey;
 
 class SurveyListener implements EventSubscriberInterface
 {
+    CONST ATTR = 'survey';
+
     /** @var Survey */
     private $surveyService;
     /** @var RouterInterface */
@@ -36,20 +38,25 @@ class SurveyListener implements EventSubscriberInterface
         /** @var Request $request */
         $request = $event->getRequest();
 
-        if (!$request->attributes->has('surveyId')) {
+        if (false !== strpos($request->attributes->get('_route'), 'storm_api')) {
             return;
         }
 
-        if ('survey.debug' === $request->attributes->get('_route') ||
-            false !== strpos($request->attributes->get('_route'), 'storm_api')) {
+        if (!$request->attributes->has('surveyId')) {
             return;
         }
 
         $surveyId = $request->attributes->getInt('surveyId');
         if ($surveyId) {
-            $survey = $this->surveyService->getPublished($surveyId);
+            if ('survey.debug' === $request->attributes->get('_route')) {
+                $versionId = $request->attributes->getInt('versionId', $this->surveyService->findLatestVersion($surveyId));
+                $survey = $this->surveyService->findBySurveyIdAndVersion($surveyId, $versionId);
+            } else {
+                $survey = $this->surveyService->getPublished($surveyId);
+            }
+
             if ($survey) {
-                $request->attributes->set('survey', $survey);
+                $request->attributes->set(self::ATTR, $survey);
                 return;
             }
         }

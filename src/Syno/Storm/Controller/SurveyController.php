@@ -78,9 +78,8 @@ class SurveyController extends AbstractController
     }
 
     /**
-     * @param int     $surveyId
-     * @param int     $versionId
-     * @param Request $request
+     * @param Request         $request
+     * @param Document\Survey $survey
      *
      * @Route(
      *     "%app.route_prefix%/d/{surveyId}/{versionId}",
@@ -91,18 +90,13 @@ class SurveyController extends AbstractController
      *
      * @return Response|RedirectResponse
      */
-    public function debug(Request $request, int $surveyId, int $versionId = null): Response
+    public function debug(Request $request, Document\Survey $survey): Response
     {
         $debugToken = $request->query->getAlnum('token');
         if (empty($debugToken)) {
             throw new HttpException(400, 'Empty debug token, please provide the token in the URL');
         }
 
-        if (null === $versionId) {
-            $versionId = $this->surveyService->findLatestVersion($surveyId);
-        }
-
-        $survey = $this->surveyService->findBySurveyIdAndVersion($surveyId, $versionId);
         if (false === $survey->getConfig()->debugMode) {
             throw new HttpException(403, 'This survey cannot be accessed in debug mode');
         }
@@ -112,7 +106,7 @@ class SurveyController extends AbstractController
         }
 
         return $this->redirectToRoute('page.index', [
-            'surveyId' => $surveyId,
+            'surveyId' => $survey->getSurveyId(),
             'pageId'   => $survey->getPages()->first()->getPageId()
         ]);
     }

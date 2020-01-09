@@ -19,7 +19,7 @@ class Response
      *
      * @ODM\Field(type="string")
      */
-    private $uid;
+    private $responseId;
 
     /**
      * @var int
@@ -64,8 +64,6 @@ class Response
     private $completed = false;
 
     /**
-     * @var \DateTime
-     *
      * @ODM\Field(type="timestamp")
      */
     private $createdAt;
@@ -76,11 +74,17 @@ class Response
     /** @ODM\EmbedMany(targetDocument=HiddenValue::class) */
     private $hiddenValues;
 
-    public function __construct()
+    /**
+     * @param string $responseId
+     *
+     * @throws \Exception
+     */
+    public function __construct(string $responseId)
     {
-        $this->userAgents = new ArrayCollection();
+        $this->responseId   = $responseId;
+        $this->userAgents   = new ArrayCollection();
         $this->hiddenValues = new ArrayCollection();
-        $this->createdAt = new \DateTime();
+        $this->createdAt    = time();
     }
 
     /**
@@ -106,19 +110,19 @@ class Response
     /**
      * @return string
      */
-    public function getUid(): string
+    public function getResponseId(): string
     {
-        return $this->uid;
+        return $this->responseId;
     }
 
     /**
-     * @param string $uid
+     * @param string $responseId
      *
      * @return Response
      */
-    public function setUid(string $uid): Response
+    public function setResponseId(string $responseId): Response
     {
-        $this->uid = $uid;
+        $this->responseId = $responseId;
 
         return $this;
     }
@@ -252,18 +256,6 @@ class Response
     }
 
     /**
-     * @param \DateTime $createdAt
-     *
-     * @return Response
-     */
-    public function setCreatedAt(\DateTime $createdAt): Response
-    {
-        $this->createdAt = $createdAt;
-
-        return $this;
-    }
-
-    /**
      * @return ArrayCollection
      */
     public function getUserAgents(): ArrayCollection
@@ -322,7 +314,7 @@ class Response
     }
 
     /**
-     * @param $hiddenValues
+     * @param Collection $hiddenValues
      *
      * @return Response
      */
@@ -331,5 +323,15 @@ class Response
         $this->hiddenValues = $hiddenValues;
 
         return $this;
+    }
+
+    /**
+     * @param HiddenValue $hiddenValue
+     */
+    public function addHiddenValue(HiddenValue $hiddenValue)
+    {
+        if (!$this->hiddenValues->contains($hiddenValue)) {
+            $this->hiddenValues[] = $hiddenValue;
+        }
     }
 }

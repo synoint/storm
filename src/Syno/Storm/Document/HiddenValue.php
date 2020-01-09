@@ -41,13 +41,21 @@ class HiddenValue implements JsonSerializable
      */
     public $type;
 
+    /**
+     * @var string
+     *
+     * @ODM\Field(type="string")
+     */
+    public $value;
+
     public function jsonSerialize()
     {
         return [
             'name'     => $this->name,
             'code'     => $this->code,
             'urlParam' => $this->urlParam,
-            'type'     => $this->type
+            'type'     => $this->type,
+            'value'    => $this->value
         ];
     }
 }

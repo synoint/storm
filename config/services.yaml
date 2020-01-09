@@ -31,3 +31,7 @@ services:
     Syno\Storm\Api\EventSubscriber\ApiAuthenticationSubscriber:
         arguments:
             $apiAccessToken: '%env(STORM_API_TOKEN)%'
+
+    Syno\Storm\Services\Response:
+        arguments:
+            $responseIdPrefix: '%env(APP_REGION)%'

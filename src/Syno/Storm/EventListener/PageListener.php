@@ -12,6 +12,8 @@ use Syno\Storm\Document;
 
 class PageListener implements EventSubscriberInterface
 {
+    const ATTR = 'page';
+
     /** @var RouterInterface */
     private $router;
 
@@ -37,17 +39,18 @@ class PageListener implements EventSubscriberInterface
             return;
         }
 
-        if (!$request->attributes->has('survey')) {
-            throw new \UnexpectedValueException(sprintf('Survey attribute was not set.'));
+        if (!$request->attributes->has(SurveyListener::ATTR)) {
+            throw new \UnexpectedValueException('Survey attribute is not set');
         }
 
+        $page = null;
         $pageId = $request->attributes->getInt('pageId');
         if ($pageId) {
-            $survey = $request->attributes->get('survey');
+            $survey = $request->attributes->get(SurveyListener::ATTR);
             if ($survey instanceof Document\Survey) {
                 $page = $survey->getPage($pageId);
                 if ($page) {
-                    $request->attributes->set('page', $page);
+                    $request->attributes->set(self::ATTR, $page);
                     return;
                 }
             }
