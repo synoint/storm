@@ -3,7 +3,6 @@
 namespace Syno\Storm\EventListener;
 
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Symfony\Component\HttpFoundation\Cookie;
 use Symfony\Component\HttpFoundation\IpUtils;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -11,33 +10,43 @@ use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpKernel\Event\ResponseEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\Routing\RouterInterface;
-use Syno\Storm\Document;
 use Syno\Storm\Event\SurveyCompleted;
-use Syno\Storm\Services\Response;
-use Syno\Storm\Services\Survey;
+use Syno\Storm\Services\PageRequest;
+use Syno\Storm\Services\ResponseRequest;
+use Syno\Storm\Services\SurveyRequest;
 
 
 class ResponseListener implements EventSubscriberInterface
 {
-    CONST ATTR = 'response';
+    /** @var PageRequest */
+    private $pageRequestService;
 
-    /** @var Response */
-    private $responseService;
-    /** @var Survey */
-    private $surveyService;
+    /** @var ResponseRequest */
+    private $responseRequestService;
+
+    /** @var SurveyRequest */
+    private $surveyRequestService;
+
     /** @var RouterInterface */
     private $router;
 
     /**
-     * @param Response        $responseService
-     * @param Survey          $surveyService
+     * @param PageRequest     $pageRequestService
+     * @param ResponseRequest $responseRequestService
+     * @param SurveyRequest   $surveyRequestService
      * @param RouterInterface $router
      */
-    public function __construct(Response $responseService, Survey $surveyService, RouterInterface $router)
+    public function __construct(
+        PageRequest $pageRequestService,
+        ResponseRequest $responseRequestService,
+        SurveyRequest $surveyRequestService,
+        RouterInterface $router
+    )
     {
-        $this->responseService = $responseService;
-        $this->surveyService   = $surveyService;
-        $this->router          = $router;
+        $this->pageRequestService     = $pageRequestService;
+        $this->responseRequestService = $responseRequestService;
+        $this->surveyRequestService   = $surveyRequestService;
+        $this->router                 = $router;
     }
 
 
@@ -50,18 +59,14 @@ class ResponseListener implements EventSubscriberInterface
         /** @var Request $request */
         $request = $event->getRequest();
 
-        if (!$request->attributes->has(SurveyListener::ATTR)) {
+        if (!$this->surveyRequestService->hasSurvey($request)) {
             return;
         }
 
-        $survey = $request->attributes->get(SurveyListener::ATTR);
-        if (!$survey instanceof Document\Survey) {
-            throw new \UnexpectedValueException('Survey attribute is invalid');
-        }
-
-        $responseId = $this->getResponseId($request, $survey->getSurveyId());
+        $survey = $this->surveyRequestService->getSurvey($request);
+        $responseId = $this->responseRequestService->getResponseId($request, $survey->getSurveyId());
         if (!empty($responseId)) {
-            $surveyResponse = $this->responseService->findBySurveyIdAndResponseId($survey->getSurveyId(), $responseId);
+            $surveyResponse = $this->responseRequestService->getSavedResponse($survey->getSurveyId(), $responseId);
             if ($surveyResponse) {
 
                 if ($surveyResponse->isCompleted()) {
@@ -74,7 +79,7 @@ class ResponseListener implements EventSubscriberInterface
                  * let's replace the current version of survey in the request with the previously started one
                  */
                 if ($surveyResponse->getSurveyVersion() !== $survey->getVersion()) {
-                    $previousSurvey = $this->surveyService->findBySurveyIdAndVersion(
+                    $previousSurvey = $this->surveyRequestService->findSavedBySurveyIdAndVersion(
                         $surveyResponse->getSurveyId(),
                         $surveyResponse->getSurveyVersion()
                     );
@@ -82,7 +87,7 @@ class ResponseListener implements EventSubscriberInterface
                         $event->setResponse(new RedirectResponse($this->router->generate('survey.unavailable')));
                         return;
                     }
-                    $request->attributes->set(SurveyListener::ATTR, $previousSurvey);
+                    $this->surveyRequestService->setSurvey($request, $previousSurvey);
                     $survey = $previousSurvey;
                 }
 
@@ -103,7 +108,7 @@ class ResponseListener implements EventSubscriberInterface
                     );
                 }
 
-                $request->attributes->set(self::ATTR, $surveyResponse);
+                $this->responseRequestService->setResponse($request, $surveyResponse);
                 return;
             }
         }
@@ -126,29 +131,13 @@ class ResponseListener implements EventSubscriberInterface
             return;
         }
 
-        $surveyResponse = $this->responseService->getNew($responseId);
-        $surveyResponse
-            ->setSurveyId($survey->getSurveyId())
-            ->setSurveyVersion($survey->getVersion())
-            ->setMode(
-                $this->responseService->getMode($request->attributes->get('_route'))
-            )
-            ->setLocale($request->attributes->get('_locale'));
+        $surveyResponse = $this->responseRequestService->getNewResponse($request, $survey);
+        $surveyResponse->setHiddenValues($this->responseRequestService->extractHiddenValues(
+            $survey->getHiddenValues(),
+            $request
+        ));
 
-        /** @var Document\HiddenValue $surveyValue */
-        foreach ($survey->getHiddenValues() as $surveyValue) {
-            if ($request->query->has($surveyValue->urlParam)) {
-                $responseValue = clone $surveyValue;
-                if ($responseValue->type === Document\HiddenValue::TYPE_INT) {
-                    $responseValue->value = $request->query->getInt($responseValue->urlParam);
-                } else {
-                    $responseValue->value = $request->query->get($responseValue->urlParam);
-                }
-                $surveyResponse->addHiddenValue($responseValue);
-            }
-        }
-
-        $request->attributes->set(self::ATTR, $surveyResponse);
+        $this->responseRequestService->setResponse($request, $surveyResponse);
     }
 
     public function onKernelResponse(ResponseEvent $event)
@@ -160,26 +149,18 @@ class ResponseListener implements EventSubscriberInterface
         /** @var Request $request */
         $request = $event->getRequest();
 
-        if (!$request->attributes->has(self::ATTR)) {
+        if (!$this->responseRequestService->hasResponse($request)) {
             return;
         }
 
-        /** @var Document\Response $surveyResponse */
-        $surveyResponse = $request->attributes->get(self::ATTR);
-        if (!$surveyResponse instanceof Document\Response) {
-            throw new \UnexpectedValueException('Invalid survey response object');
-        }
-
+        $surveyResponse = $this->responseRequestService->getResponse($request);
         if ($surveyResponse->isCompleted()) {
-            $request->attributes->remove(self::ATTR);
-            $request->getSession()->remove('id:' . $surveyResponse->getSurveyId());
-            $event->getResponse()->headers->clearCookie('id:'. $surveyResponse->getSurveyId());
+            $this->responseRequestService->clearResponse($request, $event->getResponse(), $surveyResponse->getSurveyId());
             return;
         }
 
-        if ($request->attributes->has(PageListener::ATTR)) {
-            /** @var Document\Page $page */
-            $page = $request->attributes->get(PageListener::ATTR);
+        if ($this->pageRequestService->hasPage($request)) {
+            $page = $this->pageRequestService->getPage($request);
             $surveyResponse->setPageId($page->getPageId());
         }
 
@@ -188,22 +169,19 @@ class ResponseListener implements EventSubscriberInterface
             $request->headers->get('User-Agent')
         );
 
-        $this->responseService->save($surveyResponse);
+        $this->responseRequestService->saveResponse($surveyResponse);
 
-        if ($surveyResponse->getResponseId() !== $request->getSession()->get('id:' . $surveyResponse->getSurveyId())) {
-            $request->getSession()->set('id:' . $surveyResponse->getSurveyId(), $surveyResponse->getResponseId());
+        $idFromSession = $this->responseRequestService->getResponseIdFromSession($request, $surveyResponse->getSurveyId());
+        if ($surveyResponse->getResponseId() !== $idFromSession) {
+            $this->responseRequestService->saveResponseIdInSession($request, $surveyResponse);
         }
 
-        if ($surveyResponse->getResponseId() !== $request->cookies->get('id:' . $surveyResponse->getSurveyId())) {
+        $idFromCookie = $this->responseRequestService->getResponseIdFromCookie($request, $surveyResponse->getSurveyId());
+        if ($surveyResponse->getResponseId() !== $idFromCookie) {
             $event->getResponse()->headers->setCookie(
-                new Cookie(
-                    'id:' . $surveyResponse->getSurveyId(),
-                    $surveyResponse->getResponseId(),
-                    time() + 3600
-                )
+                $this->responseRequestService->getResponseIdCookie($surveyResponse)
             );
         }
-
     }
 
     /**
@@ -214,17 +192,13 @@ class ResponseListener implements EventSubscriberInterface
         /** @var Request $request */
         $request = $event->getRequest();
 
-        if (!$request->attributes->has(self::ATTR)) {
+        if (!$this->responseRequestService->hasResponse($request)) {
             return;
         }
 
-        $surveyResponse = $request->attributes->get(self::ATTR);
-        if (!$surveyResponse instanceof Document\Response) {
-            throw new \UnexpectedValueException('Invalid survey response object');
-        }
-
+        $surveyResponse = $this->responseRequestService->getResponse($request);
         $surveyResponse->setCompleted(true);
-        $this->responseService->save($surveyResponse);
+        $this->responseRequestService->saveResponse($surveyResponse);
     }
 
 
@@ -248,24 +222,5 @@ class ResponseListener implements EventSubscriberInterface
         return in_array($request->attributes->get('_route'), ['survey.index', 'survey.test', 'survey.debug']);
     }
 
-    /**
-     * @param Request $request
-     * @param int     $surveyId
-     *
-     * @return string|null
-     */
-    private function getResponseId(Request $request, int $surveyId)
-    {
-        $result = $request->query->get('id');
-        if (!$result) {
-            if ($request->hasPreviousSession()) {
-                $result = $request->getSession()->get('id:' . $surveyId);
-            }
-            if (!$result) {
-                $result = $request->cookies->get('id:' . $surveyId);
-            }
-        }
 
-        return $result;
-    }
 }

@@ -8,26 +8,25 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\Routing\RouterInterface;
-use Syno\Storm\Services\Survey;
+use Syno\Storm\Services\SurveyRequest;
 
 class SurveyListener implements EventSubscriberInterface
 {
-    CONST ATTR = 'survey';
-
-    /** @var Survey */
-    private $surveyService;
+    /** @var SurveyRequest */
+    private $surveyRequestService;
     /** @var RouterInterface */
     private $router;
 
     /**
-     * @param Survey          $surveyService
+     * @param SurveyRequest   $surveyRequestService
      * @param RouterInterface $router
      */
-    public function __construct(Survey $surveyService, RouterInterface $router)
+    public function __construct(SurveyRequest $surveyRequestService, RouterInterface $router)
     {
-        $this->surveyService = $surveyService;
-        $this->router = $router;
+        $this->surveyRequestService = $surveyRequestService;
+        $this->router               = $router;
     }
+
 
     public function onKernelRequest(RequestEvent $event)
     {
@@ -38,27 +37,18 @@ class SurveyListener implements EventSubscriberInterface
         /** @var Request $request */
         $request = $event->getRequest();
 
-        if (false !== strpos($request->attributes->get('_route'), 'storm_api')) {
+        if ($this->isApiRoute($request)) {
             return;
         }
 
-        if (!$request->attributes->has('surveyId')) {
+        if (!$this->surveyRequestService->hasSurveyId($request)) {
             return;
         }
 
-        $surveyId = $request->attributes->getInt('surveyId');
-        if ($surveyId) {
-            if ('survey.debug' === $request->attributes->get('_route')) {
-                $versionId = $request->attributes->getInt('versionId', $this->surveyService->findLatestVersion($surveyId));
-                $survey = $this->surveyService->findBySurveyIdAndVersion($surveyId, $versionId);
-            } else {
-                $survey = $this->surveyService->getPublished($surveyId);
-            }
-
-            if ($survey) {
-                $request->attributes->set(self::ATTR, $survey);
-                return;
-            }
+        $survey = $this->surveyRequestService->fetchSurvey($request);
+        if ($survey) {
+            $this->surveyRequestService->setSurvey($request, $survey);
+            return;
         }
 
         $event->setResponse(new RedirectResponse($this->router->generate('survey.unavailable')));
@@ -69,5 +59,15 @@ class SurveyListener implements EventSubscriberInterface
         return [
             KernelEvents::REQUEST => ['onKernelRequest', 8],
         ];
+    }
+
+    /**
+     * @param Request $request
+     *
+     * @return bool
+     */
+    private function isApiRoute(Request $request)
+    {
+        return false !== strpos($request->attributes->get('_route'), 'storm_api');
     }
 }

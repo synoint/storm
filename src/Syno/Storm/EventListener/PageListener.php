@@ -8,21 +8,30 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\Routing\RouterInterface;
-use Syno\Storm\Document;
+use Syno\Storm\Services\PageRequest;
+use Syno\Storm\Services\SurveyRequest;
 
 class PageListener implements EventSubscriberInterface
 {
-    const ATTR = 'page';
+    /** @var PageRequest */
+    private $pageRequestService;
+
+    /** @var SurveyRequest */
+    private $surveyRequestService;
 
     /** @var RouterInterface */
     private $router;
 
     /**
+     * @param PageRequest     $pageRequestService
+     * @param SurveyRequest   $surveyRequestService
      * @param RouterInterface $router
      */
-    public function __construct(RouterInterface $router)
+    public function __construct(PageRequest $pageRequestService, SurveyRequest $surveyRequestService, RouterInterface $router)
     {
-        $this->router = $router;
+        $this->pageRequestService   = $pageRequestService;
+        $this->surveyRequestService = $surveyRequestService;
+        $this->router               = $router;
     }
 
 
@@ -35,24 +44,21 @@ class PageListener implements EventSubscriberInterface
         /** @var Request $request */
         $request = $event->getRequest();
 
-        if (!$request->attributes->has('pageId')) {
+        if (!$this->pageRequestService->hasPageId($request)) {
             return;
         }
 
-        if (!$request->attributes->has(SurveyListener::ATTR)) {
+        if (!$this->surveyRequestService->hasSurvey($request)) {
             throw new \UnexpectedValueException('Survey attribute is not set');
         }
 
-        $page = null;
-        $pageId = $request->attributes->getInt('pageId');
+        $pageId = $this->pageRequestService->getPageId($request);
         if ($pageId) {
-            $survey = $request->attributes->get(SurveyListener::ATTR);
-            if ($survey instanceof Document\Survey) {
-                $page = $survey->getPage($pageId);
-                if ($page) {
-                    $request->attributes->set(self::ATTR, $page);
-                    return;
-                }
+            $survey = $this->surveyRequestService->getSurvey($request);
+            $page = $survey->getPage($pageId);
+            if ($page) {
+                $this->pageRequestService->setPage($request, $page);
+                return;
             }
         }
 

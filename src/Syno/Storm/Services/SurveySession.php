@@ -7,7 +7,7 @@ use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 class SurveySession
 {
-    const COMPLETE_GRANTED_KEY = '';
+    const COMPLETE_GRANTED_KEY = 'complete_granted';
 
     /** @var RequestStack */
     private $requestStack;
