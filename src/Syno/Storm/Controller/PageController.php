@@ -2,7 +2,6 @@
 
 namespace Syno\Storm\Controller;
 
-use PhpParser\Comment\Doc;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -32,11 +31,10 @@ class PageController extends AbstractController
         $this->surveySessionService = $surveySessionService;
     }
 
-
     /**
-     * @param Document\Survey $survey
-     * @param Document\Page   $page
-     * @param Request         $request
+     * @param Document\Survey   $survey
+     * @param Document\Page     $page
+     * @param Request           $request
      *
      * @Route(
      *     "%app.route_prefix%/p/{surveyId}/{pageId}",
@@ -47,7 +45,11 @@ class PageController extends AbstractController
      *
      * @return Response
      */
-    public function index(Document\Survey $survey, Document\Page $page, Request $request): Response
+    public function index(
+        Document\Survey $survey,
+        Document\Page $page,
+        Request $request
+    ): Response
     {
         $form = $this->createForm(PageType::class, null, [
             'page' => $page
@@ -57,6 +59,9 @@ class PageController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $nextPage = $survey->getNextPage($page->getPageId());
             if (null === $nextPage) {
+
+                $this->surveySessionService->grantComplete($survey->getSurveyId());
+
                 return $this->redirectToRoute('survey.complete', [
                     'surveyId' => $survey->getSurveyId()
                 ]);

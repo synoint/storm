@@ -68,10 +68,18 @@ class Response
      */
     private $createdAt;
 
-    /** @ODM\EmbedMany(targetDocument=ResponseUserAgent::class) */
+    /**
+     * @var Collection
+     *
+     * @ODM\EmbedMany(targetDocument=ResponseUserAgent::class)
+     */
     private $userAgents;
 
-    /** @ODM\EmbedMany(targetDocument=HiddenValue::class) */
+    /**
+     * @var Collection
+     *
+     * @ODM\EmbedMany(targetDocument=HiddenValue::class)
+     */
     private $hiddenValues;
 
     /**
@@ -248,9 +256,9 @@ class Response
     }
 
     /**
-     * @return \DateTime
+     * @return int
      */
-    public function getCreatedAt(): \DateTime
+    public function getCreatedAt(): int
     {
         return $this->createdAt;
     }

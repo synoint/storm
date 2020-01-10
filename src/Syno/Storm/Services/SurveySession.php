@@ -3,14 +3,14 @@
 namespace Syno\Storm\Services;
 
 use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 class SurveySession
 {
+    const COMPLETE_GRANTED_KEY = '';
+
     /** @var RequestStack */
     private $requestStack;
-
-    /** @var SurveySessionBag */
-    private $surveySessionBag;
 
     /**
      * @param RequestStack $requestStack
@@ -20,51 +20,27 @@ class SurveySession
         $this->requestStack = $requestStack;
     }
 
-    public function init(int $surveyId)
+    public function grantComplete(int $surveyId)
     {
-        $this->surveySessionBag = $this->getBag($surveyId);
-    }
-
-    public function save()
-    {
-        if (null !== $this->surveySessionBag) {
-            $this->requestStack->getMasterRequest()->getSession()->set(
-                $this->getKey($this->surveySessionBag->surveyId),
-                $this->surveySessionBag
-            );
-        }
-    }
-
-    public function startSession(int $surveyId, string $mode)
-    {
-        $request = $this->requestStack->getMasterRequest();
-        if ($request->hasPreviousSession()) {
-            $request->getSession()->migrate();
-        }
-
-        $this->surveySessionBag           = new SurveySessionBag();
-        $this->surveySessionBag->surveyId = $surveyId;
-        $this->surveySessionBag->mode     = $mode;
+        $this->getSession()->set(self::COMPLETE_GRANTED_KEY, $surveyId);
     }
 
     /**
      * @param int $surveyId
      *
-     * @return mixed
+     * @return bool
      */
-    private function getBag(int $surveyId)
+    public function isCompleteGranted(int $surveyId)
     {
-        return $this->requestStack->getMasterRequest()->getSession()->get($this->getKey($surveyId));
+        return $surveyId === (int) $this->getSession()->remove(self::COMPLETE_GRANTED_KEY);
     }
 
     /**
-     * @param int $surveyId
-     *
-     * @return string
+     * @return SessionInterface
      */
-    private function getKey(int $surveyId)
+    private function getSession()
     {
-        return sprintf('survey_%d', $surveyId);
+        return $this->requestStack->getMasterRequest()->getSession();
     }
 
 

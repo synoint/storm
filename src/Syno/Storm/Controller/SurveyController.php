@@ -3,12 +3,15 @@
 namespace Syno\Storm\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Syno\Storm\Document;
+use Syno\Storm\Event\SurveyCompleted;
 use Syno\Storm\Form\PrivacyConsentType;
 use Syno\Storm\Services\Survey;
 use Syno\Storm\Services\SurveySession;
@@ -22,14 +25,19 @@ class SurveyController extends AbstractController
     /** @var SurveySession */
     private $surveySessionService;
 
+    /** @var EventDispatcherInterface */
+    private $dispatcher;
+
     /**
-     * @param Survey        $surveyService
-     * @param SurveySession $surveySessionService
+     * @param Survey                   $surveyService
+     * @param SurveySession            $surveySessionService
+     * @param EventDispatcherInterface $dispatcher
      */
-    public function __construct(Survey $surveyService, SurveySession $surveySessionService)
+    public function __construct(Survey $surveyService, SurveySession $surveySessionService, EventDispatcherInterface $dispatcher)
     {
         $this->surveyService        = $surveyService;
         $this->surveySessionService = $surveySessionService;
+        $this->dispatcher           = $dispatcher;
     }
 
 
@@ -142,6 +150,7 @@ class SurveyController extends AbstractController
 
     /**
      * @param Document\Survey $survey
+     * @param Request         $request
      *
      * @Route(
      *     "%app.route_prefix%/c/{surveyId}",
@@ -152,8 +161,15 @@ class SurveyController extends AbstractController
      *
      * @return Response|RedirectResponse
      */
-    public function complete(Document\Survey $survey)
+    public function complete(Document\Survey $survey, Request $request)
     {
+        if (!$this->surveySessionService->isCompleteGranted($survey->getSurveyId())) {
+            throw new AccessDeniedHttpException('Survey cannot be completed');
+        }
+
+        $event = new SurveyCompleted($request);
+        $this->dispatcher->dispatch($event);
+
         return $this->render($survey->getConfig()->theme . '/survey/complete.twig');
     }
 

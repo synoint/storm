@@ -12,6 +12,7 @@ use Symfony\Component\HttpKernel\Event\ResponseEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\Routing\RouterInterface;
 use Syno\Storm\Document;
+use Syno\Storm\Event\SurveyCompleted;
 use Syno\Storm\Services\Response;
 use Syno\Storm\Services\Survey;
 
@@ -163,9 +164,17 @@ class ResponseListener implements EventSubscriberInterface
             return;
         }
 
+        /** @var Document\Response $surveyResponse */
         $surveyResponse = $request->attributes->get(self::ATTR);
         if (!$surveyResponse instanceof Document\Response) {
             throw new \UnexpectedValueException('Invalid survey response object');
+        }
+
+        if ($surveyResponse->isCompleted()) {
+            $request->attributes->remove(self::ATTR);
+            $request->getSession()->remove('id:' . $surveyResponse->getSurveyId());
+            $event->getResponse()->headers->clearCookie('id:'. $surveyResponse->getSurveyId());
+            return;
         }
 
         if ($request->attributes->has(PageListener::ATTR)) {
@@ -197,11 +206,35 @@ class ResponseListener implements EventSubscriberInterface
 
     }
 
+    /**
+     * @param SurveyCompleted $event
+     */
+    public function onSurveyCompleted(SurveyCompleted $event)
+    {
+        /** @var Request $request */
+        $request = $event->getRequest();
+
+        if (!$request->attributes->has(self::ATTR)) {
+            return;
+        }
+
+        $surveyResponse = $request->attributes->get(self::ATTR);
+        if (!$surveyResponse instanceof Document\Response) {
+            throw new \UnexpectedValueException('Invalid survey response object');
+        }
+
+        $surveyResponse->setCompleted(true);
+        $this->responseService->save($surveyResponse);
+    }
+
+
+
     public static function getSubscribedEvents(): array
     {
         return [
             KernelEvents::REQUEST => ['onKernelRequest', 4],
-            KernelEvents::RESPONSE => 'onKernelResponse'
+            KernelEvents::RESPONSE => 'onKernelResponse',
+            SurveyCompleted::class => 'onSurveyCompleted'
         ];
     }
 
