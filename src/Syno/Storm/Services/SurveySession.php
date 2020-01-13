@@ -32,7 +32,11 @@ class SurveySession
      */
     public function isCompleteGranted(int $surveyId)
     {
-        return $surveyId === (int) $this->getSession()->remove(self::COMPLETE_GRANTED_KEY);
+        if ($this->requestStack->getMasterRequest()->hasPreviousSession()) {
+            return $surveyId === (int) $this->getSession()->remove(self::COMPLETE_GRANTED_KEY);
+        }
+
+        return false;
     }
 
     /**

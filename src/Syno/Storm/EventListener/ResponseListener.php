@@ -69,7 +69,7 @@ class ResponseListener implements EventSubscriberInterface
             $surveyResponse = $this->responseRequestService->getSavedResponse($survey->getSurveyId(), $responseId);
             if ($surveyResponse) {
 
-                if ($surveyResponse->isCompleted()) {
+                if ($surveyResponse->isCompleted() && !$this->isSurveyCompletionPage($request)) {
                     $response = new RedirectResponse(
                         $this->router->generate('survey.complete', ['surveyId' => $survey->getSurveyId()])
                     );
@@ -117,9 +117,16 @@ class ResponseListener implements EventSubscriberInterface
             }
         }
 
+
         /**
          * New response
          */
+
+        // let's not initiate response on a completion page
+        if ($this->isSurveyCompletionPage($request)) {
+            return;
+        }
+
         if (!$this->isSurveyEntrance($request)) {
             $event->setResponse(
                 new RedirectResponse(
@@ -224,6 +231,16 @@ class ResponseListener implements EventSubscriberInterface
     private function isSurveyEntrance(Request $request): bool
     {
         return in_array($request->attributes->get('_route'), ['survey.index', 'survey.test', 'survey.debug']);
+    }
+
+    /**
+     * @param Request $request
+     *
+     * @return bool
+     */
+    private function isSurveyCompletionPage(Request $request): bool
+    {
+        return $request->attributes->get('_route') === 'survey.complete';
     }
 
 
