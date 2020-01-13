@@ -163,12 +163,10 @@ class SurveyController extends AbstractController
      */
     public function complete(Document\Survey $survey, Request $request)
     {
-        if (!$this->surveySessionService->isCompleteGranted($survey->getSurveyId())) {
-            throw new AccessDeniedHttpException('Survey cannot be completed');
+        if ($this->surveySessionService->isCompleteGranted($survey->getSurveyId())) {
+            $event = new SurveyCompleted($request);
+            $this->dispatcher->dispatch($event);
         }
-
-        $event = new SurveyCompleted($request);
-        $this->dispatcher->dispatch($event);
 
         return $this->render($survey->getConfig()->theme . '/survey/complete.twig');
     }

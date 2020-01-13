@@ -178,7 +178,7 @@ class Response
     /**
      * @return int
      */
-    public function getPageId(): int
+    public function getPageId():? int
     {
         return $this->pageId;
     }
@@ -213,6 +213,14 @@ class Response
         $this->mode = $mode;
 
         return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isDebug(): bool
+    {
+        return 'debug' === $this->mode;
     }
 
     /**

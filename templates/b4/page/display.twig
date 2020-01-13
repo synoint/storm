@@ -62,9 +62,16 @@
             </div>
 
         </div>
-
     </div>
 
-    {% include 'b4/page/_footer.twig' %}
+    {% if (response.isDebug) %}
+
+        {% include 'b4/page/_debug.twig' %}
+
+    {% else %}
+
+        {% include 'b4/page/_footer.twig' %}
+
+    {% endif %}
 
 {% endblock %}

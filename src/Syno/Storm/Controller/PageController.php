@@ -34,6 +34,7 @@ class PageController extends AbstractController
     /**
      * @param Document\Survey   $survey
      * @param Document\Page     $page
+     * @param Document\Response $response
      * @param Request           $request
      *
      * @Route(
@@ -48,6 +49,7 @@ class PageController extends AbstractController
     public function index(
         Document\Survey $survey,
         Document\Page $page,
+        Document\Response $response,
         Request $request
     ): Response
     {
@@ -74,7 +76,9 @@ class PageController extends AbstractController
         }
 
         return $this->render($survey->getConfig()->theme . '/page/display.twig', [
+            'survey'             => $survey,
             'page'               => $page,
+            'response'           => $response,
             'form'               => $form->createView(),
             'backButtonDisabled' => $survey->isFirstPage($page->getPageId())
         ]);

@@ -1,0 +1,25 @@
+<nav class="navbar fixed-bottom navbar-light bg-light">
+    <div class="container-fluid border-top">
+        <div class="col-6">
+            {% for question in page.questions %}
+                <div class="form-group pt-3">
+                    <label>{{ question.code }}:</label>
+                    <input type="text" value="{{ question.text }}" readonly class="form-control">
+                </div>
+            {% endfor %}
+        </div>
+        <div class="col-6">
+            <div class="form-group pt-3">
+                <label for="debugPage">Jump to page:</label>
+                <select class="form-control" id="debugPage" onchange="window.location.href=this.options[this.selectedIndex].value">
+                    {% for surveyPage in survey.pages %}
+                        <option value="{{ path('page.index', {surveyId: survey.surveyId, pageId: surveyPage.pageId}) }}"
+                                {% if page.id == surveyPage.id  %}selected="selected"{% endif %}>
+                            {{ surveyPage.code }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+    </div>
+</nav>

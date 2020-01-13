@@ -70,7 +70,11 @@ class ResponseListener implements EventSubscriberInterface
             if ($surveyResponse) {
 
                 if ($surveyResponse->isCompleted()) {
-                    $event->setResponse(new RedirectResponse($this->router->generate('survey.complete')));
+                    $response = new RedirectResponse(
+                        $this->router->generate('survey.complete', ['surveyId' => $survey->getSurveyId()])
+                    );
+                    $this->responseRequestService->clearResponse($request, $response, $survey->getSurveyId());
+                    $event->setResponse($response);
                     return;
                 }
 
