@@ -29,11 +29,11 @@
                     {% for question in page.questions %}
                         {% if question.isMatrix() %}
 
-                            {% include 'b4/page/_matrix.twig' with {'question': question} only %}
+                            {% include 'b4/page/_matrix.twig' %}
 
                         {% else %}
                             {{
-                                form_row(attribute(form, ('q_' ~ question.id)), {'label': question.getText()})
+                                form_row(attribute(form, ('q_' ~ question.code)), {'label': question.getText()})
                             }}
                         {% endif %}
                     {% endfor %}

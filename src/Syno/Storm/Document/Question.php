@@ -243,7 +243,7 @@ class Question
         $choices = [];
         /** @var Answer $answer */
         foreach ($this->getAnswers() as $answer) {
-            $choices[$answer->getLabel()] = $answer->getId();
+            $choices[$answer->getLabel()] = $answer->getCode();
         }
 
         return $choices;
@@ -291,7 +291,7 @@ class Question
      * @param string $rowCode
      * @param string $columnCode
      *
-     * @return mixed
+     * @return Answer
      */
     public function getMatrixAnswer(string $rowCode, string $columnCode)
     {
