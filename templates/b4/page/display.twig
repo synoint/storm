@@ -35,6 +35,7 @@
 
 <div class="container">
 
+<<<<<<< HEAD
                         {% elseif question.isText %}
                             {% for answer in question.answers %}
                                 {{
@@ -55,6 +56,38 @@
                                 {{ 'page.button.back'|trans }}
                             </a>
                             {{
+=======
+    <div class="page">
+        {% if page.content is defined and '' != page.content %}
+        <div class="row page__content my-3">
+            <div class="col">
+                {{ page.content }}
+            </div>
+        </div>
+        {% endif %}
+
+        <div class="row questions">
+            <div class="col">
+                {{ form_start(form) }}
+
+                {% for question in page.questions %}
+                {% if question.isMatrix() %}
+                    {% include 'b4/page/_matrix.twig' %}
+                {% else %}
+                    {{
+                        form_row(attribute(form, ('q_' ~ question.code)), 
+                        {'label': question.getText(), 'label_attr': {'class': 'text-capitalize'}})
+                    }}
+                {% endif %}
+                {% endfor %}
+                <div class="row">
+                    <div class="col text-center">
+                        <a class="btn btn-outline-secondary {% if backButtonDisabled %}disabled{% endif %}"
+                            onclick="window.history.go(-1); return false;">
+                            {{ 'page.button.back'|trans }}
+                        </a>
+                        {{
+>>>>>>> Custom matrix question type
                                 form_widget(
                                     form.next,
                                     {
