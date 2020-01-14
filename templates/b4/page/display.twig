@@ -1,5 +1,9 @@
 {% extends '/b4/layout/base.twig' %}
-{% form_theme form 'bootstrap_4_layout.html.twig' %}
+{% form_theme form with [
+    'bootstrap_4_layout.html.twig',
+    'bootstrap_4_syno_layout.html.twig'
+] %}
+
 
 {% block title %}Syno Storm{% endblock %}
 
@@ -29,7 +33,7 @@
                     {% for question in page.questions %}
                         {% if question.isMatrix %}
 
-                            {% include 'b4/page/_matrix.twig' %}
+<div class="container">
 
                         {% elseif question.isText %}
                             {% for answer in question.answers %}
@@ -59,25 +63,24 @@
                                     }
                                 )
                             }}
-                        </div>
-
                     </div>
 
-                    {{ form_end(form) }}
                 </div>
-            </div>
 
+                {{ form_end(form) }}
+            </div>
         </div>
     </div>
+</div>
 
-    {% if (response.isDebug) %}
+{% if (response.isDebug) %}
 
-        {% include 'b4/page/_debug.twig' %}
+{% include 'b4/page/_debug.twig' %}
 
-    {% else %}
+{% else %}
 
-        {% include 'b4/page/_footer.twig' %}
+{% include 'b4/page/_footer.twig' %}
 
-    {% endif %}
+{% endif %}
 
 {% endblock %}
