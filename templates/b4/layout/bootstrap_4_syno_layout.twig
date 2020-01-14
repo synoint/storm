@@ -191,7 +191,7 @@
 {% block form_label -%}
 {% if label is not same as(false) -%}
 {%- if compound is defined and compound -%}
-{%- set element = 'legend' -%}
+{%- set element = 'h1' -%}
 {%- set label_attr = label_attr|merge({class: (label_attr.class|default('') ~ ' col-form-label')|trim}) -%}
 {%- else -%}
 {%- set label_attr = label_attr|merge({for: id}) -%}
