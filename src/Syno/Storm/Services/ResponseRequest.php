@@ -224,7 +224,7 @@ class ResponseRequest
                     is_int($formData[$key]) &&
                     $question->answerIdExists($formData[$key])
                 ) {
-                    $result[] = new Document\ResponseAnswer($formData[$key]);
+                    $result[] = new Document\ResponseAnswerValue($formData[$key]);
                 }
                 break;
             case Document\Question::TYPE_MULTIPLE_CHOICE:
@@ -232,7 +232,7 @@ class ResponseRequest
                 if (!empty($formData[$key]) && is_array($formData[$key])) {
                     foreach ($formData[$key] as $answerId) {
                         if ($question->answerIdExists($answerId)) {
-                            $result[] = new Document\ResponseAnswer($answerId);
+                            $result[] = new Document\ResponseAnswerValue($answerId);
                         }
                     }
                 }
@@ -243,7 +243,7 @@ class ResponseRequest
                         is_int($formData[$rowCode]) &&
                         $question->answerIdExists($formData[$rowCode])
                     ) {
-                        $result[] = new Document\ResponseAnswer($formData[$rowCode]);
+                        $result[] = new Document\ResponseAnswerValue($formData[$rowCode]);
                     }
                 }
                 break;
@@ -252,7 +252,7 @@ class ResponseRequest
                     if (!empty($formData[$rowCode]) && is_array($formData[$rowCode])) {
                         foreach ($formData[$rowCode] as $answerId) {
                             if ($question->answerIdExists($answerId)) {
-                                $result[] = new Document\ResponseAnswer($answerId);
+                                $result[] = new Document\ResponseAnswerValue($answerId);
                             }
                         }
                     }
@@ -266,7 +266,7 @@ class ResponseRequest
                         $value = trim($formData[$key]);
                         $value = filter_var($value, FILTER_SANITIZE_STRING);
                         $value = mb_substr($value, 0, 10000, 'UTF-8');
-                        $result[] = new Document\ResponseAnswer($key, $value);
+                        $result[] = new Document\ResponseAnswerValue($key, $value);
                     }
                 }
                 break;

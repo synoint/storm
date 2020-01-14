@@ -85,9 +85,9 @@ class Response
     /**
      * @var Collection
      *
-     * @ODM\EmbedMany(targetDocument=ResponseQuestion::class)
+     * @ODM\EmbedMany(targetDocument=ResponseAnswer::class)
      */
-    private $questions;
+    private $answers;
 
     /**
      * @param string $responseId
@@ -359,10 +359,10 @@ class Response
     }
 
     /**
-     * @param ResponseQuestion $responseQuestion
+     * @param ResponseAnswer $responseAnswer
      */
-    public function addResponseQuestion(ResponseQuestion $responseQuestion)
+    public function addAnswer(ResponseAnswer $responseAnswer)
     {
-        $this->questions->set($responseQuestion->getQuestionId(), $responseQuestion);
+        $this->answers->set($responseAnswer->getQuestionId(), $responseAnswer);
     }
 }

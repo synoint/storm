@@ -2,6 +2,8 @@
 
 namespace Syno\Storm\Document;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -16,64 +18,62 @@ class ResponseAnswer
      * @ODM\Field(type="int")
      * @Assert\Positive
      */
-    private $answerId;
+    private $questionId;
 
     /**
-     * @var string
+     * @var Collection
      *
-     * @ODM\Field(type="string")
+     * @ODM\EmbedMany(targetDocument=ResponseAnswerValue::class)
      */
-    private $value;
+    private $answers;
 
     /**
-     * @param int    $answerId
-     * @param string $value
+     * @param int             $questionId
+     * @param ArrayCollection $answers
      */
-    public function __construct(int $answerId, string $value = null)
+    public function __construct(int $questionId, ArrayCollection $answers)
     {
-        $this->answerId = $answerId;
-        $this->value    = $value;
+        $this->questionId = $questionId;
+        $this->answers    = $answers;
     }
-
 
     /**
      * @return int
      */
-    public function getAnswerId(): int
+    public function getQuestionId(): int
     {
-        return $this->answerId;
+        return $this->questionId;
     }
 
     /**
-     * @param int $answerId
+     * @param int $questionId
      *
      * @return ResponseAnswer
      */
-    public function setAnswerId(int $answerId): ResponseAnswer
+    public function setQuestionId(int $questionId): ResponseAnswer
     {
-        $this->answerId = $answerId;
+        $this->questionId = $questionId;
 
         return $this;
     }
 
     /**
-     * @return string
+     * @return Collection
      */
-    public function getValue(): string
+    public function getAnswers(): Collection
     {
-        return $this->value;
+        return $this->answers;
     }
 
     /**
-     * @param string $value
+     * @param Collection $answers
      *
      * @return ResponseAnswer
      */
-    public function setValue(string $value): ResponseAnswer
+    public function setAnswers(Collection $answers): ResponseAnswer
     {
-        $this->value = $value;
+        $this->answers = $answers;
 
         return $this;
     }
-
 }

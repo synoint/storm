@@ -63,8 +63,8 @@ class PageController extends AbstractController
             /** @var Document\Question $question */
             foreach ($page->getQuestions() as $question) {
                 $answers = $this->responseRequestService->extractAnswers($question, $form->getData());
-                $response->addResponseQuestion(
-                    new Document\ResponseQuestion($question->getQuestionId(), $answers)
+                $response->addAnswer(
+                    new Document\ResponseAnswer($question->getQuestionId(), $answers)
                 );
             }
             $this->responseRequestService->saveResponse($response);
