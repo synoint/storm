@@ -83,6 +83,13 @@ class Response
     private $hiddenValues;
 
     /**
+     * @var Collection
+     *
+     * @ODM\EmbedMany(targetDocument=ResponseQuestion::class)
+     */
+    private $questions;
+
+    /**
      * @param string $responseId
      *
      * @throws \Exception
@@ -349,5 +356,13 @@ class Response
         if (!$this->hiddenValues->contains($hiddenValue)) {
             $this->hiddenValues[] = $hiddenValue;
         }
+    }
+
+    /**
+     * @param ResponseQuestion $responseQuestion
+     */
+    public function addResponseQuestion(ResponseQuestion $responseQuestion)
+    {
+        $this->questions->set($responseQuestion->getQuestionId(), $responseQuestion);
     }
 }

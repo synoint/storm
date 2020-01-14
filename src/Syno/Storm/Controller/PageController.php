@@ -9,26 +9,26 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Syno\Storm\Document;
 use Syno\Storm\Form\PageType;
-use Syno\Storm\Services\Survey;
+use Syno\Storm\Services\ResponseRequest;
 use Syno\Storm\Services\SurveySession;
 
 
 class PageController extends AbstractController
 {
-    /** @var Survey */
-    private $surveyService;
+    /** @var ResponseRequest */
+    private $responseRequestService;
 
     /** @var SurveySession */
     private $surveySessionService;
 
     /**
-     * @param Survey        $surveyService
-     * @param SurveySession $surveySessionService
+     * @param ResponseRequest $responseRequestService
+     * @param SurveySession   $surveySessionService
      */
-    public function __construct(Survey $surveyService, SurveySession $surveySessionService)
+    public function __construct(ResponseRequest $responseRequestService, SurveySession $surveySessionService)
     {
-        $this->surveyService        = $surveyService;
-        $this->surveySessionService = $surveySessionService;
+        $this->responseRequestService = $responseRequestService;
+        $this->surveySessionService   = $surveySessionService;
     }
 
     /**
@@ -54,14 +54,20 @@ class PageController extends AbstractController
     ): Response
     {
         $form = $this->createForm(PageType::class, null, [
-            'page' => $page
+            'questions' => $page->getQuestions()
         ]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
 
-            var_dump($form->getData());
-            exit;
+            /** @var Document\Question $question */
+            foreach ($page->getQuestions() as $question) {
+                $answers = $this->responseRequestService->extractAnswers($question, $form->getData());
+                $response->addResponseQuestion(
+                    new Document\ResponseQuestion($question->getQuestionId(), $answers)
+                );
+            }
+            $this->responseRequestService->saveResponse($response);
 
             $nextPage = $survey->getNextPage($page->getPageId());
             if (null === $nextPage) {

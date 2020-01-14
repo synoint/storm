@@ -12,6 +12,8 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class Question
 {
+    const INPUT_PREFIX = 'q_';
+
     const TYPE_SINGLE_CHOICE          = 1;
     const TYPE_MULTIPLE_CHOICE        = 2;
     const TYPE_SINGLE_CHOICE_MATRIX   = 3;
@@ -227,6 +229,11 @@ class Question
         return in_array($this->questionTypeId, [self::TYPE_SINGLE_CHOICE_MATRIX, self::TYPE_MULTIPLE_CHOICE_MATRIX]);
     }
 
+    public function isText()
+    {
+        return self::TYPE_TEXT === $this->questionTypeId;
+    }
+
     /**
      * @return Collection
      */
@@ -243,10 +250,22 @@ class Question
         $choices = [];
         /** @var Answer $answer */
         foreach ($this->getAnswers() as $answer) {
-            $choices[$answer->getLabel()] = $answer->getCode();
+            $choices[$answer->getLabel()] = $answer->getAnswerId();
         }
 
         return $choices;
+    }
+
+    public function answerIdExists(int $answerId)
+    {
+        /** @var Answer $answer */
+        foreach ($this->answers as $answer) {
+            if ($answer->getAnswerId() === $answerId) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**
@@ -307,16 +326,21 @@ class Question
         );
     }
 
-    public function getMatrixAnswerInputName(string $rowCode)
+    /**
+     * @return string
+     */
+    public function getInputName(): string
     {
-        if (self::TYPE_SINGLE_CHOICE_MATRIX === $this->questionTypeId) {
-            return 'a_' . $rowCode;
-        }
-
-        if (self::TYPE_MULTIPLE_CHOICE_MATRIX === $this->questionTypeId) {
-            return 'a_' . $rowCode . '[]';
-        }
-
-        throw new \LogicException(sprintf('This question is not a matrix type question'));
+        return self::INPUT_PREFIX . $this->questionId;
     }
+
+    /**
+     * @return bool
+     */
+    public function containsSelectField()
+    {
+        return $this->answers->first()->getAnswerFieldTypeId() === Answer::FIELD_TYPE_SELECT;
+    }
+
+
 }

@@ -207,4 +207,71 @@ class ResponseRequest
     {
         $this->responseService->save($response);
     }
+
+    /**
+     * @param Document\Question $question
+     * @param array             $formData
+     *
+     * @return array|ArrayCollection
+     */
+    public function extractAnswers(Document\Question $question, array $formData)
+    {
+        $result = new ArrayCollection();
+        switch ($question->getQuestionTypeId()) {
+            case Document\Question::TYPE_SINGLE_CHOICE:
+                $key = $question->getInputName();
+                if (!empty($formData[$key]) &&
+                    is_int($formData[$key]) &&
+                    $question->answerIdExists($formData[$key])
+                ) {
+                    $result[] = new Document\ResponseAnswer($formData[$key]);
+                }
+                break;
+            case Document\Question::TYPE_MULTIPLE_CHOICE:
+                $key = $question->getInputName();
+                if (!empty($formData[$key]) && is_array($formData[$key])) {
+                    foreach ($formData[$key] as $answerId) {
+                        if ($question->answerIdExists($answerId)) {
+                            $result[] = new Document\ResponseAnswer($answerId);
+                        }
+                    }
+                }
+                break;
+            case Document\Question::TYPE_SINGLE_CHOICE_MATRIX:
+                foreach (array_keys($question->getRows()) as $rowCode) {
+                    if (!empty($formData[$rowCode]) &&
+                        is_int($formData[$rowCode]) &&
+                        $question->answerIdExists($formData[$rowCode])
+                    ) {
+                        $result[] = new Document\ResponseAnswer($formData[$rowCode]);
+                    }
+                }
+                break;
+            case Document\Question::TYPE_MULTIPLE_CHOICE_MATRIX:
+                foreach (array_keys($question->getRows()) as $rowCode) {
+                    if (!empty($formData[$rowCode]) && is_array($formData[$rowCode])) {
+                        foreach ($formData[$rowCode] as $answerId) {
+                            if ($question->answerIdExists($answerId)) {
+                                $result[] = new Document\ResponseAnswer($answerId);
+                            }
+                        }
+                    }
+                }
+                break;
+            case Document\Question::TYPE_TEXT:
+                /** @var Document\Answer $answer */
+                foreach ($question->getAnswers() as $answer) {
+                    $key = $answer->getAnswerId();
+                    if (!empty($formData[$key]) && is_string($formData[$key])) {
+                        $value = trim($formData[$key]);
+                        $value = filter_var($value, FILTER_SANITIZE_STRING);
+                        $value = mb_substr($value, 0, 10000, 'UTF-8');
+                        $result[] = new Document\ResponseAnswer($key, $value);
+                    }
+                }
+                break;
+        }
+
+        return $result;
+    }
 }

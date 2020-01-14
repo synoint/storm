@@ -27,13 +27,19 @@
                     {{ form_start(form) }}
 
                     {% for question in page.questions %}
-                        {% if question.isMatrix() %}
+                        {% if question.isMatrix %}
 
                             {% include 'b4/page/_matrix.twig' %}
 
+                        {% elseif question.isText %}
+                            {% for answer in question.answers %}
+                                {{
+                                    form_row(attribute(form, (answer.answerId)), {'label': question.getText()})
+                                }}
+                            {% endfor %}
                         {% else %}
                             {{
-                                form_row(attribute(form, ('q_' ~ question.code)), {'label': question.getText()})
+                                form_row(attribute(form, (question.getInputName)), {'label': question.getText()})
                             }}
                         {% endif %}
                     {% endfor %}

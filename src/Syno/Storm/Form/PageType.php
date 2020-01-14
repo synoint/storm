@@ -2,7 +2,6 @@
 
 namespace Syno\Storm\Form;
 
-use Doctrine\Common\Collections\Collection;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
@@ -11,86 +10,26 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Syno\Storm\Document;
-use Syno\Storm\Form\Type\MultipleChoice;
-use Syno\Storm\Form\Type\SingleChoiceRadio;
-use Syno\Storm\Form\Type\SingleChoiceSelect;
 
 class PageType extends AbstractType
 {
-    const PREFIX = 'q_';
-
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        /** @var Document\Page $page */
-        $page = $options['page'];
-
         /** @var Document\Question $question */
-        foreach ($page->getQuestions() as $question) {
-
+        foreach ($options['questions'] as $question) {
             switch ($question->getQuestionTypeId()) {
-
                 case Document\Question::TYPE_SINGLE_CHOICE:
-
-                    $builder->add(self::PREFIX . $question->getCode(), ChoiceType::class, [
-                        'choices'  => $question->getChoices(),
-                        'required' => $question->isRequired(),
-                        'expanded' => !$this->displayInSelect($question->getAnswers())
-                    ]);
-
+                    $this->addSingleChoice($builder, $question);
                     break;
                 case Document\Question::TYPE_MULTIPLE_CHOICE:
-                    $builder->add(self::PREFIX . $question->getCode(), ChoiceType::class, [
-                        'choices'  => $question->getChoices(),
-                        'required' => $question->isRequired(),
-                        'expanded' => true,
-                        'multiple' => true
-                    ]);
+                    $this->addMultipleChoice($builder, $question);
                     break;
-
                 case Document\Question::TYPE_SINGLE_CHOICE_MATRIX:
-                    foreach ($question->getRows() as $rowCode => $rowLabel) {
-
-                        $choices = [];
-                        foreach ($question->getColumns() as $columnCode => $columnLabel) {
-                            $choices[$columnLabel] = $columnCode;
-                        }
-
-                        $builder->add(self::PREFIX . $rowCode, ChoiceType::class, [
-                            'choices' => $choices,
-                            'multiple' => false,
-                            'expanded' => true
-                        ]);
-                    }
-                    break;
                 case Document\Question::TYPE_MULTIPLE_CHOICE_MATRIX:
-                    foreach ($question->getRows() as $rowCode => $rowLabel) {
-
-                        $choices = [];
-                        foreach ($question->getColumns() as $columnCode => $columnLabel) {
-                            $choices[$columnLabel] = $columnCode;
-                        }
-
-                        $builder->add(self::PREFIX . $rowCode, ChoiceType::class, [
-                            'choices' => $choices,
-                            'multiple' => true,
-                            'expanded' => true
-                        ]);
-                    }
+                    $this->addMatrix($builder, $question);
                     break;
                 case Document\Question::TYPE_TEXT:
-                    /** @var Document\Answer $answer */
-                    foreach ($question->getAnswers() as $answer) {
-                        if ($answer->getAnswerFieldTypeId() === Document\Answer::FIELD_TYPE_TEXT) {
-                            $builder->add(self::PREFIX . $question->getCode(), TextType::class, [
-                                'required' => $question->isRequired()
-                            ]);
-                        } elseif ($answer->getAnswerFieldTypeId() === Document\Answer::FIELD_TYPE_TEXTAREA) {
-                            $builder->add(self::PREFIX . $question->getCode(), TextareaType::class, [
-                                'required' => $question->isRequired()
-                            ]);
-                        }
-                    }
-
+                    $this->addText($builder, $question);
                     break;
             }
         }
@@ -100,18 +39,75 @@ class PageType extends AbstractType
 
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setDefaults(
-            [
-                'page' => null
-            ]
-        );
+        $resolver->setDefaults(['questions' => null]);
     }
 
-    private function displayInSelect(Collection $answers)
+    /**
+     * @param FormBuilderInterface $builder
+     * @param Document\Question    $question
+     */
+    private function addSingleChoice(FormBuilderInterface $builder, Document\Question $question)
+    {
+        $builder->add($question->getInputName(), ChoiceType::class, [
+            'choices'  => $question->getChoices(),
+            'required' => $question->isRequired(),
+            'expanded' => !$question->containsSelectField()
+        ]);
+    }
+
+    /**
+     * @param FormBuilderInterface $builder
+     * @param Document\Question    $question
+     */
+    private function addMultipleChoice(FormBuilderInterface $builder, Document\Question $question)
+    {
+        $builder->add($question->getInputName(), ChoiceType::class, [
+            'choices'  => $question->getChoices(),
+            'required' => $question->isRequired(),
+            'expanded' => true,
+            'multiple' => true
+        ]);
+    }
+
+    /**
+     * @param FormBuilderInterface $builder
+     * @param Document\Question    $question
+     */
+    private function addMatrix(FormBuilderInterface $builder, Document\Question $question)
+    {
+        foreach (array_keys($question->getRows()) as $rowCode) {
+            $choices = [];
+            foreach (array_keys($question->getColumns()) as $columnCode) {
+                $answer = $question->getMatrixAnswer($rowCode, $columnCode);
+                $choices[$answer->getColumnLabel()] = $answer->getAnswerId();
+            }
+
+            $builder->add($rowCode, ChoiceType::class, [
+                'choices' => $choices,
+                'multiple' => (Document\Question::TYPE_MULTIPLE_CHOICE_MATRIX === $question->getQuestionTypeId()),
+                'expanded' => true,
+                'required' => $question->isRequired()
+            ]);
+        }
+    }
+
+    /**
+     * @param FormBuilderInterface $builder
+     * @param Document\Question    $question
+     */
+    private function addText(FormBuilderInterface $builder, Document\Question $question)
     {
         /** @var Document\Answer $answer */
-        $answer = $answers->first();
-
-        return $answer->getAnswerFieldTypeId() === Document\Answer::FIELD_TYPE_SELECT;
+        foreach ($question->getAnswers() as $answer) {
+            if ($answer->getAnswerFieldTypeId() === Document\Answer::FIELD_TYPE_TEXT) {
+                $builder->add($answer->getAnswerId(), TextType::class, [
+                    'required' => $question->isRequired()
+                ]);
+            } elseif ($answer->getAnswerFieldTypeId() === Document\Answer::FIELD_TYPE_TEXTAREA) {
+                $builder->add($answer->getAnswerId(), TextareaType::class, [
+                    'required' => $question->isRequired()
+                ]);
+            }
+        }
     }
 }

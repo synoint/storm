@@ -82,13 +82,6 @@ class Answer
     private $columnLabel;
 
     /**
-     * @var string
-     *
-     * @ODM\Field(type="string")
-     */
-    public $value;
-
-    /**
      * @return mixed
      */
     public function getId()
@@ -287,26 +280,5 @@ class Answer
 
         return $this;
     }
-
-    /**
-     * @return string
-     */
-    public function getValue(): string
-    {
-        return $this->value;
-    }
-
-    /**
-     * @param string $value
-     *
-     * @return Answer
-     */
-    public function setValue(string $value): Answer
-    {
-        $this->value = $value;
-
-        return $this;
-    }
-
 
 }

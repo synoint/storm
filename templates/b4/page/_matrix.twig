@@ -17,7 +17,7 @@
         {% for rowCode,rowLabel in question.getRows() %}
             <tr>
                 <th scope="row">{{ rowLabel }}</th>
-                {% for child in attribute(form, ('q_' ~ rowCode)) %}
+                {% for child in attribute(form, (rowCode)) %}
                     <td>{{ form_widget(child, {'label' : false}) }}</td>
                 {% endfor %}
             </tr>
