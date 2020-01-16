@@ -8,6 +8,7 @@ use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
 
 /**
  * @ODM\Document(collection="response"))
+ * @ODM\UniqueIndex(keys={"surveyId"="asc", "responseId"="asc"})
  */
 class Response
 {
@@ -256,6 +257,14 @@ class Response
     public function isDebug(): bool
     {
         return self::MODE_DEBUG === $this->mode;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isTest(): bool
+    {
+        return self::MODE_TEST === $this->mode;
     }
 
     /**

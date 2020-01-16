@@ -20,16 +20,16 @@ class ResponseEvent
     private $time;
 
     /**
-     * @var int
+     * @var string
      *
-     * @ODM\Field(type="int")
+     * @ODM\Field(type="string") @ODM\Index
      */
     private $responseId;
 
     /**
      * @var int
      *
-     * @ODM\Field(type="int")
+     * @ODM\Field(type="int") @ODM\Index
      */
     private $surveyId;
 
@@ -49,11 +49,11 @@ class ResponseEvent
 
     /**
      * @param string $message
-     * @param int    $responseId
+     * @param string    $responseId
      * @param int    $surveyId
      * @param int    $pageId
      */
-    public function __construct(string $message, int $responseId, int $surveyId, int $pageId = null)
+    public function __construct(string $message, string $responseId, int $surveyId, int $pageId = null)
     {
         $this->time       = new \DateTime();
         $this->message    = $message;

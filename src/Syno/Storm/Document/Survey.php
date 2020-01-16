@@ -10,6 +10,7 @@ use JsonSerializable;
 
 /**
  * @ODM\Document(collection="survey"))
+ * @ODM\UniqueIndex(keys={"surveyId"="asc", "version"="asc"})
  */
 class Survey implements JsonSerializable
 {

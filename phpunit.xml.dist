@@ -15,6 +15,7 @@
         <server name="SYMFONY_PHPUNIT_REMOVE" value="" />
         <server name="SYMFONY_PHPUNIT_VERSION" value="7.5" />
         <env name="KERNEL_CLASS" value="Syno\Storm\Kernel"/>
+        <env name="APP_REGION" value="test" />
         <env name="MONGODB_URL" value="mongodb://localhost:27017" />
         <env name="MONGODB_DB" value="storm_1" />
         <env name="STORM_API_TOKEN" value="" />

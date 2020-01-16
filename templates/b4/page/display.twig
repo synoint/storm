@@ -74,6 +74,10 @@
 
         {% include 'b4/page/_debug.twig' %}
 
+    {% elseif (response.isTest) %}
+
+        {% include 'b4/page/_test.twig' %}
+
     {% else %}
 
         {% include 'b4/page/_footer.twig' %}

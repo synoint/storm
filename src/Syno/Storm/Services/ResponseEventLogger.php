@@ -17,7 +17,6 @@ class ResponseEventLogger
     const SURVEY_VERSION_UNAVAILABLE = 'survey version unavailable';
 
     const PAGE_ENTERED      = 'page entered';
-    const ANSWERS_SUBMITTED = 'answers submitted';
     const ANSWERS_SAVED     = 'answers saved';
     const ANSWERS_ERROR     = 'answers error';
 
@@ -52,6 +51,8 @@ class ResponseEventLogger
                 break;
             case self::SURVEY_RESUMED:
             case self::PAGE_ENTERED:
+            case self::ANSWERS_SAVED:
+            case self::ANSWERS_ERROR:
                 $document = new ResponseEvent(
                     $event,
                     $response->getResponseId(),

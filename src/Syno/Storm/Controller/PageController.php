@@ -71,8 +71,6 @@ class PageController extends AbstractController
 
         if ($form->isSubmitted()) {
 
-            $this->responseEventLogger->log(ResponseEventLogger::ANSWERS_SUBMITTED, $response);
-
             if ($form->isValid()) {
 
                 /** @var Document\Question $question */
