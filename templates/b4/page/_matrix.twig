@@ -18,7 +18,11 @@
             <tr>
                 <th scope="row">{{ rowLabel }}</th>
                 {% for child in attribute(form, (rowCode)) %}
-                    <td>{{ form_widget(child, {'label' : false}) }}</td>
+                    <td>
+                    <div class="custom-control {{ (question.questionTypeId  is same as(3)) ? 'custom-radio"' : 'custom-checkbox' }}"> 
+                        {{ form_widget(child, {'label' : false, 'label_attr': {'class': 'custom-control-label'}}) }}
+                    </div>
+                    </td>
                 {% endfor %}
             </tr>
         {% endfor %}

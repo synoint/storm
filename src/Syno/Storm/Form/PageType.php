@@ -51,7 +51,12 @@ class PageType extends AbstractType
         $builder->add($question->getInputName(), ChoiceType::class, [
             'choices'  => $question->getChoices(),
             'required' => $question->isRequired(),
-            'expanded' => !$question->containsSelectField()
+            'expanded' => !$question->containsSelectField(),
+            'attr' => ['class' => 'custom-control custom-radio'],
+            'choice_attr' => function($choice, $key, $value) {
+                return ['class' => 'custom-control-input'];
+            },
+            'label_attr' => ['class' => 'custom-control-label']
         ]);
     }
 
@@ -65,7 +70,12 @@ class PageType extends AbstractType
             'choices'  => $question->getChoices(),
             'required' => $question->isRequired(),
             'expanded' => true,
-            'multiple' => true
+            'multiple' => true,
+            'attr' => ['class' => 'custom-control custom-checkbox'],
+            'choice_attr' => function($choice, $key, $value) {
+                return ['class' => 'custom-control-input'];
+            },
+            'label_attr' => ['class' => 'custom-control-label']
         ]);
     }
 
@@ -82,11 +92,16 @@ class PageType extends AbstractType
                 $choices[$answer->getColumnLabel()] = $answer->getAnswerId();
             }
 
+            $multiple = (Document\Question::TYPE_MULTIPLE_CHOICE_MATRIX === $question->getQuestionTypeId());
+
             $builder->add($rowCode, ChoiceType::class, [
                 'choices' => $choices,
-                'multiple' => (Document\Question::TYPE_MULTIPLE_CHOICE_MATRIX === $question->getQuestionTypeId()),
+                'multiple' => $multiple,
                 'expanded' => true,
-                'required' => $question->isRequired()
+                'required' => $question->isRequired(),
+                'choice_attr' => function($choice, $key, $value) {
+                    return ['class' => 'custom-control-input'];
+                },
             ]);
         }
     }

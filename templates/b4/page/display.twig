@@ -1,8 +1,5 @@
 {% extends '/b4/layout/base.twig' %}
-{% form_theme form with [
-    'bootstrap_4_layout.html.twig',
-    '/b4/layout/bootstrap_4_syno_layout.twig'
-] %}
+{% form_theme form with ['bootstrap_4_layout.html.twig'] %}
 {% block title %}Syno Storm
 {% endblock %}
 {% block body %}
@@ -39,9 +36,10 @@
                                 }}
 							{% endfor %}
 						{% else %}
-							{{
-                                form_row(attribute(form, (question.getInputName)), {'label': question.getText()})
-                            }}
+							<section> 
+								<h5 class="py-3"> {{question.getText()}}</h5>
+								{{form_widget(attribute(form, (question.getInputName)))}}
+							</section>
 						{% endif %}
 					{% endfor %}
 
