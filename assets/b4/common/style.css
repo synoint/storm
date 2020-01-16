@@ -1,6 +1,22 @@
-.syno-logo {
-    height: 2.5rem
+html,
+body {
+    height: 100%;
 }
+
+body {
+    display: -ms-flexbox;
+    display: -webkit-box;
+    display: flex;
+    -ms-flex-align: center;
+    -ms-flex-pack: center;
+    -webkit-box-align: center;
+    align-items: center;
+    -webkit-box-pack: center;
+    justify-content: center;
+    padding-top: 40px;
+    padding-bottom: 40px;
+}
+
 footer {
     position: fixed;
     bottom: 0;
@@ -8,15 +24,30 @@ footer {
     height: 3.5rem;
     background-color: #00263b;
 }
+
+.form-control {
+    position: relative;
+    box-sizing: border-box;
+    height: auto;
+    padding: 10px;
+    font-size: 16px;
+}
+
+.syno-logo {
+    height: 2.5rem
+}
+
 .powered-by {
     font-size: 0.54rem;
     font-style: italic;
     margin-left: 2rem
 }
+
 .footer-logo {
     width: 3rem;
     margin-top: -1.55rem;
 }
+
 .progress {
     margin-top: 1.65rem;
     height: 0.3rem;

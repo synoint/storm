@@ -1,15 +1,15 @@
-<p>
-    {{ question.text }}
-</p>
+<section> 
+    
+    <h5 class="py-3"> {{question.getText()}}</h5>
 
 <table class="table table-borderless table-hover">
     <thead>
         <tr>
             <td>&nbsp;</td>
             {% for column in question.getColumns() %}
-                <th scope="col">
-                    {{ column }}
-                </th>
+            <th scope="col">
+                {{ column }}
+            </th>
             {% endfor %}
         </tr>
     </thead>
@@ -18,9 +18,16 @@
             <tr>
                 <th scope="row">{{ rowLabel }}</th>
                 {% for child in attribute(form, (rowCode)) %}
-                    <td>{{ form_widget(child, {'label' : false}) }}</td>
+                    <td>
+                    <div class="custom-control 
+                        {{ (question.questionTypeId == constant('Syno\\Storm\\Document\\Question::TYPE_SINGLE_CHOICE_MATRIX'))  ? 'custom-radio' : 'custom-checkbox' }}
+                        "> 
+                        {{ form_widget(child, {'label' : false, 'label_attr': {'class': 'custom-control-label'}}) }}
+                    </div>
+                    </td>
                 {% endfor %}
             </tr>
         {% endfor %}
     </tbody>
 </table>
+</section>
