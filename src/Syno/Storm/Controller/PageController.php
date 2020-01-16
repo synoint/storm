@@ -9,27 +9,38 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Syno\Storm\Document;
 use Syno\Storm\Form\PageType;
-use Syno\Storm\Services\ResponseRequest;
+use Syno\Storm\RequestHandler;
+use Syno\Storm\Services\ResponseEventLogger;
 use Syno\Storm\Services\SurveySession;
 
 
 class PageController extends AbstractController
 {
-    /** @var ResponseRequest */
-    private $responseRequestService;
+    /** @var RequestHandler\Response */
+    private $responseRequestHandler;
+
+    /** @var ResponseEventLogger */
+    private $responseEventLogger;
 
     /** @var SurveySession */
     private $surveySessionService;
 
     /**
-     * @param ResponseRequest $responseRequestService
-     * @param SurveySession   $surveySessionService
+     * @param RequestHandler\Response $responseRequestHandler
+     * @param ResponseEventLogger     $responseEventLogger
+     * @param SurveySession           $surveySessionService
      */
-    public function __construct(ResponseRequest $responseRequestService, SurveySession $surveySessionService)
+    public function __construct(
+        RequestHandler\Response $responseRequestHandler,
+        ResponseEventLogger $responseEventLogger,
+        SurveySession $surveySessionService
+    )
     {
-        $this->responseRequestService = $responseRequestService;
+        $this->responseRequestHandler = $responseRequestHandler;
+        $this->responseEventLogger    = $responseEventLogger;
         $this->surveySessionService   = $surveySessionService;
     }
+
 
     /**
      * @param Document\Survey   $survey
@@ -58,31 +69,38 @@ class PageController extends AbstractController
         ]);
         $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
+        if ($form->isSubmitted()) {
 
-            /** @var Document\Question $question */
-            foreach ($page->getQuestions() as $question) {
-                $answers = $this->responseRequestService->extractAnswers($question, $form->getData());
-                $response->addAnswer(
-                    new Document\ResponseAnswer($question->getQuestionId(), $answers)
-                );
-            }
-            $this->responseRequestService->saveResponse($response);
+            $this->responseEventLogger->log(ResponseEventLogger::ANSWERS_SUBMITTED, $response);
 
-            $nextPage = $survey->getNextPage($page->getPageId());
-            if (null === $nextPage) {
+            if ($form->isValid()) {
 
-                $this->surveySessionService->grantComplete($survey->getSurveyId());
+                /** @var Document\Question $question */
+                foreach ($page->getQuestions() as $question) {
+                    $answers = $this->responseRequestHandler->extractAnswers($question, $form->getData());
+                    $response->addAnswer(
+                        new Document\ResponseAnswer($question->getQuestionId(), $answers)
+                    );
+                }
+                $this->responseRequestHandler->saveResponse($response);
 
-                return $this->redirectToRoute('survey.complete', [
-                    'surveyId' => $survey->getSurveyId()
+                $this->responseEventLogger->log(ResponseEventLogger::ANSWERS_SAVED, $response);
+
+                $nextPage = $survey->getNextPage($page->getPageId());
+                if (null === $nextPage) {
+
+                    $this->surveySessionService->grantComplete($survey->getSurveyId());
+
+                    return $this->redirectToRoute('survey.complete', ['surveyId' => $survey->getSurveyId()]);
+                }
+
+                return $this->redirectToRoute('page.index', [
+                    'surveyId' => $survey->getSurveyId(),
+                    'pageId'   => $nextPage->getPageId()
                 ]);
             }
 
-            return $this->redirectToRoute('page.index', [
-                'surveyId' => $survey->getSurveyId(),
-                'pageId'   => $nextPage->getPageId()
-            ]);
+            $this->responseEventLogger->log(ResponseEventLogger::ANSWERS_ERROR, $response);
         }
 
         return $this->render($survey->getConfig()->theme . '/page/display.twig', [

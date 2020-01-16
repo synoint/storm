@@ -1,25 +1,28 @@
 <?php
 
-namespace Syno\Storm\Services;
+namespace Syno\Storm\RequestHandler;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Symfony\Component\HttpFoundation\Cookie;
+use Symfony\Component\HttpFoundation\IpUtils;
+use Symfony\Component\HttpFoundation\Response as HttpResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Syno\Storm\Document;
-use Symfony\Component\HttpFoundation;
+use Syno\Storm\Services;
 
-class ResponseRequest
+
+class Response
 {
     CONST ATTR = 'response';
 
-    /** @var Response */
+    /** @var Services\Response */
     private $responseService;
 
     /**
-     * @param Response $responseService
+     * @param Services\Response $responseService
      */
-    public function __construct(Response $responseService)
+    public function __construct(Services\Response $responseService)
     {
         $this->responseService = $responseService;
     }
@@ -75,6 +78,11 @@ class ResponseRequest
         $request->getSession()->set('id:' . $response->getSurveyId(), $response->getResponseId());
     }
 
+    public function clearResponseIdInSession(Request $request, int $surveyId)
+    {
+        $request->getSession()->remove('id:' . $surveyId);
+    }
+
     /**
      * @param Request $request
      * @param int     $surveyId
@@ -94,6 +102,15 @@ class ResponseRequest
     public function getResponseIdCookie(Document\Response $response)
     {
         return new Cookie('id:' . $response->getSurveyId(), $response->getResponseId(), time() + 3600);
+    }
+
+    /**
+     * @param HttpResponse $response
+     * @param int          $surveyId
+     */
+    public function clearResponseIdCookie(HttpResponse $response, int $surveyId)
+    {
+        $response->headers->clearCookie('id:'. $surveyId);
     }
 
 
@@ -143,15 +160,11 @@ class ResponseRequest
     }
 
     /**
-     * @param Request                 $request
-     * @param HttpFoundation\Response $response
-     * @param int                     $surveyId
+     * @param Request $request
      */
-    public function clearResponse(Request $request, HttpFoundation\Response $response, int $surveyId)
+    public function clearResponse(Request $request)
     {
         $request->attributes->remove(self::ATTR);
-        $request->getSession()->remove('id:' . $surveyId);
-        $response->headers->clearCookie('id:'. $surveyId);
     }
 
     /**
@@ -167,9 +180,7 @@ class ResponseRequest
         $result
             ->setSurveyId($survey->getSurveyId())
             ->setSurveyVersion($survey->getVersion())
-            ->setMode(
-                $this->responseService->getMode($request->attributes->get('_route'))
-            )
+            ->setModeByRoute($request->attributes->get('_route'))
             ->setLocale($request->attributes->get('_locale'));
 
         return $result;
@@ -206,6 +217,22 @@ class ResponseRequest
     public function saveResponse(Document\Response $response)
     {
         $this->responseService->save($response);
+    }
+
+    /**
+     * @param Request           $request
+     * @param Document\Response $response
+     *
+     * @return Document\Response
+     */
+    public function addUserAgent(Request $request, Document\Response $response)
+    {
+        $response->addUserAgent(
+            IPUtils::anonymize($request->getClientIp()),
+            $request->headers->get('User-Agent')
+        );
+
+        return $response;
     }
 
     /**

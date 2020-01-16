@@ -11,6 +11,10 @@ use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
  */
 class Response
 {
+    const MODE_LIVE  = 'live';
+    const MODE_TEST  = 'test';
+    const MODE_DEBUG = 'debug';
+
     /** @ODM\Id */
     private $id;
 
@@ -223,11 +227,43 @@ class Response
     }
 
     /**
+     * @param string $route
+     *
+     * @return Response
+     */
+    public function setModeByRoute(string $route): Response
+    {
+        switch ($route) {
+            case 'survey.index':
+                $this->mode = self::MODE_LIVE;
+                break;
+            case 'survey.test':
+                $this->mode = self::MODE_TEST;
+                break;
+            case 'survey.debug':
+                $this->mode = self::MODE_DEBUG;
+                break;
+            default:
+                throw new \InvalidArgumentException(sprintf('Unknown route: "%s"', $route));
+        }
+
+        return $this;
+    }
+
+    /**
      * @return bool
      */
     public function isDebug(): bool
     {
-        return 'debug' === $this->mode;
+        return self::MODE_DEBUG === $this->mode;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isLive(): bool
+    {
+        return self::MODE_LIVE === $this->mode;
     }
 
     /**

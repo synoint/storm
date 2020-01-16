@@ -7,10 +7,6 @@ use Syno\Storm\Document;
 
 class Response
 {
-    const MODE_LIVE  = 'live';
-    const MODE_TEST  = 'test';
-    const MODE_DEBUG = 'debug';
-
     /** @var DocumentManager */
     private $dm;
     /** @var string */
@@ -54,25 +50,6 @@ class Response
         }
 
         return new Document\Response($responseId);
-    }
-
-    /**
-     * @param string $route
-     *
-     * @return string
-     */
-    public function getMode(string $route)
-    {
-        switch ($route) {
-            case 'survey.index':
-                return self::MODE_LIVE;
-            case 'survey.test':
-                return self::MODE_TEST;
-            case 'survey.debug':
-                return self::MODE_DEBUG;
-            default:
-                throw new \InvalidArgumentException(sprintf('Unknown route: "%s"', $route));
-        }
     }
 
     /**

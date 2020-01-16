@@ -1,21 +1,22 @@
 <?php
 
-namespace Syno\Storm\Services;
+namespace Syno\Storm\RequestHandler;
 
 use Symfony\Component\HttpFoundation\Request;
 use Syno\Storm\Document;
+use Syno\Storm\Services;
 
-class SurveyRequest
+class Survey
 {
     CONST ATTR = 'survey';
 
-    /** @var Survey */
+    /** @var Services\Survey */
     private $surveyService;
 
     /**
-     * @param Survey $surveyService
+     * @param Services\Survey $surveyService
      */
-    public function __construct(Survey $surveyService)
+    public function __construct(Services\Survey $surveyService)
     {
         $this->surveyService = $surveyService;
     }

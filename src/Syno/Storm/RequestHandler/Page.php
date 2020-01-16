@@ -1,11 +1,11 @@
 <?php
 
-namespace Syno\Storm\Services;
+namespace Syno\Storm\RequestHandler;
 
 use Symfony\Component\HttpFoundation\Request;
 use Syno\Storm\Document;
 
-class PageRequest
+class Page
 {
     CONST ATTR = 'page';
 

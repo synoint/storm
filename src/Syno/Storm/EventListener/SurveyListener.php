@@ -8,25 +8,24 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\Routing\RouterInterface;
-use Syno\Storm\Services\SurveyRequest;
+use Syno\Storm\RequestHandler\Survey;
 
 class SurveyListener implements EventSubscriberInterface
 {
-    /** @var SurveyRequest */
-    private $surveyRequestService;
+    /** @var Survey */
+    private $surveyRequestHandler;
     /** @var RouterInterface */
     private $router;
 
     /**
-     * @param SurveyRequest   $surveyRequestService
+     * @param Survey          $surveyRequestHandler
      * @param RouterInterface $router
      */
-    public function __construct(SurveyRequest $surveyRequestService, RouterInterface $router)
+    public function __construct(Survey $surveyRequestHandler, RouterInterface $router)
     {
-        $this->surveyRequestService = $surveyRequestService;
+        $this->surveyRequestHandler = $surveyRequestHandler;
         $this->router               = $router;
     }
-
 
     public function onKernelRequest(RequestEvent $event)
     {
@@ -41,13 +40,13 @@ class SurveyListener implements EventSubscriberInterface
             return;
         }
 
-        if (!$this->surveyRequestService->hasSurveyId($request)) {
+        if (!$this->surveyRequestHandler->hasSurveyId($request)) {
             return;
         }
 
-        $survey = $this->surveyRequestService->fetchSurvey($request);
+        $survey = $this->surveyRequestHandler->fetchSurvey($request);
         if ($survey) {
-            $this->surveyRequestService->setSurvey($request, $survey);
+            $this->surveyRequestHandler->setSurvey($request, $survey);
             return;
         }
 
