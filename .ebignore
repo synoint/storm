@@ -3,12 +3,13 @@
 ###
 
 ###> symfony/framework-bundle ###
-/.env.local
-/.env.local.php
-/.env.*.local
+/.env*
 /public/bundles/
 /var/
 #/vendor/
+/config/packages/dev
+/config/routes/dev
+/tests
 ###< symfony/framework-bundle ###
 
 ###> symfony/phpunit-bridge ###
@@ -37,8 +38,12 @@ yarn-error.log
 
 .git/
 .gitignore
+deploy.sh
 package.json
 phpunit.xml.dist
 symfony.lock
 webpack.config.js
 yarn.lock
+
+/LICENSE
+/README.md
