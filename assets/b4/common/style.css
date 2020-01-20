@@ -52,9 +52,13 @@ footer {
     margin-top: 1.65rem;
     height: 0.3rem;
 }
+
 .privacy-consent-container {
     font-size: 80%;
+    height: -moz-available;
+    height: -webkit-fill-available;
 }
+
 .privacy-consent-container p {
     line-height: 200%;
 }
