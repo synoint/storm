@@ -56,7 +56,7 @@ class SurveyListener implements EventSubscriberInterface
     public static function getSubscribedEvents(): array
     {
         return [
-            KernelEvents::REQUEST => ['onKernelRequest', 8],
+            KernelEvents::REQUEST => ['onKernelRequest', 10],
         ];
     }
 

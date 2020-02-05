@@ -101,7 +101,7 @@ class Survey
      *
      * @return int
      */
-    protected function getSurveyId(Request $request)
+    public function getSurveyId(Request $request)
     {
         return $request->attributes->getInt('surveyId');
     }

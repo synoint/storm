@@ -10,7 +10,7 @@
 		
 
             <div class="page__content col-12">
-                {% if page.content is defined and '' != page.content %} {{ page.content }} {% endif %}
+                {% if page.content is defined and '' != page.content %} {{ page.content|raw }} {% endif %}
             </div>
 
             <div class="col-12 py-4">

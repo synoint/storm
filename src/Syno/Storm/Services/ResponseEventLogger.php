@@ -18,6 +18,7 @@ class ResponseEventLogger
 
     const PAGE_ENTERED      = 'page entered';
     const ANSWERS_SAVED     = 'answers saved';
+    const ANSWERS_CLEARED   = 'answers cleared';
     const ANSWERS_ERROR     = 'answers error';
 
     /** @var DocumentManager */
@@ -52,6 +53,7 @@ class ResponseEventLogger
             case self::SURVEY_RESUMED:
             case self::PAGE_ENTERED:
             case self::ANSWERS_SAVED:
+            case self::ANSWERS_CLEARED:
             case self::ANSWERS_ERROR:
                 $document = new ResponseEvent(
                     $event,

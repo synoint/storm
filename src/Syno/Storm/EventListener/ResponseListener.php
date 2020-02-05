@@ -5,9 +5,9 @@ namespace Syno\Storm\EventListener;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Event\ControllerEvent;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpKernel\Event\ResponseEvent;
-use Symfony\Component\HttpKernel\Event\ControllerEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\Routing\RouterInterface;
 use Syno\Storm\Controller\PageController;
@@ -93,15 +93,26 @@ class ResponseListener implements EventSubscriberInterface
                         $surveyResponse->getSurveyVersion()
                     );
                     if (!$previousSurvey) {
-                        $event->setResponse(new RedirectResponse($this->router->generate('survey.unavailable')));
+
                         $this->responseEventLogger->log(
                             ResponseEventLogger::SURVEY_VERSION_UNAVAILABLE,
                             $surveyResponse
                         );
-                        return;
+
+                        $surveyResponse
+                            ->setSurveyVersion($survey->getVersion())
+                            ->setPageId($survey->getPages()->first()->getPageId())
+                            ->clearAnswers();
+
+                        $this->responseEventLogger->log(
+                            ResponseEventLogger::ANSWERS_CLEARED,
+                            $surveyResponse
+                        );
+
+                    } else {
+                        $this->surveyRequestHandler->setSurvey($request, $previousSurvey);
+                        $survey = $previousSurvey;
                     }
-                    $this->surveyRequestHandler->setSurvey($request, $previousSurvey);
-                    $survey = $previousSurvey;
                 }
 
                 /**
@@ -130,7 +141,6 @@ class ResponseListener implements EventSubscriberInterface
                 return;
             }
         }
-
 
         /**
          * New response

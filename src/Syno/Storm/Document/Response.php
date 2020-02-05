@@ -410,4 +410,9 @@ class Response
     {
         $this->answers->set($responseAnswer->getQuestionId(), $responseAnswer);
     }
+
+    public function clearAnswers()
+    {
+        $this->answers->clear();
+    }
 }
