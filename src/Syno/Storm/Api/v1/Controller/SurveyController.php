@@ -171,12 +171,18 @@ class SurveyController extends AbstractController implements TokenAuthenticatedC
         }
 
         if ('enable' === $toggle) {
-            $this->surveyService->enableDebugMode($survey);
-        } elseif ('disable' === $toggle) {
-            $this->surveyService->disableDebugMode($survey);
+            $token = $this->surveyService->enableDebugMode($survey);
+
+            return $this->json($token);
         }
 
-        return $this->json('ok');
+        if ('disable' === $toggle) {
+            $this->surveyService->disableDebugMode($survey);
+
+            return $this->json('ok');
+        }
+
+        return $this->json('Unknown action', 400);
     }
 
     /**
