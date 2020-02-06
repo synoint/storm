@@ -3,43 +3,58 @@
 {% block title %}Syno Storm{% endblock %} 
 {% block body %}
 
-<div class="container">
-    <div class="row container-sm justify-content-md-center ml-0">
+    <div class="container">
+        <div class="row container-sm justify-content-md-center ml-0">
 
-        <div class="questions">
-		
+            <div class="questions">
 
-            <div class="page__content col-12">
-                {% if page.content is defined and '' != page.content %} {{ page.content|raw }} {% endif %}
-            </div>
+                <div class="page__content col-12">
+                    {% if page.content is defined and '' != page.content %}
+                        {{ page.content|raw }}
+                    {% endif %}
+                </div>
 
-            <div class="col-12 py-4">
-                {{ form_start(form) }} {% for question in page.questions %} {% if question.isMatrix %} {% include 'b4/page/_matrix.twig' %} {% elseif question.isText %} {% for answer in question.answers %}
-                <section>
-                    <h5 class="py-3"> {{question.getText()}}</h5> {{form_row(attribute(form, (answer.answerId)), {'label': false})}}
-                </section>
-                {% endfor %} {% else %}
-                <section>
-                    <h5 class="py-3"> {{question.getText()}}</h5>
-                    <div class="container">
-                        {{form_widget(attribute(form, (question.getInputName)))}}
-                    </div>
-                </section>
-                {% endif %} {% endfor %}
+                <div class="col-12 py-4">
+                    {{ form_start(form) }}
 
-                <div class="row my-5">
-                    <div class="col text-center">
-                        <a class="btn btn-outline-secondary px-5 {% if backButtonDisabled %}disabled{% endif %}" onclick="window.history.go(-1); return false;">
+                    {% for question in page.questions %}
+                        {% if question.isMatrix %}
+                            {% include 'b4/page/_matrix.twig' %}
+                        {% elseif question.isText %}
+                            {% for answer in question.answers %}
+                                <section>
+                                    <h5 class="py-3">
+                                        {{ question.getText() }}
+                                    </h5>
+                                    {{ form_row(attribute(form, (answer.answerId)), {'label': false}) }}
+                                </section>
+                            {% endfor %}
+                        {% else %}
+                            <section>
+                                <h5 class="py-3"> {{ question.getText() }}</h5>
+                                <div class="container">
+                                    {{ form_widget(attribute(form, (question.getInputName))) }}
+                                </div>
+                            </section>
+                        {% endif %}
+
+                    {% endfor %}
+
+                    <div class="row my-5">
+                        <div class="col text-center">
+                            <a class="btn btn-outline-secondary px-5 {% if backButtonDisabled %}disabled{% endif %}"
+                               onclick="window.history.go(-1); return false;">
                                 {{ 'page.button.back'|trans }}
                             </a> {{ form_widget( form.next, { 'attr': {'class': 'btn btn-outline-primary px-5'}, 'label': 'page.button.next'|trans } ) }}
+                        </div>
                     </div>
+
+                    {{ form_end(form) }}
                 </div>
-                {{ form_end(form) }}
             </div>
         </div>
     </div>
-</div>
-</div>
+
     {% if (response.isDebug) %}
 
         {% include 'b4/page/_debug.twig' %}
