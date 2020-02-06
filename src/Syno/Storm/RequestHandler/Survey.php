@@ -5,9 +5,12 @@ namespace Syno\Storm\RequestHandler;
 use Symfony\Component\HttpFoundation\Request;
 use Syno\Storm\Document;
 use Syno\Storm\Services;
+use Syno\Storm\Traits\RouteAware;
 
 class Survey
 {
+    use RouteAware;
+
     CONST ATTR = 'survey';
 
     /** @var Services\Survey */
@@ -32,23 +35,13 @@ class Survey
     }
 
     /**
-     * @param Request $request
+     * @param int $surveyId
      *
      * @return Document\Survey|null
      */
-    public function fetchSurvey(Request $request)
+    public function getPublished(int $surveyId)
     {
-        $survey = null;
-        $surveyId = $request->attributes->getInt('surveyId');
-        if ($surveyId) {
-            if ($this->isDebugRoute($request)) {
-                $survey = $this->findSavedBySurveyIdAndVersion($surveyId, $this->getVersionId($request));
-            } else {
-                $survey = $this->surveyService->getPublished($surveyId);
-            }
-        }
-
-        return $survey;
+        return $this->surveyService->getPublished($surveyId);
     }
 
     /**
@@ -111,21 +104,11 @@ class Survey
      *
      * @return int
      */
-    protected function getVersionId(Request $request)
+    public function getVersionId(Request $request)
     {
         return $request->attributes->getInt(
             'versionId',
             (int) $this->surveyService->findLatestVersion($this->getSurveyId($request))
         );
-    }
-
-    /**
-     * @param Request $request
-     *
-     * @return bool
-     */
-    private function isDebugRoute(Request $request)
-    {
-        return 'survey.debug' === $request->attributes->get('_route');
     }
 }
