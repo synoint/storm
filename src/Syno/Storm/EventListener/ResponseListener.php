@@ -14,10 +14,13 @@ use Syno\Storm\Controller\PageController;
 use Syno\Storm\Event\SurveyCompleted;
 use Syno\Storm\RequestHandler;
 use Syno\Storm\Services\ResponseEventLogger;
+use Syno\Storm\Traits\RouteAware;
 
 
 class ResponseListener implements EventSubscriberInterface
 {
+    use RouteAware;
+
     /** @var RequestHandler\Survey */
     private $surveyRequestHandler;
 
@@ -118,7 +121,7 @@ class ResponseListener implements EventSubscriberInterface
                 /**
                  * Resume survey
                  */
-                if ($this->isSurveyEntrance($request)) {
+                if ($this->isSurveyEntrance($request->attributes->get('_route'))) {
 
                     $surveyResponse = $this->responseRequestHandler->addUserAgent($request, $surveyResponse);
 
@@ -152,7 +155,7 @@ class ResponseListener implements EventSubscriberInterface
         }
 
         // we have no response and it's not entrance - redirect to entrance
-        if (!$this->isSurveyEntrance($request)) {
+        if (!$this->isSurveyEntrance($request->attributes->get('_route'))) {
             $event->setResponse(
                 new RedirectResponse(
                     $this->router->generate(
@@ -279,16 +282,6 @@ class ResponseListener implements EventSubscriberInterface
             KernelEvents::RESPONSE   => ['onKernelResponse'],
             SurveyCompleted::class   => ['onSurveyCompleted']
         ];
-    }
-
-    /**
-     * @param Request $request
-     *
-     * @return bool
-     */
-    private function isSurveyEntrance(Request $request): bool
-    {
-        return in_array($request->attributes->get('_route'), ['survey.index', 'survey.test', 'survey.debug']);
     }
 
     /**
