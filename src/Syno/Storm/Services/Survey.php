@@ -137,5 +137,12 @@ class Survey
         $this->dm->flush();
     }
 
+    public function getProgress(Document\Survey $survey, Document\Page $currentPage): int
+    {
+        $pages            = $survey->getPages();
+        $pageCount        = $pages->count();
+        $currentPageIndex = $pages->indexOf($currentPage);
 
+        return round($currentPageIndex / $pageCount * 100);
+    }
 }
