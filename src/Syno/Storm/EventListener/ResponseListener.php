@@ -12,8 +12,10 @@ use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\Routing\RouterInterface;
 use Syno\Storm\Controller\PageController;
 use Syno\Storm\Event\SurveyCompleted;
+use Syno\Storm\Document;
 use Syno\Storm\RequestHandler;
 use Syno\Storm\Services\ResponseEventLogger;
+use Syno\Storm\Services\SurveyStats;
 use Syno\Storm\Traits\RouteAware;
 
 
@@ -36,19 +38,24 @@ class ResponseListener implements EventSubscriberInterface
     /** @var RouterInterface */
     private $router;
 
+    /** @var SurveyStats */
+    private $surveyStatsService;
+
     /**
      * @param RequestHandler\Survey   $surveyRequestHandler
      * @param RequestHandler\Page     $pageRequestHandler
      * @param RequestHandler\Response $responseRequestHandler
      * @param ResponseEventLogger     $responseEventLogger
      * @param RouterInterface         $router
+     * @param SurveyStats             $surveyStatsService
      */
     public function __construct(
         RequestHandler\Survey $surveyRequestHandler,
         RequestHandler\Page $pageRequestHandler,
         RequestHandler\Response $responseRequestHandler,
         ResponseEventLogger $responseEventLogger,
-        RouterInterface $router
+        RouterInterface $router,
+        SurveyStats $surveyStatsService
     )
     {
         $this->surveyRequestHandler   = $surveyRequestHandler;
@@ -56,19 +63,16 @@ class ResponseListener implements EventSubscriberInterface
         $this->responseRequestHandler = $responseRequestHandler;
         $this->responseEventLogger    = $responseEventLogger;
         $this->router                 = $router;
+        $this->surveyStatsService     = $surveyStatsService;
     }
 
 
     public function onKernelRequest(RequestEvent $event)
     {
-        if (!$event->isMasterRequest()) {
-            return;
-        }
-
         /** @var Request $request */
         $request = $event->getRequest();
 
-        if (!$this->surveyRequestHandler->hasSurvey($request)) {
+        if (!$event->isMasterRequest() || !$this->surveyRequestHandler->hasSurvey($request)) {
             return;
         }
 
@@ -170,18 +174,7 @@ class ResponseListener implements EventSubscriberInterface
             return;
         }
 
-        $surveyResponse = $this->responseRequestHandler->getNewResponse($request, $survey);
-        $surveyResponse = $this->responseRequestHandler->addUserAgent($request, $surveyResponse);
-        $surveyResponse->setHiddenValues($this->responseRequestHandler->extractHiddenValues(
-            $survey->getHiddenValues(),
-            $request
-        ));
-        $this->responseRequestHandler->saveResponse($surveyResponse);
-
-        $this->responseRequestHandler->setResponse($request, $surveyResponse);
-
-        $this->responseEventLogger->log(ResponseEventLogger::RESPONSE_CREATED, $surveyResponse);
-        $this->responseEventLogger->log(ResponseEventLogger::SURVEY_ENTERED, $surveyResponse);
+        $this->createNewSurveyResponse($request, $survey);
     }
 
     /**
@@ -292,6 +285,33 @@ class ResponseListener implements EventSubscriberInterface
     private function isSurveyCompletionPage(Request $request): bool
     {
         return $request->attributes->get('_route') === 'survey.complete';
+    }
+
+    /**
+     * @param Request         $request
+     * @param Document\Survey $survey
+     */
+    private function createNewSurveyResponse(Request $request, Document\Survey $survey)
+    {
+        $surveyResponse = $this->responseRequestHandler->getNewResponse($request, $survey);
+        $surveyResponse = $this->responseRequestHandler->addUserAgent($request, $surveyResponse);
+        $surveyResponse->setHiddenValues(
+            $this->responseRequestHandler->extractHiddenValues(
+                $survey->getHiddenValues(),
+                $request
+            )
+        );
+        $this->responseRequestHandler->saveResponse($surveyResponse);
+        $this->responseRequestHandler->setResponse($request, $surveyResponse);
+
+        $this->responseEventLogger->log(ResponseEventLogger::RESPONSE_CREATED, $surveyResponse);
+        $this->responseEventLogger->log(ResponseEventLogger::SURVEY_ENTERED, $surveyResponse);
+
+        $this->surveyStatsService->incrementResponses(
+            $survey->getSurveyId(),
+            $survey->getVersion(),
+            $surveyResponse->getMode()
+        );
     }
 
 

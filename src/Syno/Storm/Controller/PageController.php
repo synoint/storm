@@ -87,7 +87,9 @@ class PageController extends AbstractController
                 $nextPage = $survey->getNextPage($page->getPageId());
                 if (null === $nextPage) {
 
-                    $this->surveySessionService->grantComplete($survey->getSurveyId());
+                    if ($response->isLive()) {
+                        $this->surveySessionService->grantComplete($survey->getSurveyId());
+                    }
 
                     return $this->redirectToRoute('survey.complete', ['surveyId' => $survey->getSurveyId()]);
                 }
