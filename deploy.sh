@@ -6,10 +6,10 @@ then
 fi
 git checkout master;
 git push;
+composer install;
+yarn install;
 yarn encore prod;
-composer dump-autoload -o --no-dev;
 eb deploy;
 echo "deployed!";
-composer dump-autoload;
 echo "";
 exit 0;
