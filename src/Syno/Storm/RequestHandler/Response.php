@@ -246,6 +246,7 @@ class Response
         $result = new ArrayCollection();
         switch ($question->getQuestionTypeId()) {
             case Document\Question::TYPE_SINGLE_CHOICE:
+            case Document\Question::TYPE_LINEAR_SCALE:
                 $key = $question->getInputName();
                 if (!empty($formData[$key]) &&
                     is_int($formData[$key]) &&

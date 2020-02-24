@@ -19,6 +19,7 @@ class Question
     const TYPE_SINGLE_CHOICE_MATRIX   = 3;
     const TYPE_MULTIPLE_CHOICE_MATRIX = 4;
     const TYPE_TEXT                   = 5;
+    const TYPE_LINEAR_SCALE           = 6;
 
     /**
      * @ODM\Id
@@ -232,6 +233,11 @@ class Question
     public function isText()
     {
         return self::TYPE_TEXT === $this->questionTypeId;
+    }
+
+    public function isLinearScale()
+    {
+        return self::TYPE_LINEAR_SCALE === $this->questionTypeId;
     }
 
     /**

@@ -10,6 +10,7 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Syno\Storm\Document;
+use Syno\Storm\Form\Type\LinearChoice;
 
 class PageType extends AbstractType
 {
@@ -30,6 +31,9 @@ class PageType extends AbstractType
                     break;
                 case Document\Question::TYPE_TEXT:
                     $this->addText($builder, $question);
+                    break;
+                case Document\Question::TYPE_LINEAR_SCALE:
+                    $this->addLinearScale($builder, $question);
                     break;
             }
         }
@@ -124,5 +128,30 @@ class PageType extends AbstractType
                 ]);
             }
         }
+    }
+
+    /**
+     * @param FormBuilderInterface $builder
+     * @param Document\Question    $question
+     */
+    private function addLinearScale(FormBuilderInterface $builder, Document\Question $question)
+    {
+        $builder->add($question->getInputName(), LinearChoice::class, [
+            'choices'  => $question->getAnswers(),
+            'required' => $question->isRequired(),
+            'label' => $question->getText(),
+            'expanded' => !$question->containsSelectField(),
+            'attr' => ['class' => 'custom-control custom-radio'],
+            'choice_attr' => function() {
+                return ['class' => 'custom-control-input form-check-input'];
+            },
+            'choice_value' => function(Document\Answer $choice) {
+                return $choice ? $choice->getAnswerId() : '';
+            },
+            'choice_label' => function (Document\Answer $choice) {
+                return $choice ? $choice->getLabel() : '';
+            },
+            'label_attr' => ['class' => 'custom-control-label']
+        ]);
     }
 }

@@ -1,5 +1,5 @@
-{% extends '/b4/layout/base.twig' %} 
-{% form_theme form with ['bootstrap_4_layout.html.twig'] %}
+{% extends '/b4/layout/base.twig' %}
+{% form_theme form 'b4/form_theme/syno.twig' %}
 {% block title %}Syno Storm{% endblock %} 
 {% block body %}
 
@@ -20,6 +20,8 @@
                     {% for question in page.questions %}
                         {% if question.isMatrix %}
                             {% include 'b4/page/_matrix.twig' %}
+                        {% elseif question.isLinearScale %}
+                            {{ form_row(attribute(form, (question.getInputName))) }}
                         {% elseif question.isText %}
                             {% for answer in question.answers %}
                                 <section>

@@ -1,0 +1,33 @@
+{% use "bootstrap_4_layout.html.twig" %}
+
+{% block linear_choice_row %}
+    <section>
+        <h5 class="py-3"> {{ form.vars.label }}</h5>
+        <div class="container">
+            {{ form_widget(form) }}
+        </div>
+    </section>
+{% endblock %}
+
+{% block linear_choice_widget %}
+    <div class="row">
+        {% for key,choice in form.vars.choices %}
+            <div class="col-sm  text-center">
+                <div><label for="{{ choice.data.id }}">{{ choice.data.code }}</label></div>
+                <div><div class="custom-control custom-radio" style="padding-left:0.75rem">
+                        <div class="form-check">
+                            <input id="{{ choice.data.id }}" required="required" type="radio" value="{{ choice.value }}" name="{{ form.vars.full_name }}"
+                            {% if choice.attr is not empty %}
+                                {% for key, attr in choice.attr %}
+                                    {{ key }}="{{ attr }}"
+                                {% endfor %}
+                            {% endif %}
+                            >
+                            <label for="{{ choice.data.id }}" class="form-check-label required custom-control-label" ></label>
+                        </div>
+                    </div></div>
+                <div><label for="{{ choice.data.id }}">{{ choice.label }}</label></div>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}
