@@ -10,7 +10,7 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Syno\Storm\Document;
-use Syno\Storm\Form\Type\LinearChoice;
+use Syno\Storm\Form\Type\LinearScale;
 
 class PageType extends AbstractType
 {
@@ -136,22 +136,10 @@ class PageType extends AbstractType
      */
     private function addLinearScale(FormBuilderInterface $builder, Document\Question $question)
     {
-        $builder->add($question->getInputName(), LinearChoice::class, [
+        $builder->add($question->getInputName(), LinearScale::class, [
             'choices'  => $question->getAnswers(),
             'required' => $question->isRequired(),
-            'label' => $question->getText(),
-            'expanded' => !$question->containsSelectField(),
-            'attr' => ['class' => 'custom-control custom-radio'],
-            'choice_attr' => function() {
-                return ['class' => 'custom-control-input form-check-input'];
-            },
-            'choice_value' => function(Document\Answer $choice) {
-                return $choice ? $choice->getAnswerId() : '';
-            },
-            'choice_label' => function (Document\Answer $choice) {
-                return $choice ? $choice->getLabel() : '';
-            },
-            'label_attr' => ['class' => 'custom-control-label']
+            'label'    => $question->getText()
         ]);
     }
 }
