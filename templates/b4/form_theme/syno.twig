@@ -11,10 +11,10 @@
 
 {% block linear_scale_widget %}
     <div class="d-inline-block">
-        <div class="inline-radio btn-group btn-group-toggle" data-toggle="buttons">
+        <div class="linear-scale__radio-holder btn-group btn-group-toggle" data-toggle="buttons">
             {% for key,choice in form.vars.choices %}
                 <div class="col text-center">
-                    <label for="{{ choice.data.id }}" class="btn btn-outline-primary text-dark btn-radio">
+                    <label for="{{ choice.data.id }}" class="btn btn-outline-primary text-dark linear-scale__button">
                         {{ choice.data.code }}
                         <input id="{{ choice.data.id }}" {% if form.vars.required %}required="required"{% endif %} type="radio" value="{{ choice.value }}" name="{{ form.vars.full_name }}"
                         {% if choice.attr is not empty %}
@@ -27,7 +27,7 @@
                 </div>
             {% endfor %}
         </div>
-        <div class="inline-radio__text pt-2 mt-1">
+        <div class="linear-scale__text-holder pt-2 mt-1">
             {% for key,choice in form.vars.choices %}
                 {% if choice.label is not empty %}
                     <div class="col  text-center" >

@@ -13,17 +13,15 @@ class LinearScale extends AbstractType
     {
         $resolver->setDefaults([
             'expanded' => true,
-            'attr' => ['class' => 'custom-control custom-radio'],
             'choice_attr' => function() {
-                return ['class' => 'custom-control-input form-check-input'];
+                return ['class' => 'custom-control-input'];
             },
             'choice_value' => function(?Document\Answer $choice) {
                 return $choice ? $choice->getAnswerId() : '';
             },
             'choice_label' => function (?Document\Answer $choice) {
                 return $choice ? $choice->getLabel() : '';
-            },
-            'label_attr' => ['class' => 'custom-control-label']
+            }
         ]);
     }
 
