@@ -2,6 +2,7 @@
 
 namespace Syno\Storm\Form;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
@@ -11,6 +12,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Syno\Storm\Document;
 use Syno\Storm\Form\Type\LinearScale;
+use Syno\Storm\Form\Type\LinearScaleMatrix;
 
 class PageType extends AbstractType
 {
@@ -35,6 +37,9 @@ class PageType extends AbstractType
                 case Document\Question::TYPE_LINEAR_SCALE:
                     $this->addLinearScale($builder, $question);
                     break;
+                case Document\Question::TYPE_LINEAR_SCALE_MATRIX:
+                    $this->addLinearScaleMatrix($builder, $question);
+                    break;
             }
         }
 
@@ -55,12 +60,13 @@ class PageType extends AbstractType
         $builder->add($question->getInputName(), ChoiceType::class, [
             'choices'  => $question->getChoices(),
             'required' => $question->isRequired(),
+            'label'    => $question->getText(),
             'expanded' => !$question->containsSelectField(),
             'attr' => ['class' => 'custom-control custom-radio'],
             'choice_attr' => function($choice, $key, $value) {
                 return ['class' => 'custom-control-input'];
             },
-            'label_attr' => ['class' => 'custom-control-label']
+            'label_attr' => ['class' => 'custom-control-label rounded']
         ]);
     }
 
@@ -76,7 +82,7 @@ class PageType extends AbstractType
             'expanded' => true,
             'multiple' => true,
             'attr' => ['class' => 'custom-control custom-checkbox'],
-            'choice_attr' => function($choice, $key, $value) {
+            'choice_attr' => function() {
                 return ['class' => 'custom-control-input'];
             },
             'label_attr' => ['class' => 'custom-control-label']
@@ -103,7 +109,7 @@ class PageType extends AbstractType
                 'multiple' => $multiple,
                 'expanded' => true,
                 'required' => $question->isRequired(),
-                'choice_attr' => function($choice, $key, $value) {
+                'choice_attr' => function() {
                     return ['class' => 'custom-control-input'];
                 },
             ]);
@@ -141,5 +147,29 @@ class PageType extends AbstractType
             'required' => $question->isRequired(),
             'label'    => $question->getText()
         ]);
+    }
+
+    /**
+     * @param FormBuilderInterface $builder
+     * @param Document\Question    $question
+     */
+    private function addLinearScaleMatrix(FormBuilderInterface $builder, Document\Question $question)
+    {
+
+        foreach ($question->getRows() as $rowCode => $row) {
+            $choices = [];
+            $array = new ArrayCollection();
+            foreach (array_keys($question->getColumns()) as $columnCode) {
+                $answer = $question->getMatrixAnswer($rowCode, $columnCode);
+                $array->add($answer);
+                $choices[$answer->getColumnLabel()] = $answer->getAnswerId();
+            }
+
+            $builder->add($rowCode, LinearScaleMatrix::class, [
+                'choices' => $array,
+                'required' => $question->isRequired(),
+                'label'    => $row
+            ]);
+        }
     }
 }

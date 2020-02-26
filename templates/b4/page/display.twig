@@ -7,14 +7,15 @@
         <div class="row container-sm justify-content-md-center ml-0">
 
             <div class="questions">
-
-                <div class="page__content col-12">
-                    {% if page.content is defined and '' != page.content %}
+                {% if page.content is defined and '' != page.content %}
+                <div class="col-12">
+                    <div class="page__content rounded p-3 bg-white mb-5">
                         {{ page.content|raw }}
-                    {% endif %}
+                    </div>
                 </div>
+                {% endif %}
 
-                <div class="col-12 py-4">
+                <div class="col-12">
                     {{ form_start(form) }}
 
                     {% for question in page.questions %}
@@ -22,21 +23,27 @@
                             {% include 'b4/page/_matrix.twig' %}
                         {% elseif question.isLinearScale %}
                             {{ form_row(attribute(form, (question.getInputName))) }}
+                        {% elseif question.isLinearScaleMatrix %}
+                            <section class="mb-5 rounded bg-white p-5">
+                                <h5 class="text-center m-0 pb-4"> {{ question.getText() }}</h5>
+                                {% for key,row in question.getRows() %}
+                                    {{ form_row(attribute(form, (key))) }}
+                                {% endfor %}
+                            </section>
                         {% elseif question.isText %}
                             {% for answer in question.answers %}
-                                <section>
-                                    <h5 class="py-3">
+                                <section class="mb-5 rounded bg-white p-5">
+                                    <h5 class="text-center m-0 pb-4">
                                         {{ question.getText() }}
                                     </h5>
                                     {{ form_row(attribute(form, (answer.answerId)), {'label': false}) }}
                                 </section>
                             {% endfor %}
                         {% else %}
-                            <section>
-                                <h5 class="py-3"> {{ question.getText() }}</h5>
-                                <div class="container">
+
+                            <section class="mb-5 rounded bg-white p-5">
+                                <h5 class="text-center m-0 pb-4 text-dark"> {{ question.getText() }}</h5>
                                     {{ form_widget(attribute(form, (question.getInputName))) }}
-                                </div>
                             </section>
                         {% endif %}
 
@@ -44,10 +51,11 @@
 
                     <div class="row my-5">
                         <div class="col text-center">
-                            <a class="btn btn-outline-secondary px-5 {% if backButtonDisabled %}disabled{% endif %}"
+                            <a class="btn btn-link btn-outline-secondary px-5 ml-2 mr-2 {% if backButtonDisabled %}disabled{% endif %}"
                                onclick="window.history.go(-1); return false;">
                                 {{ 'page.button.back'|trans }}
-                            </a> {{ form_widget( form.next, { 'attr': {'class': 'btn btn-outline-primary px-5'}, 'label': 'page.button.next'|trans } ) }}
+                            </a>
+                            {{ form_widget( form.next, { 'attr': {'class': 'btn btn-outline-primary px-5 ml-2 mr-2'}, 'label': 'page.button.next'|trans } ) }}
                         </div>
                     </div>
 

@@ -1,9 +1,9 @@
 {% use "bootstrap_4_layout.html.twig" %}
 
 {% block linear_scale_row %}
-    <section>
-        <h5 class="py-3"> {{ form.vars.label }}</h5>
-        <div>
+    <section class="mb-5 rounded bg-white p-5">
+        <h5 class="text-center m-0 pb-5"> {{ form.vars.label }}</h5>
+        <div class="text-center">
             {{ form_widget(form) }}
         </div>
     </section>
@@ -27,7 +27,7 @@
                 </div>
             {% endfor %}
         </div>
-        <div class="linear-scale__text-holder pt-2 mt-1">
+        <div class="linear-scale__text-holder mt-1">
             {% for key,choice in form.vars.choices %}
                 {% if choice.label is not empty %}
                     <div class="col  text-center" >
@@ -38,4 +38,49 @@
                 {% endif %}
             {% endfor %}
         </div>
+    </div>
+{% endblock %}
+
+{% block linear_scale_matrix_row %}
+    <div style="border-top:1px solid #ebebeb;" class="pt-4 pb-4">
+        <div class="row">
+            <div class="col text-center my-auto">
+                <h6 class="mb-4 p-0"> {{ form.vars.label }}</h6>
+                {{ form_widget(form) }}
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block linear_scale_matrix_widget %}
+    <div class="d-inline-block">
+        <div class="linear-scale__radio-holder btn-group btn-group-toggle" data-toggle="buttons">
+            {% for key,choice in form.vars.choices %}
+                <div class="col text-center">
+                    <label for="{{ choice.data.id }}" class="btn btn-outline-primary text-dark linear-scale__button">
+                        {{ choice.data.columnCode }}
+                        <input id="{{ choice.data.id }}" {% if form.vars.required %}required="required"{% endif %} type="radio" value="{{ choice.value }}" name="{{ form.vars.full_name }}"
+                        {% if choice.attr is not empty %}
+                            {% for key, attr in choice.attr %}
+                                {{ key }}="{{ attr }}"
+                            {% endfor %}
+                        {% endif %}
+                        >
+                    </label>
+                </div>
+            {% endfor %}
+        </div>
+        <div class="linear-scale__text-holder mt-1">
+            {% for key,choice in form.vars.choices %}
+
+                {% if choice.data.columnLabel is not empty %}
+                    <div class="col  text-center" >
+                        <label class="text-nowrap text-muted font-weight-normal" for="{{ choice.data.id }}">
+                            <span class="d-sm-none">{{ choice.data.columnCode }} - </span>{{ choice.data.columnLabel }}
+                        </label>
+                    </div>
+                {% endif %}
+            {% endfor %}
+        </div>
+    </div>
 {% endblock %}
