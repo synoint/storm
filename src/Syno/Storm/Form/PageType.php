@@ -85,7 +85,7 @@ class PageType extends AbstractType
             'choice_attr' => function() {
                 return ['class' => 'custom-control-input'];
             },
-            'label_attr' => ['class' => 'custom-control-label']
+            'label_attr' => ['class' => 'custom-control-label rounded']
         ]);
     }
 

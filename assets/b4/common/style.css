@@ -143,15 +143,15 @@ footer {
 .custom-radio label {
 
 }
-.custom-radio .form-check-input {
+.custom-radio .form-check-input, .custom-checkbox .form-check-input {
     margin-left:0;
 }
-.custom-radio .form-check {
+.custom-radio .form-check, .custom-checkbox .form-check {
     border-radius:.25rem;
     padding-left:0;
     margin-top:15px;
 }
-.custom-radio .form-check label {
+.custom-radio .form-check label, .custom-checkbox .form-check label {
     display:block;
     cursor:pointer;
     text-align: left;
@@ -160,7 +160,7 @@ footer {
     background:#d1e7fe;
     color:#000;
 }
-.custom-radio .custom-control-input:checked~.custom-control-label {
+.custom-radio .custom-control-input:checked~.custom-control-label, .custom-checkbox .custom-control-input:checked~.custom-control-label {
     background:#292e7c;
     color:#fff;
 }
@@ -172,12 +172,15 @@ footer {
 .custom-radio .custom-control-input:checked~.custom-control-label::after {
     background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='-4 -4 8 8'%3e%3ccircle r='3' fill='%23292e7c'/%3e%3c/svg%3e") !important;
 }
+.custom-checkbox .custom-control-input:checked~.custom-control-label::after {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8' viewBox='0 0 8 8'%3e%3cpath fill='%23292e7c' d='M6.564.75l-3.59 3.612-1.538-1.55L0 4.26l2.974 2.99L8 2.193z'/%3e%3c/svg%3e");
+}
 
 .btn-outline-secondary {
     color: #aaa;
     border-color: #aaa;
 }
-.custom-radio .form-check .custom-control-label::before, .custom-radio .form-check .custom-control-label::after {
+.custom-radio .form-check .custom-control-label::before, .custom-radio .form-check .custom-control-label::after, .custom-checkbox .form-check .custom-control-label::before, .custom-checkbox .form-check .custom-control-label::after {
     top: 50%;
     margin-top: -0.5rem;
     left:20px;
