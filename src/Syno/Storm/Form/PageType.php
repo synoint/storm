@@ -62,11 +62,11 @@ class PageType extends AbstractType
             'required' => $question->isRequired(),
             'label'    => $question->getText(),
             'expanded' => !$question->containsSelectField(),
-            'attr' => ['class' => 'custom-control custom-radio'],
-            'choice_attr' => function($choice, $key, $value) {
+            'attr' => ['class' => 'custom-control custom-radio custom-radio-filled'],
+            'choice_attr' => function() {
                 return ['class' => 'custom-control-input'];
             },
-            'label_attr' => ['class' => 'custom-control-label rounded']
+            'label_attr' => ['class' => 'custom-control-label']
         ]);
     }
 
@@ -81,11 +81,11 @@ class PageType extends AbstractType
             'required' => $question->isRequired(),
             'expanded' => true,
             'multiple' => true,
-            'attr' => ['class' => 'custom-control custom-checkbox'],
+            'attr' => ['class' => 'custom-control custom-checkbox custom-checkbox-filled'],
             'choice_attr' => function() {
                 return ['class' => 'custom-control-input'];
             },
-            'label_attr' => ['class' => 'custom-control-label rounded']
+            'label_attr' => ['class' => 'custom-control-label']
         ]);
     }
 
@@ -104,7 +104,7 @@ class PageType extends AbstractType
 
             $multiple = (Document\Question::TYPE_MULTIPLE_CHOICE_MATRIX === $question->getQuestionTypeId());
 
-            $builder->add($rowCode, ChoiceType::class, [
+            $builder->add($question->getInputName().$rowCode, ChoiceType::class, [
                 'choices' => $choices,
                 'multiple' => $multiple,
                 'expanded' => true,
@@ -126,10 +126,12 @@ class PageType extends AbstractType
         foreach ($question->getAnswers() as $answer) {
             if ($answer->getAnswerFieldTypeId() === Document\Answer::FIELD_TYPE_TEXT) {
                 $builder->add($answer->getAnswerId(), TextType::class, [
+                    'attr' => ['class' => 'custom-control custom-text'],
                     'required' => $question->isRequired()
                 ]);
             } elseif ($answer->getAnswerFieldTypeId() === Document\Answer::FIELD_TYPE_TEXTAREA) {
                 $builder->add($answer->getAnswerId(), TextareaType::class, [
+                    'attr' => ['class' => 'custom-control custom-textarea'],
                     'required' => $question->isRequired()
                 ]);
             }
@@ -165,7 +167,7 @@ class PageType extends AbstractType
                 $choices[$answer->getColumnLabel()] = $answer->getAnswerId();
             }
 
-            $builder->add($rowCode, LinearScaleMatrix::class, [
+            $builder->add($question->getInputName().$rowCode, LinearScaleMatrix::class, [
                 'choices' => $array,
                 'required' => $question->isRequired(),
                 'label'    => $row

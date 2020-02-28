@@ -1,28 +1,22 @@
-<section> 
-    
-    <h5 class="py-3"> {{question.getText()}}</h5>
-
-<table class="table table-borderless table-hover">
+<table class="matrix table table-borderless mt-4 " >
     <thead>
         <tr>
-            <td>&nbsp;</td>
+            <td></td>
             {% for column in question.getColumns() %}
-            <th scope="col">
-                {{ column }}
-            </th>
+                <th scope="col" class="d-none d-md-table-cell p-md-3 text-center font-weight-normal">
+                    {{ column }}
+                </th>
             {% endfor %}
         </tr>
     </thead>
-    <tbody>
+    <tbody class="rounded overflow-hidden">
         {% for rowCode,rowLabel in question.getRows() %}
             <tr>
-                <th scope="row">{{ rowLabel }}</th>
-                {% for child in attribute(form, (rowCode)) %}
-                    <td>
-                    <div class="custom-control 
-                        {{ (question.questionTypeId == constant('Syno\\Storm\\Document\\Question::TYPE_SINGLE_CHOICE_MATRIX'))  ? 'custom-radio' : 'custom-checkbox' }}
-                        "> 
-                        {{ form_widget(child, {'label' : false, 'label_attr': {'class': 'custom-control-label'}}) }}
+                <th scope="row" class=" d-block d-md-table-cell text-center text-md-left p-md-3 mt-5 mt-md-0 align-middle font-weight-normal ">{{ rowLabel }}</th>
+                {% for child in attribute(form, (question.getInputName~rowCode)) %}
+                    <td class="d-block d-md-table-cell p-md-0 ">
+                    <div class="custom-control {{ (question.questionTypeId == constant('Syno\\Storm\\Document\\Question::TYPE_SINGLE_CHOICE_MATRIX'))  ? 'custom-radio custom-radio-filled custom-radio-filled-md-center' : 'custom-checkbox custom-checkbox-filled custom-checkbox-filled-md-center' }}">
+                        {{ form_widget(child, {'label_attr': {'class': 'custom-control-label'}}) }}
                     </div>
                     </td>
                 {% endfor %}
@@ -30,4 +24,3 @@
         {% endfor %}
     </tbody>
 </table>
-</section>

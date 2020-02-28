@@ -18,46 +18,37 @@
                 <div class="col-12">
                     {{ form_start(form) }}
 
-                    {% for question in page.questions %}
-                        {% if question.isMatrix %}
-                            {% include 'b4/page/_matrix.twig' %}
-                        {% elseif question.isLinearScale %}
-                            {{ form_row(attribute(form, (question.getInputName))) }}
-                        {% elseif question.isLinearScaleMatrix %}
-                            <section class="mb-5 rounded bg-white p-5">
+                        {% for question in page.questions %}
+                            <div class="question card mb-5 p-5 border-0">
                                 <h5 class="text-center m-0 pb-4"> {{ question.getText() }}</h5>
-                                {% for key,row in question.getRows() %}
-                                    {{ form_row(attribute(form, (key))) }}
-                                {% endfor %}
-                            </section>
-                        {% elseif question.isText %}
-                            {% for answer in question.answers %}
-                                <section class="mb-5 rounded bg-white p-5">
-                                    <h5 class="text-center m-0 pb-4">
-                                        {{ question.getText() }}
-                                    </h5>
-                                    {{ form_row(attribute(form, (answer.answerId)), {'label': false}) }}
-                                </section>
-                            {% endfor %}
-                        {% else %}
 
-                            <section class="mb-5 rounded bg-white p-5">
-                                <h5 class="text-center m-0 pb-4 text-dark"> {{ question.getText() }}</h5>
+                                {% if question.isMatrix %}
+                                    {% include 'b4/page/_matrix.twig' %}
+                                {% elseif question.isLinearScale %}
+                                    {{ form_row(attribute(form, (question.getInputName))) }}
+                                {% elseif question.isLinearScaleMatrix %}
+                                    {% for key,row in question.getRows() %}
+                                        {{ form_row(attribute(form, (question.getInputName~key))) }}
+                                    {% endfor %}
+                                {% elseif question.isText %}
+                                    {% for answer in question.answers %}
+                                        {{ form_widget(attribute(form, (answer.answerId)), {'label': false}) }}
+                                    {% endfor %}
+                                {% else %}
                                     {{ form_widget(attribute(form, (question.getInputName))) }}
-                            </section>
-                        {% endif %}
+                                {% endif %}
+                            </div>
+                        {% endfor %}
 
-                    {% endfor %}
-
-                    <div class="row my-5 pb-5">
-                        <div class="col text-center">
-                            <a class="btn btn-link btn-outline-secondary px-5 ml-2 mr-2 {% if backButtonDisabled %}disabled{% endif %}"
-                               onclick="window.history.go(-1); return false;">
-                                {{ 'page.button.back'|trans }}
-                            </a>
-                            {{ form_widget( form.next, { 'attr': {'class': 'btn btn-outline-primary px-5 ml-2 mr-2'}, 'label': 'page.button.next'|trans } ) }}
+                        <div class="row my-5 pb-5">
+                            <div class="col text-center">
+                                <a class="btn btn-link btn-outline-secondary px-5 ml-2 mr-2 {% if backButtonDisabled %}disabled{% endif %}"
+                                   onclick="window.history.go(-1); return false;">
+                                    {{ 'page.button.back'|trans }}
+                                </a>
+                                {{ form_widget( form.next, { 'attr': {'class': 'btn btn-outline-primary px-5 ml-2 mr-2'}, 'label': 'page.button.next'|trans } ) }}
+                            </div>
                         </div>
-                    </div>
 
                     {{ form_end(form) }}
                 </div>

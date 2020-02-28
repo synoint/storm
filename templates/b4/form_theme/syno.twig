@@ -1,12 +1,9 @@
 {% use "bootstrap_4_layout.html.twig" %}
 
 {% block linear_scale_row %}
-    <section class="mb-5 rounded bg-white p-5">
-        <h5 class="text-center m-0 pb-5"> {{ form.vars.label }}</h5>
-        <div class="text-center">
-            {{ form_widget(form) }}
-        </div>
-    </section>
+    <div class="text-center pt-4">
+        {{ form_widget(form) }}
+    </div>
 {% endblock %}
 
 {% block linear_scale_widget %}
