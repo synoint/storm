@@ -80,6 +80,7 @@ footer .progress {
     line-height:40px;
     border-radius:50%;
     position: relative;
+    cursor: pointer;
 }
 .linear-scale__button input {
     margin:100% 50%;
