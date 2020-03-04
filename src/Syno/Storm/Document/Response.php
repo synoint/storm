@@ -404,6 +404,14 @@ class Response
     }
 
     /**
+     * @return Collection
+     */
+    public function getAnswers()
+    {
+        return $this->answers;
+    }
+
+    /**
      * @param ResponseAnswer $responseAnswer
      */
     public function addAnswer(ResponseAnswer $responseAnswer)

@@ -80,6 +80,27 @@ class Question
      */
     private $answers;
 
+    /**
+     * @var string
+     *
+     * @ODM\Field(type="string")
+     */
+    private $showLogic;
+
+    /**
+     * @var string
+     *
+     * @ODM\Field(type="string")
+     */
+    private $screenoutLogic;
+
+    /**
+     * @var string
+     *
+     * @ODM\Field(type="string")
+     */
+    private $jumpToLogic;
+
 
     public function __construct()
     {
@@ -202,6 +223,66 @@ class Question
     public function setText($text)
     {
         $this->text = $text;
+
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getShowLogic()
+    {
+        return $this->showLogic;
+    }
+
+    /**
+     * @param mixed $showLogic
+     *
+     * @return Question
+     */
+    public function setShowLogic($showLogic)
+    {
+        $this->showLogic = $showLogic;
+
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getJumpToLogic()
+    {
+        return $this->jumpToLogic;
+    }
+
+    /**
+     * @param mixed $jumpToLogic
+     *
+     * @return Question
+     */
+    public function setJumpToLogic($jumpToLogic)
+    {
+        $this->jumpToLogic = $jumpToLogic;
+
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getScreenoutLogic()
+    {
+        return $this->screenoutLogic;
+    }
+
+    /**
+     * @param mixed $screenoutLogic
+     *
+     * @return Question
+     */
+    public function setScreenoutLogic($screenoutLogic)
+    {
+        $this->screenoutLogic = $screenoutLogic;
 
         return $this;
     }

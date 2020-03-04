@@ -2,7 +2,9 @@
 
 namespace Syno\Storm\Api\v1\Form;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -27,8 +29,11 @@ class QuestionType extends AbstractType
                 'entry_type' => AnswerType::class,
                 'by_reference'  => false,
                 'allow_add'     => true
-            ]);
-        ;
+            ])
+            ->add('showLogic', TextType::class)
+            ->add('jumpToLogic', TextType::class)
+            ->add('screenoutLogic', TextType::class);
+
     }
 
     public function configureOptions(OptionsResolver $resolver)

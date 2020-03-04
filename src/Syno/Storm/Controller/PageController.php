@@ -12,7 +12,8 @@ use Syno\Storm\Form\PageType;
 use Syno\Storm\RequestHandler;
 use Syno\Storm\Services\ResponseEventLogger;
 use Syno\Storm\Services\SurveySession;
-
+use Syno\Storm\Services;
+use JWadhams;
 
 class PageController extends AbstractController
 {
@@ -25,20 +26,32 @@ class PageController extends AbstractController
     /** @var SurveySession */
     private $surveySessionService;
 
+    /** @var Services\Response */
+    private $responseService;
+
+    /** @var Services\Logic */
+    private $logicService;
+
     /**
      * @param RequestHandler\Response $responseRequestHandler
      * @param ResponseEventLogger     $responseEventLogger
      * @param SurveySession           $surveySessionService
+     * @param Services\Response       $responseService
+     * @param Services\Logic          $logicService
      */
     public function __construct(
         RequestHandler\Response $responseRequestHandler,
         ResponseEventLogger $responseEventLogger,
-        SurveySession $surveySessionService
+        SurveySession $surveySessionService,
+        Services\Response $responseService,
+        Services\Logic $logicService
     )
     {
         $this->responseRequestHandler = $responseRequestHandler;
         $this->responseEventLogger    = $responseEventLogger;
         $this->surveySessionService   = $surveySessionService;
+        $this->responseService        = $responseService;
+        $this->logicService           = $logicService;
     }
 
 
@@ -64,6 +77,8 @@ class PageController extends AbstractController
         Request $request
     ): Response
     {
+        $redirectUrl = null;
+
         $form = $this->createForm(PageType::class, null, [
             'questions' => $page->getQuestions()
         ]);
@@ -79,10 +94,18 @@ class PageController extends AbstractController
                     $response->addAnswer(
                         new Document\ResponseAnswer($question->getQuestionId(), $answers)
                     );
+
+                    if(!empty($question->getScreenoutLogic())){
+                        $redirectUrl = $this->logicService->applyScreenoutRule($this->responseService->answersToArray($response), $question->getScreenoutLogic()) ?: $redirectUrl;
+                    }
                 }
                 $this->responseRequestHandler->saveResponse($response);
 
                 $this->responseEventLogger->log(ResponseEventLogger::ANSWERS_SAVED, $response);
+
+                if(!empty($redirectUrl)) {
+                    return $this->redirect($redirectUrl, 301);
+                }
 
                 $nextPage = $survey->getNextPage($page->getPageId());
                 if (null === $nextPage) {

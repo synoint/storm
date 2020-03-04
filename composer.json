@@ -9,6 +9,7 @@
         "ext-mongodb": "^1.6",
         "doctrine/mongodb-odm-bundle": "^4.1",
         "gedmo/doctrine-extensions": "^2.4",
+        "jwadhams/json-logic-php": "^1.4",
         "laminas/laminas-code": "^3.4",
         "symfony/asset": "5.0.*",
         "symfony/console": "5.0.*",
