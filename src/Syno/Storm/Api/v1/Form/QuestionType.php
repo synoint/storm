@@ -30,9 +30,21 @@ class QuestionType extends AbstractType
                 'by_reference'  => false,
                 'allow_add'     => true
             ])
-            ->add('showLogic', TextType::class)
-            ->add('jumpToLogic', TextType::class)
-            ->add('screenoutLogic', TextType::class);
+            ->add('showConditions', CollectionType::class, [
+                'entry_type' => ShowConditionType::class,
+                'by_reference'  => false,
+                'allow_add'     => true
+            ])
+            ->add('jumpToConditions', CollectionType::class, [
+                'entry_type' => JumpToConditionType::class,
+                'by_reference'  => false,
+                'allow_add'     => true
+            ])
+            ->add('screenoutConditions', CollectionType::class, [
+                'entry_type' => ScreenoutConditionType::class,
+                'by_reference'  => false,
+                'allow_add'     => true
+            ]);
 
     }
 

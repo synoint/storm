@@ -29,29 +29,36 @@ class PageController extends AbstractController
     /** @var Services\Response */
     private $responseService;
 
-    /** @var Services\Logic */
-    private $logicService;
+    /** @var Services\Condition */
+    private $conditionService;
+
+    /** @var Services\Page */
+    private $pageService;
+
 
     /**
      * @param RequestHandler\Response $responseRequestHandler
      * @param ResponseEventLogger     $responseEventLogger
      * @param SurveySession           $surveySessionService
      * @param Services\Response       $responseService
-     * @param Services\Logic          $logicService
+     * @param Services\Condition      $conditionService
+     * @param Services\Page           $pageService
      */
     public function __construct(
         RequestHandler\Response $responseRequestHandler,
         ResponseEventLogger $responseEventLogger,
         SurveySession $surveySessionService,
         Services\Response $responseService,
-        Services\Logic $logicService
+        Services\Condition $conditionService,
+        Services\Page $pageService
     )
     {
         $this->responseRequestHandler = $responseRequestHandler;
         $this->responseEventLogger    = $responseEventLogger;
         $this->surveySessionService   = $surveySessionService;
         $this->responseService        = $responseService;
-        $this->logicService           = $logicService;
+        $this->conditionService       = $conditionService;
+        $this->pageService            = $pageService;
     }
 
 
@@ -78,9 +85,10 @@ class PageController extends AbstractController
     ): Response
     {
         $redirectUrl = null;
+        $jumpPage = null;
 
         $form = $this->createForm(PageType::class, null, [
-            'questions' => $page->getQuestions()
+            'questions' => $this->conditionService->filterQuestionsByShowCondition($page->getQuestions(), $this->responseService->answersToArray($response))
         ]);
         $form->handleRequest($request);
 
@@ -95,8 +103,15 @@ class PageController extends AbstractController
                         new Document\ResponseAnswer($question->getQuestionId(), $answers)
                     );
 
-                    if(!empty($question->getScreenoutLogic())){
-                        $redirectUrl = $this->logicService->applyScreenoutRule($this->responseService->answersToArray($response), $question->getScreenoutLogic()) ?: $redirectUrl;
+                    if(!empty($question->getJumpToConditions())){
+                        $questionId = $this->conditionService->applyJumpToRule($this->responseService->answersToArray($response), $question->getJumpToConditions());
+                        if(!empty($questionId) && $jumpPage === null) {
+                            $jumpPage = $survey->getPageByQuestion($questionId);
+                        }
+                    }
+
+                    if(!empty($question->getScreenoutConditions()) && $redirectUrl === null){
+                        $redirectUrl = $this->conditionService->applyScreenoutRule($this->responseService->answersToArray($response), $question->getScreenoutConditions()) ?: $redirectUrl;
                     }
                 }
                 $this->responseRequestHandler->saveResponse($response);
@@ -107,7 +122,7 @@ class PageController extends AbstractController
                     return $this->redirect($redirectUrl, 301);
                 }
 
-                $nextPage = $survey->getNextPage($page->getPageId());
+                $nextPage = !empty($jumpPage) ? $jumpPage : $this->pageService->getNextPage($survey, $page, $this->responseService->answersToArray($response));
                 if (null === $nextPage) {
 
                     if ($response->isLive()) {

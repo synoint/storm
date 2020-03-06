@@ -75,11 +75,11 @@ class Response
 
         foreach($response->getAnswers() as $responseAnswer){
 
+            $answersArray[$responseAnswer->getQuestionid()] = [];
+
             foreach($responseAnswer->getAnswers() as $answer){
                 $answersArray[$responseAnswer->getQuestionid()][] = $answer->getAnswerId();
             }
-
-            $answersArray[$responseAnswer->getQuestionid()] = array_unique($answersArray[$responseAnswer->getQuestionid()]);
         }
 
         return $answersArray;

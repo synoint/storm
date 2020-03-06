@@ -81,30 +81,33 @@ class Question
     private $answers;
 
     /**
-     * @var string
+     * @var Collection
      *
-     * @ODM\Field(type="string")
+     * @ODM\EmbedMany(targetDocument=ShowCondition::class)
      */
-    private $showLogic;
+    private $showConditions;
 
     /**
-     * @var string
+     * @var Collection
      *
-     * @ODM\Field(type="string")
+     * @ODM\EmbedMany(targetDocument=ScreenoutCondition::class)
      */
-    private $screenoutLogic;
+    private $screenoutConditions;
 
     /**
-     * @var string
+     * @var Collection
      *
-     * @ODM\Field(type="string")
+     * @ODM\EmbedMany(targetDocument=JumpToCondition::class)
      */
-    private $jumpToLogic;
+    private $jumpToConditions;
 
 
     public function __construct()
     {
         $this->answers = new ArrayCollection();
+        $this->showConditions = new ArrayCollection();
+        $this->screenoutConditions = new ArrayCollection();
+        $this->jumpToConditions = new ArrayCollection();
     }
 
     /**
@@ -228,31 +231,31 @@ class Question
     }
 
     /**
-     * @return mixed
-     */
-    public function getShowLogic()
-    {
-        return $this->showLogic;
-    }
-
-    /**
-     * @param mixed $showLogic
+     * @param mixed $showConditions
      *
      * @return Question
      */
-    public function setShowLogic($showLogic)
+    public function setShowConditions($showConditions)
     {
-        $this->showLogic = $showLogic;
+        $this->showConditions = $showConditions;
 
         return $this;
     }
 
     /**
-     * @return mixed
+     * @return Collection
      */
-    public function getJumpToLogic()
+    public function getShowConditions(): Collection
     {
-        return $this->jumpToLogic;
+        return $this->showConditions;
+    }
+
+    /**
+     * @return Collection
+     */
+    public function getJumpToConditions()
+    {
+        return $this->jumpToConditions;
     }
 
     /**
@@ -260,29 +263,29 @@ class Question
      *
      * @return Question
      */
-    public function setJumpToLogic($jumpToLogic)
+    public function setJumpToConditions($jumpToConditions)
     {
-        $this->jumpToLogic = $jumpToLogic;
+        $this->jumpToConditions = $jumpToConditions;
 
         return $this;
     }
 
     /**
-     * @return mixed
+     * @return Collection
      */
-    public function getScreenoutLogic()
+    public function getScreenoutConditions()
     {
-        return $this->screenoutLogic;
+        return $this->screenoutConditions;
     }
 
     /**
-     * @param mixed $screenoutLogic
+     * @param mixed $screenoutConditions
      *
      * @return Question
      */
-    public function setScreenoutLogic($screenoutLogic)
+    public function setScreenoutConditions($screenoutConditions)
     {
-        $this->screenoutLogic = $screenoutLogic;
+        $this->screenoutConditions = $screenoutConditions;
 
         return $this;
     }
