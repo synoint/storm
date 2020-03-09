@@ -68,20 +68,4 @@ class Response
     {
         return uniqid($this->responseIdPrefix);
     }
-
-    public function answersToArray(Document\Response $response)
-    {
-        $answersArray = [];
-
-        foreach($response->getAnswers() as $responseAnswer){
-
-            $answersArray[$responseAnswer->getQuestionid()] = [];
-
-            foreach($responseAnswer->getAnswers() as $answer){
-                $answersArray[$responseAnswer->getQuestionid()][] = $answer->getAnswerId();
-            }
-        }
-
-        return $answersArray;
-    }
 }

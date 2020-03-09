@@ -3,7 +3,6 @@
 namespace Syno\Storm\Api\v1\Form;
 
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
@@ -16,12 +15,7 @@ class JumpToConditionType extends AbstractType
     {
         $builder
             ->add('rule', TextType::class)
-            ->add('destination', IntegerType::class)
-            ->add('ruleQuestionIds', CollectionType::class, [
-                'entry_type'   => IntegerType::class,
-                'by_reference' => false,
-                'allow_add'    => true
-            ]);
+            ->add('destination', IntegerType::class);
     }
 
     public function configureOptions(OptionsResolver $resolver)

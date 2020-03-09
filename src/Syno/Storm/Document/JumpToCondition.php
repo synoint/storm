@@ -25,13 +25,6 @@ class JumpToCondition
      */
     private $destination;
 
-
-    /**
-     * @ODM\Field(type="collection")
-     */
-    private $ruleQuestionIds;
-
-
     /**
      * @return mixed
      */
@@ -68,26 +61,6 @@ class JumpToCondition
     public function setDestination($destination)
     {
         $this->destination = $destination;
-
-        return $this;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getRuleQuestionIds()
-    {
-        return $this->ruleQuestionIds;
-    }
-
-    /**
-     * @param mixed $ruleQuestionIds
-     *
-     * @return self
-     */
-    public function setRuleQuestionIds($ruleQuestionIds)
-    {
-        $this->ruleQuestionIds = $ruleQuestionIds;
 
         return $this;
     }

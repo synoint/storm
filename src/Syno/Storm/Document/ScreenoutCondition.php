@@ -24,13 +24,6 @@ class ScreenoutCondition
      */
     private $url;
 
-
-    /**
-     * @ODM\Field(type="collection")
-     */
-    private $ruleQuestionIds;
-
-
     /**
      * @return mixed
      */
@@ -67,26 +60,6 @@ class ScreenoutCondition
     public function setUrl($url)
     {
         $this->url = $url;
-
-        return $this;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getRuleQuestionIds()
-    {
-        return $this->ruleQuestionIds;
-    }
-
-    /**
-     * @param mixed $ruleQuestionIds
-     *
-     * @return self
-     */
-    public function setRuleQuestionIds($ruleQuestionIds)
-    {
-        $this->ruleQuestionIds = $ruleQuestionIds;
 
         return $this;
     }

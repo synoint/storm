@@ -3,25 +3,16 @@
 namespace Syno\Storm\Services;
 
 use JWadhams;
+use Syno\Storm\Document;
 
 class Condition
 {
-    public function applyScreenoutRule(array $responsesArray, $screenoutConditions)
+    public function applyScreenoutRule(Document\Response $responses, $screenoutConditions)
     {
         $redirectUrl = null;
 
         foreach($screenoutConditions as $screenoutCondition){
-            $conditionData = [];
-
-            foreach($screenoutCondition->getRuleQuestionIds() as $questionId){
-                if (isset($responsesArray[$questionId])) {
-                    foreach($responsesArray[$questionId] as $answer){
-                        $conditionData[$answer] =  1;
-                    }
-                }
-            }
-
-            if(JWadhams\JsonLogic::apply(json_decode($screenoutCondition->getRule()), $conditionData)){
+            if(JWadhams\JsonLogic::apply(json_decode($screenoutCondition->getRule()), $responses->getLastAnswersId())){
                 return $screenoutCondition->getUrl();
             }
         }
@@ -29,22 +20,12 @@ class Condition
         return $redirectUrl;
     }
 
-    public function applyJumpToRule(array $responsesArray, $jumpToConditions)
+    public function applyJumpToRule(Document\Response $responses, $jumpToConditions)
     {
         $redirectUrl = null;
 
         foreach($jumpToConditions as $jumpToCondition){
-            $conditionData = [];
-
-            foreach($jumpToCondition->getRuleQuestionIds() as $questionId){
-                if (isset($responsesArray[$questionId])) {
-                    foreach($responsesArray[$questionId] as $answer){
-                        $conditionData[$answer] =  1;
-                    }
-                }
-            }
-
-            if(JWadhams\JsonLogic::apply(json_decode($jumpToCondition->getRule()), $conditionData)){
+            if(JWadhams\JsonLogic::apply(json_decode($jumpToCondition->getRule()), $responses->getLastAnswersId())){
                 return $jumpToCondition->getDestination();
             }
         }
@@ -52,20 +33,10 @@ class Condition
         return $redirectUrl;
     }
 
-    public function applyShowRule(array $responsesArray, $showConditions)
+    public function applyShowRule(Document\Response $responses, $showConditions)
     {
         foreach($showConditions as $showCondition){
-            $conditionData = [];
-
-            foreach($showCondition->getRuleQuestionIds() as $questionId){
-                if (isset($responsesArray[$questionId])) {
-                    foreach($responsesArray[$questionId] as $answer){
-                        $conditionData[$answer] =  1;
-                    }
-                }
-            }
-
-            if(JWadhams\JsonLogic::apply(json_decode($showCondition->getRule()), $conditionData)){
+            if(JWadhams\JsonLogic::apply(json_decode($showCondition->getRule()), $responses->getLastAnswersId())){
                 return true;
             }
         }
@@ -73,14 +44,14 @@ class Condition
         return false;
     }
 
-    public function filterQuestionsByShowCondition( $questions, array $responsesArray)
+    public function filterQuestionsByShowCondition( $questions, Document\Response $responses)
     {
         $filteredQuestions = clone $questions;
 
         foreach($questions as $key => $question){
             $showConditions = $question->getShowConditions();
 
-            if(($showConditions->count() && !$this->applyShowRule($responsesArray, $showConditions))){
+            if(($showConditions->count() && !$this->applyShowRule($responses, $showConditions))){
                 $filteredQuestions->remove($key);
             }
         }

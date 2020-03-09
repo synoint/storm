@@ -21,16 +21,16 @@ class Page
     /**
      * @param Document\Survey   $survey
      * @param Document\Page     $page
-     * @param array             $responsesArray
+     * @param Document\Response $responses
      *
      * @return null|Document\Page
      */
-    public function getNextPage(Document\Survey $survey, Document\Page $page, array $responsesArray):? object
+    public function getNextPage(Document\Survey $survey, Document\Page $page, Document\Response $responses):? object
     {
         $nextPage = $survey->getNextPage($page->getPageId());
         if (!empty($nextPage)) {
-            if (empty($this->conditionService->filterQuestionsByShowCondition($nextPage->getQuestions(), $responsesArray)->count())) {
-                $nextPage = $this->getNextPage($survey, $nextPage, $responsesArray);
+            if (empty($this->conditionService->filterQuestionsByShowCondition($nextPage->getQuestions(), $responses)->count())) {
+                $nextPage = $this->getNextPage($survey, $nextPage, $responses);
             }
         }
 

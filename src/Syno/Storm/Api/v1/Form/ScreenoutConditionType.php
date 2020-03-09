@@ -3,10 +3,8 @@
 namespace Syno\Storm\Api\v1\Form;
 
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Syno\Storm\Document;
 
@@ -16,12 +14,7 @@ class ScreenoutConditionType extends AbstractType
     {
         $builder
             ->add('rule', TextType::class)
-            ->add('url', TextType::class)
-            ->add('ruleQuestionIds', CollectionType::class, [
-                'entry_type'   => IntegerType::class,
-                'by_reference' => false,
-                'allow_add'    => true
-            ]);
+            ->add('url', TextType::class);
     }
 
     public function configureOptions(OptionsResolver $resolver)

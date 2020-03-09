@@ -423,4 +423,26 @@ class Response
     {
         $this->answers->clear();
     }
+
+    public function getLastAnswersId()
+    {
+        $questionsId = [];
+        $answersId = [];
+
+        foreach ($this->getAnswers() as $responseAnswer) {
+            /**@var ResponseAnswer $responseAnswer */
+            $questionsId[$responseAnswer->getQuestionId()] = [];
+            foreach ($responseAnswer->getAnswers() as $answer) {
+                $questionsId[$responseAnswer->getQuestionId()] = [$answer->getAnswerId() => 1];
+            }
+        }
+
+        foreach ($questionsId as $questionId) {
+            foreach ($questionId as $answerIds => $value) {
+                $answersId[$answerIds] = $value;
+            }
+        }
+
+        return $answersId;
+    }
 }

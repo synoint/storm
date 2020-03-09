@@ -19,13 +19,6 @@ class ShowCondition
      */
     private $rule;
 
-
-    /**
-     * @ODM\Field(type="collection")
-     */
-    private $ruleQuestionIds;
-
-
     /**
      * @return mixed
      */
@@ -42,26 +35,6 @@ class ShowCondition
     public function setRule($rule)
     {
         $this->rule = $rule;
-
-        return $this;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getRuleQuestionIds()
-    {
-        return $this->ruleQuestionIds;
-    }
-
-    /**
-     * @param mixed $ruleQuestionIds
-     *
-     * @return self
-     */
-    public function setRuleQuestionIds($ruleQuestionIds)
-    {
-        $this->ruleQuestionIds = $ruleQuestionIds;
 
         return $this;
     }

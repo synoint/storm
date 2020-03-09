@@ -26,9 +26,6 @@ class PageController extends AbstractController
     /** @var SurveySession */
     private $surveySessionService;
 
-    /** @var Services\Response */
-    private $responseService;
-
     /** @var Services\Condition */
     private $conditionService;
 
@@ -40,7 +37,6 @@ class PageController extends AbstractController
      * @param RequestHandler\Response $responseRequestHandler
      * @param ResponseEventLogger     $responseEventLogger
      * @param SurveySession           $surveySessionService
-     * @param Services\Response       $responseService
      * @param Services\Condition      $conditionService
      * @param Services\Page           $pageService
      */
@@ -48,7 +44,6 @@ class PageController extends AbstractController
         RequestHandler\Response $responseRequestHandler,
         ResponseEventLogger $responseEventLogger,
         SurveySession $surveySessionService,
-        Services\Response $responseService,
         Services\Condition $conditionService,
         Services\Page $pageService
     )
@@ -56,7 +51,6 @@ class PageController extends AbstractController
         $this->responseRequestHandler = $responseRequestHandler;
         $this->responseEventLogger    = $responseEventLogger;
         $this->surveySessionService   = $surveySessionService;
-        $this->responseService        = $responseService;
         $this->conditionService       = $conditionService;
         $this->pageService            = $pageService;
     }
@@ -84,11 +78,12 @@ class PageController extends AbstractController
         Request $request
     ): Response
     {
-        $redirectUrl = null;
-        $jumpPage = null;
+        $redirect       = null;
+        $screenOutUrl   = null;
+        $jumpPage       = null;
 
         $form = $this->createForm(PageType::class, null, [
-            'questions' => $this->conditionService->filterQuestionsByShowCondition($page->getQuestions(), $this->responseService->answersToArray($response))
+            'questions' => $this->conditionService->filterQuestionsByShowCondition($page->getQuestions(), $response)
         ]);
         $form->handleRequest($request);
 
@@ -99,30 +94,40 @@ class PageController extends AbstractController
                 /** @var Document\Question $question */
                 foreach ($page->getQuestions() as $question) {
                     $answers = $this->responseRequestHandler->extractAnswers($question, $form->getData());
-                    $response->addAnswer(
-                        new Document\ResponseAnswer($question->getQuestionId(), $answers)
-                    );
+                    $response->addAnswer(new Document\ResponseAnswer($question->getQuestionId(), $answers));
 
-                    if(!empty($question->getJumpToConditions())){
-                        $questionId = $this->conditionService->applyJumpToRule($this->responseService->answersToArray($response), $question->getJumpToConditions());
-                        if(!empty($questionId) && $jumpPage === null) {
-                            $jumpPage = $survey->getPageByQuestion($questionId);
+                    if(!empty($question->getScreenoutConditions()) && $screenOutUrl === null){
+                        $screenOutUrl = $this->conditionService->applyScreenoutRule($response, $question->getScreenoutConditions()) ?: $screenOutUrl;
+                        if(!empty($screenOutUrl)) {
+                            $redirect =  $this->redirect($screenOutUrl, 301);
+                            break;
                         }
                     }
 
-                    if(!empty($question->getScreenoutConditions()) && $redirectUrl === null){
-                        $redirectUrl = $this->conditionService->applyScreenoutRule($this->responseService->answersToArray($response), $question->getScreenoutConditions()) ?: $redirectUrl;
+                    if(!empty($question->getJumpToConditions())){
+                        $questionId = $this->conditionService->applyJumpToRule($response, $question->getJumpToConditions());
+                        if(!empty($questionId) && $jumpPage === null) {
+                            $jumpPage = $survey->getPageByQuestion($questionId);
+
+                            if(!empty($jumpPage)) {
+                                $redirect = $this->redirectToRoute('page.index', [
+                                    'surveyId' => $survey->getSurveyId(),
+                                    'pageId'   => $jumpPage->getPageId()
+                                ]);
+                                break;
+                            }
+                        }
                     }
                 }
                 $this->responseRequestHandler->saveResponse($response);
 
                 $this->responseEventLogger->log(ResponseEventLogger::ANSWERS_SAVED, $response);
 
-                if(!empty($redirectUrl)) {
-                    return $this->redirect($redirectUrl, 301);
+                if($redirect !== null){
+                    return $redirect;
                 }
 
-                $nextPage = !empty($jumpPage) ? $jumpPage : $this->pageService->getNextPage($survey, $page, $this->responseService->answersToArray($response));
+                $nextPage = $this->pageService->getNextPage($survey, $page, $response);
                 if (null === $nextPage) {
 
                     if ($response->isLive()) {
