@@ -8,26 +8,26 @@ use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Syno\Storm\Event\SurveyCompleted;
 use Syno\Storm\RequestHandler\Survey;
-use Syno\Storm\Services\SurveyStats;
+use Syno\Storm\Services\SurveyEventLogger;
 use Syno\Storm\Traits\RouteAware;
 
-class SurveyStatsListener implements EventSubscriberInterface
+class SurveyEventListener implements EventSubscriberInterface
 {
     use RouteAware;
 
     /** @var Survey */
     private $surveyRequestHandler;
-    /** @var SurveyStats */
-    private $surveyStatsService;
+    /** @var SurveyEventLogger */
+    private $surveyEventLogger;
 
     /**
-     * @param Survey      $surveyRequestHandler
-     * @param SurveyStats $surveyStatsService
+     * @param Survey            $surveyRequestHandler
+     * @param SurveyEventLogger $surveyEventLogger
      */
-    public function __construct(Survey $surveyRequestHandler, SurveyStats $surveyStatsService)
+    public function __construct(Survey $surveyRequestHandler, SurveyEventLogger $surveyEventLogger)
     {
         $this->surveyRequestHandler = $surveyRequestHandler;
-        $this->surveyStatsService   = $surveyStatsService;
+        $this->surveyEventLogger    = $surveyEventLogger;
     }
 
 
@@ -39,7 +39,7 @@ class SurveyStatsListener implements EventSubscriberInterface
         if ($event->isMasterRequest() && $this->isSurveyEntrance($request->attributes->get('_route'))) {
             $survey = $this->surveyRequestHandler->getSurvey($request);
             if ($survey) {
-                $this->surveyStatsService->incrementVisits($survey->getSurveyId(), $survey->getVersion());
+                $this->surveyEventLogger->log(SurveyEventLogger::VISIT, $survey);
             }
         }
     }
@@ -54,7 +54,7 @@ class SurveyStatsListener implements EventSubscriberInterface
 
         $survey = $this->surveyRequestHandler->getSurvey($request);
         if ($survey) {
-            $this->surveyStatsService->incrementCompletes($survey->getSurveyId(), $survey->getVersion());
+            $this->surveyEventLogger->log(SurveyEventLogger::COMPLETE, $survey);
         }
     }
 

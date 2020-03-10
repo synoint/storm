@@ -10,7 +10,6 @@ use Syno\Storm\Api\Controller\TokenAuthenticatedController;
 use Syno\Storm\Api\v1\Form;
 use Syno\Storm\Api\v1\Http\ApiResponse;
 use Syno\Storm\Services\Survey;
-use Syno\Storm\Services\SurveyStats;
 use Syno\Storm\Traits\FormAware;
 use Syno\Storm\Traits\JsonRequestAware;
 
@@ -25,17 +24,12 @@ class SurveyController extends AbstractController implements TokenAuthenticatedC
     /** @var Survey */
     private $surveyService;
 
-    /** @var SurveyStats */
-    private $surveyStatsService;
-
     /**
-     * @param Survey      $surveyService
-     * @param SurveyStats $surveyStatsService
+     * @param Survey $surveyService
      */
-    public function __construct(Survey $surveyService, SurveyStats $surveyStatsService)
+    public function __construct(Survey $surveyService)
     {
-        $this->surveyService      = $surveyService;
-        $this->surveyStatsService = $surveyStatsService;
+        $this->surveyService = $surveyService;
     }
 
 
@@ -61,10 +55,6 @@ class SurveyController extends AbstractController implements TokenAuthenticatedC
         $form->submit($data);
         if ($form->isValid()) {
             $this->surveyService->save($survey);
-
-            $this->surveyStatsService->save(
-                $this->surveyStatsService->getNew($survey->getSurveyId(), $survey->getVersion())
-            );
 
             return $this->json($survey->getId(), 201);
         }
@@ -103,32 +93,6 @@ class SurveyController extends AbstractController implements TokenAuthenticatedC
      * @param int $version
      *
      * @Route(
-     *     "/{surveyId}/{version}/stats",
-     *     name="storm_api.v1.survey.stats",
-     *     requirements={"id"="\d+"},
-     *     methods={"GET"}
-     * )
-     *
-     * @return JsonResponse
-     */
-    public function stats(int $surveyId, int $version)
-    {
-        $surveyStats = $this->surveyStatsService->findBySurveyIdAndVersion($surveyId, $version);
-        if (!$surveyStats) {
-            return $this->json(
-                sprintf('Survey stats for survey with ID: %d, version: %d was not found', $surveyId, $version),
-                404
-            );
-        }
-
-        return $this->json($surveyStats);
-    }
-
-    /**
-     * @param int $surveyId
-     * @param int $version
-     *
-     * @Route(
      *     "/{surveyId}/{version}",
      *     name="storm_api.v1.survey.delete",
      *     requirements={"id"="\d+", "version"="\d+"},
@@ -148,7 +112,6 @@ class SurveyController extends AbstractController implements TokenAuthenticatedC
         }
 
         $this->surveyService->delete($survey);
-        $this->surveyStatsService->delete($surveyId, $version);
 
         return $this->json('ok');
     }
@@ -229,7 +192,6 @@ class SurveyController extends AbstractController implements TokenAuthenticatedC
             $survey = $this->surveyService->findBySurveyIdAndVersion($params['surveyId'], $params['version']);
             if ($survey) {
                 $this->surveyService->delete($survey);
-                $this->surveyStatsService->delete($params['surveyId'], $params['version']);
             }
         }
     }

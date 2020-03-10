@@ -75,27 +75,6 @@ final class SurveyTest extends WebTestCase
     /**
      * @depends testRetrieve
      */
-    public function testStats()
-    {
-        self::$client->request('GET', sprintf('/api/v1/survey/%d/%d/stats', self::SURVEY_ID, self::VERSION));
-        $this->assertEquals(200, self::$client->getResponse()->getStatusCode());
-        $surveyStats = json_decode(self::$client->getResponse()->getContent(), true);
-
-        $this->assertArrayHasKey('id', $surveyStats);
-        $this->assertArrayHasKey('surveyId', $surveyStats);
-        $this->assertArrayHasKey('version', $surveyStats);
-        $this->assertArrayHasKey('visits', $surveyStats);
-        $this->assertArrayHasKey('completes', $surveyStats);
-        $this->assertArrayHasKey('updatedAt', $surveyStats);
-
-        $this->assertEquals(self::SURVEY_ID, $surveyStats['surveyId']);
-        $this->assertEquals(self::VERSION, $surveyStats['version']);
-        $this->assertEquals(0, $surveyStats['visits']);
-    }
-
-    /**
-     * @depends testRetrieve
-     */
     public function testDelete()
     {
         self::$client->request('DELETE', sprintf('/api/v1/survey/%d/%d', self::SURVEY_ID, self::VERSION));

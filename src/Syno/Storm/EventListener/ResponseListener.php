@@ -15,7 +15,7 @@ use Syno\Storm\Event\SurveyCompleted;
 use Syno\Storm\Document;
 use Syno\Storm\RequestHandler;
 use Syno\Storm\Services\ResponseEventLogger;
-use Syno\Storm\Services\SurveyStats;
+use Syno\Storm\Services\SurveyEventLogger;
 use Syno\Storm\Traits\RouteAware;
 
 
@@ -38,32 +38,32 @@ class ResponseListener implements EventSubscriberInterface
     /** @var RouterInterface */
     private $router;
 
-    /** @var SurveyStats */
-    private $surveyStatsService;
+    /** @var SurveyEventLogger */
+    private $surveyEventLogger;
 
     /**
      * @param RequestHandler\Survey   $surveyRequestHandler
      * @param RequestHandler\Page     $pageRequestHandler
      * @param RequestHandler\Response $responseRequestHandler
      * @param ResponseEventLogger     $responseEventLogger
+     * @param SurveyEventLogger       $surveyEventLogger
      * @param RouterInterface         $router
-     * @param SurveyStats             $surveyStatsService
      */
     public function __construct(
         RequestHandler\Survey $surveyRequestHandler,
         RequestHandler\Page $pageRequestHandler,
         RequestHandler\Response $responseRequestHandler,
         ResponseEventLogger $responseEventLogger,
-        RouterInterface $router,
-        SurveyStats $surveyStatsService
+        SurveyEventLogger $surveyEventLogger,
+        RouterInterface $router
     )
     {
         $this->surveyRequestHandler   = $surveyRequestHandler;
         $this->pageRequestHandler     = $pageRequestHandler;
         $this->responseRequestHandler = $responseRequestHandler;
         $this->responseEventLogger    = $responseEventLogger;
+        $this->surveyEventLogger      = $surveyEventLogger;
         $this->router                 = $router;
-        $this->surveyStatsService     = $surveyStatsService;
     }
 
 
@@ -307,11 +307,17 @@ class ResponseListener implements EventSubscriberInterface
         $this->responseEventLogger->log(ResponseEventLogger::RESPONSE_CREATED, $surveyResponse);
         $this->responseEventLogger->log(ResponseEventLogger::SURVEY_ENTERED, $surveyResponse);
 
-        $this->surveyStatsService->incrementResponses(
-            $survey->getSurveyId(),
-            $survey->getVersion(),
-            $surveyResponse->getMode()
-        );
+        switch ($surveyResponse->getMode()) {
+            case Document\Response::MODE_LIVE:
+                $this->surveyEventLogger->log(SurveyEventLogger::LIVE_RESPONSE, $survey);
+                break;
+            case Document\Response::MODE_TEST:
+                $this->surveyEventLogger->log(SurveyEventLogger::TEST_RESPONSE, $survey);
+                break;
+            case Document\Response::MODE_DEBUG:
+                $this->surveyEventLogger->log(SurveyEventLogger::DEBUG_RESPONSE, $survey);
+                break;
+        }
     }
 
 
