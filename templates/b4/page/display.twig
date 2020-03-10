@@ -28,11 +28,11 @@
                                     {{ form_row(attribute(form, (question.getInputName))) }}
                                 {% elseif question.isLinearScaleMatrix %}
                                     {% for key,row in question.getRows() %}
-                                        {{ form_row(attribute(form, (question.getInputName~key))) }}
+                                        {{ form_row(attribute(form, (question.getInputName(key)))) }}
                                     {% endfor %}
                                 {% elseif question.isText %}
                                     {% for answer in question.answers %}
-                                        {{ form_widget(attribute(form, (answer.answerId)), {'label': false}) }}
+                                        {{ form_widget(attribute(form, (question.getInputName(answer.answerId))), {'label': false}) }}
                                     {% endfor %}
                                 {% else %}
                                     {{ form_widget(attribute(form, (question.getInputName))) }}

@@ -104,7 +104,7 @@ class PageType extends AbstractType
 
             $multiple = (Document\Question::TYPE_MULTIPLE_CHOICE_MATRIX === $question->getQuestionTypeId());
 
-            $builder->add($question->getInputName().$rowCode, ChoiceType::class, [
+            $builder->add($question->getInputName($rowCode), ChoiceType::class, [
                 'choices' => $choices,
                 'multiple' => $multiple,
                 'expanded' => true,
@@ -125,12 +125,12 @@ class PageType extends AbstractType
         /** @var Document\Answer $answer */
         foreach ($question->getAnswers() as $answer) {
             if ($answer->getAnswerFieldTypeId() === Document\Answer::FIELD_TYPE_TEXT) {
-                $builder->add($answer->getAnswerId(), TextType::class, [
+                $builder->add($question->getInputName($answer->getAnswerId()), TextType::class, [
                     'attr' => ['class' => 'custom-control custom-text'],
                     'required' => $question->isRequired()
                 ]);
             } elseif ($answer->getAnswerFieldTypeId() === Document\Answer::FIELD_TYPE_TEXTAREA) {
-                $builder->add($answer->getAnswerId(), TextareaType::class, [
+                $builder->add($question->getInputName($answer->getAnswerId()), TextareaType::class, [
                     'attr' => ['class' => 'custom-control custom-textarea'],
                     'required' => $question->isRequired()
                 ]);
@@ -167,7 +167,7 @@ class PageType extends AbstractType
                 $choices[$answer->getColumnLabel()] = $answer->getAnswerId();
             }
 
-            $builder->add($question->getInputName().$rowCode, LinearScaleMatrix::class, [
+            $builder->add($question->getInputName($rowCode), LinearScaleMatrix::class, [
                 'choices' => $array,
                 'required' => $question->isRequired(),
                 'label'    => $row

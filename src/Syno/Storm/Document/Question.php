@@ -423,11 +423,13 @@ class Question
     }
 
     /**
+     * @param string $suffix
+     *
      * @return string
      */
-    public function getInputName(): string
+    public function getInputName(string $suffix = null): string
     {
-        return self::INPUT_PREFIX . $this->questionId;
+        return self::INPUT_PREFIX . $this->questionId . ((null !== $suffix) ? '_' . $suffix : '');
     }
 
     /**

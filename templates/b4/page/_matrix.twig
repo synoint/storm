@@ -13,7 +13,7 @@
         {% for rowCode,rowLabel in question.getRows() %}
             <tr>
                 <th scope="row" class=" d-block d-md-table-cell text-center text-md-left p-md-3 mt-5 mt-md-0 align-middle font-weight-normal ">{{ rowLabel }}</th>
-                {% for child in attribute(form, (question.getInputName~rowCode)) %}
+                {% for child in attribute(form, (question.getInputName(rowCode))) %}
                     <td class="d-block d-md-table-cell p-md-0 ">
                     <div class="custom-control {{ (question.questionTypeId == constant('Syno\\Storm\\Document\\Question::TYPE_SINGLE_CHOICE_MATRIX'))  ? 'custom-radio custom-radio-filled custom-radio-filled-md-center' : 'custom-checkbox custom-checkbox-filled custom-checkbox-filled-md-center' }}">
                         {{ form_widget(child, {'label_attr': {'class': 'custom-control-label'}}) }}

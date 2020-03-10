@@ -6,7 +6,7 @@ use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
 
 /**
  * @ODM\Document(collection="survey_event"))
- * @ODM\UniqueIndex(keys={"surveyId"="asc", "version"="asc"})
+ * @ODM\Index(keys={"surveyId"="asc", "version"="asc"})
  */
 class SurveyEvent
 {
