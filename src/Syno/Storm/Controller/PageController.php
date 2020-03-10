@@ -11,6 +11,7 @@ use Syno\Storm\Document;
 use Syno\Storm\Form\PageType;
 use Syno\Storm\RequestHandler;
 use Syno\Storm\Services\ResponseEventLogger;
+use Syno\Storm\Services\SurveyEventLogger;
 use Syno\Storm\Services\SurveySession;
 use Syno\Storm\Services;
 use JWadhams;
@@ -23,6 +24,9 @@ class PageController extends AbstractController
     /** @var ResponseEventLogger */
     private $responseEventLogger;
 
+    /** @var SurveyEventLogger */
+    private $surveyEventLogger;
+
     /** @var SurveySession */
     private $surveySessionService;
 
@@ -32,10 +36,10 @@ class PageController extends AbstractController
     /** @var Services\Page */
     private $pageService;
 
-
     /**
      * @param RequestHandler\Response $responseRequestHandler
      * @param ResponseEventLogger     $responseEventLogger
+     * @param SurveyEventLogger       $surveyEventLogger
      * @param SurveySession           $surveySessionService
      * @param Services\Condition      $conditionService
      * @param Services\Page           $pageService
@@ -43,6 +47,7 @@ class PageController extends AbstractController
     public function __construct(
         RequestHandler\Response $responseRequestHandler,
         ResponseEventLogger $responseEventLogger,
+        SurveyEventLogger $surveyEventLogger,
         SurveySession $surveySessionService,
         Services\Condition $conditionService,
         Services\Page $pageService
@@ -50,6 +55,7 @@ class PageController extends AbstractController
     {
         $this->responseRequestHandler = $responseRequestHandler;
         $this->responseEventLogger    = $responseEventLogger;
+        $this->surveyEventLogger      = $surveyEventLogger;
         $this->surveySessionService   = $surveySessionService;
         $this->conditionService       = $conditionService;
         $this->pageService            = $pageService;
@@ -78,13 +84,15 @@ class PageController extends AbstractController
         Request $request
     ): Response
     {
-        $redirect       = null;
-        $screenOutUrl   = null;
-        $jumpPage       = null;
+        $redirect     = null;
+        $screenOutUrl = null;
+        $jumpPage     = null;
 
-        $form = $this->createForm(PageType::class, null, [
+        $form = $this->createForm(
+            PageType::class, null, [
             'questions' => $this->conditionService->filterQuestionsByShowCondition($page->getQuestions(), $response)
-        ]);
+        ]
+        );
         $form->handleRequest($request);
 
         if ($form->isSubmitted()) {
@@ -96,24 +104,27 @@ class PageController extends AbstractController
                     $answers = $this->responseRequestHandler->extractAnswers($question, $form->getData());
                     $response->addAnswer(new Document\ResponseAnswer($question->getQuestionId(), $answers));
 
-                    if(!empty($question->getScreenoutConditions()) && $screenOutUrl === null){
+                    if (!empty($question->getScreenoutConditions()) && $screenOutUrl === null) {
                         $screenOutUrl = $this->conditionService->applyScreenoutRule($response, $question->getScreenoutConditions()) ?: $screenOutUrl;
-                        if(!empty($screenOutUrl)) {
-                            $redirect =  $this->redirect($screenOutUrl, 301);
+                        if (!empty($screenOutUrl)) {
+                            $this->surveyEventLogger->log(SurveyEventLogger::SCREENOUT, $survey);
+                            $redirect = $this->redirect($screenOutUrl, 301);
                             break;
                         }
                     }
 
-                    if(!empty($question->getJumpToConditions())){
+                    if (!empty($question->getJumpToConditions())) {
                         $questionId = $this->conditionService->applyJumpToRule($response, $question->getJumpToConditions());
-                        if(!empty($questionId) && $jumpPage === null) {
+                        if (!empty($questionId) && $jumpPage === null) {
                             $jumpPage = $survey->getPageByQuestion($questionId);
 
-                            if(!empty($jumpPage)) {
-                                $redirect = $this->redirectToRoute('page.index', [
+                            if (!empty($jumpPage)) {
+                                $redirect = $this->redirectToRoute(
+                                    'page.index', [
                                     'surveyId' => $survey->getSurveyId(),
                                     'pageId'   => $jumpPage->getPageId()
-                                ]);
+                                ]
+                                );
                                 break;
                             }
                         }
@@ -123,7 +134,7 @@ class PageController extends AbstractController
 
                 $this->responseEventLogger->log(ResponseEventLogger::ANSWERS_SAVED, $response);
 
-                if($redirect !== null){
+                if ($redirect !== null) {
                     return $redirect;
                 }
 
@@ -137,22 +148,26 @@ class PageController extends AbstractController
                     return $this->redirectToRoute('survey.complete', ['surveyId' => $survey->getSurveyId()]);
                 }
 
-                return $this->redirectToRoute('page.index', [
+                return $this->redirectToRoute(
+                    'page.index', [
                     'surveyId' => $survey->getSurveyId(),
                     'pageId'   => $nextPage->getPageId()
-                ]);
+                ]
+                );
             }
 
             $this->responseEventLogger->log(ResponseEventLogger::ANSWERS_ERROR, $response);
         }
 
-        return $this->render($survey->getConfig()->theme . '/page/display.twig', [
+        return $this->render(
+            $survey->getConfig()->theme . '/page/display.twig', [
             'survey'             => $survey,
             'page'               => $page,
             'response'           => $response,
             'form'               => $form->createView(),
             'backButtonDisabled' => $survey->isFirstPage($page->getPageId())
-        ]);
+        ]
+        );
     }
 
     /**
