@@ -1,4 +1,7 @@
 {
+    "jwadhams/json-logic-php": {
+        "version": "1.4.1"
+    },
     "php": {
         "version": "7.3"
     }
