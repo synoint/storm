@@ -3,12 +3,12 @@
 namespace Syno\Storm\Document;
 
 use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
+use JsonSerializable;
 
 /**
  * @ODM\Document(collection="survey_event"))
- * @ODM\Index(keys={"surveyId"="asc", "version"="asc"})
  */
-class SurveyEvent
+class SurveyEvent implements JsonSerializable
 {
     /** @ODM\Id */
     private $id;
@@ -23,7 +23,8 @@ class SurveyEvent
     /**
      * @var string
      *
-     * @ODM\Field(type="string")
+     * @ODM\Field(type="int")
+     * @ODM\Index
      */
     private $surveyId;
 
@@ -38,6 +39,7 @@ class SurveyEvent
      * @var string
      *
      * @ODM\Field(type="string")
+     * @ODM\Index
      */
     private $event;
 
@@ -54,5 +56,14 @@ class SurveyEvent
         $this->event    = $event;
     }
 
-
+    public function jsonSerialize()
+    {
+        return [
+            'id'       => $this->id,
+            'time'     => $this->time,
+            'surveyId' => $this->surveyId,
+            'version'  => $this->version,
+            'event'    => $this->event
+        ];
+    }
 }

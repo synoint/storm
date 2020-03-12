@@ -120,6 +120,11 @@ class Survey
         $this->dm->flush();
     }
 
+    /**
+     * @param Document\Survey $survey
+     *
+     * @return string
+     */
     public function enableDebugMode(Document\Survey $survey)
     {
         $token = bin2hex(random_bytes(rand(16,20)));
@@ -130,6 +135,9 @@ class Survey
         return $token;
     }
 
+    /**
+     * @param Document\Survey $survey
+     */
     public function disableDebugMode(Document\Survey $survey)
     {
         $survey->getConfig()->debugMode = false;
@@ -137,6 +145,12 @@ class Survey
         $this->dm->flush();
     }
 
+    /**
+     * @param Document\Survey $survey
+     * @param Document\Page   $currentPage
+     *
+     * @return int
+     */
     public function getProgress(Document\Survey $survey, Document\Page $currentPage): int
     {
         $pages            = $survey->getPages();
@@ -144,5 +158,26 @@ class Survey
         $currentPageIndex = $pages->indexOf($currentPage);
 
         return round($currentPageIndex / $pageCount * 100);
+    }
+
+    /**
+     * @param int $surveyId
+     * @param int $limit
+     * @param int $offset
+     *
+     * @return array
+     */
+    public function getEvents(int $surveyId, int $limit = 1000, int $offset = 0): array
+    {
+        return $this->dm->getRepository(Document\SurveyEvent::class)->findBy(
+            [
+                'surveyId' => $surveyId
+            ],
+            [
+                'id' => 'ASC'
+            ],
+            $limit,
+            $offset
+        );
     }
 }

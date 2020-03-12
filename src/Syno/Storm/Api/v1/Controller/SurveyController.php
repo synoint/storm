@@ -69,7 +69,7 @@ class SurveyController extends AbstractController implements TokenAuthenticatedC
      * @Route(
      *     "/{surveyId}/{version}",
      *     name="storm_api.v1.survey.retrieve",
-     *     requirements={"id"="\d+"},
+     *     requirements={"id"="\d+", "version"="\d+"},
      *     methods={"GET"}
      * )
      *
@@ -181,6 +181,30 @@ class SurveyController extends AbstractController implements TokenAuthenticatedC
         }
 
         return $this->json('Unknown action', 400);
+    }
+
+    /**
+     * @param int     $surveyId
+     * @param Request $request
+     *
+     * @Route(
+     *     "/{surveyId}/events",
+     *     name="storm_api.v1.survey.events",
+     *     requirements={"id"="\d+"},
+     *     methods={"GET"}
+     * )
+     *
+     * @return JsonResponse
+     */
+    public function events(int $surveyId, Request $request)
+    {
+        return $this->json(
+            $this->surveyService->getEvents(
+                $surveyId,
+                $request->query->getInt('limit', 1000),
+                $request->query->getInt('offset')
+            )
+        );
     }
 
     /**
