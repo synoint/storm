@@ -10,6 +10,8 @@ use Syno\Storm\Api\Controller\TokenAuthenticatedController;
 use Syno\Storm\Api\v1\Form;
 use Syno\Storm\Api\v1\Http\ApiResponse;
 use Syno\Storm\Services\Survey;
+use Syno\Storm\Services\SurveyEventLogger;
+use Syno\Storm\Services\SurveyEvent;
 use Syno\Storm\Traits\FormAware;
 use Syno\Storm\Traits\JsonRequestAware;
 
@@ -24,14 +26,18 @@ class SurveyController extends AbstractController implements TokenAuthenticatedC
     /** @var Survey */
     private $surveyService;
 
-    /**
-     * @param Survey $surveyService
-     */
-    public function __construct(Survey $surveyService)
-    {
-        $this->surveyService = $surveyService;
-    }
+    /** @var SurveyEvent */
+    private $surveyEventService;
 
+    /**
+     * @param Survey      $surveyService
+     * @param SurveyEvent $surveyEventService
+     */
+    public function __construct(Survey $surveyService, SurveyEvent $surveyEventService)
+    {
+        $this->surveyService      = $surveyService;
+        $this->surveyEventService = $surveyEventService;
+    }
 
     /**
      * @param Request $request
@@ -199,12 +205,43 @@ class SurveyController extends AbstractController implements TokenAuthenticatedC
     public function events(int $surveyId, Request $request)
     {
         return $this->json(
-            $this->surveyService->getEvents(
+            $this->surveyEventService->getAllBySurveyId(
                 $surveyId,
                 $request->query->getInt('limit', 1000),
                 $request->query->getInt('offset')
             )
         );
+    }
+
+    /**
+     * @param int $surveyId
+     *
+     * @Route(
+     *     "/{surveyId}/events/summary",
+     *     name="storm_api.v1.survey.event_count",
+     *     requirements={"id"="\d+"},
+     *     methods={"GET"}
+     * )
+     *
+     * @return JsonResponse
+     */
+    public function eventSummary(int $surveyId)
+    {
+        $result = [];
+        foreach ($this->surveyEventService->getAvailableVersions($surveyId) as $version) {
+            $result[] = [
+                'version' => $version,
+                'total' => $this->surveyEventService->count($surveyId, $version),
+                'visits'          => $this->surveyEventService->count($surveyId, $version, SurveyEventLogger::VISIT),
+                'debug_responses' => $this->surveyEventService->count($surveyId, $version, SurveyEventLogger::DEBUG_RESPONSE),
+                'test_responses'  => $this->surveyEventService->count($surveyId, $version, SurveyEventLogger::TEST_RESPONSE),
+                'live_responses'  => $this->surveyEventService->count($surveyId, $version, SurveyEventLogger::LIVE_RESPONSE),
+                'screenouts'      => $this->surveyEventService->count($surveyId, $version, SurveyEventLogger::COMPLETE),
+                'completes'       => $this->surveyEventService->count($surveyId, $version, SurveyEventLogger::COMPLETE)
+            ];
+        }
+
+        return $this->json($result);
     }
 
     /**

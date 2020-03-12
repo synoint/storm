@@ -159,25 +159,4 @@ class Survey
 
         return round($currentPageIndex / $pageCount * 100);
     }
-
-    /**
-     * @param int $surveyId
-     * @param int $limit
-     * @param int $offset
-     *
-     * @return array
-     */
-    public function getEvents(int $surveyId, int $limit = 1000, int $offset = 0): array
-    {
-        return $this->dm->getRepository(Document\SurveyEvent::class)->findBy(
-            [
-                'surveyId' => $surveyId
-            ],
-            [
-                'id' => 'ASC'
-            ],
-            $limit,
-            $offset
-        );
-    }
 }
