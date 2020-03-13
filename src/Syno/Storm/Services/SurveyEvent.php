@@ -74,6 +74,19 @@ class SurveyEvent
             ->field('surveyId')->equals($surveyId)
             ->getQuery()
             ->execute();
+    }
 
+    /**
+     * @param int $surveyId
+     * @param int $version
+     */
+    public function removeEvents(int $surveyId, int $version)
+    {
+        $this->dm->createQueryBuilder(Document\SurveyEvent::class)
+            ->remove()
+            ->field('surveyId')->equals($surveyId)
+            ->field('version')->equals($version)
+            ->getQuery()
+            ->execute();
     }
 }

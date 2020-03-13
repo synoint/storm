@@ -117,6 +117,7 @@ class SurveyController extends AbstractController implements TokenAuthenticatedC
             );
         }
 
+        $this->surveyEventService->removeEvents($surveyId, $version);
         $this->surveyService->delete($survey);
 
         return $this->json('ok');
@@ -258,8 +259,8 @@ class SurveyController extends AbstractController implements TokenAuthenticatedC
         $result = [];
         foreach ($this->surveyEventService->getAvailableVersions($surveyId) as $version) {
             $result[] = [
-                'version' => $version,
-                'total' => $this->surveyEventService->count($surveyId, $version),
+                'version'         => $version,
+                'total'           => $this->surveyEventService->count($surveyId, $version),
                 'visits'          => $this->surveyEventService->count($surveyId, $version, SurveyEventLogger::VISIT),
                 'debug_responses' => $this->surveyEventService->count($surveyId, $version, SurveyEventLogger::DEBUG_RESPONSE),
                 'test_responses'  => $this->surveyEventService->count($surveyId, $version, SurveyEventLogger::TEST_RESPONSE),
