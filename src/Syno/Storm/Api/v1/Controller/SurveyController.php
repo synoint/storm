@@ -151,6 +151,34 @@ class SurveyController extends AbstractController implements TokenAuthenticatedC
     }
 
     /**
+     * @param int $surveyId
+     * @param int $version
+     *
+     * @Route(
+     *     "/{surveyId}/{version}/unpublish",
+     *     name="storm_api.v1.survey.unpublish",
+     *     requirements={"id"="\d+", "version"="\d+"},
+     *     methods={"PUT"}
+     * )
+     *
+     * @return JsonResponse
+     */
+    public function unpublish(int $surveyId, int $version)
+    {
+        $survey = $this->surveyService->findBySurveyIdAndVersion($surveyId, $version);
+        if (!$survey) {
+            return $this->json(
+                sprintf('Survey with ID: %d, version: %d was not found', $surveyId, $version),
+                404
+            );
+        }
+        $survey->setPublished(false);
+        $this->surveyService->save($survey);
+
+        return $this->json('ok');
+    }
+
+    /**
      * @param int    $surveyId
      * @param int    $version
      * @param string $toggle
