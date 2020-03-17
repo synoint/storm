@@ -11,7 +11,6 @@ use Symfony\Component\HttpKernel\Event\ResponseEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\Routing\RouterInterface;
 use Syno\Storm\Controller\PageController;
-use Syno\Storm\Event\SurveyCompleted;
 use Syno\Storm\Document;
 use Syno\Storm\RequestHandler;
 use Syno\Storm\Services\ResponseEventLogger;
@@ -246,34 +245,12 @@ class ResponseListener implements EventSubscriberInterface
         }
     }
 
-    /**
-     * @param SurveyCompleted $event
-     */
-    public function onSurveyCompleted(SurveyCompleted $event)
-    {
-        /** @var Request $request */
-        $request = $event->getRequest();
-
-        if (!$this->responseRequestHandler->hasResponse($request)) {
-            return;
-        }
-
-        $surveyResponse = $this->responseRequestHandler->getResponse($request);
-        $surveyResponse->setCompleted(true);
-        $this->responseRequestHandler->saveResponse($surveyResponse);
-
-        $this->responseEventLogger->log(ResponseEventLogger::SURVEY_COMPLETED, $surveyResponse);
-    }
-
-
-
     public static function getSubscribedEvents(): array
     {
         return [
             KernelEvents::REQUEST    => ['onKernelRequest', 4],
             KernelEvents::CONTROLLER => ['onKernelController'],
             KernelEvents::RESPONSE   => ['onKernelResponse'],
-            SurveyCompleted::class   => ['onSurveyCompleted']
         ];
     }
 

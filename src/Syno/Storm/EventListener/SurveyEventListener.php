@@ -6,7 +6,6 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
-use Syno\Storm\Event\SurveyCompleted;
 use Syno\Storm\RequestHandler\Survey;
 use Syno\Storm\Services\SurveyEventLogger;
 use Syno\Storm\Traits\RouteAware;
@@ -44,25 +43,10 @@ class SurveyEventListener implements EventSubscriberInterface
         }
     }
 
-    /**
-     * @param SurveyCompleted $event
-     */
-    public function onSurveyCompleted(SurveyCompleted $event)
-    {
-        /** @var Request $request */
-        $request = $event->getRequest();
-
-        $survey = $this->surveyRequestHandler->getSurvey($request);
-        if ($survey) {
-            $this->surveyEventLogger->log(SurveyEventLogger::COMPLETE, $survey);
-        }
-    }
-
     public static function getSubscribedEvents(): array
     {
         return [
-            KernelEvents::REQUEST  => ['onKernelRequest', 2],
-            SurveyCompleted::class => ['onSurveyCompleted']
+            KernelEvents::REQUEST  => ['onKernelRequest', 2]
         ];
     }
 }

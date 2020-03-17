@@ -10,11 +10,9 @@ use Symfony\Component\Routing\Annotation\Route;
 use Syno\Storm\Document;
 use Syno\Storm\Form\PageType;
 use Syno\Storm\RequestHandler;
+use Syno\Storm\Services;
 use Syno\Storm\Services\ResponseEventLogger;
 use Syno\Storm\Services\SurveyEventLogger;
-use Syno\Storm\Services\SurveySession;
-use Syno\Storm\Services;
-use JWadhams;
 
 class PageController extends AbstractController
 {
@@ -27,9 +25,6 @@ class PageController extends AbstractController
     /** @var SurveyEventLogger */
     private $surveyEventLogger;
 
-    /** @var SurveySession */
-    private $surveySessionService;
-
     /** @var Services\Condition */
     private $conditionService;
 
@@ -40,7 +35,6 @@ class PageController extends AbstractController
      * @param RequestHandler\Response $responseRequestHandler
      * @param ResponseEventLogger     $responseEventLogger
      * @param SurveyEventLogger       $surveyEventLogger
-     * @param SurveySession           $surveySessionService
      * @param Services\Condition      $conditionService
      * @param Services\Page           $pageService
      */
@@ -48,7 +42,6 @@ class PageController extends AbstractController
         RequestHandler\Response $responseRequestHandler,
         ResponseEventLogger $responseEventLogger,
         SurveyEventLogger $surveyEventLogger,
-        SurveySession $surveySessionService,
         Services\Condition $conditionService,
         Services\Page $pageService
     )
@@ -56,7 +49,6 @@ class PageController extends AbstractController
         $this->responseRequestHandler = $responseRequestHandler;
         $this->responseEventLogger    = $responseEventLogger;
         $this->surveyEventLogger      = $surveyEventLogger;
-        $this->surveySessionService   = $surveySessionService;
         $this->conditionService       = $conditionService;
         $this->pageService            = $pageService;
     }
@@ -135,17 +127,14 @@ class PageController extends AbstractController
                 $this->responseEventLogger->log(ResponseEventLogger::ANSWERS_SAVED, $response);
 
                 if ($redirect !== null) {
+
                     return $redirect;
                 }
 
                 $nextPage = $this->pageService->getNextPage($survey, $page, $response);
                 if (null === $nextPage) {
 
-                    if ($response->isLive()) {
-                        $this->surveySessionService->grantComplete($survey->getSurveyId());
-                    }
-
-                    return $this->redirectToRoute('survey.complete', ['surveyId' => $survey->getSurveyId()]);
+                    return $this->completeSurveyAndRedirect($request, $response, $survey);
                 }
 
                 return $this->redirectToRoute(
@@ -178,5 +167,26 @@ class PageController extends AbstractController
     public function unavailable()
     {
         return $this->render(Document\Config::DEFAULT_THEME . '/page/unavailable.twig');
+    }
+
+    /**
+     * @param Request           $request
+     * @param Document\Response $response
+     * @param Document\Survey   $survey
+     *
+     * @return RedirectResponse
+     */
+    private function completeSurveyAndRedirect(Request $request, Document\Response $response, Document\Survey $survey)
+    {
+        if ($response->isLive()) {
+            $response->setCompleted(true);
+            $this->responseRequestHandler->saveResponse($response);
+            $this->responseRequestHandler->setResponse($request, $response);
+
+            $this->responseEventLogger->log(ResponseEventLogger::SURVEY_COMPLETED, $response);
+            $this->surveyEventLogger->log(SurveyEventLogger::COMPLETE, $survey);
+        }
+
+        return $this->redirectToRoute('survey.complete', ['surveyId' => $survey->getSurveyId()]);
     }
 }
