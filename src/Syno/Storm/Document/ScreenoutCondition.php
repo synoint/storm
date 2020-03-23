@@ -12,6 +12,8 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class ScreenoutCondition
 {
+    const TYPE_SCREENOUT            = 'screenout';
+    const TYPE_QUALITY_SCREENOUT    = 'quality_screenout';
 
     /**
      * @ODM\Field(type="string")
@@ -21,8 +23,9 @@ class ScreenoutCondition
 
     /**
      * @ODM\Field(type="string")
+     * @Assert\NotBlank
      */
-    private $urlType;
+    private $type;
 
     /**
      * @return mixed
@@ -45,21 +48,33 @@ class ScreenoutCondition
     }
 
     /**
-     * @return mixed
+     * @return array
      */
-    public function getUrlType()
+    public function getSupportedTypes()
     {
-        return $this->urlType;
+        return [self::TYPE_SCREENOUT, self::TYPE_QUALITY_SCREENOUT];
     }
 
     /**
-     * @param mixed $urlType
+     * @return mixed
+     */
+    public function getType()
+    {
+        return $this->type;
+    }
+
+    /**
+     * @param mixed $type
      *
      * @return self
      */
-    public function setUrlType($urlType)
+    public function seType($type)
     {
-        $this->urlType = $urlType;
+        if(in_array($type, $this->getSupportedTypes())) {
+            $this->type = $type;
+        } else {
+            throw new \InvalidArgumentException(sprintf('Unsupported screenout type: "%s"', $type));
+        }
 
         return $this;
     }

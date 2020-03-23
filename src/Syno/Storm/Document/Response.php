@@ -16,7 +16,7 @@ class Response
     const MODE_TEST  = 'test';
     const MODE_DEBUG = 'debug';
 
-    const HIDDEN_PARAM_SOURCE = 'source';
+    const HIDDEN_PARAM_SOURCE = 'SOURCE';
 
     /** @ODM\Id */
     private $id;
@@ -389,7 +389,7 @@ class Response
     public function getSource()
     {
         foreach ($this->hiddenValues as $hiddenValue) {
-            if ($hiddenValue->urlParam == self::HIDDEN_PARAM_SOURCE) {
+            if ($hiddenValue->code == self::HIDDEN_PARAM_SOURCE) {
                 return $hiddenValue->value;
             }
         }

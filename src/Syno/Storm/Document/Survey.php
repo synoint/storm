@@ -335,15 +335,31 @@ class Survey implements JsonSerializable
 
     /**
      * @param $source
-     * @param $type
      *
      * @return null|string
      */
-    public function getUrl(?int $source, string $type)
+    public function getScreenoutUrl(?int $source)
     {
         foreach ($this->getUrls() as $url) {
             /**@var SurveyUrl $url */
-            if ($url->source == $source && $url->type == $type) {
+            if ($url->source == $source && $url->type == self::URL_TYPE_SCREENOUT) {
+                return $url->url;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * @param $source
+     *
+     * @return null|string
+     */
+    public function getQualityScreenoutUrl(?int $source)
+    {
+        foreach ($this->getUrls() as $url) {
+            /**@var SurveyUrl $url */
+            if ($url->source == $source && $url->type == self::URL_TYPE_QUALITY_SCREENOUT) {
                 return $url->url;
             }
         }

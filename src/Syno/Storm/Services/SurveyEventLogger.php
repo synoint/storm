@@ -8,12 +8,13 @@ use Syno\Storm\Document\SurveyEvent;
 
 class SurveyEventLogger
 {
-    const VISIT          = 'visit';
-    const DEBUG_RESPONSE = 'debug_response';
-    const TEST_RESPONSE  = 'test_response';
-    const LIVE_RESPONSE  = 'live_response';
-    const COMPLETE       = 'complete';
-    const SCREENOUT      = 'screenout';
+    const VISIT             = 'visit';
+    const DEBUG_RESPONSE    = 'debug_response';
+    const TEST_RESPONSE     = 'test_response';
+    const LIVE_RESPONSE     = 'live_response';
+    const COMPLETE          = 'complete';
+    const SCREENOUT         = 'screenout';
+    const QUALITY_SCREENOUT = 'quality_screenout';
 
     /** @var DocumentManager */
     private $dm;
