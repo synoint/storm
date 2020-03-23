@@ -12,7 +12,7 @@ class Condition
     {
         foreach($screenoutConditions as $screenoutCondition){
             if(JWadhams\JsonLogic::apply(json_decode($screenoutCondition->getRule()), $response->getLastAnswersId())){
-                return $screenoutCondition->getUrl();
+                return $screenoutCondition->getUrlType();
             }
         }
 

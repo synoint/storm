@@ -10,11 +10,6 @@ use JsonSerializable;
  */
 class SurveyUrl implements JsonSerializable
 {
-    const TYPE_SCREENOUT            = 'screenout';
-    const TYPE_QUALITY_SCREENOUT    = 'quality_screenout';
-    const TYPE_COMPLETE             = 'complete';
-    const TYPE_QUOTA_FULL           = 'quota_full';
-
     /**
      * @var string
      *

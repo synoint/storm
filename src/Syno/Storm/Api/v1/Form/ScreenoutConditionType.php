@@ -14,7 +14,7 @@ class ScreenoutConditionType extends AbstractType
     {
         $builder
             ->add('rule', TextType::class)
-            ->add('url', TextType::class);
+            ->add('urlType', TextType::class);
     }
 
     public function configureOptions(OptionsResolver $resolver)

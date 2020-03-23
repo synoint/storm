@@ -14,6 +14,11 @@ use JsonSerializable;
  */
 class Survey implements JsonSerializable
 {
+    const URL_TYPE_SCREENOUT            = 'screenout';
+    const URL_TYPE_QUALITY_SCREENOUT    = 'quality_screenout';
+    const URL_TYPE_COMPLETE             = 'complete';
+    const URL_TYPE_QUOTA_FULL           = 'quota_full';
+
     /** @ODM\Id */
     private $id;
 
@@ -313,15 +318,37 @@ class Survey implements JsonSerializable
 
     /**
      * @param $source
+     *
+     * @return null|string
+     */
+    public function getCompleteUrl(?int $source)
+    {
+        foreach ($this->getUrls() as $url) {
+            /**@var SurveyUrl $url */
+            if ($url->source == $source && $url->type == self::URL_TYPE_COMPLETE) {
+                return $url->url;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * @param $source
      * @param $type
      *
-     * @return SurveyUrl
+     * @return null|string
      */
-    public function getUrl(string $type, ?int $source)
+    public function getUrl(?int $source, string $type)
     {
-        return $this->urls->filter(function(SurveyUrl $surveyUrl) use ($type, $source) {
-            return $surveyUrl->type === $type && $surveyUrl->source === $source;
-        })->current();
+        foreach ($this->getUrls() as $url) {
+            /**@var SurveyUrl $url */
+            if ($url->source == $source && $url->type == $type) {
+                return $url->url;
+            }
+        }
+
+        return null;
     }
 
     /**

@@ -79,9 +79,8 @@ class PageController extends AbstractController
         Request $request
     ): Response
     {
-        $redirect     = null;
-        $screenOutUrl = null;
-        $jumpPage     = null;
+        $redirect      = null;
+        $jumpPage      = null;
 
         $form = $this->createForm(
             PageType::class, null, [
@@ -99,12 +98,10 @@ class PageController extends AbstractController
                     $answers = $this->responseRequestHandler->extractAnswers($question, $form->getData());
                     $response->addAnswer(new Document\ResponseAnswer($question->getQuestionId(), $answers));
 
-                    if (!empty($question->getScreenoutConditions()) && $screenOutUrl === null) {
-                        $screenOutUrl = $this->conditionService->applyScreenoutRule($response, $question->getScreenoutConditions()) ?: $screenOutUrl;
-                        if (!empty($screenOutUrl)) {
-                            $this->surveyEventLogger->log(SurveyEventLogger::SCREENOUT, $survey);
-                            $redirect = $this->redirect($screenOutUrl, 301);
-                            break;
+                    if (!empty($question->getScreenoutConditions())) {
+                        $screenOutType = $this->conditionService->applyScreenoutRule($response, $question->getScreenoutConditions());
+                        if (!empty($screenOutType)) {
+                            $this->screenoutSurveyAndRedirect($request, $response, $survey, $screenOutType);
                         }
                     }
 
@@ -190,14 +187,38 @@ class PageController extends AbstractController
             $this->surveyEventLogger->log(SurveyEventLogger::COMPLETE, $survey);
         }
 
-        $source = $response->getHiddenValue('source');
+        $completeUrl = $survey->getCompleteUrl($response->getSource());
 
-        $surveyUrl = $survey->getUrl(Document\SurveyUrl::TYPE_COMPLETE, !empty($source) ? $source->value : null);
-
-        if (!empty($surveyUrl) && !empty($surveyUrl->url)) {
-            return $this->redirect($this->populateHiddenValues($surveyUrl->url, $response));
+        if (!empty($completeUrl)) {
+            return $this->redirect($this->populateHiddenValues($completeUrl, $response));
         }
 
         return $this->redirectToRoute('survey.complete', ['surveyId' => $survey->getSurveyId()]);
+    }
+
+    /**
+     * @param Request           $request
+     * @param Document\Response $response
+     * @param Document\Survey   $survey
+     * @param string   $screenoutType
+     *
+     * @return RedirectResponse
+     */
+    private function screenoutSurveyAndRedirect(Request $request, Document\Response $response, Document\Survey $survey, string $screenoutType)
+    {
+        if ($response->isLive()) {
+            $this->responseRequestHandler->saveResponse($response);
+            $this->responseRequestHandler->setResponse($request, $response);
+
+            $this->surveyEventLogger->log(SurveyEventLogger::SCREENOUT, $survey);
+        }
+
+        $screenoutUrl = $survey->getUrl($response->getSource(), $screenoutType);
+
+        if (!empty($screenoutUrl)) {
+            return $this->redirect($this->populateHiddenValues($screenoutUrl, $response));
+        }
+
+        return $this->redirectToRoute('survey.'.$screenoutType, ['surveyId' => $survey->getSurveyId()]);
     }
 }

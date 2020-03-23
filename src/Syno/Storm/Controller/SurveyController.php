@@ -157,6 +157,40 @@ class SurveyController extends AbstractController
     }
 
     /**
+     * @param Document\Survey $survey
+     *
+     * @Route(
+     *     "%app.route_prefix%/sc/{surveyId}",
+     *     name="survey.screenout",
+     *     requirements={"surveyId"="\d+"},
+     *     methods={"GET"}
+     * )
+     *
+     * @return Response|RedirectResponse
+     */
+    public function screenout(Document\Survey $survey)
+    {
+        return $this->render($survey->getConfig()->theme . '/survey/screenout.twig');
+    }
+
+    /**
+     * @param Document\Survey $survey
+     *
+     * @Route(
+     *     "%app.route_prefix%/qsc/{surveyId}",
+     *     name="survey.quality_screenout",
+     *     requirements={"surveyId"="\d+"},
+     *     methods={"GET"}
+     * )
+     *
+     * @return Response|RedirectResponse
+     */
+    public function qualityScreenout(Document\Survey $survey)
+    {
+        return $this->render($survey->getConfig()->theme . '/survey/quality_screenout.twig');
+    }
+
+    /**
      * @Route("%app.route_prefix%/s/unavailable", name="survey.unavailable")
      *
      * @return Response|RedirectResponse

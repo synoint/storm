@@ -16,6 +16,8 @@ class Response
     const MODE_TEST  = 'test';
     const MODE_DEBUG = 'debug';
 
+    const HIDDEN_PARAM_SOURCE = 'source';
+
     /** @ODM\Id */
     private $id;
 
@@ -382,15 +384,17 @@ class Response
     }
 
     /**
-     * @param string $urlParam
-     *
-     * @return HiddenValue
+     * @return null|int
      */
-    public function getHiddenValue(string $urlParam)
+    public function getSource()
     {
-        return $this->hiddenValues->filter(function(HiddenValue $hiddenValue) use ($urlParam) {
-            return $hiddenValue->urlParam === $urlParam;
-        })->current();
+        foreach ($this->hiddenValues as $hiddenValue) {
+            if ($hiddenValue->urlParam == self::HIDDEN_PARAM_SOURCE) {
+                return $hiddenValue->value;
+            }
+        }
+
+        return null;
     }
 
     /**

@@ -22,7 +22,7 @@ class ScreenoutCondition
     /**
      * @ODM\Field(type="string")
      */
-    private $url;
+    private $urlType;
 
     /**
      * @return mixed
@@ -47,19 +47,19 @@ class ScreenoutCondition
     /**
      * @return mixed
      */
-    public function getUrl()
+    public function getUrlType()
     {
-        return $this->url;
+        return $this->urlType;
     }
 
     /**
-     * @param mixed $url
+     * @param mixed $urlType
      *
      * @return self
      */
-    public function setUrl($url)
+    public function setUrlType($urlType)
     {
-        $this->url = $url;
+        $this->urlType = $urlType;
 
         return $this;
     }
