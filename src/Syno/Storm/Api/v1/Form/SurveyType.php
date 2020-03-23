@@ -26,6 +26,11 @@ class SurveyType extends AbstractType
                 'entry_type' => HiddenValueType::class,
                 'by_reference'  => false,
                 'allow_add'     => true
+            ])
+            ->add('urls', CollectionType::class, [
+                'entry_type' => UrlType::class,
+                'by_reference'  => false,
+                'allow_add'     => true
             ]);
     }
 

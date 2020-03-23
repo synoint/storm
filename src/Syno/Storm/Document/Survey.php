@@ -62,10 +62,18 @@ class Survey implements JsonSerializable
      */
     private $hiddenValues;
 
+    /**
+     * @var Collection
+     *
+     * @ODM\EmbedMany(targetDocument=SurveyUrl::class)
+     */
+    private $urls;
+
     public function __construct()
     {
         $this->pages        = new ArrayCollection();
         $this->hiddenValues = new ArrayCollection();
+        $this->urls         = new ArrayCollection();
     }
 
     public function jsonSerialize()
@@ -76,7 +84,8 @@ class Survey implements JsonSerializable
             'version'      => $this->version,
             'published'    => $this->published,
             'config'       => $this->config,
-            'hiddenValues' => $this->hiddenValues
+            'hiddenValues' => $this->hiddenValues,
+            'urls'         => $this->urls
 
         ];
     }
@@ -294,4 +303,36 @@ class Survey implements JsonSerializable
         return $this;
     }
 
+    /**
+     * @return Collection
+     */
+    public function getUrls()
+    {
+        return $this->urls;
+    }
+
+    /**
+     * @param $source
+     * @param $type
+     *
+     * @return SurveyUrl
+     */
+    public function getUrl(string $type, ?int $source)
+    {
+        return $this->urls->filter(function(SurveyUrl $surveyUrl) use ($type, $source) {
+            return $surveyUrl->type === $type && $surveyUrl->source === $source;
+        })->current();
+    }
+
+    /**
+     * @param $urls
+     *
+     * @return Survey
+     */
+    public function setUrls($urls): Survey
+    {
+        $this->urls = $urls;
+
+        return $this;
+    }
 }

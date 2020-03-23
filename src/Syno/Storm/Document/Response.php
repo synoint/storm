@@ -382,6 +382,18 @@ class Response
     }
 
     /**
+     * @param string $urlParam
+     *
+     * @return HiddenValue
+     */
+    public function getHiddenValue(string $urlParam)
+    {
+        return $this->hiddenValues->filter(function(HiddenValue $hiddenValue) use ($urlParam) {
+            return $hiddenValue->urlParam === $urlParam;
+        })->current();
+    }
+
+    /**
      * @param Collection $hiddenValues
      *
      * @return Response

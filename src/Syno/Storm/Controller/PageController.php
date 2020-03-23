@@ -13,9 +13,12 @@ use Syno\Storm\RequestHandler;
 use Syno\Storm\Services;
 use Syno\Storm\Services\ResponseEventLogger;
 use Syno\Storm\Services\SurveyEventLogger;
+use Syno\Storm\Traits\UrlTransformer;
 
 class PageController extends AbstractController
 {
+    use UrlTransformer;
+
     /** @var RequestHandler\Response */
     private $responseRequestHandler;
 
@@ -185,6 +188,14 @@ class PageController extends AbstractController
 
             $this->responseEventLogger->log(ResponseEventLogger::SURVEY_COMPLETED, $response);
             $this->surveyEventLogger->log(SurveyEventLogger::COMPLETE, $survey);
+        }
+
+        $source = $response->getHiddenValue('source');
+
+        $surveyUrl = $survey->getUrl(Document\SurveyUrl::TYPE_COMPLETE, !empty($source) ? $source->value : null);
+
+        if (!empty($surveyUrl) && !empty($surveyUrl->url)) {
+            return $this->redirect($this->populateHiddenValues($surveyUrl->url, $response));
         }
 
         return $this->redirectToRoute('survey.complete', ['surveyId' => $survey->getSurveyId()]);
