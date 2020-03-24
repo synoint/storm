@@ -259,14 +259,15 @@ class SurveyController extends AbstractController implements TokenAuthenticatedC
         $result = [];
         foreach ($this->surveyEventService->getAvailableVersions($surveyId) as $version) {
             $result[] = [
-                'version'         => $version,
-                'total'           => $this->surveyEventService->count($surveyId, $version),
-                'visits'          => $this->surveyEventService->count($surveyId, $version, SurveyEventLogger::VISIT),
-                'debug_responses' => $this->surveyEventService->count($surveyId, $version, SurveyEventLogger::DEBUG_RESPONSE),
-                'test_responses'  => $this->surveyEventService->count($surveyId, $version, SurveyEventLogger::TEST_RESPONSE),
-                'live_responses'  => $this->surveyEventService->count($surveyId, $version, SurveyEventLogger::LIVE_RESPONSE),
-                'screenouts'      => $this->surveyEventService->count($surveyId, $version, SurveyEventLogger::COMPLETE),
-                'completes'       => $this->surveyEventService->count($surveyId, $version, SurveyEventLogger::COMPLETE)
+                'version'            => $version,
+                'total'              => $this->surveyEventService->count($surveyId, $version),
+                'visits'             => $this->surveyEventService->count($surveyId, $version, SurveyEventLogger::VISIT),
+                'debug_responses'    => $this->surveyEventService->count($surveyId, $version, SurveyEventLogger::DEBUG_RESPONSE),
+                'test_responses'     => $this->surveyEventService->count($surveyId, $version, SurveyEventLogger::TEST_RESPONSE),
+                'live_responses'     => $this->surveyEventService->count($surveyId, $version, SurveyEventLogger::LIVE_RESPONSE),
+                'screenouts'         => $this->surveyEventService->count($surveyId, $version, SurveyEventLogger::SCREENOUT),
+                'quality_screenouts' => $this->surveyEventService->count($surveyId, $version, SurveyEventLogger::QUALITY_SCREENOUT),
+                'completes'          => $this->surveyEventService->count($surveyId, $version, SurveyEventLogger::COMPLETE)
             ];
         }
 
