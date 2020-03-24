@@ -5,12 +5,12 @@ namespace Syno\Storm\Document;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
-
+use JsonSerializable;
 /**
  * @ODM\Document(collection="response"))
  * @ODM\UniqueIndex(keys={"surveyId"="asc", "responseId"="asc"})
  */
-class Response
+class Response implements JsonSerializable
 {
     const MODE_LIVE  = 'live';
     const MODE_TEST  = 'test';
@@ -71,7 +71,7 @@ class Response
     private $completed = false;
 
     /**
-     * @ODM\Field(type="timestamp")
+     * @ODM\Field(type="date")
      */
     private $createdAt;
 
@@ -106,7 +106,25 @@ class Response
         $this->responseId   = $responseId;
         $this->userAgents   = new ArrayCollection();
         $this->hiddenValues = new ArrayCollection();
-        $this->createdAt    = time();
+        $this->createdAt    = new \DateTime();
+    }
+
+    public function jsonSerialize()
+    {
+        return [
+            'id'            => $this->id,
+            'responseId'    => $this->responseId,
+            'surveyId'      => $this->surveyId,
+            'surveyVersion' => $this->surveyVersion,
+            'pageId'        => $this->pageId,
+            'mode'          => $this->mode,
+            'locale'        => $this->locale,
+            'completed'     => $this->completed,
+            'createdAt'     => $this->createdAt,
+            'userAgents'    => $this->userAgents,
+            'hiddenValues'  => $this->hiddenValues,
+            'answers'       => $this->answers
+        ];
     }
 
     /**

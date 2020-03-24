@@ -4,11 +4,11 @@ namespace Syno\Storm\Document;
 
 use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
 use Symfony\Component\Validator\Constraints as Assert;
-
+use JsonSerializable;
 /**
  * @ODM\EmbeddedDocument
  */
-class ResponseAnswerValue
+class ResponseAnswerValue implements JsonSerializable
 {
     /**
      * @var int
@@ -35,6 +35,13 @@ class ResponseAnswerValue
         $this->value    = $value;
     }
 
+    public function jsonSerialize()
+    {
+        return [
+            'answerId' => $this->answerId,
+            'value'    => $this->value
+        ];
+    }
 
     /**
      * @return int

@@ -9,6 +9,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Syno\Storm\Api\Controller\TokenAuthenticatedController;
 use Syno\Storm\Api\v1\Form;
 use Syno\Storm\Api\v1\Http\ApiResponse;
+use Syno\Storm\Services\Response;
 use Syno\Storm\Services\Survey;
 use Syno\Storm\Services\SurveyEventLogger;
 use Syno\Storm\Services\SurveyEvent;
@@ -29,15 +30,21 @@ class SurveyController extends AbstractController implements TokenAuthenticatedC
     /** @var SurveyEvent */
     private $surveyEventService;
 
+    /** @var Response */
+    private $responseService;
+
     /**
      * @param Survey      $surveyService
      * @param SurveyEvent $surveyEventService
+     * @param Response    $responseService
      */
-    public function __construct(Survey $surveyService, SurveyEvent $surveyEventService)
+    public function __construct(Survey $surveyService, SurveyEvent $surveyEventService, Response $responseService)
     {
         $this->surveyService      = $surveyService;
         $this->surveyEventService = $surveyEventService;
+        $this->responseService    = $responseService;
     }
+
 
     /**
      * @param Request $request
@@ -272,6 +279,39 @@ class SurveyController extends AbstractController implements TokenAuthenticatedC
         }
 
         return $this->json($result);
+    }
+
+    /**
+     * @param int     $surveyId
+     * @param Request $request
+     *
+     * @Route(
+     *     "/{surveyId}/responses",
+     *     name="storm_api.v1.survey.responses",
+     *     requirements={"id"="\d+"},
+     *     methods={"GET"}
+     * )
+     *
+     * @return JsonResponse
+     */
+    public function responses(int $surveyId, Request $request)
+    {
+        $total = $this->responseService->count($surveyId);
+        $limit = $request->query->getInt('limit', 1000000);
+        $limit = max($limit, 1);
+
+        $responses = [];
+        if ($total) {
+            $responses = $this->responseService->getAllBySurveyId($surveyId, $limit);
+        }
+
+        return $this->json(
+            [
+                'responses' => $responses,
+                'limit'     => $limit,
+                'total'     => $total
+            ]
+        );
     }
 
     /**

@@ -39,6 +39,43 @@ class Response
     }
 
     /**
+     * @param int $surveyId
+     * @param int $limit
+     * @param int $offset
+     *
+     * @return array
+     */
+    public function getAllBySurveyId(int $surveyId, int $limit = 1000, int $offset = 0): array
+    {
+        return $this->dm->getRepository(Document\Response::class)->findBy(
+            [
+                'surveyId' => $surveyId
+            ],
+            [
+                'id' => 'ASC'
+            ],
+            $limit,
+            $offset
+        );
+    }
+
+    /**
+     * @param int $surveyId
+     *
+     * @return int
+     */
+    public function count(int $surveyId): int
+    {
+        return $this->dm
+            ->createQueryBuilder(Document\Response::class)
+            ->field('surveyId')
+            ->equals($surveyId)
+            ->count()
+            ->getQuery()
+            ->execute();
+    }
+
+    /**
      * @param string|null $responseId
      *
      * @return Document\Response

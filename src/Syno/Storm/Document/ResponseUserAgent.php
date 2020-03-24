@@ -3,11 +3,12 @@
 namespace Syno\Storm\Document;
 
 use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
+use JsonSerializable;
 
 /**
  * @ODM\EmbeddedDocument
  */
-class ResponseUserAgent
+class ResponseUserAgent implements JsonSerializable
 {
     /**
      * @var string
@@ -24,7 +25,7 @@ class ResponseUserAgent
     public $userAgent;
 
     /**
-     * @ODM\Field(type="timestamp")
+     * @ODM\Field(type="date")
      */
     public $createdAt;
 
@@ -36,7 +37,16 @@ class ResponseUserAgent
     {
         $this->ipAddress = $ipAddress;
         $this->userAgent = $userAgent;
-        $this->createdAt = time();
+        $this->createdAt = new \DateTime();
+    }
+
+    public function jsonSerialize()
+    {
+        return [
+            'ipAddress' => $this->ipAddress,
+            'userAgent' => $this->userAgent,
+            'createdAt' => $this->createdAt
+        ];
     }
 
 

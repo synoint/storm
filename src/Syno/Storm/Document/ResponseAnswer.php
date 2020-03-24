@@ -6,11 +6,11 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
 use Symfony\Component\Validator\Constraints as Assert;
-
+use JsonSerializable;
 /**
  * @ODM\EmbeddedDocument
  */
-class ResponseAnswer
+class ResponseAnswer implements JsonSerializable
 {
     /**
      * @var int
@@ -35,6 +35,14 @@ class ResponseAnswer
     {
         $this->questionId = $questionId;
         $this->answers    = $answers;
+    }
+
+    public function jsonSerialize()
+    {
+        return [
+            'questionId' => $this->questionId,
+            'values'     => $this->answers
+        ];
     }
 
     /**
