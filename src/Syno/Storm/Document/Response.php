@@ -389,8 +389,8 @@ class Response
     public function getSource()
     {
         foreach ($this->hiddenValues as $hiddenValue) {
-            if ($hiddenValue->code == self::HIDDEN_PARAM_SOURCE) {
-                return $hiddenValue->value;
+            if ($hiddenValue->getCode() == self::HIDDEN_PARAM_SOURCE) {
+                return $hiddenValue->getValue();
             }
         }
 

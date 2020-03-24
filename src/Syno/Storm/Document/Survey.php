@@ -325,8 +325,8 @@ class Survey implements JsonSerializable
     {
         foreach ($this->getUrls() as $url) {
             /**@var SurveyUrl $url */
-            if ($url->source == $source && $url->type == self::URL_TYPE_COMPLETE) {
-                return $url->url;
+            if ($url->getSource() == $source && $url->getType() == self::URL_TYPE_COMPLETE) {
+                return $url->getUrl();
             }
         }
 
@@ -342,8 +342,8 @@ class Survey implements JsonSerializable
     {
         foreach ($this->getUrls() as $url) {
             /**@var SurveyUrl $url */
-            if ($url->source == $source && $url->type == self::URL_TYPE_SCREENOUT) {
-                return $url->url;
+            if ($url->getSource() == $source && $url->getType() == self::URL_TYPE_SCREENOUT) {
+                return $url->getUrl();
             }
         }
 
@@ -359,8 +359,8 @@ class Survey implements JsonSerializable
     {
         foreach ($this->getUrls() as $url) {
             /**@var SurveyUrl $url */
-            if ($url->source == $source && $url->type == self::URL_TYPE_QUALITY_SCREENOUT) {
-                return $url->url;
+            if ($url->getSource() == $source && $url->getType() == self::URL_TYPE_QUALITY_SCREENOUT) {
+                return $url->getUrl();
             }
         }
 

@@ -18,35 +18,35 @@ class HiddenValue implements JsonSerializable
      *
      * @ODM\Field(type="string")
      */
-    public $name;
+    private $name;
 
     /**
      * @var string
      *
      * @ODM\Field(type="string")
      */
-    public $code;
+    private $code;
 
     /**
      * @var string
      *
      * @ODM\Field(type="string")
      */
-    public $urlParam;
+    private $urlParam;
 
     /**
      * @var string
      *
      * @ODM\Field(type="string")
      */
-    public $type;
+    private $type;
 
     /**
      * @var string
      *
      * @ODM\Field(type="string")
      */
-    public $value;
+    private $value;
 
     public function jsonSerialize()
     {
@@ -57,5 +57,105 @@ class HiddenValue implements JsonSerializable
             'type'     => $this->type,
             'value'    => $this->value
         ];
+    }
+
+    /**
+     * @return null|string
+     */
+    public function getName()
+    {
+        return $this->name;
+    }
+
+    /**
+     * @param string $name
+     *
+     * @return self
+     */
+    public function setName(string $name)
+    {
+        $this->name = $name;
+
+        return $this;
+    }
+
+    /**
+     * @return null|string
+     */
+    public function getCode()
+    {
+        return $this->code;
+    }
+
+    /**
+     * @param string $code
+     *
+     * @return self
+     */
+    public function setCode(string $code)
+    {
+        $this->code = $code;
+
+        return $this;
+    }
+
+    /**
+     * @return null|string
+     */
+    public function getUrlParam()
+    {
+        return $this->urlParam;
+    }
+
+    /**
+     * @param string $urlParam
+     *
+     * @return self
+     */
+    public function setUrlParam(string $urlParam)
+    {
+        $this->urlParam = $urlParam;
+
+        return $this;
+    }
+
+    /**
+     * @return null|string
+     */
+    public function getType()
+    {
+        return $this->type;
+    }
+
+    /**
+     * @param string $type
+     *
+     * @return self
+     */
+    public function setType(string $type)
+    {
+        $this->type = $type;
+
+        return $this;
+    }
+
+    /**
+     * @return null|string
+     */
+    public function getValue()
+    {
+        return $this->value;
+    }
+
+    /**
+     * @param string $value
+     *
+     * @return self
+     */
+    public function setValue(string $value)
+    {
+        $this->value = $value;
+
+        return $this;
     }
 }

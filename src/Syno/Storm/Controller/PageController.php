@@ -79,8 +79,7 @@ class PageController extends AbstractController
         Request $request
     ): Response
     {
-        $redirect      = null;
-        $jumpPage      = null;
+        $redirect = null;
 
         $form = $this->createForm(
             PageType::class, null, [
@@ -99,31 +98,18 @@ class PageController extends AbstractController
                     $response->addAnswer(new Document\ResponseAnswer($question->getQuestionId(), $answers));
 
                     if (!empty($question->getScreenoutConditions())) {
-                        $screenOutType = $this->conditionService->applyScreenoutRule($response, $question->getScreenoutConditions());
-                        if (!empty($screenOutType)) {
-                            switch ($screenOutType) {
-                                case Document\ScreenoutCondition::TYPE_SCREENOUT:
-                                    return $this->screenoutSurveyAndRedirect($request, $response, $survey);
-                                case Document\ScreenoutCondition::TYPE_QUALITY_SCREENOUT:
-                                    return $this->qualityScreenoutSurveyAndRedirect($request, $response, $survey);
-                            }
+                        $screenoutType = $this->conditionService->applyScreenoutRule($response, $question->getScreenoutConditions());
+                        if (!empty($screenoutType)) {
+                            $redirect = $this->screenoutSurveyAndRedirect($response, $survey, $screenoutType);
+                            break;
                         }
                     }
 
                     if (!empty($question->getJumpToConditions())) {
                         $questionId = $this->conditionService->applyJumpToRule($response, $question->getJumpToConditions());
-                        if (!empty($questionId) && $jumpPage === null) {
-                            $jumpPage = $survey->getPageByQuestion($questionId);
-
-                            if (!empty($jumpPage)) {
-                                $redirect = $this->redirectToRoute(
-                                    'page.index', [
-                                    'surveyId' => $survey->getSurveyId(),
-                                    'pageId'   => $jumpPage->getPageId()
-                                ]
-                                );
-                                break;
-                            }
+                        if (!empty($questionId)) {
+                            $redirect = $this->redirectSurveyToJump($survey, $questionId);
+                            break;
                         }
                     }
                 }
@@ -132,7 +118,6 @@ class PageController extends AbstractController
                 $this->responseEventLogger->log(ResponseEventLogger::ANSWERS_SAVED, $response);
 
                 if ($redirect !== null) {
-
                     return $redirect;
                 }
 
@@ -202,54 +187,57 @@ class PageController extends AbstractController
     }
 
     /**
-     * @param Request           $request
      * @param Document\Response $response
      * @param Document\Survey   $survey
      * @param string   $screenoutType
      *
      * @return RedirectResponse
      */
-    private function screenoutSurveyAndRedirect(Request $request, Document\Response $response, Document\Survey $survey)
+    private function screenoutSurveyAndRedirect(Document\Response $response, Document\Survey $survey, string $screenoutType)
     {
+        switch ($screenoutType) {
+            case Document\ScreenoutCondition::TYPE_QUALITY_SCREENOUT:
+                $logType    = SurveyEventLogger::QUALITY_SCREENOUT;
+                $url        = $survey->getQualityScreenoutUrl($response->getSource());
+                $redirect   = $this->redirectToRoute('survey.quality_screenout', ['surveyId' => $survey->getSurveyId()]);
+                break;
+            default:
+                $logType    = SurveyEventLogger::SCREENOUT;
+                $url        = $survey->getScreenoutUrl($response->getSource());
+                $redirect   = $this->redirectToRoute('survey.screenout', ['surveyId' => $survey->getSurveyId()]);
+                break;
+        }
+
         if ($response->isLive()) {
-            $this->responseRequestHandler->saveResponse($response);
-            $this->responseRequestHandler->setResponse($request, $response);
-
-            $this->surveyEventLogger->log(SurveyEventLogger::SCREENOUT, $survey);
+            $this->surveyEventLogger->log($logType, $survey);
         }
 
-        $screenoutUrl = $survey->getScreenoutUrl($response->getSource());
-
-        if (!empty($screenoutUrl)) {
-            return $this->redirect($this->populateHiddenValues($screenoutUrl, $response));
+        if (!empty($url)) {
+            $redirect = $this->redirect($this->populateHiddenValues($url, $response));
         }
 
-        return $this->redirectToRoute('survey.screenout', ['surveyId' => $survey->getSurveyId()]);
+        return $redirect;
     }
 
     /**
-     * @param Request           $request
-     * @param Document\Response $response
-     * @param Document\Survey   $survey
-     * @param string   $screenoutType
+     * @param Document\Survey $survey
+     * @param int $questionId
      *
      * @return RedirectResponse
      */
-    private function qualityScreenoutSurveyAndRedirect(Request $request, Document\Response $response, Document\Survey $survey)
+    private function redirectSurveyToJump(Document\Survey $survey, int $questionId)
     {
-        if ($response->isLive()) {
-            $this->responseRequestHandler->saveResponse($response);
-            $this->responseRequestHandler->setResponse($request, $response);
+        $jumpPage = $survey->getPageByQuestion($questionId);
 
-            $this->surveyEventLogger->log(SurveyEventLogger::QUALITY_SCREENOUT, $survey);
+        if (!empty($jumpPage)) {
+            return $this->redirectToRoute(
+                'page.index', [
+                    'surveyId' => $survey->getSurveyId(),
+                    'pageId'   => $jumpPage->getPageId()
+                ]
+            );
         }
 
-        $qualityScreenoutUrl = $survey->getQualityScreenoutUrl($response->getSource());
-
-        if (!empty($qualityScreenoutUrl)) {
-            return $this->redirect($this->populateHiddenValues($qualityScreenoutUrl, $response));
-        }
-
-        return $this->redirectToRoute('survey.quality_screenout', ['surveyId' => $survey->getSurveyId()]);
+        return null;
     }
 }

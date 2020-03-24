@@ -15,21 +15,21 @@ class SurveyUrl implements JsonSerializable
      *
      * @ODM\Field(type="string")
      */
-    public $type;
+    private $type;
 
     /**
      * @var string
      *
      * @ODM\Field(type="integer")
      */
-    public $source;
+    private $source;
 
     /**
      * @var string
      *
      * @ODM\Field(type="string")
      */
-    public $url;
+    private $url;
 
     public function jsonSerialize()
     {
@@ -38,5 +38,65 @@ class SurveyUrl implements JsonSerializable
             'source' => $this->source,
             'url'    => $this->url
         ];
+    }
+
+    /**
+     * @return null|string
+     */
+    public function getType()
+    {
+        return $this->type;
+    }
+
+    /**
+     * @param string $type
+     *
+     * @return self
+     */
+    public function setType(string $type)
+    {
+        $this->type = $type;
+
+        return $this;
+    }
+
+    /**
+     * @return null|string
+     */
+    public function getSource()
+    {
+        return $this->source;
+    }
+
+    /**
+     * @param int $source
+     *
+     * @return self
+     */
+    public function setSource(int $source)
+    {
+        $this->source = $source;
+
+        return $this;
+    }
+
+    /**
+     * @return null|string
+     */
+    public function getUrl()
+    {
+        return $this->url;
+    }
+
+    /**
+     * @param string $url
+     *
+     * @return self
+     */
+    public function setUrl(string $url)
+    {
+        $this->url = $url;
+
+        return $this;
     }
 }
