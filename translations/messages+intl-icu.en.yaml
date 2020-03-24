@@ -21,6 +21,9 @@ privacy_consent.button.accept: Accept
 survey_completed.page_title: 'Survey completed!'
 survey_completed.thank_you: 'Thank You!'
 survey_completed.answers_received: 'Your answers have been received.'
+survey_screenouted.page_title: 'Survey finished!'
+survey_screenouted.thank_you: 'Unfortunately, you do not meet the qualifications for this survey.'
+survey_screenouted.message: 'However, we sincerely thank you for your time, dedication, and continued participation in our online surveys.'
 error_page.page_title: 'An error has occurred'
 error_page.oops: Oops!
 error_page.continue: 'Continue to'
