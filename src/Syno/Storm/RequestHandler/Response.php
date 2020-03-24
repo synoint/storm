@@ -200,9 +200,9 @@ class Response
             if ($request->query->has($surveyValue->getUrlParam())) {
                 $value = clone $surveyValue;
                 if ($value->getType() === Document\HiddenValue::TYPE_INT) {
-                    $value->setValue($request->query->getInt($value->getUrlParam));
+                    $value->setValue($request->query->getInt($value->getUrlParam()));
                 } else {
-                    $value->setValue($request->query->get($value->getUrlParam));
+                    $value->setValue($request->query->get($value->getUrlParam()));
                 }
                 $result[] = $value;
             }

@@ -9,7 +9,9 @@ use Symfony\Component\Routing\Annotation\Route;
 use Syno\Storm\Api\Controller\TokenAuthenticatedController;
 use Syno\Storm\Api\v1\Form;
 use Syno\Storm\Api\v1\Http\ApiResponse;
+use Syno\Storm\Document;
 use Syno\Storm\Services\Response;
+use Syno\Storm\Services\ResponseEvent;
 use Syno\Storm\Services\Survey;
 use Syno\Storm\Services\SurveyEventLogger;
 use Syno\Storm\Services\SurveyEvent;
@@ -33,16 +35,26 @@ class SurveyController extends AbstractController implements TokenAuthenticatedC
     /** @var Response */
     private $responseService;
 
+    /** @var ResponseEvent */
+    private $responseEventService;
+
     /**
-     * @param Survey      $surveyService
-     * @param SurveyEvent $surveyEventService
-     * @param Response    $responseService
+     * @param Survey        $surveyService
+     * @param SurveyEvent   $surveyEventService
+     * @param Response      $responseService
+     * @param ResponseEvent $responseEventService
      */
-    public function __construct(Survey $surveyService, SurveyEvent $surveyEventService, Response $responseService)
+    public function __construct(
+        Survey $surveyService,
+        SurveyEvent $surveyEventService,
+        Response $responseService,
+        ResponseEvent $responseEventService
+    )
     {
-        $this->surveyService      = $surveyService;
-        $this->surveyEventService = $surveyEventService;
-        $this->responseService    = $responseService;
+        $this->surveyService        = $surveyService;
+        $this->surveyEventService   = $surveyEventService;
+        $this->responseService      = $responseService;
+        $this->responseEventService = $responseEventService;
     }
 
 
@@ -303,6 +315,15 @@ class SurveyController extends AbstractController implements TokenAuthenticatedC
         $responses = [];
         if ($total) {
             $responses = $this->responseService->getAllBySurveyId($surveyId, $limit);
+            if ($responses) {
+                $completesMap = $this->responseEventService->getSurveyCompletesMap($surveyId);
+                /** @var Document\Response $response */
+                foreach ($responses as $response) {
+                    if ($response->isCompleted()) {
+                        $response->setCompletedAt($completesMap[$response->getResponseId()] ?? 0);
+                    }
+                }
+            }
         }
 
         return $this->json(

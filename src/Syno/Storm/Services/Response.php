@@ -52,7 +52,7 @@ class Response
                 'surveyId' => $surveyId
             ],
             [
-                'id' => 'ASC'
+                'id' => 'DESC'
             ],
             $limit,
             $offset

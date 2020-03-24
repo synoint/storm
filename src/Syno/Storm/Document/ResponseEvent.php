@@ -49,7 +49,7 @@ class ResponseEvent
 
     /**
      * @param string $message
-     * @param string    $responseId
+     * @param string $responseId
      * @param int    $surveyId
      * @param int    $pageId
      */
@@ -60,5 +60,21 @@ class ResponseEvent
         $this->responseId = $responseId;
         $this->surveyId   = $surveyId;
         $this->pageId     = $pageId;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getTime(): \DateTime
+    {
+        return $this->time;
+    }
+
+    /**
+     * @return string
+     */
+    public function getResponseId(): string
+    {
+        return $this->responseId;
     }
 }

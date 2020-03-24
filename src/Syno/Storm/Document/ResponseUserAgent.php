@@ -25,6 +25,8 @@ class ResponseUserAgent implements JsonSerializable
     public $userAgent;
 
     /**
+     * @var \DateTime
+     *
      * @ODM\Field(type="date")
      */
     public $createdAt;
@@ -45,7 +47,7 @@ class ResponseUserAgent implements JsonSerializable
         return [
             'ipAddress' => $this->ipAddress,
             'userAgent' => $this->userAgent,
-            'createdAt' => $this->createdAt
+            'createdAt' => $this->createdAt->getTimestamp()
         ];
     }
 

@@ -5,6 +5,7 @@ namespace Syno\Storm\Document;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
+
 use JsonSerializable;
 /**
  * @ODM\Document(collection="response"))
@@ -76,6 +77,11 @@ class Response implements JsonSerializable
     private $createdAt;
 
     /**
+     * @var int
+     */
+    private $completedAt;
+
+    /**
      * @var Collection
      *
      * @ODM\EmbedMany(targetDocument=ResponseUserAgent::class)
@@ -112,7 +118,6 @@ class Response implements JsonSerializable
     public function jsonSerialize()
     {
         return [
-            'id'            => $this->id,
             'responseId'    => $this->responseId,
             'surveyId'      => $this->surveyId,
             'surveyVersion' => $this->surveyVersion,
@@ -120,7 +125,8 @@ class Response implements JsonSerializable
             'mode'          => $this->mode,
             'locale'        => $this->locale,
             'completed'     => $this->completed,
-            'createdAt'     => $this->createdAt,
+            'createdAt'     => $this->createdAt->getTimestamp(),
+            'completedAt'   => $this->completedAt,
             'userAgents'    => $this->userAgents,
             'hiddenValues'  => $this->hiddenValues,
             'answers'       => $this->answers
@@ -138,7 +144,7 @@ class Response implements JsonSerializable
     /**
      * @param mixed $id
      *
-     * @return Response
+     * @return self
      */
     public function setId($id)
     {
@@ -158,9 +164,9 @@ class Response implements JsonSerializable
     /**
      * @param string $responseId
      *
-     * @return Response
+     * @return self
      */
-    public function setResponseId(string $responseId): Response
+    public function setResponseId(string $responseId): self
     {
         $this->responseId = $responseId;
 
@@ -178,9 +184,9 @@ class Response implements JsonSerializable
     /**
      * @param int $surveyId
      *
-     * @return Response
+     * @return self
      */
-    public function setSurveyId(int $surveyId): Response
+    public function setSurveyId(int $surveyId): self
     {
         $this->surveyId = $surveyId;
 
@@ -198,9 +204,9 @@ class Response implements JsonSerializable
     /**
      * @param int $surveyVersion
      *
-     * @return Response
+     * @return self
      */
-    public function setSurveyVersion(int $surveyVersion): Response
+    public function setSurveyVersion(int $surveyVersion): self
     {
         $this->surveyVersion = $surveyVersion;
 
@@ -218,9 +224,9 @@ class Response implements JsonSerializable
     /**
      * @param int $pageId
      *
-     * @return Response
+     * @return self
      */
-    public function setPageId(int $pageId): Response
+    public function setPageId(int $pageId): self
     {
         $this->pageId = $pageId;
 
@@ -238,9 +244,9 @@ class Response implements JsonSerializable
     /**
      * @param string $mode
      *
-     * @return Response
+     * @return self
      */
-    public function setMode(string $mode): Response
+    public function setMode(string $mode): self
     {
         $this->mode = $mode;
 
@@ -250,9 +256,9 @@ class Response implements JsonSerializable
     /**
      * @param string $route
      *
-     * @return Response
+     * @return self
      */
-    public function setModeByRoute(string $route): Response
+    public function setModeByRoute(string $route): self
     {
         switch ($route) {
             case 'survey.index':
@@ -306,9 +312,9 @@ class Response implements JsonSerializable
     /**
      * @param string $locale
      *
-     * @return Response
+     * @return self
      */
-    public function setLocale(string $locale): Response
+    public function setLocale(string $locale): self
     {
         $this->locale = $locale;
 
@@ -326,9 +332,9 @@ class Response implements JsonSerializable
     /**
      * @param bool $completed
      *
-     * @return Response
+     * @return self
      */
-    public function setCompleted(bool $completed): Response
+    public function setCompleted(bool $completed): self
     {
         $this->completed = $completed;
 
@@ -336,11 +342,23 @@ class Response implements JsonSerializable
     }
 
     /**
-     * @return int
+     * @return \DateTime
      */
-    public function getCreatedAt(): int
+    public function getCreatedAt(): \DateTime
     {
         return $this->createdAt;
+    }
+
+    /**
+     * @param int $completedAt
+     *
+     * @return self
+     */
+    public function setCompletedAt(int $completedAt): self
+    {
+        $this->completedAt = $completedAt;
+
+        return $this;
     }
 
     /**
@@ -354,9 +372,9 @@ class Response implements JsonSerializable
     /**
      * @param ArrayCollection $userAgents
      *
-     * @return Response
+     * @return self
      */
-    public function setUserAgents(ArrayCollection $userAgents): Response
+    public function setUserAgents(ArrayCollection $userAgents): self
     {
         $this->userAgents = $userAgents;
 
@@ -418,7 +436,7 @@ class Response implements JsonSerializable
     /**
      * @param Collection $hiddenValues
      *
-     * @return Response
+     * @return self
      */
     public function setHiddenValues($hiddenValues): self
     {

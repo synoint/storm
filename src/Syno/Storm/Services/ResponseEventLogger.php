@@ -16,10 +16,10 @@ class ResponseEventLogger
     const SURVEY_COMPLETED           = 'survey completed';
     const SURVEY_VERSION_UNAVAILABLE = 'survey version unavailable';
 
-    const PAGE_ENTERED      = 'page entered';
-    const ANSWERS_SAVED     = 'answers saved';
-    const ANSWERS_CLEARED   = 'answers cleared';
-    const ANSWERS_ERROR     = 'answers error';
+    const PAGE_ENTERED    = 'page entered';
+    const ANSWERS_SAVED   = 'answers saved';
+    const ANSWERS_CLEARED = 'answers cleared';
+    const ANSWERS_ERROR   = 'answers error';
 
     /** @var DocumentManager */
     private $dm;
