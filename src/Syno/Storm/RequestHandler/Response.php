@@ -197,12 +197,12 @@ class Response
         $result = new ArrayCollection();
         /** @var Document\HiddenValue $surveyValue */
         foreach ($surveyValues as $surveyValue) {
-            if ($request->query->has($surveyValue->urlParam)) {
+            if ($request->query->has($surveyValue->getUrlParam())) {
                 $value = clone $surveyValue;
-                if ($value->type === Document\HiddenValue::TYPE_INT) {
-                    $value->value = $request->query->getInt($value->urlParam);
+                if ($value->getType() === Document\HiddenValue::TYPE_INT) {
+                    $value->setValue($request->query->getInt($value->getUrlParam));
                 } else {
-                    $value->value = $request->query->get($value->urlParam);
+                    $value->setValue($request->query->get($value->getUrlParam));
                 }
                 $result[] = $value;
             }

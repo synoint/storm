@@ -56,7 +56,7 @@ class ScreenoutCondition
     }
 
     /**
-     * @return mixed
+     * @return string
      */
     public function getType()
     {
@@ -64,11 +64,11 @@ class ScreenoutCondition
     }
 
     /**
-     * @param mixed $type
+     * @param string $type
      *
      * @return self
      */
-    public function seType($type)
+    public function setType(string $type)
     {
         if(in_array($type, $this->getSupportedTypes())) {
             $this->type = $type;
