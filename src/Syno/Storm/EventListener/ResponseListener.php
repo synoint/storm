@@ -89,6 +89,22 @@ class ResponseListener implements EventSubscriberInterface
                     return;
                 }
 
+                if ($surveyResponse->isScreenouted() && !$this->isSurveyScreenoutPage($request)) {
+                    $response = new RedirectResponse(
+                        $this->router->generate('survey.screenout', ['surveyId' => $survey->getSurveyId()])
+                    );
+                    $event->setResponse($response);
+                    return;
+                }
+
+                if ($surveyResponse->isQualityScreenouted() && !$this->isSurveyQualityScreenoutPage($request)) {
+                    $response = new RedirectResponse(
+                        $this->router->generate('survey.quality_screenout', ['surveyId' => $survey->getSurveyId()])
+                    );
+                    $event->setResponse($response);
+                    return;
+                }
+
                 /**
                  * If there's a mismatch between the current survey version and the one that was used before,
                  * let's replace the current version of survey in the request with the previously started one
@@ -262,6 +278,26 @@ class ResponseListener implements EventSubscriberInterface
     private function isSurveyCompletionPage(Request $request): bool
     {
         return $request->attributes->get('_route') === 'survey.complete';
+    }
+
+    /**
+     * @param Request $request
+     *
+     * @return bool
+     */
+    private function isSurveyScreenoutPage(Request $request): bool
+    {
+        return $request->attributes->get('_route') === 'survey.screenout';
+    }
+
+    /**
+     * @param Request $request
+     *
+     * @return bool
+     */
+    private function isSurveyQualityScreenoutPage(Request $request): bool
+    {
+        return $request->attributes->get('_route') === 'survey.quality_screenout';
     }
 
     /**

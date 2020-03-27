@@ -266,6 +266,7 @@ class Response
                 }
                 break;
             case Document\Question::TYPE_SINGLE_CHOICE_MATRIX:
+            case Document\Question::TYPE_LINEAR_SCALE_MATRIX:
                 foreach (array_keys($question->getRows()) as $rowCode) {
                     $key = $question->getInputName($rowCode);
                     if (!empty($formData[$key]) &&

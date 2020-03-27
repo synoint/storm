@@ -100,7 +100,7 @@ class PageController extends AbstractController
                     if (!empty($question->getScreenoutConditions())) {
                         $screenoutType = $this->conditionService->applyScreenoutRule($response, $question->getScreenoutConditions());
                         if (!empty($screenoutType)) {
-                            $redirect = $this->screenoutSurveyAndRedirect($response, $survey, $screenoutType);
+                            $redirect = $this->screenoutSurveyAndRedirect($request, $response, $survey, $screenoutType);
                             break;
                         }
                     }
@@ -193,22 +193,38 @@ class PageController extends AbstractController
      *
      * @return RedirectResponse
      */
-    private function screenoutSurveyAndRedirect(Document\Response $response, Document\Survey $survey, string $screenoutType)
+    private function screenoutSurveyAndRedirect(Request $request, Document\Response $response, Document\Survey $survey, string $screenoutType)
     {
         switch ($screenoutType) {
             case Document\ScreenoutCondition::TYPE_QUALITY_SCREENOUT:
-                $logType    = SurveyEventLogger::QUALITY_SCREENOUT;
-                $url        = $survey->getQualityScreenoutUrl($response->getSource());
-                $redirect   = $this->redirectToRoute('survey.quality_screenout', ['surveyId' => $survey->getSurveyId()]);
+
+                if ($response->isLive()) {
+                    $response->setQualityScreenouted(true);
+                }
+
+                $responseLogType    = ResponseEventLogger::SURVEY_SCREENOUTED;
+                $logType            = SurveyEventLogger::QUALITY_SCREENOUT;
+                $url                = $survey->getQualityScreenoutUrl($response->getSource());
+                $redirect           = $this->redirectToRoute('survey.quality_screenout', ['surveyId' => $survey->getSurveyId()]);
                 break;
             default:
-                $logType    = SurveyEventLogger::SCREENOUT;
-                $url        = $survey->getScreenoutUrl($response->getSource());
-                $redirect   = $this->redirectToRoute('survey.screenout', ['surveyId' => $survey->getSurveyId()]);
+
+                if ($response->isLive()) {
+                    $response->setScreenouted(true);
+                }
+
+                $responseLogType    = ResponseEventLogger::SURVEY_QUALITY_SCREENOUTED;
+                $logType            = SurveyEventLogger::SCREENOUT;
+                $url                = $survey->getScreenoutUrl($response->getSource());
+                $redirect           = $this->redirectToRoute('survey.screenout', ['surveyId' => $survey->getSurveyId()]);
                 break;
         }
 
         if ($response->isLive()) {
+            $this->responseRequestHandler->saveResponse($response);
+            $this->responseRequestHandler->setResponse($request, $response);
+
+            $this->responseEventLogger->log($responseLogType, $response);
             $this->surveyEventLogger->log($logType, $survey);
         }
 

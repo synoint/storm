@@ -72,6 +72,20 @@ class Response implements JsonSerializable
     private $completed = false;
 
     /**
+     * @var bool
+     *
+     * @ODM\Field(type="boolean")
+     */
+    private $screenouted = false;
+
+    /**
+     * @var bool
+     *
+     * @ODM\Field(type="boolean")
+     */
+    private $qualityScreenouted = false;
+
+    /**
      * @ODM\Field(type="date")
      */
     private $createdAt;
@@ -118,18 +132,20 @@ class Response implements JsonSerializable
     public function jsonSerialize()
     {
         return [
-            'responseId'    => $this->responseId,
-            'surveyId'      => $this->surveyId,
-            'surveyVersion' => $this->surveyVersion,
-            'pageId'        => $this->pageId,
-            'mode'          => $this->mode,
-            'locale'        => $this->locale,
-            'completed'     => $this->completed,
-            'createdAt'     => $this->createdAt->getTimestamp(),
-            'completedAt'   => $this->completedAt,
-            'userAgents'    => $this->userAgents,
-            'hiddenValues'  => $this->hiddenValues,
-            'answers'       => $this->answers
+            'responseId'         => $this->responseId,
+            'surveyId'           => $this->surveyId,
+            'surveyVersion'      => $this->surveyVersion,
+            'pageId'             => $this->pageId,
+            'mode'               => $this->mode,
+            'locale'             => $this->locale,
+            'completed'          => $this->completed,
+            'screenouted'        => $this->screenouted,
+            'qualityScreenouted' => $this->qualityScreenouted,
+            'createdAt'          => $this->createdAt->getTimestamp(),
+            'completedAt'        => $this->completedAt,
+            'userAgents'         => $this->userAgents,
+            'hiddenValues'       => $this->hiddenValues,
+            'answers'            => $this->answers
         ];
     }
 
@@ -337,6 +353,46 @@ class Response implements JsonSerializable
     public function setCompleted(bool $completed): self
     {
         $this->completed = $completed;
+
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isScreenouted(): bool
+    {
+        return $this->screenouted;
+    }
+
+    /**
+     * @param bool $screenouted
+     *
+     * @return self
+     */
+    public function setScreenouted(bool $screenouted): self
+    {
+        $this->screenouted = $screenouted;
+
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isQualityScreenouted(): bool
+    {
+        return $this->qualityScreenouted;
+    }
+
+    /**
+     * @param bool $qualityScreenouted
+     *
+     * @return self
+     */
+    public function setQualityScreenouted(bool $qualityScreenouted): self
+    {
+        $this->qualityScreenouted = $qualityScreenouted;
 
         return $this;
     }
