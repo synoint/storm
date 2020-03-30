@@ -16,7 +16,7 @@ class ScreenoutConditionType extends AbstractType
         $builder
             ->add('rule', TextType::class)
             ->add('type', TextType::class)
-            ->add('stormMakerId', IntegerType::class);
+            ->add('screenoutId', IntegerType::class);
     }
 
     public function configureOptions(OptionsResolver $resolver)

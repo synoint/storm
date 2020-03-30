@@ -20,7 +20,7 @@ class ScreenoutCondition
      * @ODM\Field(type="integer")
      * @Assert\NotBlank
      */
-    private $stormMakerId;
+    private $screenoutId;
 
     /**
      * @ODM\Field(type="string")
@@ -109,19 +109,19 @@ class ScreenoutCondition
     /**
      * @return mixed
      */
-    public function getStormMakerId()
+    public function getScreenoutId()
     {
-        return $this->stormMakerId;
+        return $this->screenoutId;
     }
 
     /**
-     * @param mixed $stormMakerId
+     * @param int $screenoutId
      *
      * @return self
      */
-    public function setStormMakerId($stormMakerId)
+    public function setScreenoutId($screenoutId)
     {
-        $this->stormMakerId = $stormMakerId;
+        $this->screenoutId = $screenoutId;
 
         return $this;
     }

@@ -86,18 +86,11 @@ class Response implements JsonSerializable
     private $qualityScreenedOut = false;
 
     /**
-     * @var string
-     *
-     * @ODM\Field(type="string")
-     */
-    private $screenoutId;
-
-    /**
-     * @var integer
+     * @var int
      *
      * @ODM\Field(type="integer")
      */
-    private $stormMakerScreenoutId;
+    private $screenoutId;
 
     /**
      * @ODM\Field(type="date")
@@ -156,7 +149,6 @@ class Response implements JsonSerializable
             'screenedOut'           => $this->screenedOut,
             'qualityScreenedOut'    => $this->qualityScreenedOut,
             'screenoutId'           => $this->screenoutId,
-            'stormMakerScreenoutId' => $this->stormMakerScreenoutId,
             'createdAt'             => $this->createdAt->getTimestamp(),
             'completedAt'           => $this->completedAt,
             'userAgents'            => $this->userAgents,
@@ -429,26 +421,6 @@ class Response implements JsonSerializable
     public function setScreenoutId($screenoutId)
     {
         $this->screenoutId = $screenoutId;
-
-        return $this;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getStormMakerScreenoutId()
-    {
-        return $this->stormMakerScreenoutId;
-    }
-
-    /**
-     * @param mixed $stormMakerScreenoutId
-     *
-     * @return self
-     */
-    public function setStormMakerScreenoutId($stormMakerScreenoutId)
-    {
-        $this->stormMakerScreenoutId = $stormMakerScreenoutId;
 
         return $this;
     }

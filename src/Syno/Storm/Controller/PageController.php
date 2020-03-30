@@ -215,8 +215,7 @@ class PageController extends AbstractController
                 break;
         }
 
-        $response->setStormMakerScreenoutId($triggeredScreenout->getStormMakerId());
-        $response->setScreenoutId($triggeredScreenout->getId());
+        $response->setScreenoutId($triggeredScreenout->getScreenoutId());
 
         $this->responseRequestHandler->saveResponse($response);
         $this->responseRequestHandler->setResponse($request, $response);
