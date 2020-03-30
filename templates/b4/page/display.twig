@@ -7,12 +7,12 @@
         <div class="row container-sm justify-content-md-center ml-0">
 
             <div class="questions">
-                {% if page.content is defined and '' != page.content %}
-                <div class="col-12">
-                    <div class="page__content rounded p-3 bg-white mb-5">
-                        {{ page.content|raw }}
+                {% if '' != page.content %}
+                    <div class="col-12">
+                        <div class="page__content rounded p-3 bg-white mb-5">
+                            {{ page.content|raw }}
+                        </div>
                     </div>
-                </div>
                 {% endif %}
 
                 <div class="col-12">
@@ -20,7 +20,9 @@
 
                         {% for question in page.questions %}
                             <div class="question card mb-5 p-5 border-0">
-                                <h5 class="text-center m-0 pb-4"> {{ question.getText() }}</h5>
+                                <h5 class="text-center m-0 pb-4">
+                                    {{ question.getText() }}
+                                </h5>
 
                                 {% if question.isMatrix %}
                                     {% include 'b4/page/_matrix.twig' %}

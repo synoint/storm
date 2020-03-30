@@ -6,12 +6,15 @@ use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Validator\Constraints as Assert;
+use Syno\Storm\Traits\TranslatableTrait;
 
 /**
  * @ODM\EmbeddedDocument
  */
 class Page
 {
+    use TranslatableTrait;
+
     /**
      * @ODM\Id
      */
@@ -51,9 +54,17 @@ class Page
      */
     private $questions;
 
+    /**
+     * @var Collection
+     *
+     * @ODM\EmbedMany(targetDocument=PageTranslation::class)
+     */
+    protected $translations;
+
     public function __construct()
     {
-        $this->questions = new ArrayCollection();
+        $this->questions    = new ArrayCollection();
+        $this->translations = new ArrayCollection();
     }
 
     /**
@@ -141,6 +152,13 @@ class Page
      */
     public function getContent()
     {
+        /** @var PageTranslation $translation */
+        $translation = $this->getTranslation();
+        if (null !== $translation && !empty($translation->getContent())) {
+
+            return $translation->getContent();
+        }
+
         return $this->content;
     }
 
@@ -167,9 +185,9 @@ class Page
     /**
      * @param $questions
      *
-     * @return Page
+     * @return self
      */
-    public function setQuestions($questions): Page
+    public function setQuestions($questions): self
     {
         $this->questions = $questions;
 

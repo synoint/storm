@@ -81,11 +81,8 @@ class PageController extends AbstractController
     {
         $redirect = null;
 
-        $form = $this->createForm(
-            PageType::class, null, [
-            'questions' => $this->conditionService->filterQuestionsByShowCondition($page->getQuestions(), $response)
-        ]
-        );
+        $questions = $this->conditionService->filterQuestionsByShowCondition($page->getQuestions(), $response);
+        $form = $this->createForm(PageType::class, null, ['questions' => $questions]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted()) {
@@ -93,7 +90,7 @@ class PageController extends AbstractController
             if ($form->isValid()) {
 
                 /** @var Document\Question $question */
-                foreach ($page->getQuestions() as $question) {
+                foreach ($questions as $question) {
                     $answers = $this->responseRequestHandler->extractAnswers($question, $form->getData());
                     $response->addAnswer(new Document\ResponseAnswer($question->getQuestionId(), $answers));
 

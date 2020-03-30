@@ -6,12 +6,15 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
 use Symfony\Component\Validator\Constraints as Assert;
+use Syno\Storm\Traits\TranslatableTrait;
 
 /**
  * @ODM\EmbeddedDocument
  */
 class Question
 {
+    use TranslatableTrait;
+
     const INPUT_PREFIX = 'q_';
 
     const TYPE_SINGLE_CHOICE          = 1;
@@ -101,13 +104,21 @@ class Question
      */
     private $jumpToConditions;
 
+    /**
+     * @var Collection
+     *
+     * @ODM\EmbedMany(targetDocument=QuestionTranslation::class)
+     */
+    protected $translations;
+
 
     public function __construct()
     {
-        $this->answers = new ArrayCollection();
-        $this->showConditions = new ArrayCollection();
+        $this->answers             = new ArrayCollection();
+        $this->showConditions      = new ArrayCollection();
         $this->screenoutConditions = new ArrayCollection();
-        $this->jumpToConditions = new ArrayCollection();
+        $this->jumpToConditions    = new ArrayCollection();
+        $this->translations        = new ArrayCollection();
     }
 
     /**
@@ -211,10 +222,17 @@ class Question
     }
 
     /**
-     * @return mixed
+     * @return string
      */
     public function getText()
     {
+        /** @var QuestionTranslation $translation */
+        $translation = $this->getTranslation();
+        if (null !== $translation && !empty($translation->getText())) {
+
+            return $translation->getText();
+        }
+
         return $this->text;
     }
 
@@ -439,6 +457,4 @@ class Question
     {
         return $this->answers->first()->getAnswerFieldTypeId() === Answer::FIELD_TYPE_SELECT;
     }
-
-
 }

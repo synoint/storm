@@ -74,11 +74,19 @@ class Survey implements JsonSerializable
      */
     private $urls;
 
+    /**
+     * @var Collection
+     *
+     * @ODM\EmbedMany(targetDocument=Language::class)
+     */
+    private $languages;
+
     public function __construct()
     {
         $this->pages        = new ArrayCollection();
         $this->hiddenValues = new ArrayCollection();
         $this->urls         = new ArrayCollection();
+        $this->languages    = new ArrayCollection();
     }
 
     public function jsonSerialize()
@@ -378,4 +386,42 @@ class Survey implements JsonSerializable
 
         return $this;
     }
+
+    /**
+     * @return Collection
+     */
+    public function getLanguages(): Collection
+    {
+        return $this->languages;
+    }
+
+    /**
+     * @param Collection $languages
+     *
+     * @return self
+     */
+    public function setLanguages(Collection $languages): self
+    {
+        $this->languages = $languages;
+
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getPrimaryLanguageLocale():? string
+    {
+        /** @var Language $language */
+        foreach ($this->languages as $language) {
+            if ($language->isPrimary()) {
+
+                return $language->getLocale();
+            }
+        }
+
+        return null;
+    }
+
+
 }

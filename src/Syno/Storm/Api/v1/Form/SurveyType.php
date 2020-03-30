@@ -31,6 +31,11 @@ class SurveyType extends AbstractType
                 'entry_type' => UrlType::class,
                 'by_reference'  => false,
                 'allow_add'     => true
+            ])
+            ->add('languages', CollectionType::class, [
+                'entry_type' => LanguageType::class,
+                'by_reference'  => false,
+                'allow_add'     => true
             ]);
     }
 

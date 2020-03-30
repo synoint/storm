@@ -2,14 +2,19 @@
 
 namespace Syno\Storm\Document;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
 use Symfony\Component\Validator\Constraints as Assert;
+use Syno\Storm\Traits\TranslatableTrait;
 
 /**
  * @ODM\EmbeddedDocument
  */
 class Answer
 {
+    use TranslatableTrait;
+
     const FIELD_TYPE_TEXT     = 1;
     const FIELD_TYPE_TEXTAREA = 2;
     const FIELD_TYPE_RADIO    = 3;
@@ -80,6 +85,20 @@ class Answer
      * @ODM\Field(type="string")
      */
     private $columnLabel;
+
+    /**
+     * @var Collection
+     *
+     * @ODM\EmbedMany(targetDocument=AnswerTranslation::class)
+     */
+    protected $translations;
+
+
+    public function __construct()
+    {
+        $this->translations = new ArrayCollection();
+    }
+
 
     /**
      * @return mixed
@@ -222,10 +241,17 @@ class Answer
     }
 
     /**
-     * @return null|string
+     * @return string|null
      */
     public function getLabel():? string
     {
+        /** @var AnswerTranslation $translation */
+        $translation = $this->getTranslation();
+        if (null !== $translation && !empty($translation->getLabel())) {
+
+            return $translation->getLabel();
+        }
+
         return $this->label;
     }
 
@@ -242,10 +268,17 @@ class Answer
     }
 
     /**
-     * @return null|string
+     * @return string|null
      */
     public function getRowLabel(): ?string
     {
+        /** @var AnswerTranslation $translation */
+        $translation = $this->getTranslation();
+        if (null !== $translation && !empty($translation->getRowLabel())) {
+
+            return $translation->getRowLabel();
+        }
+
         return $this->rowLabel;
     }
 
@@ -262,10 +295,17 @@ class Answer
     }
 
     /**
-     * @return null|string
+     * @return string|null
      */
     public function getColumnLabel(): ?string
     {
+        /** @var AnswerTranslation $translation */
+        $translation = $this->getTranslation();
+        if (null !== $translation && !empty($translation->getColumnLabel())) {
+
+            return $translation->getColumnLabel();
+        }
+
         return $this->columnLabel;
     }
 
@@ -280,5 +320,4 @@ class Answer
 
         return $this;
     }
-
 }

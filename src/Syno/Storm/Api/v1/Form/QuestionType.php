@@ -44,6 +44,11 @@ class QuestionType extends AbstractType
                 'entry_type' => ScreenoutConditionType::class,
                 'by_reference'  => false,
                 'allow_add'     => true
+            ])
+            ->add('translations', CollectionType::class, [
+                'entry_type' => QuestionTranslationType::class,
+                'by_reference'  => false,
+                'allow_add'     => true
             ]);
 
     }

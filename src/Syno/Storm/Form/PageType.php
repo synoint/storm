@@ -60,7 +60,6 @@ class PageType extends AbstractType
         $builder->add($question->getInputName(), ChoiceType::class, [
             'choices'  => $question->getChoices(),
             'required' => $question->isRequired(),
-            'label'    => $question->getText(),
             'expanded' => !$question->containsSelectField(),
             'attr' => ['class' => 'custom-control custom-radio custom-radio-filled'],
             'choice_attr' => function() {
