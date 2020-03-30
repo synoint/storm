@@ -76,14 +76,28 @@ class Response implements JsonSerializable
      *
      * @ODM\Field(type="boolean")
      */
-    private $screenouted = false;
+    private $screenedOut = false;
 
     /**
      * @var bool
      *
      * @ODM\Field(type="boolean")
      */
-    private $qualityScreenouted = false;
+    private $qualityScreenedOut = false;
+
+    /**
+     * @var string
+     *
+     * @ODM\Field(type="string")
+     */
+    private $screenoutId;
+
+    /**
+     * @var integer
+     *
+     * @ODM\Field(type="integer")
+     */
+    private $stormMakerScreenoutId;
 
     /**
      * @ODM\Field(type="date")
@@ -132,20 +146,22 @@ class Response implements JsonSerializable
     public function jsonSerialize()
     {
         return [
-            'responseId'         => $this->responseId,
-            'surveyId'           => $this->surveyId,
-            'surveyVersion'      => $this->surveyVersion,
-            'pageId'             => $this->pageId,
-            'mode'               => $this->mode,
-            'locale'             => $this->locale,
-            'completed'          => $this->completed,
-            'screenouted'        => $this->screenouted,
-            'qualityScreenouted' => $this->qualityScreenouted,
-            'createdAt'          => $this->createdAt->getTimestamp(),
-            'completedAt'        => $this->completedAt,
-            'userAgents'         => $this->userAgents,
-            'hiddenValues'       => $this->hiddenValues,
-            'answers'            => $this->answers
+            'responseId'            => $this->responseId,
+            'surveyId'              => $this->surveyId,
+            'surveyVersion'         => $this->surveyVersion,
+            'pageId'                => $this->pageId,
+            'mode'                  => $this->mode,
+            'locale'                => $this->locale,
+            'completed'             => $this->completed,
+            'screenedOut'           => $this->screenedOut,
+            'qualityScreenedOut'    => $this->qualityScreenedOut,
+            'screenoutId'           => $this->screenoutId,
+            'stormMakerScreenoutId' => $this->stormMakerScreenoutId,
+            'createdAt'             => $this->createdAt->getTimestamp(),
+            'completedAt'           => $this->completedAt,
+            'userAgents'            => $this->userAgents,
+            'hiddenValues'          => $this->hiddenValues,
+            'answers'               => $this->answers
         ];
     }
 
@@ -360,19 +376,19 @@ class Response implements JsonSerializable
     /**
      * @return bool
      */
-    public function isScreenouted(): bool
+    public function isScreenedOut(): bool
     {
-        return $this->screenouted;
+        return $this->screenedOut;
     }
 
     /**
-     * @param bool $screenouted
+     * @param bool $screenedOut
      *
      * @return self
      */
-    public function setScreenouted(bool $screenouted): self
+    public function setScreenedOut(bool $screenedOut): self
     {
-        $this->screenouted = $screenouted;
+        $this->screenedOut = $screenedOut;
 
         return $this;
     }
@@ -380,19 +396,59 @@ class Response implements JsonSerializable
     /**
      * @return bool
      */
-    public function isQualityScreenouted(): bool
+    public function isQualityScreenedOut(): bool
     {
-        return $this->qualityScreenouted;
+        return $this->qualityScreenedOut;
     }
 
     /**
-     * @param bool $qualityScreenouted
+     * @param bool $qualityScreenedOut
      *
      * @return self
      */
-    public function setQualityScreenouted(bool $qualityScreenouted): self
+    public function setQualityScreenedOut(bool $qualityScreenedOut): self
     {
-        $this->qualityScreenouted = $qualityScreenouted;
+        $this->qualityScreenedOut = $qualityScreenedOut;
+
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getScreenoutId()
+    {
+        return $this->screenoutId;
+    }
+
+    /**
+     * @param mixed $screenoutId
+     *
+     * @return self
+     */
+    public function setScreenoutId($screenoutId)
+    {
+        $this->screenoutId = $screenoutId;
+
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getStormMakerScreenoutId()
+    {
+        return $this->stormMakerScreenoutId;
+    }
+
+    /**
+     * @param mixed $stormMakerScreenoutId
+     *
+     * @return self
+     */
+    public function setStormMakerScreenoutId($stormMakerScreenoutId)
+    {
+        $this->stormMakerScreenoutId = $stormMakerScreenoutId;
 
         return $this;
     }

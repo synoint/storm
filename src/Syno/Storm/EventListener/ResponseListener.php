@@ -89,7 +89,7 @@ class ResponseListener implements EventSubscriberInterface
                     return;
                 }
 
-                if ($surveyResponse->isScreenouted() && !$this->isSurveyScreenoutPage($request)) {
+                if ($surveyResponse->isScreenedOut() && !$this->isSurveyScreenoutPage($request)) {
                     $response = new RedirectResponse(
                         $this->router->generate('survey.screenout', ['surveyId' => $survey->getSurveyId()])
                     );
@@ -97,7 +97,7 @@ class ResponseListener implements EventSubscriberInterface
                     return;
                 }
 
-                if ($surveyResponse->isQualityScreenouted() && !$this->isSurveyQualityScreenoutPage($request)) {
+                if ($surveyResponse->isQualityScreenedOut() && !$this->isSurveyQualityScreenoutPage($request)) {
                     $response = new RedirectResponse(
                         $this->router->generate('survey.quality_screenout', ['surveyId' => $survey->getSurveyId()])
                     );

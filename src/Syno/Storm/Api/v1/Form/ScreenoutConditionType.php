@@ -3,6 +3,7 @@
 namespace Syno\Storm\Api\v1\Form;
 
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -14,7 +15,8 @@ class ScreenoutConditionType extends AbstractType
     {
         $builder
             ->add('rule', TextType::class)
-            ->add('type', TextType::class);
+            ->add('type', TextType::class)
+            ->add('stormMakerId', IntegerType::class);
     }
 
     public function configureOptions(OptionsResolver $resolver)

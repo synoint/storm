@@ -98,9 +98,9 @@ class PageController extends AbstractController
                     $response->addAnswer(new Document\ResponseAnswer($question->getQuestionId(), $answers));
 
                     if (!empty($question->getScreenoutConditions())) {
-                        $screenoutType = $this->conditionService->applyScreenoutRule($response, $question->getScreenoutConditions());
-                        if (!empty($screenoutType)) {
-                            $redirect = $this->screenoutSurveyAndRedirect($request, $response, $survey, $screenoutType);
+                        $triggeredScreenout = $this->conditionService->applyScreenoutRule($response, $question->getScreenoutConditions());
+                        if (!empty($triggeredScreenout)) {
+                            $redirect = $this->screenoutSurveyAndRedirect($request, $response, $survey, $triggeredScreenout);
                             break;
                         }
                     }
@@ -168,14 +168,12 @@ class PageController extends AbstractController
      */
     private function completeSurveyAndRedirect(Request $request, Document\Response $response, Document\Survey $survey)
     {
-        if ($response->isLive()) {
-            $response->setCompleted(true);
-            $this->responseRequestHandler->saveResponse($response);
-            $this->responseRequestHandler->setResponse($request, $response);
+        $response->setCompleted(true);
+        $this->responseRequestHandler->saveResponse($response);
+        $this->responseRequestHandler->setResponse($request, $response);
 
-            $this->responseEventLogger->log(ResponseEventLogger::SURVEY_COMPLETED, $response);
-            $this->surveyEventLogger->log(SurveyEventLogger::COMPLETE, $survey);
-        }
+        $this->responseEventLogger->log(ResponseEventLogger::SURVEY_COMPLETED, $response);
+        $this->surveyEventLogger->log(SurveyEventLogger::COMPLETE, $survey);
 
         $completeUrl = $survey->getCompleteUrl($response->getSource());
 
@@ -187,20 +185,19 @@ class PageController extends AbstractController
     }
 
     /**
+     * @param Request $request
      * @param Document\Response $response
      * @param Document\Survey   $survey
-     * @param string   $screenoutType
+     * @param Document\ScreenoutCondition   $triggeredScreenout
      *
      * @return RedirectResponse
      */
-    private function screenoutSurveyAndRedirect(Request $request, Document\Response $response, Document\Survey $survey, string $screenoutType)
+    private function screenoutSurveyAndRedirect(Request $request, Document\Response $response, Document\Survey $survey, Document\ScreenoutCondition $triggeredScreenout)
     {
-        switch ($screenoutType) {
+        switch ($triggeredScreenout->getType()) {
             case Document\ScreenoutCondition::TYPE_QUALITY_SCREENOUT:
 
-                if ($response->isLive()) {
-                    $response->setQualityScreenouted(true);
-                }
+                $response->setQualityScreenedOut(true);
 
                 $responseLogType    = ResponseEventLogger::SURVEY_SCREENOUTED;
                 $logType            = SurveyEventLogger::QUALITY_SCREENOUT;
@@ -209,9 +206,7 @@ class PageController extends AbstractController
                 break;
             default:
 
-                if ($response->isLive()) {
-                    $response->setScreenouted(true);
-                }
+                $response->setScreenedOut(true);
 
                 $responseLogType    = ResponseEventLogger::SURVEY_QUALITY_SCREENOUTED;
                 $logType            = SurveyEventLogger::SCREENOUT;
@@ -220,13 +215,14 @@ class PageController extends AbstractController
                 break;
         }
 
-        if ($response->isLive()) {
-            $this->responseRequestHandler->saveResponse($response);
-            $this->responseRequestHandler->setResponse($request, $response);
+        $response->setStormMakerScreenoutId($triggeredScreenout->getStormMakerId());
+        $response->setScreenoutId($triggeredScreenout->getId());
 
-            $this->responseEventLogger->log($responseLogType, $response);
-            $this->surveyEventLogger->log($logType, $survey);
-        }
+        $this->responseRequestHandler->saveResponse($response);
+        $this->responseRequestHandler->setResponse($request, $response);
+
+        $this->responseEventLogger->log($responseLogType, $response);
+        $this->surveyEventLogger->log($logType, $survey);
 
         if (!empty($url)) {
             $redirect = $this->redirect($this->populateHiddenValues($url, $response));

@@ -3,8 +3,6 @@
 namespace Syno\Storm\Document;
 
 use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
-use Doctrine\Common\Collections\Collection;
-use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -14,6 +12,15 @@ class ScreenoutCondition
 {
     const TYPE_SCREENOUT            = 'screenout';
     const TYPE_QUALITY_SCREENOUT    = 'quality_screenout';
+
+    /** @ODM\Id */
+    private $id;
+
+    /**
+     * @ODM\Field(type="integer")
+     * @Assert\NotBlank
+     */
+    private $stormMakerId;
 
     /**
      * @ODM\Field(type="string")
@@ -26,6 +33,26 @@ class ScreenoutCondition
      * @Assert\NotBlank
      */
     private $type;
+
+    /**
+     * @return mixed
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * @param mixed $id
+     *
+     * @return self
+     */
+    public function setId($id)
+    {
+        $this->id = $id;
+
+        return $this;
+    }
 
     /**
      * @return mixed
@@ -75,6 +102,26 @@ class ScreenoutCondition
         } else {
             throw new \InvalidArgumentException(sprintf('Unsupported screenout type: "%s"', $type));
         }
+
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getStormMakerId()
+    {
+        return $this->stormMakerId;
+    }
+
+    /**
+     * @param mixed $stormMakerId
+     *
+     * @return self
+     */
+    public function setStormMakerId($stormMakerId)
+    {
+        $this->stormMakerId = $stormMakerId;
 
         return $this;
     }
