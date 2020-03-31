@@ -246,7 +246,6 @@ class Response
         $result = new ArrayCollection();
         switch ($question->getQuestionTypeId()) {
             case Document\Question::TYPE_SINGLE_CHOICE:
-            case Document\Question::TYPE_LINEAR_SCALE:
                 $key = $question->getInputName();
                 if (!empty($formData[$key]) &&
                     is_int($formData[$key]) &&
@@ -266,7 +265,6 @@ class Response
                 }
                 break;
             case Document\Question::TYPE_SINGLE_CHOICE_MATRIX:
-            case Document\Question::TYPE_LINEAR_SCALE_MATRIX:
                 foreach (array_keys($question->getRows()) as $rowCode) {
                     $key = $question->getInputName($rowCode);
                     if (!empty($formData[$key]) &&
@@ -299,6 +297,20 @@ class Response
                         $value = filter_var($value, FILTER_SANITIZE_STRING);
                         $value = mb_substr($value, 0, 10000, 'UTF-8');
                         $result[] = new Document\ResponseAnswerValue($answer->getAnswerId(), $value);
+                    }
+                }
+                break;
+            case Document\Question::TYPE_LINEAR_SCALE:
+                $key = $question->getInputName();
+                if (!empty($formData[$key]) && $formData[$key] instanceof Document\Answer) {
+                    $result[] = new Document\ResponseAnswerValue($formData[$key]->getAnswerId());
+                }
+                break;
+            case Document\Question::TYPE_LINEAR_SCALE_MATRIX:
+                foreach (array_keys($question->getRows()) as $rowCode) {
+                    $key = $question->getInputName($rowCode);
+                    if (!empty($formData[$key]) && $formData[$key] instanceof Document\Answer) {
+                        $result[] = new Document\ResponseAnswerValue($formData[$key]->getAnswerId());
                     }
                 }
                 break;
