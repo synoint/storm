@@ -45,7 +45,6 @@ class Survey implements JsonSerializable
      * @var string
      *
      * @ODM\Field(type="string")
-     * @Assert\NotBlank
      */
     private $publicTitle;
 
