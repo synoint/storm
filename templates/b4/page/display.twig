@@ -24,7 +24,7 @@
                 <div class="col-12">
                     {{ form_start(form) }}
 
-                        {% for question in page.questions %}
+                        {% for question in page.questions|sort ((a, b) => a.sortOrder <=> b.sortOrder) %}
                             <div class="question card mb-5 p-5 border-0">
                                 <h5 class="text-center m-0 pb-4">
                                     {{ question.getText() }}
@@ -43,7 +43,7 @@
                                         {{ form_widget(attribute(form, (question.getInputName(answer.answerId))), {'label': false}) }}
                                     {% endfor %}
                                 {% else %}
-                                    {{ form_widget(attribute(form, (question.getInputName))) }}
+                                    {{ form_widget(attribute(form, (question.getInputName))|shuffleFormChildren(question)) }}
                                 {% endif %}
                             </div>
                         {% endfor %}

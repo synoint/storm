@@ -203,15 +203,4 @@ class Page
         }
     }
 
-    public function sortQuestions()
-    {
-        $iterator = $this->questions->getIterator();
-
-        $iterator->uasort(function ($a, $b) {
-            /** @var Answer $a */
-            /** @var Answer $b */
-            return ($a->getSortOrder() < $b->getSortOrder()) ? -1 : 1;
-        });
-        return new ArrayCollection(iterator_to_array($iterator));
-    }
 }

@@ -80,7 +80,6 @@ class PageController extends AbstractController
     ): Response
     {
         $redirect = null;
-        $page->sortQuestionsAndAnswers();
         $questions = $this->conditionService->filterQuestionsByShowCondition($page->getQuestions(), $response);
         $form = $this->createForm(PageType::class, null, ['questions' => $questions]);
         $form->handleRequest($request);
