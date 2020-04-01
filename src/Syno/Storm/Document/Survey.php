@@ -42,6 +42,14 @@ class Survey implements JsonSerializable
     private $version;
 
     /**
+     * @var string
+     *
+     * @ODM\Field(type="string")
+     * @Assert\NotBlank
+     */
+    private $publicTitle;
+
+    /**
      * @var bool
      *
      * @ODM\Field(type="boolean")
