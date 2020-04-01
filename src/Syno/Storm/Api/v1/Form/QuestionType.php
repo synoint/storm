@@ -2,10 +2,8 @@
 
 namespace Syno\Storm\Api\v1\Form;
 
-use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
-use Symfony\Component\Form\Extension\Core\Type\HiddenType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
@@ -21,8 +19,9 @@ class QuestionType extends AbstractType
             ->add('questionId', IntegerType::class)
             ->add('code', TextType::class)
             ->add('sortOrder', IntegerType::class)
-            ->add('required', HiddenType::class)
+            ->add('required', CheckboxType::class)
             ->add('text', TextType::class)
+            ->add('randomizeAnswers', CheckboxType::class)
             ->add('questionTypeId', IntegerType::class)
 
             ->add('answers', CollectionType::class, [

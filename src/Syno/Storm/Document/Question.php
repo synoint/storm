@@ -61,6 +61,14 @@ class Question
     private $required = true;
 
     /**
+     * @var bool
+     *
+     * @ODM\Field(type="boolean")
+     * @Assert\NotNull
+     */
+    private $randomizeAnswers = false;
+
+    /**
      * @var string
      *
      * @ODM\Field(type="string")
@@ -349,6 +357,26 @@ class Question
     }
 
     /**
+     * @return bool
+     */
+    public function isRandomizeAnswers(): bool
+    {
+        return $this->randomizeAnswers;
+    }
+
+    /**
+     * @param bool $randomizeAnswers
+     *
+     * @return Question
+     */
+    public function setRandomizeAnswers(bool $randomizeAnswers): self
+    {
+        $this->randomizeAnswers = $randomizeAnswers;
+
+        return $this;
+    }
+
+    /**
      * @return Collection
      */
     public function getAnswers(): Collection
@@ -456,5 +484,33 @@ class Question
     public function containsSelectField()
     {
         return $this->answers->first()->getAnswerFieldTypeId() === Answer::FIELD_TYPE_SELECT;
+    }
+
+    public function sortAnswers()
+    {
+        $iterator = $this->answers->getIterator();
+
+        $iterator->uasort(function ($a, $b) {
+            /** @var Answer $a */
+            /** @var Answer $b */
+            return ($a->getSortOrder() < $b->getSortOrder()) ? -1 : 1;
+        });
+        return new ArrayCollection(iterator_to_array($iterator));
+    }
+
+    public function shuffleAnswers()
+    {
+        $data = $this->answers->toArray();
+        shuffle($data);
+        $this->answers = new ArrayCollection($data);
+    }
+
+    public function sortOutAnswers()
+    {
+        if($this->isRandomizeAnswers()) {
+            $this->shuffleAnswers();
+        } else {
+            $this->sortAnswers();
+        }
     }
 }
