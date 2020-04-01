@@ -11,6 +11,7 @@ use Symfony\Component\Routing\RouterInterface;
 use Syno\Storm\RequestHandler\Response;
 use Syno\Storm\RequestHandler\Survey;
 use Syno\Storm\Traits\RouteAware;
+use Syno\Storm\Document;
 
 class SurveyListener implements EventSubscriberInterface
 {
@@ -80,11 +81,30 @@ class SurveyListener implements EventSubscriberInterface
         }
 
         if ($survey) {
+            $survey = $this->setLocale($survey, $request->getLocale(), $survey->getPrimaryLanguageLocale());
             $this->surveyRequestHandler->setSurvey($request, $survey);
             return;
         }
 
         $event->setResponse(new RedirectResponse($this->router->generate('survey.unavailable')));
+    }
+
+    /**
+     * @param Document\Survey $survey
+     * @param string        $currentLocale
+     * @param string|null   $fallbackLocale
+     *
+     * @return Document\Survey
+     */
+    protected function setLocale(Document\Survey $survey, string $currentLocale, string $fallbackLocale = null)
+    {
+        $survey->setCurrentLocale($currentLocale);
+
+        if (null !== $fallbackLocale) {
+            $survey->setFallbackLocale($fallbackLocale);
+        }
+
+        return $survey;
     }
 
     public static function getSubscribedEvents(): array

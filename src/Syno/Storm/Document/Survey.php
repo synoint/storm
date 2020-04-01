@@ -7,6 +7,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Validator\Constraints as Assert;
 use JsonSerializable;
+use Syno\Storm\Traits\TranslatableTrait;
 
 /**
  * @ODM\Document(collection="survey"))
@@ -14,6 +15,8 @@ use JsonSerializable;
  */
 class Survey implements JsonSerializable
 {
+    use TranslatableTrait;
+
     const URL_TYPE_SCREENOUT            = 'screenout';
     const URL_TYPE_QUALITY_SCREENOUT    = 'quality_screenout';
     const URL_TYPE_COMPLETE             = 'complete';
@@ -81,12 +84,20 @@ class Survey implements JsonSerializable
      */
     private $languages;
 
+    /**
+     * @var Collection
+     *
+     * @ODM\EmbedMany(targetDocument=SurveyTranslation::class)
+     */
+    protected $translations;
+
     public function __construct()
     {
         $this->pages        = new ArrayCollection();
         $this->hiddenValues = new ArrayCollection();
         $this->urls         = new ArrayCollection();
         $this->languages    = new ArrayCollection();
+        $this->translations = new ArrayCollection();
     }
 
     public function jsonSerialize()
@@ -423,5 +434,29 @@ class Survey implements JsonSerializable
         return null;
     }
 
+    /**
+     * @return string
+     */
+    public function getPublicTitle()
+    {
+        /** @var SurveyTranslation $translation */
+        $translation = $this->getTranslation();
+        if (null !== $translation && !empty($translation->getPublicTitle())) {
+            return $translation->getPublicTitle();
+        }
 
+        return $this->publicTitle;
+    }
+
+    /**
+     * @param mixed $publicTitle
+     *
+     * @return Survey
+     */
+    public function setPublicTitle($publicTitle)
+    {
+        $this->publicTitle = $publicTitle;
+
+        return $this;
+    }
 }
