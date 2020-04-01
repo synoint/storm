@@ -483,7 +483,11 @@ class Question
      */
     public function containsSelectField()
     {
-        return $this->answers->first()->getAnswerFieldTypeId() === Answer::FIELD_TYPE_SELECT;
+        if ($this->answers->count()) {
+            return $this->answers->first()->getAnswerFieldTypeId() === Answer::FIELD_TYPE_SELECT;
+        }
+
+        return false;
     }
 
 }
