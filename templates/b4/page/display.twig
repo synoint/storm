@@ -4,7 +4,7 @@
     {% if survey.getPublicTitle() is not empty %}
         {{ survey.getPublicTitle() }}
     {% else %}
-        Syno Storm
+        {{ 'page.title.default'|trans }}
     {% endif %}
 {% endblock %}
 {% block body %}

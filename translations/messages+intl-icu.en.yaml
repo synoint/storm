@@ -1,5 +1,6 @@
 page.button.back: Back
 page.button.next: Next
+page.title.default: 'Surveys - Syno International'
 privacy_consent.title: 'Announcement regarding your personal data'
 privacy_consent.about_us: 'About Us'
 privacy_consent.p1: 'Syno International is a group of companies (which consists of UAB Syno International (parent company) and Syno Japan Inc. (Syno Japan), Syno Poland sp. zo.o. (Syno Poland), Asia Syno International PTE. LTD. (Syno Asia) and Syno International Inc. (Syno Korea) (subsidiaries)) which provide data collection, processing, reporting and reward solutions.'
@@ -30,3 +31,4 @@ error_page.continue: 'Continue to'
 error_page.survey: survey
 error_page.survey_unavailable: 'This survey is no longer available.'
 error_page.page_unavailable: 'This page is no longer available.'
+
