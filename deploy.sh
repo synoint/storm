@@ -9,7 +9,7 @@ git push;
 composer install;
 yarn install;
 yarn encore prod;
-eb deploy;
+eb deploy synostorm-live-php73;
 echo "deployed!";
 echo "";
 exit 0;
