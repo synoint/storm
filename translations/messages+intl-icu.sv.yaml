@@ -1,0 +1,31 @@
+error_page.page_title: __error_page.page_title
+error_page.oops: __error_page.oops
+error_page.page_unavailable: __error_page.page_unavailable
+page.title.default: __page.title.default
+page.button.back: 'Tillbaka'
+page.button.next: 'Nästa'
+survey_screenouted.page_title: __survey_screenouted.page_title
+survey_screenouted.thank_you: __survey_screenouted.thank_you
+survey_screenouted.message: __survey_screenouted.message
+survey_completed.page_title: __survey_completed.page_title
+survey_completed.thank_you: __survey_completed.thank_you
+survey_completed.answers_received: __survey_completed.answers_received
+privacy_consent.title: 'Meddelande om dina personuppgifter'
+privacy_consent.about_us: __privacy_consent.about_us
+privacy_consent.p1: 'Syno International är en grupp bolag (bestående av UAB Syno International (moderbolaget), och dotterbolagen Syno Japan Inc (Syno Japan), Syno Poland sp. z.o.o (Syno Poland), Asia Syno International PTE. LTD (Syno Asia) och Syno International Inc. (Syno Korea), vilka tillhandahåller datainsamling, databearbening, rapportering och lösningar för belöningar.'
+privacy_consent.p2: 'Eftersom att Syno International behandlar er data, upplyser vi er om att er personliga integritet är den viktigaste frågan för vårt företag och vi förbinder oss att behandla era personuppgifter på ett pålitligt, legitimt och säkert sätt.'
+privacy_consent.p3: 'Observera att från och med den 25 maj 2018 gäller Dataskyddsförodrningen GDPR (the General Data Protection Regulation) i hela Europeiska Unionen (EU) och andra länder som frivilligt ansluter sig till och tillkännager att de följer den. GDPR syftar till att säkerställa starka och enhetliga dataskyddsstandarder för att skydda individer och deras data. I det avseendet är vårt mål att fortsätta vara din pålitliga partner. Därför ber vi dig att granska, bekanta dig med och godkänna våra juridiska dokument relaterade till behandligen av dina personliga uppgifter.'
+privacy_consent.p4: 'Vi ber dig också att följa de villkor som anges i dokumenten.'
+privacy_consent.your_consent_and_permission: 'Ditt samtycke och tillstånd'
+privacy_consent.p5: 'Genom att klicka på ”Acceptera” godkänner du och tillåter att SynoInt behandlar dina uppgifter och du bekräftar att du har läst, bekantat dig med, förstått, samt att du inte motsätter dig metoderna genom vilka vi behandlar dina uppgifter och SynoInts syften med dessa, alla definierade i följande juridiska dokument:'
+privacy_consent.privacy_policy: 'Privacy Policy'
+privacy_consent.security_policy: __privacy_consent.security_policy
+privacy_consent.cookies_policy: __privacy_consent.cookies_policy
+privacy_consent.data_protection_officers: __privacy_consent.data_protection_officers
+privacy_consent.terms_of_use: __privacy_consent.terms_of_use
+privacy_consent.quality_documentation: __privacy_consent.quality_documentation
+privacy_consent.p6: 'Ditt samtycke kan lätt återkallas när som helst genom att skicka ett mail till'
+privacy_consent.email_comment_data_protection: 'Om det är relaterat till behandlingen av dina personuppgifter'
+privacy_consent.email_comment_info: 'Om du är en kund till SynoInt'
+privacy_consent.button.accept: 'Acceptera'
+error_page.survey_unavailable: __error_page.survey_unavailable
