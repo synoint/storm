@@ -15,7 +15,7 @@ trait UrlTransformer {
     {
         foreach ($response->getHiddenValues() as $hiddenValue) {
             /**@var Document\HiddenValue $hiddenValue */
-            $url = str_replace('{' . $hiddenValue->code . '}', $hiddenValue->value, $url);
+            $url = str_replace('{' . $hiddenValue->getCode() . '}', $hiddenValue->getValue(), $url);
         }
 
         return $url;
