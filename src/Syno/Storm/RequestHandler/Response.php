@@ -101,7 +101,17 @@ class Response
      */
     public function getResponseIdCookie(Document\Response $response)
     {
-        return new Cookie('id:' . $response->getSurveyId(), $response->getResponseId(), time() + 3600);
+        return new Cookie(
+            'id:' . $response->getSurveyId(),
+            $response->getResponseId(),
+            time() + 3600,
+            '/',
+            null,
+            null,
+            true,
+            false,
+            'strict'
+        );
     }
 
     /**
