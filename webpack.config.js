@@ -25,7 +25,7 @@ Encore
      */
     // .addEntry('materialize.common', './assets/materialize/common/index.js')
     .addEntry('b4.common', './assets/b4/common/index.js')
-    .addEntry('answer', './assets/answer/index.js')
+    .addEntry('b4.page', './assets/b4/page/index.js')
     //.addEntry('page1', './assets/js/page1.js')
     //.addEntry('page2', './assets/js/page2.js')
 
