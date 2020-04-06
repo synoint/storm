@@ -79,6 +79,7 @@
 
     {% endif %}
     {% block javascripts %}
+        {{ parent() }}
         {{ encore_entry_script_tags('b4.page') }}
     {% endblock %}
 {% endblock %}
