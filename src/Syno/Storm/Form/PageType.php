@@ -81,7 +81,10 @@ class PageType extends AbstractType
             'expanded' => true,
             'multiple' => true,
             'attr' => ['class' => 'custom-control custom-checkbox custom-checkbox-filled'],
-            'choice_attr' => function() {
+            'choice_attr' => function ($answerId) use ($question) {
+                if ($question->isAnswerExclusive($answerId)) {
+                    return ['class' => 'custom-control-input exclusive'];
+                }
                 return ['class' => 'custom-control-input'];
             },
             'label_attr' => ['class' => 'custom-control-label']

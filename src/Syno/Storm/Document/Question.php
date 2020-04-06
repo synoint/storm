@@ -490,4 +490,21 @@ class Question
         return false;
     }
 
+    /**
+     * @param int $answerId
+     *
+     * @return bool
+     */
+    public function isAnswerExclusive(int $answerId): bool
+    {
+        /** @var Answer $answer */
+        foreach ($this->answers as $answer) {
+            if ($answer->getAnswerId() === $answerId && $answer->getIsExclusive()) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
 }

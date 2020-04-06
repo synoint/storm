@@ -12,7 +12,7 @@
     <div class="container">
         <div class="row container-sm justify-content-md-center ml-0">
 
-            <div class="questions">
+            <div class="questions" id="page-container">
                 {% if '' != page.content %}
                     <div class="col-12">
                         <div class="page__content rounded p-3 bg-white mb-5">
@@ -78,4 +78,7 @@
         {% include 'b4/page/_footer.twig' %}
 
     {% endif %}
+    {% block javascripts %}
+        {{ encore_entry_script_tags('answer') }}
+    {% endblock %}
 {% endblock %}

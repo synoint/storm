@@ -58,6 +58,14 @@ class Answer
     private $sortOrder;
 
     /**
+     * @var bool
+     *
+     * @ODM\Field(type="boolean")
+     * @Assert\NotNull
+     */
+    private $isExclusive = false;
+
+    /**
      * @var int
      *
      * @ODM\Field(type="int")
@@ -216,6 +224,26 @@ class Answer
     public function setSortOrder(int $sortOrder): Answer
     {
         $this->sortOrder = $sortOrder;
+
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function getIsExclusive(): bool
+    {
+        return $this->isExclusive;
+    }
+
+    /**
+     * @param bool $isExclusive
+     *
+     * @return Answer
+     */
+    public function setIsExclusive(bool $isExclusive): Answer
+    {
+        $this->isExclusive = $isExclusive;
 
         return $this;
     }
