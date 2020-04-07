@@ -124,10 +124,11 @@ class PageController extends AbstractController
                 }
 
                 return $this->redirectToRoute(
-                    'page.index', [
-                    'surveyId' => $survey->getSurveyId(),
-                    'pageId'   => $nextPage->getPageId()
-                ]
+                    'page.index',
+                    [
+                        'surveyId' => $survey->getSurveyId(),
+                        'pageId'   => $nextPage->getPageId()
+                    ]
                 );
             }
 

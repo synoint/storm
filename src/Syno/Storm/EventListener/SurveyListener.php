@@ -6,6 +6,7 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
+use Symfony\Component\HttpKernel\Event\ResponseEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\Routing\RouterInterface;
 use Syno\Storm\RequestHandler\Response;
@@ -90,6 +91,25 @@ class SurveyListener implements EventSubscriberInterface
     }
 
     /**
+     * @param ResponseEvent $event
+     */
+    public function onKernelResponse(ResponseEvent $event)
+    {
+        if (!$event->isMasterRequest()) {
+            return;
+        }
+
+        /** @var Request $request */
+        $request = $event->getRequest();
+
+        // redirects in entrances should not be cached, so cookies are set properly, prevents nasty redirect loops
+        if ($this->isSurveyEntrance($request->attributes->get('_route'))) {
+            $event->getResponse()->headers->set('Cache-Control', 'no-cache, no-store, must-revalidate');
+        }
+    }
+
+
+    /**
      * @param Document\Survey $survey
      * @param string        $currentLocale
      * @param string|null   $fallbackLocale
@@ -111,6 +131,7 @@ class SurveyListener implements EventSubscriberInterface
     {
         return [
             KernelEvents::REQUEST => ['onKernelRequest', 10],
+            KernelEvents::RESPONSE => 'onKernelResponse',
         ];
     }
 }

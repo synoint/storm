@@ -175,17 +175,17 @@ class ResponseListener implements EventSubscriberInterface
 
         // we have no response and it's not entrance - redirect to entrance
         if (!$this->isSurveyEntrance($request->attributes->get('_route'))) {
-            $event->setResponse(
-                new RedirectResponse(
-                    $this->router->generate(
-                        'survey.index',
-                        array_merge(
-                            ['surveyId' => $survey->getSurveyId()],
-                            $request->query->all()
-                        )
+            $redirectToEntrance = new RedirectResponse(
+                $this->router->generate(
+                    'survey.index',
+                    array_merge(
+                        ['surveyId' => $survey->getSurveyId()],
+                        $request->query->all()
                     )
                 )
             );
+            $redirectToEntrance->headers->set('Cache-Control', 'no-cache, no-store, must-revalidate');
+            $event->setResponse($redirectToEntrance);
             return;
         }
 
