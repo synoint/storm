@@ -28,7 +28,7 @@ class Page
     public function getNextPage(Document\Survey $survey, Document\Page $page, Document\Response $response):? object
     {
         $nextPage = $survey->getNextPage($page->getPageId());
-        if (!empty($nextPage)) {
+        if (!empty($nextPage) && !$nextPage->getQuestions()->isEmpty()) {
             if (empty($this->conditionService->filterQuestionsByShowCondition($nextPage->getQuestions(), $response)->count())) {
                 $nextPage = $this->getNextPage($survey, $nextPage, $response);
             }
