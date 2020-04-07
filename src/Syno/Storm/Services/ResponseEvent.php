@@ -45,16 +45,17 @@ class ResponseEvent
     /**
      * @param int $surveyId
      *
-     * @return object|Document\ResponseEvent
+     * @return null|object
+     * @throws \Exception
      */
-    public function getLastSavedAnswer(int $surveyId)
+    public function getLastEventDate(int $surveyId)
     {
-        return $this->dm
-            ->createQueryBuilder(Document\ResponseEvent::class)
-            ->field('surveyId')->equals($surveyId)
-            ->field('message')->equals(ResponseEventLogger::ANSWERS_SAVED)
-            ->sort('time', 'DESC')
-            ->getQuery()
-            ->getSingleResult();
+        $response = $this->dm->getDocumentCollection(Document\ResponseEvent::class)->findOne(
+            ['surveyId' => $surveyId],
+            [
+                'projection' => ['time' => 1, '_id' => 0],
+                'sort'       => ['time' => -1],
+            ]);
+        return !empty($response) ? $response['time']->toDateTime() : null;
     }
 }
