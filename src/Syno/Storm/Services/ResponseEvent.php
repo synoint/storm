@@ -41,4 +41,20 @@ class ResponseEvent
 
         return $result;
     }
+
+    /**
+     * @param int $surveyId
+     *
+     * @return object|Document\ResponseEvent
+     */
+    public function getLastSavedAnswer(int $surveyId)
+    {
+        return $this->dm
+            ->createQueryBuilder(Document\ResponseEvent::class)
+            ->field('surveyId')->equals($surveyId)
+            ->field('message')->equals(ResponseEventLogger::ANSWERS_SAVED)
+            ->sort('time', 'DESC')
+            ->getQuery()
+            ->getSingleResult();
+    }
 }

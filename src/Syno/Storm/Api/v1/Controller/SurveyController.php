@@ -294,6 +294,31 @@ class SurveyController extends AbstractController implements TokenAuthenticatedC
     }
 
     /**
+     * @param int $surveyId
+     *
+     * @Route(
+     *     "/{surveyId}/events/last/saved/answer/date",
+     *     name="storm_api.v1.survey.event.last.saved_answer.date",
+     *     requirements={"id"="\d+"},
+     *     methods={"GET"}
+     * )
+     *
+     * @return JsonResponse
+     */
+    public function eventLastSavedAnswerDate(int $surveyId)
+    {
+        $response = null;
+
+        $event = $this->responseEventService->getLastSavedAnswer($surveyId);
+
+        if(!empty($event) && !empty($event->getResponseId())){
+            $response = $event->getTime();
+        }
+
+        return $this->json($response);
+    }
+
+    /**
      * @param int     $surveyId
      * @param Request $request
      *
