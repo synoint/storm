@@ -297,17 +297,17 @@ class SurveyController extends AbstractController implements TokenAuthenticatedC
      * @param int $surveyId
      *
      * @Route(
-     *     "/{surveyId}/events/last/response/event/date",
-     *     name="storm_api.v1.survey.event.last.response.event.date",
+     *     "/{surveyId}/events/last/date",
+     *     name="storm_api.v1.survey.event.last.date",
      *     requirements={"id"="\d+"},
      *     methods={"GET"}
      * )
      *
      * @return JsonResponse
      */
-    public function eventLastResponseEventDate(int $surveyId)
+    public function eventLastDate(int $surveyId)
     {
-        return $this->json($this->responseEventService->getLastEventDate($surveyId));
+        return $this->json($this->responseEventService->getLastDate($surveyId));
     }
 
     /**

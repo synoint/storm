@@ -45,10 +45,10 @@ class ResponseEvent
     /**
      * @param int $surveyId
      *
-     * @return null|object
+     * @return null|int
      * @throws \Exception
      */
-    public function getLastEventDate(int $surveyId)
+    public function getLastDate(int $surveyId)
     {
         $response = $this->dm->getDocumentCollection(Document\ResponseEvent::class)->findOne(
             ['surveyId' => $surveyId],
@@ -56,6 +56,6 @@ class ResponseEvent
                 'projection' => ['time' => 1, '_id' => 0],
                 'sort'       => ['time' => -1],
             ]);
-        return !empty($response) ? $response['time']->toDateTime() : null;
+        return !empty($response) ? $response['time']->toDateTime()->getTimestamp() : null;
     }
 }
