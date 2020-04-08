@@ -1,0 +1,32 @@
+{% set questionField = attribute(form, (question.getInputName))|shuffleFormChildren(question) %}
+<div id="{{ questionField.vars.id }}"
+     class="{{questionField.vars.attr.class}}">
+    {% for child in questionField %}
+        <div class="form-check">
+            <input type="radio" id="{{ child.vars.id }}" name="{{ child.vars.full_name }}"
+                   class="{{ child.vars.attr.class }} form-check-input" value="{{ child.vars.value }}">
+            <label class="form-check-label custom-control-label"
+                   for="{{ child.vars.id }}">
+                <div class="d-flex flex-row w-100">
+                    <div class="d-flex align-items-center"> {{ child.vars.label }}</div>
+                    {% if attribute(form, (question.getInputName(child.vars.value))) is defined %}
+                        {% set freeTextInput = attribute(form, (question.getInputName(child.vars.value))) %}
+                        <div class="flex-fill bg-white rounded rounded-pill d-flex ml-1">
+                            <div class="pl-2 pr-1">
+                                <svg class="text-secondary" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"
+                                     width="20" height="20" fill="none" stroke="currentcolor" stroke-linecap="round"
+                                     stroke-linejoin="round" stroke-width="1.5">
+                                    <path d="M30 7 L25 2 5 22 3 29 10 27 Z M21 6 L26 11 Z M5 22 L10 27 Z"></path>
+                                </svg>
+                            </div>
+                            <input type="text" id="{{ freeTextInput.vars.id }}"
+                                   name="{{ freeTextInput.vars.full_name }}"
+                                   value="{{ freeTextInput.vars.value }}" aria-describedby="button-addon2"
+                                   class="rounded rounded-pill border-0 is-free-text-input flex-fill m-auto">
+                        </div>
+                    {% endif %}
+                </div>
+            </label>
+        </div>
+    {% endfor %}
+</div>

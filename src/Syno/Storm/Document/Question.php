@@ -411,6 +411,21 @@ class Question
     }
 
     /**
+     * @param $answerId
+     *
+     * @return Answer|null
+     */
+    public function getAnswer($answerId): ?Answer
+    {
+        foreach ($this->answers as $answer) {
+            if ($answer->getAnswerId() == $answerId) {
+                return $answer;
+            }
+        }
+        return null;
+    }
+
+    /**
      * @param $answers
      *
      * @return Question

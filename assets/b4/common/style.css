@@ -210,6 +210,10 @@ footer .progress {
 
 }
 
+.is-free-text-input:focus {
+    outline: none;
+}
+
 @media (min-width: 768px) {
     .matrix tbody th {
         border-bottom: 1px solid #fff;

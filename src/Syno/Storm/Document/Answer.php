@@ -66,6 +66,14 @@ class Answer
     private $isExclusive = false;
 
     /**
+     * @var bool
+     *
+     * @ODM\Field(type="boolean")
+     * @Assert\NotNull
+     */
+    private $isFreeText = false;
+
+    /**
      * @var int
      *
      * @ODM\Field(type="int")
@@ -248,6 +256,8 @@ class Answer
         return $this;
     }
 
+
+
     /**
      * @return int
      */
@@ -264,6 +274,26 @@ class Answer
     public function setAnswerFieldTypeId(int $answerFieldTypeId): Answer
     {
         $this->answerFieldTypeId = $answerFieldTypeId;
+
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function getIsFreeText(): bool
+    {
+        return $this->isFreeText;
+    }
+
+    /**
+     * @param bool $isFreeText
+     *
+     * @return Answer
+     */
+    public function setIsFreeText(bool $isFreeText): Answer
+    {
+        $this->isFreeText = $isFreeText;
 
         return $this;
     }

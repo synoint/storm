@@ -23,9 +23,11 @@ class PageType extends AbstractType
             switch ($question->getQuestionTypeId()) {
                 case Document\Question::TYPE_SINGLE_CHOICE:
                     $this->addSingleChoice($builder, $question);
+                    $this->addFreeText($builder, $question);
                     break;
                 case Document\Question::TYPE_MULTIPLE_CHOICE:
                     $this->addMultipleChoice($builder, $question);
+                    $this->addFreeText($builder, $question);
                     break;
                 case Document\Question::TYPE_SINGLE_CHOICE_MATRIX:
                 case Document\Question::TYPE_MULTIPLE_CHOICE_MATRIX:
@@ -80,15 +82,31 @@ class PageType extends AbstractType
             'required' => $question->isRequired(),
             'expanded' => true,
             'multiple' => true,
-            'attr' => ['class' => 'custom-control custom-checkbox custom-checkbox-filled'],
+            'attr'        => ['class' => 'custom-control custom-checkbox custom-checkbox-filled'],
             'choice_attr' => function ($answerId) use ($question) {
-                if ($question->isAnswerExclusive($answerId)) {
+            if ($question->isAnswerExclusive($answerId)) {
                     return ['class' => 'custom-control-input exclusive'];
                 }
                 return ['class' => 'custom-control-input'];
             },
-            'label_attr' => ['class' => 'custom-control-label']
-        ]);
+            'label_attr'  => ['class' => 'custom-control-label']
+        ]
+        );
+    }
+
+    /**
+     * @param FormBuilderInterface $builder
+     * @param Document\Question    $question
+     */
+    private function addFreeText(FormBuilderInterface $builder, Document\Question $question)
+    {
+        /** @var Document\Answer $answer */
+        foreach ($question->getAnswers() as $answer) {
+            if ($answer->getIsFreeText()) {
+                $builder->add($question->getInputName($answer->getAnswerId()), TextType::class, [
+                    'attr' => ['class' => 'is-free-text-input'], 'required' => false]);
+            }
+        }
     }
 
     /**
@@ -107,7 +125,7 @@ class PageType extends AbstractType
             $multiple = (Document\Question::TYPE_MULTIPLE_CHOICE_MATRIX === $question->getQuestionTypeId());
 
             $builder->add($question->getInputName($rowCode), ChoiceType::class, [
-                'choices' => $choices,
+                'choices'  => $choices,
                 'multiple' => $multiple,
                 'expanded' => true,
                 'required' => $question->isRequired(),

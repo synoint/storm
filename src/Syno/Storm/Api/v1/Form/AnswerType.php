@@ -22,6 +22,7 @@ class AnswerType extends AbstractType
             ->add('columnCode', TextType::class, ['required' => false])
             ->add('sortOrder', IntegerType::class)
             ->add('isExclusive', CheckboxType::class)
+            ->add('isFreeText', CheckboxType::class)
             ->add('answerFieldTypeId', IntegerType::class)
             ->add('label', TextType::class, ['required' => false])
             ->add('rowLabel', TextType::class, ['required' => false])

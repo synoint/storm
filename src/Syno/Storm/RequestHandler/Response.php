@@ -261,7 +261,7 @@ class Response
                     is_int($formData[$key]) &&
                     $question->answerIdExists($formData[$key])
                 ) {
-                    $result[] = new Document\ResponseAnswerValue($formData[$key]);
+                    $result[] = new Document\ResponseAnswerValue($formData[$key], $this->extractFreeTextValue($formData, $formData[$key], $question));
                 }
                 break;
             case Document\Question::TYPE_MULTIPLE_CHOICE:
@@ -269,7 +269,7 @@ class Response
                 if (!empty($formData[$key]) && is_array($formData[$key])) {
                     foreach ($formData[$key] as $answerId) {
                         if ($question->answerIdExists($answerId)) {
-                            $result[] = new Document\ResponseAnswerValue($answerId);
+                            $result[] = new Document\ResponseAnswerValue($answerId, $this->extractFreeTextValue($formData, $answerId, $question));
                         }
                     }
                 }
@@ -327,5 +327,25 @@ class Response
         }
 
         return $result;
+    }
+
+    /**
+     * @param array             $formData
+     * @param int               $answerId
+     * @param Document\Question $question
+     *
+     * @return string|null
+     */
+    private function extractFreeTextValue(array $formData, int $answerId, Document\Question $question): ?string
+    {
+        if($question->getAnswer($answerId)->getIsFreeText()) {
+            $valueKey = $question->getInputName($answerId);
+            if (!empty($formData[$valueKey]) && is_string($formData[$valueKey])) {
+                $value = trim($formData[$valueKey]);
+                $value = filter_var($value, FILTER_SANITIZE_STRING);
+                return mb_substr($value, 0, 10000, 'UTF-8');
+            }
+        }
+        return null;
     }
 }
