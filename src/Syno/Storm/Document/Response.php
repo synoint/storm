@@ -569,13 +569,15 @@ class Response implements JsonSerializable
             /**@var ResponseAnswer $responseAnswer */
             $questionsId[$responseAnswer->getQuestionId()] = [];
             foreach ($responseAnswer->getAnswers() as $answer) {
-                $questionsId[$responseAnswer->getQuestionId()] = [$answer->getAnswerId() => 1];
+                $questionsId[$responseAnswer->getQuestionId()][] = [$answer->getAnswerId() => 1];
             }
         }
 
         foreach ($questionsId as $questionId) {
-            foreach ($questionId as $answerIds => $value) {
-                $answersId[$answerIds] = $value;
+            foreach ($questionId as $answers) {
+                foreach ($answers as $answerId => $value) {
+                    $answersId[$answerId] = $value;
+                }
             }
         }
 
