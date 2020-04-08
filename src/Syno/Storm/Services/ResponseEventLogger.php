@@ -41,7 +41,7 @@ class ResponseEventLogger
      */
     public function log(string $event, Response $response)
     {
-        if (!$response->isLive()) {
+        if (!$response->isLive() && !$response->isTest()) {
             return;
         }
 
