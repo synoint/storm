@@ -246,11 +246,11 @@ class Response implements JsonSerializable
     }
 
     /**
-     * @param int $pageId
+     * @param int|null $pageId
      *
      * @return self
      */
-    public function setPageId(int $pageId): self
+    public function setPageId(int $pageId = null): self
     {
         $this->pageId = $pageId;
 

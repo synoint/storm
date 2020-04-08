@@ -81,6 +81,7 @@ class PageController extends AbstractController
     {
         $redirect = null;
         $questions = $this->conditionService->filterQuestionsByShowCondition($page->getQuestions(), $response);
+
         $form = $this->createForm(PageType::class, null, ['questions' => $questions]);
         $form->handleRequest($request);
 
@@ -133,6 +134,8 @@ class PageController extends AbstractController
             }
 
             $this->responseEventLogger->log(ResponseEventLogger::ANSWERS_ERROR, $response);
+        } else {
+            $this->saveResponseProgress($response, $page->getPageId());
         }
 
         return $this->render(
@@ -154,6 +157,20 @@ class PageController extends AbstractController
     public function unavailable()
     {
         return $this->render(Document\Config::DEFAULT_THEME . '/page/unavailable.twig');
+    }
+
+    /**
+     * @param Document\Response $response
+     * @param int               $pageId
+     */
+    private function saveResponseProgress(Document\Response $response, int $pageId)
+    {
+        if ($response->getPageId() !== $pageId) {
+            $response->setPageId($pageId);
+            $this->responseRequestHandler->saveResponse($response);
+
+            $this->responseEventLogger->log(ResponseEventLogger::PAGE_ENTERED, $response);
+        }
     }
 
     /**
