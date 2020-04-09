@@ -162,7 +162,7 @@ class ResponseListener implements EventSubscriberInterface
                         $this->responseEventLogger->log(ResponseEventLogger::SURVEY_MODE_CHANGED, $surveyResponse);
 
                         $response = new RedirectResponse($request->getUri());
-                        $this->clearResponseSession($request, $surveyResponse, $response);
+                        $this->clearResponse($request, $surveyResponse, $response);
 
                         $event->setResponse($response);
                         return;
@@ -222,7 +222,7 @@ class ResponseListener implements EventSubscriberInterface
 
         $surveyResponse = $this->responseRequestHandler->getResponse($request);
         if ($surveyResponse->isCompleted()) {
-            $this->clearResponseSession($request, $surveyResponse, $event->getResponse());
+            $this->clearResponse($request, $surveyResponse, $event->getResponse());
             return;
         }
 
@@ -249,7 +249,7 @@ class ResponseListener implements EventSubscriberInterface
         ];
     }
 
-    private function clearResponseSession(Request $request, Document\Response $surveyResponse, HttpResponse $eventResponse)
+    private function clearResponse(Request $request, Document\Response $surveyResponse, HttpResponse $eventResponse)
     {
         $this->responseRequestHandler->clearResponse($request);
         $this->responseRequestHandler->clearResponseIdInSession($request, $surveyResponse->getSurveyId());
