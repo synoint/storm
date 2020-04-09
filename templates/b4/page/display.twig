@@ -43,9 +43,9 @@
                                         {{ form_widget(attribute(form, (question.getInputName(answer.answerId))), {'label': false}) }}
                                     {% endfor %}
                                 {% elseif question.questionTypeId == constant('Syno\\Storm\\Document\\Question::TYPE_SINGLE_CHOICE') %}
-                                    {% include 'b4/page/_single_choice.twig' %}
+                                    {% include 'b4/page/_single_or_multiple_choice.twig' with { 'type': 'radio' } %}
                                 {% elseif question.questionTypeId == constant('Syno\\Storm\\Document\\Question::TYPE_MULTIPLE_CHOICE') %}
-                                    {% include 'b4/page/_multiple_choice.twig' %}
+                                    {% include 'b4/page/_single_or_multiple_choice.twig' with { 'type': 'checkbox' } %}
                                 {% endif %}
                             </div>
                         {% endfor %}

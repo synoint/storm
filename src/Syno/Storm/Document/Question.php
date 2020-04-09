@@ -411,11 +411,11 @@ class Question
     }
 
     /**
-     * @param $answerId
+     * @param int $answerId
      *
      * @return Answer|null
      */
-    public function getAnswer($answerId): ?Answer
+    public function getAnswer(int $answerId): ?Answer
     {
         foreach ($this->answers as $answer) {
             if ($answer->getAnswerId() == $answerId) {

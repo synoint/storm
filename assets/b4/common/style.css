@@ -210,7 +210,7 @@ footer .progress {
 
 }
 
-.is-free-text-input:focus {
+.free-text-input:focus {
     outline: none;
 }
 
