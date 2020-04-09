@@ -16,6 +16,8 @@ class ResponseEventLogger
     const SURVEY_COMPLETED           = 'survey completed';
     const SURVEY_VERSION_UNAVAILABLE = 'survey version unavailable';
 
+    const SURVEY_MODE_CHANGED = 'survey mode changed';
+
     const SURVEY_SCREENOUTED            = 'survey screenouted';
     const SURVEY_QUALITY_SCREENOUTED    = 'survey quality screenouted';
 
@@ -53,6 +55,7 @@ class ResponseEventLogger
             case self::SURVEY_SCREENOUTED:
             case self::SURVEY_QUALITY_SCREENOUTED:
             case self::SURVEY_VERSION_UNAVAILABLE:
+            case self::SURVEY_MODE_CHANGED:
                 $document = new ResponseEvent($event, $response->getResponseId(), $response->getSurveyId());
                 break;
             case self::SURVEY_RESUMED:

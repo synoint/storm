@@ -116,7 +116,7 @@ class Response
                 $mode = Document\Response::MODE_DEBUG;
                 break;
             default:
-                $mode = null;
+                throw new \InvalidArgumentException(sprintf('Unknown route: "%s"', $route));
         }
 
         return $mode;

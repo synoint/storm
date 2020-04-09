@@ -278,30 +278,6 @@ class Response implements JsonSerializable
     }
 
     /**
-     * @param string $route
-     *
-     * @return self
-     */
-    public function setModeByRoute(string $route): self
-    {
-        switch ($route) {
-            case 'survey.index':
-                $this->mode = self::MODE_LIVE;
-                break;
-            case 'survey.test':
-                $this->mode = self::MODE_TEST;
-                break;
-            case 'survey.debug':
-                $this->mode = self::MODE_DEBUG;
-                break;
-            default:
-                throw new \InvalidArgumentException(sprintf('Unknown route: "%s"', $route));
-        }
-
-        return $this;
-    }
-
-    /**
      * @return bool
      */
     public function isDebug(): bool

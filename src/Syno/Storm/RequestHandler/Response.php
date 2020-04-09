@@ -353,4 +353,9 @@ class Response
             return mb_substr($value, 0, 10000, 'UTF-8');
         }
     }
+
+    public function hasModeChanged(Request $request, string $surveyMode)
+    {
+        return $this->responseService->getModeByRoute($request->attributes->get('_route')) !== $surveyMode;
+    }
 }

@@ -43,9 +43,6 @@ class ResponseListener implements EventSubscriberInterface
     /** @var SurveyEventLogger */
     private $surveyEventLogger;
 
-    /** @var Services\Response */
-    private $responseService;
-
     /**
      * @param RequestHandler\Survey   $surveyRequestHandler
      * @param RequestHandler\Page     $pageRequestHandler
@@ -53,7 +50,6 @@ class ResponseListener implements EventSubscriberInterface
      * @param ResponseEventLogger     $responseEventLogger
      * @param SurveyEventLogger       $surveyEventLogger
      * @param RouterInterface         $router
-     * @param Services\Response       $responseService
      */
     public function __construct(
         RequestHandler\Survey $surveyRequestHandler,
@@ -61,8 +57,7 @@ class ResponseListener implements EventSubscriberInterface
         RequestHandler\Response $responseRequestHandler,
         ResponseEventLogger $responseEventLogger,
         SurveyEventLogger $surveyEventLogger,
-        RouterInterface $router,
-        Services\Response $responseService
+        RouterInterface $router
     )
     {
         $this->surveyRequestHandler   = $surveyRequestHandler;
@@ -71,7 +66,6 @@ class ResponseListener implements EventSubscriberInterface
         $this->responseEventLogger    = $responseEventLogger;
         $this->surveyEventLogger      = $surveyEventLogger;
         $this->router                 = $router;
-        $this->responseService        = $responseService;
     }
 
 
@@ -88,15 +82,6 @@ class ResponseListener implements EventSubscriberInterface
         $responseId = $this->responseRequestHandler->getResponseId($request, $survey->getSurveyId());
         if (!empty($responseId)) {
             $surveyResponse = $this->responseRequestHandler->getSavedResponse($survey->getSurveyId(), $responseId);
-
-            $currentMode = $this->responseService->getModeByRoute($request->attributes->get('_route'));
-
-            if(!empty($surveyResponse->getMode()) && !empty($currentMode) && $currentMode !== $surveyResponse->getMode()){
-                $event->setResponse(
-                    $this->getRedirectToRedirect($survey->getSurveyId(), $request->query->all())
-                );
-                return;
-            }
 
             if ($surveyResponse) {
 
@@ -172,6 +157,17 @@ class ResponseListener implements EventSubscriberInterface
                  */
                 if ($this->isSurveyEntrance($request->attributes->get('_route'))) {
 
+                    if ($this->responseRequestHandler->hasModeChanged($request, $surveyResponse->getMode())){
+                        // if mode have changed clear session and reload page
+                        $this->responseEventLogger->log(ResponseEventLogger::SURVEY_MODE_CHANGED, $surveyResponse);
+
+                        $response = new RedirectResponse($request->getUri());
+                        $this->clearResponseSession($request, $surveyResponse, $response);
+
+                        $event->setResponse($response);
+                        return;
+                    }
+
                     $surveyResponse = $this->responseRequestHandler->addUserAgent($request, $surveyResponse);
 
                     if ($surveyResponse->getPageId() && null !== $survey->getPage($surveyResponse->getPageId())) {
@@ -226,11 +222,7 @@ class ResponseListener implements EventSubscriberInterface
 
         $surveyResponse = $this->responseRequestHandler->getResponse($request);
         if ($surveyResponse->isCompleted()) {
-            $this->responseRequestHandler->clearResponse($request);
-            $this->responseRequestHandler->clearResponseIdInSession($request, $surveyResponse->getSurveyId());
-            $this->responseRequestHandler->clearResponseIdCookie($event->getResponse(), $surveyResponse->getSurveyId());
-            $request->getSession()->migrate(true);
-            $this->responseEventLogger->log(ResponseEventLogger::RESPONSE_CLEARED, $surveyResponse);
+            $this->clearResponseSession($request, $surveyResponse, $event->getResponse());
             return;
         }
 
@@ -255,6 +247,15 @@ class ResponseListener implements EventSubscriberInterface
             KernelEvents::REQUEST    => ['onKernelRequest', 4],
             KernelEvents::RESPONSE   => ['onKernelResponse'],
         ];
+    }
+
+    private function clearResponseSession(Request $request, Document\Response $surveyResponse, HttpResponse $eventResponse)
+    {
+        $this->responseRequestHandler->clearResponse($request);
+        $this->responseRequestHandler->clearResponseIdInSession($request, $surveyResponse->getSurveyId());
+        $this->responseRequestHandler->clearResponseIdCookie($eventResponse, $surveyResponse->getSurveyId());
+        $request->getSession()->migrate(true);
+        $this->responseEventLogger->log(ResponseEventLogger::RESPONSE_CLEARED, $surveyResponse);
     }
 
     /**
@@ -326,32 +327,6 @@ class ResponseListener implements EventSubscriberInterface
                 $this->surveyEventLogger->log(SurveyEventLogger::DEBUG_RESPONSE, $survey);
                 break;
         }
-    }
-
-    /**
-     * @param int   $surveyId
-     * @param array $queryParams
-     *
-     * @return RedirectResponse
-     */
-    private function getRedirectToRedirect(int $surveyId, array $queryParams)
-    {
-        $redirectResponse = new RedirectResponse(
-            $this->router->generate(
-                'redirect',
-                    ['url' => $this->router->generate(
-                        'survey.index',
-                        array_merge(
-                            ['surveyId' => $surveyId],
-                            $queryParams
-                        )
-                    )]
-            )
-        );
-
-        $redirectResponse->headers->set('Cache-Control', 'no-cache, no-store, must-revalidate');
-
-        return $redirectResponse;
     }
 
     /**
