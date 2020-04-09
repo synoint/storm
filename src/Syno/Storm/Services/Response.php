@@ -99,6 +99,30 @@ class Response
     }
 
     /**
+     * @param string $route
+     *
+     * @return string
+     */
+    public function getModeByRoute(string $route)
+    {
+        switch ($route) {
+            case 'survey.index':
+                $mode = Document\Response::MODE_LIVE;
+                break;
+            case 'survey.test':
+                $mode = Document\Response::MODE_TEST;
+                break;
+            case 'survey.debug':
+                $mode = Document\Response::MODE_DEBUG;
+                break;
+            default:
+                $mode = null;
+        }
+
+        return $mode;
+    }
+
+    /**
      * @return string
      */
     private function generateResponseId(): string

@@ -190,7 +190,7 @@ class Response
         $result
             ->setSurveyId($survey->getSurveyId())
             ->setSurveyVersion($survey->getVersion())
-            ->setModeByRoute($request->attributes->get('_route'))
+            ->setMode($this->responseService->getModeByRoute($request->attributes->get('_route')))
             ->setLocale($request->attributes->get('_locale'));
 
         return $result;

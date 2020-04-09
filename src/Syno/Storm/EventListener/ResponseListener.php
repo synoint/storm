@@ -6,6 +6,7 @@ use PhpParser\Comment\Doc;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response as HttpResponse;
 use Symfony\Component\HttpKernel\Event\ControllerEvent;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpKernel\Event\ResponseEvent;
@@ -17,6 +18,7 @@ use Syno\Storm\RequestHandler;
 use Syno\Storm\Services\ResponseEventLogger;
 use Syno\Storm\Services\SurveyEventLogger;
 use Syno\Storm\Traits\RouteAware;
+use Syno\Storm\Services;
 
 
 class ResponseListener implements EventSubscriberInterface
@@ -41,6 +43,9 @@ class ResponseListener implements EventSubscriberInterface
     /** @var SurveyEventLogger */
     private $surveyEventLogger;
 
+    /** @var Services\Response */
+    private $responseService;
+
     /**
      * @param RequestHandler\Survey   $surveyRequestHandler
      * @param RequestHandler\Page     $pageRequestHandler
@@ -48,6 +53,7 @@ class ResponseListener implements EventSubscriberInterface
      * @param ResponseEventLogger     $responseEventLogger
      * @param SurveyEventLogger       $surveyEventLogger
      * @param RouterInterface         $router
+     * @param Services\Response       $responseService
      */
     public function __construct(
         RequestHandler\Survey $surveyRequestHandler,
@@ -55,7 +61,8 @@ class ResponseListener implements EventSubscriberInterface
         RequestHandler\Response $responseRequestHandler,
         ResponseEventLogger $responseEventLogger,
         SurveyEventLogger $surveyEventLogger,
-        RouterInterface $router
+        RouterInterface $router,
+        Services\Response $responseService
     )
     {
         $this->surveyRequestHandler   = $surveyRequestHandler;
@@ -64,6 +71,7 @@ class ResponseListener implements EventSubscriberInterface
         $this->responseEventLogger    = $responseEventLogger;
         $this->surveyEventLogger      = $surveyEventLogger;
         $this->router                 = $router;
+        $this->responseService        = $responseService;
     }
 
 
@@ -80,6 +88,16 @@ class ResponseListener implements EventSubscriberInterface
         $responseId = $this->responseRequestHandler->getResponseId($request, $survey->getSurveyId());
         if (!empty($responseId)) {
             $surveyResponse = $this->responseRequestHandler->getSavedResponse($survey->getSurveyId(), $responseId);
+
+            $currentMode = $this->responseService->getModeByRoute($request->attributes->get('_route'));
+
+            if(!empty($surveyResponse->getMode()) && !empty($currentMode) && $currentMode !== $surveyResponse->getMode()){
+                $event->setResponse(
+                    $this->getRedirectToRedirect($survey->getSurveyId(), $request->query->all())
+                );
+                return;
+            }
+
             if ($surveyResponse) {
 
                 if ($surveyResponse->isCompleted() && !$this->isSurveyCompletionPage($request)) {
@@ -308,6 +326,32 @@ class ResponseListener implements EventSubscriberInterface
                 $this->surveyEventLogger->log(SurveyEventLogger::DEBUG_RESPONSE, $survey);
                 break;
         }
+    }
+
+    /**
+     * @param int   $surveyId
+     * @param array $queryParams
+     *
+     * @return RedirectResponse
+     */
+    private function getRedirectToRedirect(int $surveyId, array $queryParams)
+    {
+        $redirectResponse = new RedirectResponse(
+            $this->router->generate(
+                'redirect',
+                    ['url' => $this->router->generate(
+                        'survey.index',
+                        array_merge(
+                            ['surveyId' => $surveyId],
+                            $queryParams
+                        )
+                    )]
+            )
+        );
+
+        $redirectResponse->headers->set('Cache-Control', 'no-cache, no-store, must-revalidate');
+
+        return $redirectResponse;
     }
 
     /**
