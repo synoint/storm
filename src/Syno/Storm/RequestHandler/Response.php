@@ -344,7 +344,7 @@ class Response
      *
      * @return string
      */
-    private function extractFreeTextValue(array $formData, int $answerId, Document\Question $question): string
+    private function extractFreeTextValue(array $formData, int $answerId, Document\Question $question): ?string
     {
         $valueKey = $question->getInputName($answerId);
         if (!empty($formData[$valueKey]) && is_string($formData[$valueKey])) {
@@ -352,6 +352,7 @@ class Response
             $value = filter_var($value, FILTER_SANITIZE_STRING);
             return mb_substr($value, 0, 10000, 'UTF-8');
         }
+        return null;
     }
 
     public function hasModeChanged(Request $request, string $surveyMode)
