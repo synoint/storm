@@ -12,12 +12,24 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\Count;
 use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Contracts\Translation\TranslatorInterface;
 use Syno\Storm\Document;
 use Syno\Storm\Form\Type\LinearScale;
 use Syno\Storm\Form\Type\LinearScaleMatrix;
 
 class PageType extends AbstractType
 {
+    /** @var TranslatorInterface */
+    private $translator;
+
+    /**
+     * @param TranslatorInterface $translator
+     */
+    public function __construct(TranslatorInterface $translator)
+    {
+        $this->translator = $translator;
+    }
+
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         /** @var Document\Question $question */
@@ -66,11 +78,12 @@ class PageType extends AbstractType
      */
     private function addSingleChoice(FormBuilderInterface $builder, Document\Question $question)
     {
+
         $builder->add($question->getInputName(), ChoiceType::class, [
             'choices'  => $question->getChoices(),
             'required' => $question->isRequired(),
             'expanded' => !$question->containsSelectField(),
-            'constraints'  => [$question->isRequired() ? new NotBlank(['message' => 'One option must be selected.', 'groups' => ['form_validation_only']]) : null],
+            'constraints'  => [$question->isRequired() ? new NotBlank(['message' => $this->translator->trans('error.one.option.required'), 'groups' => ['form_validation_only']]) : null],
             'attr' => ['class' => 'custom-control custom-radio custom-radio-filled'],
             'choice_attr' => function() {
                 return ['class' => 'custom-control-input'];
@@ -88,7 +101,7 @@ class PageType extends AbstractType
         $builder->add($question->getInputName(), ChoiceType::class, [
             'choices'  => $question->getChoices(),
             'required' => $question->isRequired(),
-            'constraints'  => [$question->isRequired() ? new Count(['min' => 1, 'minMessage' => 'At least one option must be selected.', 'groups' => ['form_validation_only']]) : null],
+            'constraints'  => [$question->isRequired() ? new Count(['min' => 1, 'minMessage' => $this->translator->trans('error.at.leat.one.option.required'), 'groups' => ['form_validation_only']]) : null],
             'expanded' => true,
             'multiple' => true,
             'attr'        => ['class' => 'custom-control custom-checkbox custom-checkbox-filled'],
@@ -134,9 +147,9 @@ class PageType extends AbstractType
             $multiple = (Document\Question::TYPE_MULTIPLE_CHOICE_MATRIX === $question->getQuestionTypeId());
 
             if ($multiple) {
-                $constraint = new Count(['min' => 1, 'minMessage' => 'At least one option in each row must be selected.', 'groups' => ['form_validation_only']]);
+                $constraint = new Count(['min' => 1, 'minMessage' => $this->translator->trans('error.at.least.one.option.in.each.row.required'), 'groups' => ['form_validation_only']]);
             } else {
-                $constraint = new NotBlank(['message' => 'One option must be selected in each row.', 'groups' => ['form_validation_only']]);
+                $constraint = new NotBlank(['message' => $this->translator->trans('error.one.option.in.each.row.required'), 'groups' => ['form_validation_only']]);
             }
 
             $builder->add($question->getInputName($rowCode), ChoiceType::class, [
@@ -164,13 +177,13 @@ class PageType extends AbstractType
                 $builder->add($question->getInputName($answer->getAnswerId()), TextType::class, [
                     'attr'         => ['class' => 'custom-control custom-text'],
                     'required'     => $question->isRequired(),
-                    'constraints'  => [$question->isRequired() ? new NotBlank(['message' => "This field can't be blank.", 'groups' => ['form_validation_only']]) : null],
+                    'constraints'  => [$question->isRequired() ? new NotBlank(['message' => $this->translator->trans('error.cant.be.blank'), 'groups' => ['form_validation_only']]) : null],
                 ]);
             } elseif ($answer->getAnswerFieldTypeId() === Document\Answer::FIELD_TYPE_TEXTAREA) {
                 $builder->add($question->getInputName($answer->getAnswerId()), TextareaType::class, [
                     'attr'        => ['class' => 'custom-control custom-textarea'],
                     'required'    => $question->isRequired(),
-                    'constraints' => [$question->isRequired() ? new NotBlank(['message' => "This field can't be blank.", 'groups' => ['form_validation_only']]) : null]
+                    'constraints' => [$question->isRequired() ? new NotBlank(['message' => $this->translator->trans('error.cant.be.blank'), 'groups' => ['form_validation_only']]) : null]
                 ]);
             }
         }
@@ -185,7 +198,7 @@ class PageType extends AbstractType
         $builder->add($question->getInputName(), LinearScale::class, [
             'choices'     => $question->getAnswers(),
             'required'    => $question->isRequired(),
-            'constraints' => [$question->isRequired() ? new NotBlank(['message' => "One option must be selected.", 'groups' => ['form_validation_only']]) : null],
+            'constraints' => [$question->isRequired() ? new NotBlank(['message' => $this->translator->trans('error.one.option.required'), 'groups' => ['form_validation_only']]) : null],
             'label'       => $question->getText()
         ]);
     }
@@ -209,7 +222,7 @@ class PageType extends AbstractType
             $builder->add($question->getInputName($rowCode), LinearScaleMatrix::class, [
                 'choices'     => $array,
                 'required'    => $question->isRequired(),
-                'constraints' => [$question->isRequired() ? new NotBlank(['message' => "One option must be selected in each row.", 'groups' => ['form_validation_only']]) : null],
+                'constraints' => [$question->isRequired() ? new NotBlank(['message' => $this->translator->trans('error.one.option.in.each.row.required'), 'groups' => ['form_validation_only']]) : null],
                 'label'       => $row
             ]);
         }
