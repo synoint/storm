@@ -10,6 +10,8 @@ use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\Count;
+use Symfony\Component\Validator\Constraints\NotBlank;
 use Syno\Storm\Document;
 use Syno\Storm\Form\Type\LinearScale;
 use Syno\Storm\Form\Type\LinearScaleMatrix;
@@ -50,7 +52,12 @@ class PageType extends AbstractType
 
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setDefaults(['questions' => null]);
+        $resolver->setDefaults(
+            [
+                'questions'         => null,
+                'validation_groups' => ['form_validation_only']
+            ]
+        );
     }
 
     /**
@@ -63,6 +70,7 @@ class PageType extends AbstractType
             'choices'  => $question->getChoices(),
             'required' => $question->isRequired(),
             'expanded' => !$question->containsSelectField(),
+            'constraints'  => [$question->isRequired() ? new NotBlank(['message' => 'One option must be selected.', 'groups' => ['form_validation_only']]) : null],
             'attr' => ['class' => 'custom-control custom-radio custom-radio-filled'],
             'choice_attr' => function() {
                 return ['class' => 'custom-control-input'];
@@ -80,6 +88,7 @@ class PageType extends AbstractType
         $builder->add($question->getInputName(), ChoiceType::class, [
             'choices'  => $question->getChoices(),
             'required' => $question->isRequired(),
+            'constraints'  => [$question->isRequired() ? new Count(['min' => 1, 'minMessage' => 'At least one option must be selected.', 'groups' => ['form_validation_only']]) : null],
             'expanded' => true,
             'multiple' => true,
             'attr'        => ['class' => 'custom-control custom-checkbox custom-checkbox-filled'],
@@ -124,11 +133,18 @@ class PageType extends AbstractType
 
             $multiple = (Document\Question::TYPE_MULTIPLE_CHOICE_MATRIX === $question->getQuestionTypeId());
 
+            if ($multiple) {
+                $constraint = new Count(['min' => 1, 'minMessage' => 'At least one option in each row must be selected.', 'groups' => ['form_validation_only']]);
+            } else {
+                $constraint = new NotBlank(['message' => 'One option must be selected in each row.', 'groups' => ['form_validation_only']]);
+            }
+
             $builder->add($question->getInputName($rowCode), ChoiceType::class, [
                 'choices'  => $choices,
                 'multiple' => $multiple,
                 'expanded' => true,
                 'required' => $question->isRequired(),
+                'constraints'  => [$question->isRequired() ? $constraint : null],
                 'choice_attr' => function() {
                     return ['class' => 'custom-control-input'];
                 },
@@ -146,13 +162,15 @@ class PageType extends AbstractType
         foreach ($question->getAnswers() as $answer) {
             if ($answer->getAnswerFieldTypeId() === Document\Answer::FIELD_TYPE_TEXT) {
                 $builder->add($question->getInputName($answer->getAnswerId()), TextType::class, [
-                    'attr' => ['class' => 'custom-control custom-text'],
-                    'required' => $question->isRequired()
+                    'attr'         => ['class' => 'custom-control custom-text'],
+                    'required'     => $question->isRequired(),
+                    'constraints'  => [$question->isRequired() ? new NotBlank(['message' => "This field can't be blank.", 'groups' => ['form_validation_only']]) : null],
                 ]);
             } elseif ($answer->getAnswerFieldTypeId() === Document\Answer::FIELD_TYPE_TEXTAREA) {
                 $builder->add($question->getInputName($answer->getAnswerId()), TextareaType::class, [
-                    'attr' => ['class' => 'custom-control custom-textarea'],
-                    'required' => $question->isRequired()
+                    'attr'        => ['class' => 'custom-control custom-textarea'],
+                    'required'    => $question->isRequired(),
+                    'constraints' => [$question->isRequired() ? new NotBlank(['message' => "This field can't be blank.", 'groups' => ['form_validation_only']]) : null]
                 ]);
             }
         }
@@ -165,9 +183,10 @@ class PageType extends AbstractType
     private function addLinearScale(FormBuilderInterface $builder, Document\Question $question)
     {
         $builder->add($question->getInputName(), LinearScale::class, [
-            'choices'  => $question->getAnswers(),
-            'required' => $question->isRequired(),
-            'label'    => $question->getText()
+            'choices'     => $question->getAnswers(),
+            'required'    => $question->isRequired(),
+            'constraints' => [$question->isRequired() ? new NotBlank(['message' => "One option must be selected.", 'groups' => ['form_validation_only']]) : null],
+            'label'       => $question->getText()
         ]);
     }
 
@@ -188,9 +207,10 @@ class PageType extends AbstractType
             }
 
             $builder->add($question->getInputName($rowCode), LinearScaleMatrix::class, [
-                'choices' => $array,
-                'required' => $question->isRequired(),
-                'label'    => $row
+                'choices'     => $array,
+                'required'    => $question->isRequired(),
+                'constraints' => [$question->isRequired() ? new NotBlank(['message' => "One option must be selected in each row.", 'groups' => ['form_validation_only']]) : null],
+                'label'       => $row
             ]);
         }
     }

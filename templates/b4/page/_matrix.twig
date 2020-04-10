@@ -1,3 +1,11 @@
+{% set break = false %}
+{% for rowCode,rowLabel in question.getRows() %}
+    {% set errorMessage = form_errors(attribute(form, (question.getInputName(rowCode)))) %}
+    {% if errorMessage is not empty and break == false %}
+        {{ errorMessage|raw }}
+        {% set break = true %}
+    {% endif %}
+{% endfor %}
 <table class="matrix table table-borderless mt-4 " >
     <thead>
         <tr>

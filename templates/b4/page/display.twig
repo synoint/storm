@@ -22,7 +22,7 @@
                 {% endif %}
 
                 <div class="col-12">
-                    {{ form_start(form) }}
+                    {{ form_start(form, {'attr': {'novalidate':'novalidate'}}) }}
 
                         {% for question in page.questions|sort ((a, b) => a.sortOrder <=> b.sortOrder) %}
                             <div class="question card mb-5 p-5 border-0">
@@ -33,13 +33,23 @@
                                 {% if question.isMatrix %}
                                     {% include 'b4/page/_matrix.twig' %}
                                 {% elseif question.isLinearScale %}
+                                    {{ form_errors(attribute(form, (question.getInputName))) }}
                                     {{ form_row(attribute(form, (question.getInputName))) }}
                                 {% elseif question.isLinearScaleMatrix %}
+                                    {% set break = false %}
+                                    {% for key,row in question.getRows() %}
+                                        {% set errorMessage = form_errors(attribute(form, (question.getInputName(key)))) %}
+                                        {% if errorMessage is not empty and break == false %}
+                                            {{ errorMessage|raw }}
+                                            {% set break = true %}
+                                        {% endif %}
+                                    {% endfor %}
                                     {% for key,row in question.getRows() %}
                                         {{ form_row(attribute(form, (question.getInputName(key)))) }}
                                     {% endfor %}
                                 {% elseif question.isText %}
                                     {% for answer in question.answers %}
+                                        {{ form_errors(attribute(form, (question.getInputName(answer.answerId)))) }}
                                         {{ form_widget(attribute(form, (question.getInputName(answer.answerId))), {'label': false}) }}
                                     {% endfor %}
                                 {% elseif question.questionTypeId == constant('Syno\\Storm\\Document\\Question::TYPE_SINGLE_CHOICE') %}

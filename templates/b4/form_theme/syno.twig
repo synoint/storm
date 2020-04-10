@@ -1,5 +1,23 @@
 {% use "bootstrap_4_layout.html.twig" %}
 
+{% block choice_errors %}{% if errors|length > 0 %}
+    {% for error in errors %}
+        <span class="d-block custom-error pb-1 text-center">
+            <span class="form-error-message text-danger">{{ error.message }}</span>
+        </span>
+    {% endfor %}
+{% endif %}{% endblock %}
+
+{% block text_errors %}
+    {% if errors|length > 0 %}
+        {% for error in errors %}
+            <span class="d-block custom-error pb-1 text-center">
+                <span class="form-error-message text-danger">{{ error.message }}</span>
+            </span>
+        {% endfor %}
+    {% endif %}
+{% endblock %}
+
 {% block linear_scale_row %}
     <div class="text-center pt-4">
         {{ form_widget(form) }}
@@ -13,7 +31,7 @@
                 <div class="col text-center">
                     <label for="{{ choice.data.id }}" class="btn btn-outline-primary text-dark linear-scale__button">
                         {{ choice.data.code }}
-                        <input id="{{ choice.data.id }}" {% if form.vars.required %}required="required"{% endif %} type="radio" value="{{ choice.value }}" name="{{ form.vars.full_name }}"
+                        <input id="{{ choice.data.id }}" {% if form.vars.required %}required="required"{% endif %} {% if form.vars.value == choice.value %}checked="checked"{% endif %}  type="radio" value="{{ choice.value }}" name="{{ form.vars.full_name }}"
                         {% if choice.attr is not empty %}
                             {% for key, attr in choice.attr %}
                                 {{ key }}="{{ attr }}"
@@ -56,7 +74,7 @@
                 <div class="col text-center">
                     <label for="{{ choice.data.id }}" class="btn btn-outline-primary text-dark linear-scale__button">
                         {{ choice.data.columnCode }}
-                        <input id="{{ choice.data.id }}" {% if form.vars.required %}required="required"{% endif %} type="radio" value="{{ choice.value }}" name="{{ form.vars.full_name }}"
+                        <input id="{{ choice.data.id }}" {% if form.vars.required %}required="required"{% endif %} type="radio" value="{{ choice.value }}" {% if form.vars.value == choice.value %}checked="checked"{% endif %} name="{{ form.vars.full_name }}"
                         {% if choice.attr is not empty %}
                             {% for key, attr in choice.attr %}
                                 {{ key }}="{{ attr }}"

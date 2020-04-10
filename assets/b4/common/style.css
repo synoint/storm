@@ -213,7 +213,12 @@ footer .progress {
 .free-text-input:focus {
     outline: none;
 }
-
+.custom-error {
+    font-size:13px;
+}
+.form-control.is-invalid, .was-validated .form-control:invalid {
+    background-image: inherit;
+}
 @media (min-width: 768px) {
     .matrix tbody th {
         border-bottom: 1px solid #fff;
