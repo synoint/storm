@@ -60,16 +60,17 @@
                             </div>
                         {% endfor %}
 
-                        <div class="row my-5 pb-5">
-                            <div class="col text-center">
+                    <div class="row my-5 pb-5">
+                        <div class="col text-center">
+                            {% if backButtonDisabled == false %}
                                 <button class="btn btn-outline-primary px-5 ml-2 mr-2"
-                                        {% if backButtonDisabled %}style="display: none"{% endif %}
                                         onclick="window.history.go(-1); return false;">
                                     {{ 'page.button.back'|trans }}
                                 </button>
-                                {{ form_widget( form.next, { 'attr': {'class': 'btn btn-primary px-5 ml-2 mr-2'}, 'label': 'page.button.next'|trans } ) }}
-                            </div>
+                            {% endif %}
+                            {{ form_widget( form.next, { 'attr': {'class': 'btn btn-primary px-5 ml-2 mr-2'}, 'label': 'page.button.next'|trans } ) }}
                         </div>
+                    </div>
                 </div>
             </div>
         </div>
