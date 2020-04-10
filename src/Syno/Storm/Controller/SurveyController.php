@@ -153,7 +153,9 @@ class SurveyController extends AbstractController
      */
     public function complete(Document\Survey $survey)
     {
-        return $this->render($survey->getConfig()->theme . '/survey/complete.twig');
+        return $this->render($survey->getConfig()->theme . '/survey/complete.twig', [
+            'survey' => $survey
+        ]);
     }
 
     /**
@@ -170,7 +172,9 @@ class SurveyController extends AbstractController
      */
     public function screenout(Document\Survey $survey)
     {
-        return $this->render($survey->getConfig()->theme . '/survey/screenout.twig');
+        return $this->render($survey->getConfig()->theme . '/survey/screenout.twig', [
+            'survey' => $survey
+        ]);
     }
 
     /**
@@ -187,7 +191,9 @@ class SurveyController extends AbstractController
      */
     public function qualityScreenout(Document\Survey $survey)
     {
-        return $this->render($survey->getConfig()->theme . '/survey/quality_screenout.twig');
+        return $this->render($survey->getConfig()->theme . '/survey/quality_screenout.twig', [
+            'survey' => $survey
+        ]);
     }
 
     /**

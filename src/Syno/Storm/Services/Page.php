@@ -10,12 +10,19 @@ class Page
     /** @var Services\Condition */
     private $conditionService;
 
+    /** @var Services\Survey */
+    private $surveyService;
+
     /**
-     * @param Services\Condition $conditionService
+     * Page constructor.
+     *
+     * @param Condition $conditionService
+     * @param Survey    $surveyService
      */
-    public function __construct(Services\Condition $conditionService)
+    public function __construct(Condition $conditionService, Survey $surveyService)
     {
         $this->conditionService = $conditionService;
+        $this->surveyService    = $surveyService;
     }
 
     /**
@@ -35,5 +42,31 @@ class Page
         }
 
         return $nextPage;
+    }
+
+    public function getPrefix(Document\Survey $survey, Document\Page $page): string
+    {
+        if ($survey->isFirstPage($page->getPageId())) {
+            return 'Welcome - First Questions';
+        } else {
+            if ($page->getQuestions()->count() > 1) {
+                $progress = $this->surveyService->getProgress($survey, $page);
+                $text     = '';
+                if ($progress >= 100) {
+                    $text = 'Thank you';
+                } elseif ($progress >= 80) {
+                    $text = 'Almost done';
+                } elseif ($progress >= 60) {
+                    $text = '2/3 completed';
+                } elseif ($progress >= 50) {
+                    $text = '1/2 completed';
+                } elseif ($progress >= 25) {
+                    $text = '1/3 completed';
+                }
+                return $text;
+            } else {
+                return 'Welcome - First Question';
+            }
+        }
     }
 }

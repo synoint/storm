@@ -1,6 +1,13 @@
 {% extends '/b4/layout/base.twig' %}
 
-{% block title %}{{ 'survey_completed.page_title'|trans }}{% endblock %}
+{% block title %}
+    {{ 'survey.thank_you'|trans }} -
+    {% if survey.getPublicTitle() is not empty %}
+        {{ survey.getPublicTitle() }}
+    {% else %}
+        {{ 'survey.title.default'|trans }} - Syno International
+    {% endif %}
+{% endblock %}
 
 {% block body %}
 
@@ -10,7 +17,7 @@
                 <path d="M2 20 L12 28 30 4"></path>
             </svg>
             <h1 class="my-5 display-4">
-                {{ 'survey_completed.thank_you'|trans }}
+                {{ 'survey.thank_you'|trans }}
             </h1>
             <p>{{ 'survey_completed.answers_received'|trans }}</p>
         </div>

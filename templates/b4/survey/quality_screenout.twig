@@ -1,6 +1,13 @@
 {% extends '/b4/layout/base.twig' %}
 
-{% block title %}{{ 'survey_screenouted.page_title'|trans }}{% endblock %}
+{% block title %}
+    {{ 'survey.thank_you'|trans }} -
+    {% if survey.getPublicTitle() is not empty %}
+        {{ survey.getPublicTitle() }}
+    {% else %}
+        {{ 'survey.title.default'|trans }} - Syno International
+    {% endif %}
+{% endblock %}
 
 {% block body %}
 
