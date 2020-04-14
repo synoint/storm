@@ -46,25 +46,26 @@ class AppExtension extends AbstractExtension
     public function getPagePrefix(Survey $survey, Page $page): string
     {
         if ($survey->isFirstPage($page->getPageId())) {
-            return 'survey.title.first_questions';
-        }
-        if ($page->getQuestions()->count() > 1) {
-            $progress = $this->surveyService->getProgress($survey, $page);
-            $text     = '';
-            if ($progress >= 100) {
-                $text = 'survey.thank_you';
-            } elseif ($progress >= 80) {
-                $text = 'survey.title.almost_done';
-            } elseif ($progress >= 60) {
-                $text = 'survey.title.2_3_completed';
-            } elseif ($progress >= 50) {
-                $text = 'survey.title.1_2_completed';
-            } elseif ($progress >= 25) {
-                $text = 'survey.title.1_3_completed';
+            if ($page->getQuestions()->count() > 1) {
+                return 'survey.title.first_questions';
             }
-
-            return $text;
+            return 'survey.title.first_question';
         }
-        return 'survey.title.first_question';
+
+        $progress = $this->surveyService->getProgress($survey, $page);
+        $text     = '';
+        if ($progress >= 100) {
+            $text = 'survey.thank_you';
+        } elseif ($progress >= 80) {
+            $text = 'survey.title.almost_done';
+        } elseif ($progress >= 60) {
+            $text = 'survey.title.2_3_completed';
+        } elseif ($progress >= 50) {
+            $text = 'survey.title.1_2_completed';
+        } elseif ($progress >= 25) {
+            $text = 'survey.title.1_3_completed';
+        }
+
+        return $text;
     }
 }
