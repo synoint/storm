@@ -27,11 +27,11 @@ class AppExtension extends AbstractExtension
     {
         return [
             new TwigFunction(
-                'get_survey_progress', function (Survey $survey, Page $currentPage) {
+                'survey_progress', function (Survey $survey, Page $currentPage) {
                 echo $this->surveyService->getProgress($survey, $currentPage);
             }),
             new TwigFunction(
-                'get_page_prefix', function (Survey $survey, Page $currentPage) {
+                'page_prefix', function (Survey $survey, Page $currentPage) {
                 return $this->getPagePrefix($survey, $currentPage);
             })
         ];
