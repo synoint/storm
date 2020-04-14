@@ -22,8 +22,8 @@ class SurveyType extends AbstractType
                 'allow_add'     => true
             ])
             ->add('config', ConfigType::class)
-            ->add('hiddenValues', CollectionType::class, [
-                'entry_type' => HiddenValueType::class,
+            ->add('parameters', CollectionType::class, [
+                'entry_type' => ParameterType::class,
                 'by_reference'  => false,
                 'allow_add'     => true
             ])

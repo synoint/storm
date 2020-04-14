@@ -192,7 +192,7 @@ class PageController extends AbstractController
         $completeUrl = $survey->getCompleteUrl($response->getSource());
 
         if (!empty($completeUrl)) {
-            return $this->redirect($this->populateHiddenValues($completeUrl, $response));
+            return $this->redirect($this->populateParameters($completeUrl, $response));
         }
 
         return $this->redirectToRoute('survey.complete', ['surveyId' => $survey->getSurveyId()]);
@@ -238,7 +238,7 @@ class PageController extends AbstractController
         $this->surveyEventLogger->log($logType, $survey);
 
         if (!empty($url)) {
-            $redirect = $this->redirect($this->populateHiddenValues($url, $response));
+            $redirect = $this->redirect($this->populateParameters($url, $response));
         }
 
         return $redirect;

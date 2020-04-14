@@ -202,18 +202,14 @@ class Response
      *
      * @return ArrayCollection
      */
-    public function extractHiddenValues(Collection $surveyValues, Request $request)
+    public function extractParameters(Collection $surveyValues, Request $request)
     {
         $result = new ArrayCollection();
-        /** @var Document\HiddenValue $surveyValue */
+        /** @var Document\Parameter $surveyValue */
         foreach ($surveyValues as $surveyValue) {
             if ($request->query->has($surveyValue->getUrlParam())) {
                 $value = clone $surveyValue;
-                if ($value->getType() === Document\HiddenValue::TYPE_INT) {
-                    $value->setValue($request->query->getInt($value->getUrlParam()));
-                } else {
-                    $value->setValue($request->query->get($value->getUrlParam()));
-                }
+                $value->setValue($request->query->get($value->getUrlParam()));
                 $result[] = $value;
             }
         }

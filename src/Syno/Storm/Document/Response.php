@@ -17,7 +17,7 @@ class Response implements JsonSerializable
     const MODE_TEST  = 'test';
     const MODE_DEBUG = 'debug';
 
-    const HIDDEN_PARAM_SOURCE = 'SOURCE';
+    const PARAM_SOURCE = 'SOURCE';
 
     /** @ODM\Id */
     private $id;
@@ -112,9 +112,9 @@ class Response implements JsonSerializable
     /**
      * @var Collection
      *
-     * @ODM\EmbedMany(targetDocument=HiddenValue::class)
+     * @ODM\EmbedMany(targetDocument=Parameter::class)
      */
-    private $hiddenValues;
+    private $parameters;
 
     /**
      * @var Collection
@@ -132,7 +132,7 @@ class Response implements JsonSerializable
     {
         $this->responseId   = $responseId;
         $this->userAgents   = new ArrayCollection();
-        $this->hiddenValues = new ArrayCollection();
+        $this->parameters = new ArrayCollection();
         $this->createdAt    = new \DateTime();
     }
 
@@ -152,7 +152,7 @@ class Response implements JsonSerializable
             'createdAt'             => $this->createdAt->getTimestamp(),
             'completedAt'           => $this->completedAt,
             'userAgents'            => $this->userAgents,
-            'hiddenValues'          => $this->hiddenValues,
+            'parameters'          => $this->parameters,
             'answers'               => $this->answers
         ];
     }
@@ -474,9 +474,9 @@ class Response implements JsonSerializable
     /**
      * @return Collection
      */
-    public function getHiddenValues()
+    public function getParameters()
     {
-        return $this->hiddenValues;
+        return $this->parameters;
     }
 
     /**
@@ -484,9 +484,9 @@ class Response implements JsonSerializable
      */
     public function getSource()
     {
-        foreach ($this->hiddenValues as $hiddenValue) {
-            if ($hiddenValue->getCode() == self::HIDDEN_PARAM_SOURCE) {
-                return $hiddenValue->getValue();
+        foreach ($this->parameters as $parameter) {
+            if ($parameter->getCode() == self::PARAM_SOURCE) {
+                return $parameter->getValue();
             }
         }
 
@@ -494,24 +494,24 @@ class Response implements JsonSerializable
     }
 
     /**
-     * @param Collection $hiddenValues
+     * @param Collection $parameters
      *
      * @return self
      */
-    public function setHiddenValues($hiddenValues): self
+    public function setParameters($parameters): self
     {
-        $this->hiddenValues = $hiddenValues;
+        $this->parameters = $parameters;
 
         return $this;
     }
 
     /**
-     * @param HiddenValue $hiddenValue
+     * @param Parameter $parameter
      */
-    public function addHiddenValue(HiddenValue $hiddenValue)
+    public function addParameter(Parameter $parameter)
     {
-        if (!$this->hiddenValues->contains($hiddenValue)) {
-            $this->hiddenValues[] = $hiddenValue;
+        if (!$this->parameters->contains($parameter)) {
+            $this->parameters[] = $parameter;
         }
     }
 

@@ -73,9 +73,9 @@ class Survey implements JsonSerializable
     /**
      * @var Collection
      *
-     * @ODM\EmbedMany(targetDocument=HiddenValue::class)
+     * @ODM\EmbedMany(targetDocument=Parameter::class)
      */
-    private $hiddenValues;
+    private $parameters;
 
     /**
      * @var Collection
@@ -101,7 +101,7 @@ class Survey implements JsonSerializable
     public function __construct()
     {
         $this->pages        = new ArrayCollection();
-        $this->hiddenValues = new ArrayCollection();
+        $this->parameters = new ArrayCollection();
         $this->urls         = new ArrayCollection();
         $this->languages    = new ArrayCollection();
         $this->translations = new ArrayCollection();
@@ -115,7 +115,7 @@ class Survey implements JsonSerializable
             'version'      => $this->version,
             'published'    => $this->published,
             'config'       => $this->config,
-            'hiddenValues' => $this->hiddenValues,
+            'parameters' => $this->parameters,
             'urls'         => $this->urls
 
         ];
@@ -317,19 +317,19 @@ class Survey implements JsonSerializable
     /**
      * @return Collection
      */
-    public function getHiddenValues()
+    public function getParameters()
     {
-        return $this->hiddenValues;
+        return $this->parameters;
     }
 
     /**
-     * @param $hiddenValues
+     * @param $parameters
      *
      * @return Survey
      */
-    public function setHiddenValues($hiddenValues): Survey
+    public function setParameters($parameters): Survey
     {
-        $this->hiddenValues = $hiddenValues;
+        $this->parameters = $parameters;
 
         return $this;
     }

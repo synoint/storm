@@ -11,11 +11,11 @@ trait UrlTransformer {
      *
      * @return string
      */
-    protected function populateHiddenValues(string $url, Document\Response $response)
+    protected function populateParameters(string $url, Document\Response $response)
     {
-        foreach ($response->getHiddenValues() as $hiddenValue) {
-            /**@var Document\HiddenValue $hiddenValue */
-            $url = str_replace('{' . $hiddenValue->getCode() . '}', $hiddenValue->getValue(), $url);
+        foreach ($response->getParameters() as $parameter) {
+            /**@var Document\Parameter $parameter */
+            $url = str_replace('{' . $parameter->getCode() . '}', $parameter->getValue(), $url);
         }
 
         return $url;

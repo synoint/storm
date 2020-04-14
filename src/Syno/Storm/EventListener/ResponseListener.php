@@ -296,9 +296,9 @@ class ResponseListener implements EventSubscriberInterface
     {
         $surveyResponse = $this->responseRequestHandler->getNewResponse($request, $survey);
         $surveyResponse = $this->responseRequestHandler->addUserAgent($request, $surveyResponse);
-        $surveyResponse->setHiddenValues(
-            $this->responseRequestHandler->extractHiddenValues(
-                $survey->getHiddenValues(),
+        $surveyResponse->setParameters(
+            $this->responseRequestHandler->extractParameters(
+                $survey->getParameters(),
                 $request
             )
         );

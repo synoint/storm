@@ -8,11 +8,8 @@ use JsonSerializable;
 /**
  * @ODM\EmbeddedDocument
  */
-class HiddenValue implements JsonSerializable
+class Parameter implements JsonSerializable
 {
-    const TYPE_INT    = 'INT';
-    const TYPE_STRING = 'STRING';
-
     /**
      * @var string
      *
@@ -39,13 +36,6 @@ class HiddenValue implements JsonSerializable
      *
      * @ODM\Field(type="string")
      */
-    private $type;
-
-    /**
-     * @var string
-     *
-     * @ODM\Field(type="string")
-     */
     private $value;
 
     public function jsonSerialize()
@@ -54,7 +44,6 @@ class HiddenValue implements JsonSerializable
             'name'     => $this->name,
             'code'     => $this->code,
             'urlParam' => $this->urlParam,
-            'type'     => $this->type,
             'value'    => $this->value
         ];
     }
@@ -115,26 +104,6 @@ class HiddenValue implements JsonSerializable
     public function setUrlParam(string $urlParam)
     {
         $this->urlParam = $urlParam;
-
-        return $this;
-    }
-
-    /**
-     * @return null|string
-     */
-    public function getType()
-    {
-        return $this->type;
-    }
-
-    /**
-     * @param string $type
-     *
-     * @return self
-     */
-    public function setType(string $type)
-    {
-        $this->type = $type;
 
         return $this;
     }
