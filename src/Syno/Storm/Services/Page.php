@@ -11,6 +11,16 @@ class Page
     private $conditionService;
 
     /**
+     * Page constructor.
+     *
+     * @param Condition $conditionService
+     */
+    public function __construct(Condition $conditionService)
+    {
+        $this->conditionService = $conditionService;
+    }
+
+    /**
      * @param Document\Survey   $survey
      * @param Document\Page     $page
      * @param Document\Response $response

@@ -27,11 +27,11 @@ class AppExtension extends AbstractExtension
     {
         return [
             new TwigFunction(
-                'getSurveyProgress', function (Survey $survey, Page $currentPage) {
+                'get_survey_progress', function (Survey $survey, Page $currentPage) {
                 echo $this->surveyService->getProgress($survey, $currentPage);
             }),
             new TwigFunction(
-                'getPagePrefix', function (Survey $survey, Page $currentPage) {
+                'get_page_prefix', function (Survey $survey, Page $currentPage) {
                 return $this->getPagePrefix($survey, $currentPage);
             })
         ];
@@ -47,26 +47,24 @@ class AppExtension extends AbstractExtension
     {
         if ($survey->isFirstPage($page->getPageId())) {
             return 'survey.title.first_questions';
-        } else {
-            if ($page->getQuestions()->count() > 1) {
-                $progress = $this->surveyService->getProgress($survey, $page);
-                $text     = '';
-                if ($progress >= 100) {
-                    $text = 'survey.thank_you';
-                } elseif ($progress >= 80) {
-                    $text = 'survey.title.almost_done';
-                } elseif ($progress >= 60) {
-                    $text = 'survey.title.2_3_completed';
-                } elseif ($progress >= 50) {
-                    $text = 'survey.title.1_1_completed';
-                } elseif ($progress >= 25) {
-                    $text = 'survey.title.1_3_completed';
-                }
-
-                return $text;
-            } else {
-                return 'survey.title.first_question';
-            }
         }
+        if ($page->getQuestions()->count() > 1) {
+            $progress = $this->surveyService->getProgress($survey, $page);
+            $text     = '';
+            if ($progress >= 100) {
+                $text = 'survey.thank_you';
+            } elseif ($progress >= 80) {
+                $text = 'survey.title.almost_done';
+            } elseif ($progress >= 60) {
+                $text = 'survey.title.2_3_completed';
+            } elseif ($progress >= 50) {
+                $text = 'survey.title.1_2_completed';
+            } elseif ($progress >= 25) {
+                $text = 'survey.title.1_3_completed';
+            }
+
+            return $text;
+        }
+        return 'survey.title.first_question';
     }
 }

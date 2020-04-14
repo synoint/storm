@@ -1,7 +1,7 @@
 {% extends '/b4/layout/base.twig' %}
 {% form_theme form 'b4/form_theme/syno.twig' %}
 {% block title %}
-    {{ getPagePrefix(survey, page)|trans }} -
+    {{ get_page_prefix(survey, page)|trans }} -
     {% if survey.getPublicTitle() is not empty %}
         {{ survey.getPublicTitle() }}
     {% else %}

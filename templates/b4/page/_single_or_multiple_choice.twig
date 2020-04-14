@@ -1,4 +1,4 @@
-{% set questionField = attribute(form, (question.getInputName))|shuffleFormChildren(question) %}
+{% set questionField = attribute(form, (question.getInputName))|shuffle_form_children(question) %}
  {{ form_errors(attribute(form, (question.getInputName))) }}
 <div id="{{ questionField.vars.id }}"
      class="{{questionField.vars.attr.class}}">

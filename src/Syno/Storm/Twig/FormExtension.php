@@ -13,7 +13,7 @@ class FormExtension extends AbstractExtension
     public function getFilters()
     {
         return [
-            new TwigFilter('shuffleFormChildren', [$this, 'shuffleFormChildren'])
+            new TwigFilter('shuffle_form_children', [$this, 'shuffleFormChildren'])
         ];
     }
 
