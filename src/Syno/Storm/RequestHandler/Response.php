@@ -233,8 +233,10 @@ class Response
      */
     public function addUserAgent(Request $request, Document\Response $response)
     {
+        $clientIps = $request->getClientIps();
+        
         $response->addUserAgent(
-            IPUtils::anonymize($request->getClientIp()),
+            IPUtils::anonymize($clientIps[count($clientIps)-1]),
             $request->headers->get('User-Agent')
         );
 
