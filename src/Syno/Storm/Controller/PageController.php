@@ -142,6 +142,7 @@ class PageController extends AbstractController
             $survey->getConfig()->theme . '/page/display.twig', [
             'survey'             => $survey,
             'page'               => $page,
+            'questions'          => $questions,
             'response'           => $response,
             'form'               => $form->createView(),
             'backButtonDisabled' => $survey->isFirstPage($page->getPageId())
