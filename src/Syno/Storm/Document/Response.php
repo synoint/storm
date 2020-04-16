@@ -86,6 +86,13 @@ class Response implements JsonSerializable
     private $qualityScreenedOut = false;
 
     /**
+     * @var bool
+     *
+     * @ODM\Field(type="boolean")
+     */
+    private $quotaFull = false;
+
+    /**
      * @var int
      *
      * @ODM\Field(type="integer")
@@ -148,6 +155,7 @@ class Response implements JsonSerializable
             'completed'             => $this->completed,
             'screenedOut'           => $this->screenedOut,
             'qualityScreenedOut'    => $this->qualityScreenedOut,
+            'quotaFull'             => $this->quotaFull,
             'screenoutId'           => $this->screenoutId,
             'createdAt'             => $this->createdAt->getTimestamp(),
             'completedAt'           => $this->completedAt,
@@ -377,6 +385,26 @@ class Response implements JsonSerializable
     public function setQualityScreenedOut(bool $qualityScreenedOut): self
     {
         $this->qualityScreenedOut = $qualityScreenedOut;
+
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isQuotaFull(): bool
+    {
+        return $this->quotaFull;
+    }
+
+    /**
+     * @param bool $quotaFull
+     *
+     * @return self
+     */
+    public function setQuotaFull(bool $quotaFull): self
+    {
+        $this->quotaFull = $quotaFull;
 
         return $this;
     }
