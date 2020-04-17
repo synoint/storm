@@ -99,11 +99,8 @@ class SurveyListener implements EventSubscriberInterface
             return;
         }
 
-        /** @var Request $request */
-        $request = $event->getRequest();
-
         // redirects in entrances should not be cached, so cookies are set properly, prevents nasty redirect loops
-        if ($this->isSurveyEntrance($request->attributes->get('_route'))) {
+        if ($this->isSurveyEntrance($event->getRequest()->attributes->get('_route', ''))) {
             $event->getResponse()->headers->set('Cache-Control', 'no-cache, no-store, must-revalidate');
         }
     }
