@@ -5,9 +5,8 @@ namespace Syno\Storm\RequestHandler;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Symfony\Component\HttpFoundation\Cookie;
-use Symfony\Component\HttpFoundation\IpUtils;
-use Symfony\Component\HttpFoundation\Response as HttpResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response as HttpResponse;
 use Syno\Storm\Document;
 use Syno\Storm\Services;
 
@@ -234,7 +233,7 @@ class Response
     public function addUserAgent(Request $request, Document\Response $response)
     {
         $response->addUserAgent(
-            IPUtils::anonymize($request->getClientIp()),
+            $request->getClientIp(),
             $request->headers->get('User-Agent')
         );
 
