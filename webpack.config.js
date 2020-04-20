@@ -26,8 +26,6 @@ Encore
     // .addEntry('materialize.common', './assets/materialize/common/index.js')
     .addEntry('b4.common', './assets/b4/common/index.js')
     .addEntry('b4.page', './assets/b4/page/index.js')
-    //.addEntry('page1', './assets/js/page1.js')
-    //.addEntry('page2', './assets/js/page2.js')
 
     // When enabled, Webpack "splits" your files into smaller pieces for greater optimization.
     .splitEntryChunks()
@@ -72,5 +70,11 @@ Encore
     //.enableReactPreset()
     //.addEntry('admin', './assets/js/admin.js')
 ;
+
+if (Encore.isProduction()) {
+    Encore
+        .setPublicPath('https://survey.synointcdn.com/build')
+        .setManifestKeyPrefix('build/');
+}
 
 module.exports = Encore.getWebpackConfig();
