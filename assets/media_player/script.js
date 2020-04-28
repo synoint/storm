@@ -1,3 +1,4 @@
+import '../../node_modules/plyr/src/sass/plyr.scss';
 import Plyr from 'plyr';
 
 class MediaPlayer {

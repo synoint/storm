@@ -15,6 +15,8 @@ class Page
 {
     use TranslatableTrait;
 
+    const VIDEO_TAG = '</video>';
+
     /**
      * @ODM\Id
      */
@@ -172,6 +174,14 @@ class Page
         $this->content = $content;
 
         return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function hasVideo()
+    {
+        return strpos($this->getContent(), self::VIDEO_TAG) !== false;
     }
 
     /**

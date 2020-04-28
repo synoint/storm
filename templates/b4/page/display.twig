@@ -93,6 +93,15 @@
     {% block javascripts %}
         {{ parent() }}
         {{ encore_entry_script_tags('b4.page') }}
-        {{ encore_entry_script_tags('media.player') }}
+
+        {%  if page.hasVideo %}
+            {{ encore_entry_script_tags('media.player') }}
+        {% endif %}
     {% endblock %}
 {% endblock %}
+{%  if page.hasVideo %}
+    {% block stylesheets %}
+        {{ parent() }}
+        {{ encore_entry_link_tags('media.player') }}
+    {% endblock %}
+{% endif %}
