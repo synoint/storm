@@ -90,18 +90,21 @@
         {% include 'b4/page/_footer.twig' %}
 
     {% endif %}
-    {% block javascripts %}
-        {{ parent() }}
-        {{ encore_entry_script_tags('b4.page') }}
 
-        {%  if page.hasVideo %}
-            {{ encore_entry_script_tags('media.player') }}
-        {% endif %}
-    {% endblock %}
 {% endblock %}
-{%  if page.hasVideo %}
-    {% block stylesheets %}
-        {{ parent() }}
+
+{% block javascripts %}
+    {{ parent() }}
+    {{ encore_entry_script_tags('b4.page') }}
+
+    {%  if page.hasVideo %}
+        {{ encore_entry_script_tags('media.player') }}
+    {% endif %}
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    {%  if page.hasVideo %}
         {{ encore_entry_link_tags('media.player') }}
-    {% endblock %}
-{% endif %}
+    {% endif %}
+{% endblock %}
