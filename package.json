@@ -16,5 +16,7 @@
         "watch": "encore dev --watch",
         "build": "encore production --progress"
     },
-    "dependencies": {}
+    "dependencies": {
+        "plyr": "^3.5.10"
+    }
 }
