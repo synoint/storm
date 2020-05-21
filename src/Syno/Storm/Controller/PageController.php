@@ -103,9 +103,17 @@ class PageController extends AbstractController
                     }
 
                     if (!empty($question->getJumpToConditions())) {
-                        $questionId = $this->conditionService->applyJumpToRule($response, $question->getJumpToConditions());
-                        if (!empty($questionId)) {
-                            $redirect = $this->redirectSurveyToJump($survey, $questionId);
+                        $firedJumpCondition = $this->conditionService->applyJumpToRule($response, $question->getJumpToConditions());
+                        if (!empty($firedJumpCondition)) {
+                            switch ($firedJumpCondition->getDestinationType()) {
+                                case Document\JumpToCondition::DESTINATION_TYPE_END_OF_SURVEY:
+                                    $redirect = $this->completeSurveyAndRedirect($request, $response, $survey);
+                                    break;
+                                case Document\JumpToCondition::DESTINATION_TYPE_QUESTION:
+                                    $redirect = $this->redirectSurveyToJump($survey, $firedJumpCondition->getDestination());
+                                    break;
+                            }
+
                             break;
                         }
                     }

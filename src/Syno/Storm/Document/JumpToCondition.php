@@ -12,6 +12,8 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class JumpToCondition
 {
+    const DESTINATION_TYPE_QUESTION      = 'question';
+    const DESTINATION_TYPE_END_OF_SURVEY = 'end_of_survey';
 
     /**
      * @ODM\Field(type="string")
@@ -21,9 +23,14 @@ class JumpToCondition
 
     /**
      * @ODM\Field(type="integer")
-     * @Assert\NotBlank
      */
     private $destination;
+
+    /**
+     * @ODM\Field(type="string")
+     * @Assert\NotBlank
+     */
+    private $destinationType;
 
     /**
      * @return mixed
@@ -61,6 +68,26 @@ class JumpToCondition
     public function setDestination($destination)
     {
         $this->destination = $destination;
+
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getDestinationType()
+    {
+        return $this->destinationType;
+    }
+
+    /**
+     * @param mixed $destinationType
+     *
+     * @return self
+     */
+    public function setDestinationType($destinationType)
+    {
+        $this->destinationType = $destinationType;
 
         return $this;
     }

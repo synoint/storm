@@ -15,7 +15,8 @@ class JumpToConditionType extends AbstractType
     {
         $builder
             ->add('rule', TextType::class)
-            ->add('destination', IntegerType::class);
+            ->add('destination', IntegerType::class)
+            ->add('destinationType', TextType::class);
     }
 
     public function configureOptions(OptionsResolver $resolver)

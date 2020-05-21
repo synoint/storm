@@ -23,7 +23,7 @@ class Condition
     {
         foreach($jumpToConditions as $jumpToCondition){
             if(JWadhams\JsonLogic::apply(json_decode($jumpToCondition->getRule()), $response->getLastAnswersId())){
-                return $jumpToCondition->getDestination();
+                return $jumpToCondition;
             }
         }
 
