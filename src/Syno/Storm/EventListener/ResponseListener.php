@@ -371,12 +371,16 @@ class ResponseListener implements EventSubscriberInterface
      */
     private function getRedirectToPage(int $surveyId, int $pageId)
     {
-        return new RedirectResponse(
+        $redirectResponse = new RedirectResponse(
             $this->router->generate('page.index', [
                 'surveyId' => $surveyId,
                 'pageId'   => $pageId
             ])
         );
+
+        $redirectResponse->headers->set('Cache-Control', 'no-cache, no-store, must-revalidate');
+
+        return $redirectResponse;
     }
 
 
