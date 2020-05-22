@@ -75,7 +75,7 @@ class JumpToCondition
     /**
      * @return mixed
      */
-    public function getDestinationType(): string
+    public function getDestinationType(): ?string
     {
         return $this->destinationType;
     }
