@@ -91,22 +91,6 @@ class SurveyListener implements EventSubscriberInterface
     }
 
     /**
-     * @param ResponseEvent $event
-     */
-    public function onKernelResponse(ResponseEvent $event)
-    {
-        if (!$event->isMasterRequest()) {
-            return;
-        }
-
-        // redirects in entrances should not be cached, so cookies are set properly, prevents nasty redirect loops
-        if ($this->isSurveyEntrance($event->getRequest()->attributes->get('_route', ''))) {
-            $event->getResponse()->headers->set('Cache-Control', 'no-cache, no-store, must-revalidate');
-        }
-    }
-
-
-    /**
      * @param Document\Survey $survey
      * @param string        $currentLocale
      * @param string|null   $fallbackLocale
@@ -127,8 +111,7 @@ class SurveyListener implements EventSubscriberInterface
     public static function getSubscribedEvents(): array
     {
         return [
-            KernelEvents::REQUEST => ['onKernelRequest', 10],
-            KernelEvents::RESPONSE => 'onKernelResponse',
+            KernelEvents::REQUEST => ['onKernelRequest', 10]
         ];
     }
 }

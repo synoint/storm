@@ -39,8 +39,6 @@ class ResponseListener implements EventSubscriberInterface
     /** @var SurveyEventLogger */
     private $surveyEventLogger;
 
-    /** @var bool */
-    private $responseCreated = false;
 
     /**
      * @param RequestHandler\Survey   $surveyRequestHandler
@@ -230,11 +228,9 @@ class ResponseListener implements EventSubscriberInterface
 
         $this->responseRequestHandler->saveResponse($surveyResponse);
 
-        $clearCache = false;
         $idFromSession = $this->responseRequestHandler->getResponseIdFromSession($request, $surveyResponse->getSurveyId());
         if ($surveyResponse->getResponseId() !== $idFromSession) {
             $this->responseRequestHandler->saveResponseIdInSession($request, $surveyResponse);
-            $clearCache = true;
         }
 
         $idFromCookie = $this->responseRequestHandler->getResponseIdFromCookie($request, $surveyResponse->getSurveyId());
@@ -242,11 +238,6 @@ class ResponseListener implements EventSubscriberInterface
             $response->headers->setCookie(
                 $this->responseRequestHandler->getResponseIdCookie($surveyResponse)
             );
-            $clearCache = true;
-        }
-
-        if ($clearCache || $this->responseCreated) {
-            $response->headers->set('Cache-Control', 'no-cache, no-store, must-revalidate');
         }
     }
 
@@ -265,7 +256,6 @@ class ResponseListener implements EventSubscriberInterface
         $this->responseRequestHandler->clearResponseIdCookie($eventResponse, $surveyResponse->getSurveyId());
         $request->getSession()->migrate(true);
         $this->responseEventLogger->log(ResponseEventLogger::RESPONSE_CLEARED, $surveyResponse);
-        $eventResponse->headers->set('Cache-Control', 'no-cache, no-store, must-revalidate');
     }
 
     /**
@@ -318,7 +308,6 @@ class ResponseListener implements EventSubscriberInterface
         $this->responseEventLogger->log(ResponseEventLogger::RESPONSE_CREATED, $surveyResponse);
         $this->responseEventLogger->log(ResponseEventLogger::SURVEY_ENTERED, $surveyResponse);
         $this->logResponse($surveyResponse, $survey);
-        $this->responseCreated = true;
     }
 
     /**
@@ -348,7 +337,7 @@ class ResponseListener implements EventSubscriberInterface
      */
     private function getRedirectToEntrance(int $surveyId, array $queryParams)
     {
-        $redirectResponse = new RedirectResponse(
+        return new RedirectResponse(
             $this->router->generate(
                 'survey.index',
                 array_merge(
@@ -357,10 +346,6 @@ class ResponseListener implements EventSubscriberInterface
                 )
             )
         );
-
-        $redirectResponse->headers->set('Cache-Control', 'no-cache, no-store, must-revalidate');
-
-        return $redirectResponse;
     }
 
     /**
@@ -371,16 +356,12 @@ class ResponseListener implements EventSubscriberInterface
      */
     private function getRedirectToPage(int $surveyId, int $pageId)
     {
-        $redirectResponse = new RedirectResponse(
+        return new RedirectResponse(
             $this->router->generate('page.index', [
                 'surveyId' => $surveyId,
                 'pageId'   => $pageId
             ])
         );
-
-        $redirectResponse->headers->set('Cache-Control', 'no-cache, no-store, must-revalidate');
-
-        return $redirectResponse;
     }
 
 

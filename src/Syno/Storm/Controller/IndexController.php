@@ -50,7 +50,6 @@ class IndexController extends AbstractController
 
         foreach ($request->cookies->all() as $name => $value) {
             $response->headers->clearCookie($name);
-            $response->headers->set('Cache-Control', 'no-cache, no-store, must-revalidate');
         }
 
         return $response;
