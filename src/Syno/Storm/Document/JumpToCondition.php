@@ -75,7 +75,7 @@ class JumpToCondition
     /**
      * @return mixed
      */
-    public function getDestinationType()
+    public function getDestinationType(): string
     {
         return $this->destinationType;
     }
@@ -85,7 +85,7 @@ class JumpToCondition
      *
      * @return self
      */
-    public function setDestinationType($destinationType)
+    public function setDestinationType(string $destinationType): self
     {
         $this->destinationType = $destinationType;
 

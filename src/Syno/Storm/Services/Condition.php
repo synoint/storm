@@ -8,7 +8,7 @@ use Syno\Storm\Document;
 
 class Condition
 {
-    public function applyScreenoutRule(Document\Response $response, $screenoutConditions)
+    public function applyScreenoutRule(Document\Response $response, Collection $screenoutConditions): ?Document\ScreenoutCondition
     {
         foreach($screenoutConditions as $screenoutCondition){
             if(JWadhams\JsonLogic::apply(json_decode($screenoutCondition->getRule()), $response->getLastAnswersId())){
@@ -19,7 +19,7 @@ class Condition
         return null;
     }
 
-    public function applyJumpToRule(Document\Response $response, $jumpToConditions)
+    public function applyJumpToRule(Document\Response $response, Collection $jumpToConditions): ?Document\JumpToCondition
     {
         foreach($jumpToConditions as $jumpToCondition){
             if(JWadhams\JsonLogic::apply(json_decode($jumpToCondition->getRule()), $response->getLastAnswersId())){
@@ -30,7 +30,7 @@ class Condition
         return null;
     }
 
-    public function applyShowRule(Document\Response $response, $showConditions)
+    public function applyShowRule(Document\Response $response, Collection $showConditions): bool
     {
         foreach($showConditions as $showCondition){
             if(JWadhams\JsonLogic::apply(json_decode($showCondition->getRule()), $response->getLastAnswersId())){
@@ -41,7 +41,7 @@ class Condition
         return false;
     }
 
-    public function filterQuestionsByShowCondition(Collection $questions, Document\Response $response)
+    public function filterQuestionsByShowCondition(Collection $questions, Document\Response $response): Collection
     {
         return $questions->filter(
             function ($question) use ($response) {
