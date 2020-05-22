@@ -66,7 +66,7 @@ class Response
     {
         $result = null;
         if ($request->hasPreviousSession()) {
-            $result = $request->getSession()->get('id:' . $surveyId);
+            $result = $request->getSession()->get('id' . $surveyId);
         }
 
         return $result;
@@ -74,12 +74,12 @@ class Response
 
     public function saveResponseIdInSession(Request $request, Document\Response $response)
     {
-        $request->getSession()->set('id:' . $response->getSurveyId(), $response->getResponseId());
+        $request->getSession()->set('id' . $response->getSurveyId(), $response->getResponseId());
     }
 
     public function clearResponseIdInSession(Request $request, int $surveyId)
     {
-        $request->getSession()->remove('id:' . $surveyId);
+        $request->getSession()->remove('id' . $surveyId);
     }
 
     /**
@@ -90,7 +90,7 @@ class Response
      */
     public function getResponseIdFromCookie(Request $request, int $surveyId)
     {
-        return $request->cookies->get('id:' . $surveyId);
+        return $request->cookies->get('id' . $surveyId);
     }
 
     /**
@@ -101,7 +101,7 @@ class Response
     public function getResponseIdCookie(Document\Response $response)
     {
         return new Cookie(
-            'id:' . $response->getSurveyId(),
+            'id' . $response->getSurveyId(),
             $response->getResponseId(),
             time() + 3600,
             '/',
@@ -119,7 +119,7 @@ class Response
      */
     public function clearResponseIdCookie(HttpResponse $response, int $surveyId)
     {
-        $response->headers->clearCookie('id:'. $surveyId);
+        $response->headers->clearCookie('id'. $surveyId);
     }
 
 
