@@ -128,6 +128,7 @@ class ResponseListener implements EventSubscriberInterface
                         $surveyResponse
                             ->setSurveyVersion($survey->getVersion())
                             ->setPageId(null)
+                            ->setPageCode(null)
                             ->clearAnswers();
 
                         $this->responseRequestHandler->saveResponse($surveyResponse);

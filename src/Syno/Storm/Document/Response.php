@@ -55,6 +55,13 @@ class Response implements JsonSerializable
      *
      * @ODM\Field(type="string")
      */
+    private $pageCode;
+
+    /**
+     * @var string
+     *
+     * @ODM\Field(type="string")
+     */
     private $mode;
 
     /**
@@ -261,6 +268,26 @@ class Response implements JsonSerializable
     public function setPageId(int $pageId = null): self
     {
         $this->pageId = $pageId;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getPageCode(): string
+    {
+        return $this->pageCode;
+    }
+
+    /**
+     * @param string $pageCode
+     *
+     * @return Response
+     */
+    public function setPageCode(string $pageCode): Response
+    {
+        $this->pageCode = $pageCode;
 
         return $this;
     }

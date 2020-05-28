@@ -147,7 +147,7 @@ class PageController extends AbstractController
 
             $this->responseEventLogger->log(ResponseEventLogger::ANSWERS_ERROR, $response);
         } else {
-            $this->saveResponseProgress($response, $page->getPageId());
+            $this->saveResponseProgress($response, $page);
         }
 
         return $this->render(
@@ -174,12 +174,13 @@ class PageController extends AbstractController
 
     /**
      * @param Document\Response $response
-     * @param int               $pageId
+     * @param Document\Page     $page
      */
-    private function saveResponseProgress(Document\Response $response, int $pageId)
+    private function saveResponseProgress(Document\Response $response, Document\Page $page)
     {
-        if ($response->getPageId() !== $pageId) {
-            $response->setPageId($pageId);
+        if ($response->getPageId() !== $page->getPageId()) {
+            $response->setPageId($page->getPageId());
+            $response->setPageCode($page->getCode());
             $this->responseRequestHandler->saveResponse($response);
 
             $this->responseEventLogger->log(ResponseEventLogger::PAGE_ENTERED, $response);
