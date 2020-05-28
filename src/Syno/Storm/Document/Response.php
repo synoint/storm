@@ -157,6 +157,7 @@ class Response implements JsonSerializable
             'surveyId'              => $this->surveyId,
             'surveyVersion'         => $this->surveyVersion,
             'pageId'                => $this->pageId,
+            'pageCode'              => $this->pageCode,
             'mode'                  => $this->mode,
             'locale'                => $this->locale,
             'completed'             => $this->completed,
