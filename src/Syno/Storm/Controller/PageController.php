@@ -82,7 +82,11 @@ class PageController extends AbstractController
         $redirect = null;
         $questions = $this->conditionService->filterQuestionsByShowCondition($page->getQuestions(), $response);
 
-        $form = $this->createForm(PageType::class, null, ['questions' => $questions]);
+        $form = $this->createForm(PageType::class, null,
+            [
+                'questions' => $questions,
+                'answers'   => $response->getLastAnswers()
+            ]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted()) {

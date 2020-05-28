@@ -4,8 +4,11 @@
      class="{{questionField.vars.attr.class}}">
     {% for child in questionField %}
         <div class="form-check">
-            <input type="{{ type }}" id="{{ child.vars.id }}" name="{{ child.vars.full_name }}"
-                   class="{{ child.vars.attr.class }} form-check-input" value="{{ child.vars.value }}" {% if child.vars.checked %}checked="checked"{% endif %}>
+            <input autocomplete="off" type="{{ type }}" id="{{ child.vars.id }}" name="{{ child.vars.full_name }}"
+            {% for key, attribute in child.vars.attr %}
+                {{ key }}="{{ attribute }}"
+            {% endfor %}
+                    value="{{ child.vars.value }}" {% if child.vars.checked %}checked="checked"{% endif %}>
             <label class="form-check-label custom-control-label"
                    for="{{ child.vars.id }}">
                 <div class="d-flex flex-row w-100">

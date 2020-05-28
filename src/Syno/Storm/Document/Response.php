@@ -587,4 +587,20 @@ class Response implements JsonSerializable
 
         return $answersId;
     }
+
+    public function getLastAnswers()
+    {
+        $questionAnswers = [];
+
+        foreach ($this->getAnswers() as $responseAnswer) {
+            /**@var ResponseAnswer $responseAnswer */
+            $questionAnswers[$responseAnswer->getQuestionId()] = [];
+            foreach ($responseAnswer->getAnswers() as $answer) {
+                /**@var ResponseAnswerValue $answer */
+                $questionAnswers[$responseAnswer->getQuestionId()][$answer->getAnswerId()] = $answer->getValue();
+            }
+        }
+
+        return $questionAnswers;
+    }
 }
