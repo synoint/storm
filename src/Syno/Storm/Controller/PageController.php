@@ -84,8 +84,8 @@ class PageController extends AbstractController
 
         $form = $this->createForm(PageType::class, null,
             [
-                'questions' => $questions,
-                'answers'   => $response->getLastAnswers()
+                'questions'         => $questions,
+                'respondentAnswers' => $response->getLastAnswers()
             ]);
         $form->handleRequest($request);
 
