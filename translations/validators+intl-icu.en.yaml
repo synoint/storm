@@ -92,3 +92,4 @@ Error: Error
 'This form should not contain extra fields.': 'This form should not contain extra fields.'
 'The uploaded file was too large. Please try to upload a smaller file.': 'The uploaded file was too large. Please try to upload a smaller file.'
 'The CSRF token is invalid. Please try to resubmit the form.': 'The CSRF token is invalid. Please try to resubmit the form.'
+error.selected.option.text.required: 'Selected option text is required.'

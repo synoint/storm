@@ -7,7 +7,7 @@ use Symfony\Component\Validator\Exception\MissingOptionsException;
 
 class OtherFilled extends Constraint
 {
-    public $message = 'Selected option text is required.';
+    public $message = 'error.selected.option.text.required';
     public $answer;
     public $respondentAnswers;
 
