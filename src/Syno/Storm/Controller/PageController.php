@@ -82,10 +82,12 @@ class PageController extends AbstractController
         $redirect = null;
         $questions = $this->conditionService->filterQuestionsByShowCondition($page->getQuestions(), $response);
 
+        $respondentAnswers = $request->request->get('page') === null ? $response->getLastSavedAnswers() : $this->responseRequestHandler->extractAnswers($questions, $request->request->get('page'));
+
         $form = $this->createForm(PageType::class, null,
             [
                 'questions'         => $questions,
-                'respondentAnswers' => $response->getLastAnswers()
+                'respondentAnswers' => $respondentAnswers
             ]);
         $form->handleRequest($request);
 
@@ -95,7 +97,7 @@ class PageController extends AbstractController
 
                 /** @var Document\Question $question */
                 foreach ($questions as $question) {
-                    $answers = $this->responseRequestHandler->extractAnswers($question, $form->getData());
+                    $answers = $this->responseRequestHandler->extractQuestionAnswers($question, $form->getData());
                     $response->addAnswer(new Document\ResponseAnswer($question->getQuestionId(), $answers));
 
                     if (!empty($question->getScreenoutConditions())) {

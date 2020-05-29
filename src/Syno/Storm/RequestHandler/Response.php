@@ -8,6 +8,8 @@ use Symfony\Component\HttpFoundation\Cookie;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response as HttpResponse;
 use Syno\Storm\Document;
+use Syno\Storm\Document\ResponseAnswer;
+use Syno\Storm\Document\ResponseAnswerValue;
 use Syno\Storm\Services;
 
 
@@ -240,13 +242,32 @@ class Response
         return $response;
     }
 
+    public function extractAnswers(Collection $questions, ?array $requestData)
+    {
+        $questionAnswers = [];
+
+        /** @var Document\Question $question */
+        foreach ($questions as $question) {
+
+            $questionAnswers[$question->getQuestionId()] = [];
+            if($requestData) {
+                foreach ($this->extractQuestionAnswers($question, $requestData) as $answer) {
+                    /**@var ResponseAnswerValue $answer */
+                    $questionAnswers[$question->getQuestionId()][$answer->getAnswerId()] = $answer->getValue();
+                }
+            }
+        }
+
+        return $questionAnswers;
+    }
+
     /**
      * @param Document\Question $question
      * @param array             $formData
      *
      * @return array|ArrayCollection
      */
-    public function extractAnswers(Document\Question $question, array $formData)
+    public function extractQuestionAnswers(Document\Question $question, array $formData)
     {
         $result = new ArrayCollection();
         switch ($question->getQuestionTypeId()) {

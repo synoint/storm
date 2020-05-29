@@ -616,7 +616,7 @@ class Response implements JsonSerializable
         return $answersId;
     }
 
-    public function getLastAnswers()
+    public function getLastSavedAnswers()
     {
         $questionAnswers = [];
 

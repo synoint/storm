@@ -17,6 +17,7 @@ use Syno\Storm\Document;
 use Syno\Storm\Form\Type\LinearScale;
 use Syno\Storm\Form\Type\LinearScaleMatrix;
 use Syno\Storm\Services;
+use Syno\Storm\Validator\Constraints\OtherFilled;
 
 class PageType extends AbstractType
 {
@@ -159,6 +160,9 @@ class PageType extends AbstractType
                 $builder->add($question->getInputName($answer->getAnswerId()), TextType::class, [
                         'attr'     => ['class' => 'is-free-text-input'],
                         'required' => false,
+                        'constraints' => [
+                            new OtherFilled(['answer' => $answer, 'respondentAnswers' => $respondentAnswers,  'groups' => ['form_validation_only']])
+                        ],
                         'data'     => isset($respondentAnswers[$answer->getAnswerId()]) ? $respondentAnswers[$answer->getAnswerId()] : null,
                     ]
                 );
