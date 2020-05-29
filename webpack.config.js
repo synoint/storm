@@ -26,6 +26,7 @@ Encore
     // .addEntry('materialize.common', './assets/materialize/common/index.js')
     .addEntry('b4.common', './assets/b4/common/index.js')
     .addEntry('b4.page', './assets/b4/page/index.js')
+    .addEntry('b4.page.debug', './assets/b4/page/debug.js')
     .addEntry('media.player', './assets/media_player/script.js')
 
     // When enabled, Webpack "splits" your files into smaller pieces for greater optimization.
