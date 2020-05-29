@@ -90,6 +90,7 @@ class PageType extends AbstractType
     /**
      * @param FormBuilderInterface $builder
      * @param Document\Question    $question
+     * @param array                $respondentAnswers
      */
     private function addSingleChoice(FormBuilderInterface $builder, Document\Question $question, ?array $respondentAnswers)
     {
@@ -173,8 +174,9 @@ class PageType extends AbstractType
     /**
      * @param FormBuilderInterface $builder
      * @param Document\Question    $question
+     * @param array                $respondentAnswers
      */
-    private function addMatrix(FormBuilderInterface $builder, Document\Question $question, $respondentAnswers)
+    private function addMatrix(FormBuilderInterface $builder, Document\Question $question, ?array $respondentAnswers)
     {
         $questionAnswerIds = $respondentAnswers ?(array) array_keys($respondentAnswers) : null;
 
@@ -218,8 +220,9 @@ class PageType extends AbstractType
     /**
      * @param FormBuilderInterface $builder
      * @param Document\Question    $question
+     * @param array                $respondentAnswers
      */
-    private function addText(FormBuilderInterface $builder, Document\Question $question, $respondentAnswers)
+    private function addText(FormBuilderInterface $builder, Document\Question $question, ?array $respondentAnswers)
     {
         /** @var Document\Answer $answer */
         foreach ($question->getAnswers() as $answer) {
@@ -244,8 +247,9 @@ class PageType extends AbstractType
     /**
      * @param FormBuilderInterface $builder
      * @param Document\Question    $question
+     * @param array                $respondentAnswers
      */
-    private function addLinearScale(FormBuilderInterface $builder, Document\Question $question, $respondentAnswers)
+    private function addLinearScale(FormBuilderInterface $builder, Document\Question $question, ?array $respondentAnswers)
     {
         $questionAnswerIds = !empty($respondentAnswers) ? array_keys($respondentAnswers) : null;
 
@@ -261,8 +265,9 @@ class PageType extends AbstractType
     /**
      * @param FormBuilderInterface $builder
      * @param Document\Question    $question
+     * @param array                $respondentAnswers
      */
-    private function addLinearScaleMatrix(FormBuilderInterface $builder, Document\Question $question, $respondentAnswers)
+    private function addLinearScaleMatrix(FormBuilderInterface $builder, Document\Question $question, ?array $respondentAnswers)
     {
         $questionAnswerIds = $respondentAnswers ?(array) array_keys($respondentAnswers) : null;
 

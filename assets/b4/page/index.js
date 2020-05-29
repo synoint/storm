@@ -16,6 +16,7 @@ class Page {
             });
         });
 
+        // line below rewrites history which is loaded when back button is pressed, so form would show already filled answers
        window.history.replaceState(null,null, window.location);
     }
 }

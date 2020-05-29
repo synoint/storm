@@ -8,7 +8,6 @@ use Symfony\Component\HttpFoundation\Cookie;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response as HttpResponse;
 use Syno\Storm\Document;
-use Syno\Storm\Document\ResponseAnswer;
 use Syno\Storm\Document\ResponseAnswerValue;
 use Syno\Storm\Services;
 
