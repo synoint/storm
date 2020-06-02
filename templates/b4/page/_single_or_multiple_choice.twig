@@ -1,4 +1,7 @@
-{% set questionField = attribute(form, (question.getInputName))|shuffle_question_answers(question) %}
+{% set questionField = attribute(form, (question.getInputName)) %}
+{% if question.randomizeAnswers %}
+    {% set questionField = questionField|shuffle_question_answers(question) %}
+{% endif %}
  {{ form_errors(attribute(form, (question.getInputName))) }}
 
 {% set break = false %}
