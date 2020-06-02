@@ -13,7 +13,7 @@ class FormExtension extends AbstractExtension
     public function getFilters()
     {
         return [
-            new TwigFilter('shuffle_form_children', [$this, 'shuffleFormChildren'])
+            new TwigFilter('shuffle_question_answers', [$this, 'shuffleQuestionAnswers'])
         ];
     }
 
@@ -23,10 +23,28 @@ class FormExtension extends AbstractExtension
      *
      * @return FormView
      */
-    public function shuffleFormChildren(FormView $form, Question $question)
+    public function shuffleQuestionAnswers(FormView $form, Question $question)
     {
         if ($question->getRandomizeAnswers()) {
             shuffle($form->vars['form']->children);
+            $exclusives      = [];
+            $freeTextAnswers = [];
+            foreach ($form->vars['form']->children as $index => $child) {
+                if ($question->getAnswer($child->vars['value'])->getIsExclusive()) {
+                    $exclusives[] = $child;
+                    unset($form->vars['form']->children[$index]);
+                }
+                if ($question->getAnswer($child->vars['value'])->getIsFreeText()) {
+                    $freeTextAnswers[] = $child;
+                    unset($form->vars['form']->children[$index]);
+                }
+            }
+            foreach($freeTextAnswers as $freeTextAnswer) {
+                $form->vars['form']->children[] = $freeTextAnswer;
+            }
+            foreach($exclusives as $exclusive) {
+                $form->vars['form']->children[] = $exclusive;
+            }
 
             return $form;
         } else {
