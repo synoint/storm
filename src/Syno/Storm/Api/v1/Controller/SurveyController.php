@@ -359,7 +359,7 @@ class SurveyController extends AbstractController implements TokenAuthenticatedC
      * @Route(
      *     "/{surveyId}/responses/{responseId}",
      *     name="storm_api.v1.survey.response",
-     *     requirements={"surveyId"="\d+", "responseId"="\w+"},
+     *     requirements={"surveyId"="\d+", "responseId"="^(?!.*(edit|delete)$).*"},
      *     methods={"GET"}
      * )
      *
