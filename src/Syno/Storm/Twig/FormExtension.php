@@ -13,7 +13,7 @@ class FormExtension extends AbstractExtension
     public function getFilters()
     {
         return [
-            new TwigFilter('shuffle_question_answers', [$this, 'shuffleQuestionAnswers'])
+            new TwigFilter('shuffle_answers', [$this, 'shuffleAnswers'])
         ];
     }
 
@@ -23,7 +23,7 @@ class FormExtension extends AbstractExtension
      *
      * @return FormView
      */
-    public function shuffleQuestionAnswers(FormView $form, Question $question)
+    public function shuffleAnswers(FormView $form, Question $question)
     {
         shuffle($form->vars['form']->children);
         $exclusives      = [];

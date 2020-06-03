@@ -353,6 +353,36 @@ class SurveyController extends AbstractController implements TokenAuthenticatedC
     }
 
     /**
+     * @param int $surveyId
+     * @param Request $request
+     *
+     * @Route(
+     *     "/{surveyId}/response",
+     *     name="storm_api.v1.survey.response",
+     *     requirements={"surveyId"="\d+"},
+     *     methods={"GET"}
+     * )
+     *
+     * @return JsonResponse
+     */
+    public function response(int $surveyId, Request $request)
+    {
+        $responseId = $request->query->get('id');
+        if($responseId) {
+            $response = $this->responseService->findBySurveyIdAndResponseId($surveyId, $responseId);
+            if ($response) {
+                $completesMap = $this->responseEventService->getSurveyCompletesMap($surveyId);
+                if ($response->isCompleted()) {
+                    $response->setCompletedAt($completesMap[$response->getResponseId()] ?? 0);
+                }
+                return $this->json($response);
+            }
+        }
+
+        return $this->json('Response not found', 400);
+    }
+
+    /**
      * @param array $params
      */
     protected function removeVersionIfExists(array $params)
