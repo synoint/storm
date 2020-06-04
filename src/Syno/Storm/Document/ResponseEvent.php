@@ -74,11 +74,11 @@ class ResponseEvent implements JsonSerializable
     }
 
     /**
-     * @return \DateTime
+     * @return int
      */
-    public function getTime(): \DateTime
+    public function getTimestamp(): int
     {
-        return $this->time;
+        return $this->time->getTimestamp();
     }
 
     /**

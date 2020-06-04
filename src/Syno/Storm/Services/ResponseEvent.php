@@ -36,7 +36,7 @@ class ResponseEvent
         $result = [];
         /** @var Document\ResponseEvent $event */
         foreach ($data as $event) {
-            $result[$event->getResponseId()] = $event->getTime()->getTimestamp();
+            $result[$event->getResponseId()] = $event->getTimestamp();
         }
 
         return $result;
@@ -56,10 +56,7 @@ class ResponseEvent
             ]
         );
 
-        if($event) {
-            return $event->getTime()->getTimestamp();
-        }
-        return null;
+        return $event ? $event->getTimestamp() : null;
     }
 
     /**
