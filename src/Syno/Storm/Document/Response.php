@@ -136,6 +136,12 @@ class Response implements JsonSerializable
      * @ODM\EmbedMany(targetDocument=ResponseAnswer::class)
      */
     private $answers;
+    /**
+     * @var array
+     *
+     * @ODM\EmbedMany(targetDocument=ResponseEvent::class)
+     */
+    private $events;
 
     /**
      * @param string $responseId
@@ -144,32 +150,34 @@ class Response implements JsonSerializable
      */
     public function __construct(string $responseId)
     {
-        $this->responseId   = $responseId;
-        $this->userAgents   = new ArrayCollection();
+        $this->responseId = $responseId;
+        $this->userAgents = new ArrayCollection();
         $this->parameters = new ArrayCollection();
-        $this->createdAt    = new \DateTime();
+        $this->createdAt  = new \DateTime();
+        $this->events     = [];
     }
 
     public function jsonSerialize()
     {
         return [
-            'responseId'            => $this->responseId,
-            'surveyId'              => $this->surveyId,
-            'surveyVersion'         => $this->surveyVersion,
-            'pageId'                => $this->pageId,
-            'pageCode'              => $this->pageCode,
-            'mode'                  => $this->mode,
-            'locale'                => $this->locale,
-            'completed'             => $this->completed,
-            'screenedOut'           => $this->screenedOut,
-            'qualityScreenedOut'    => $this->qualityScreenedOut,
-            'quotaFull'             => $this->quotaFull,
-            'screenoutId'           => $this->screenoutId,
-            'createdAt'             => $this->createdAt->getTimestamp(),
-            'completedAt'           => $this->completedAt,
-            'userAgents'            => $this->userAgents,
-            'parameters'          => $this->parameters,
-            'answers'               => $this->answers
+            'responseId'         => $this->responseId,
+            'surveyId'           => $this->surveyId,
+            'surveyVersion'      => $this->surveyVersion,
+            'pageId'             => $this->pageId,
+            'pageCode'           => $this->pageCode,
+            'mode'               => $this->mode,
+            'locale'             => $this->locale,
+            'completed'          => $this->completed,
+            'screenedOut'        => $this->screenedOut,
+            'qualityScreenedOut' => $this->qualityScreenedOut,
+            'quotaFull'          => $this->quotaFull,
+            'screenoutId'        => $this->screenoutId,
+            'createdAt'          => $this->createdAt->getTimestamp(),
+            'completedAt'        => $this->completedAt,
+            'userAgents'         => $this->userAgents,
+            'parameters'         => $this->parameters,
+            'answers'            => $this->answers,
+            'events'             => $this->events
         ];
     }
 
@@ -630,5 +638,25 @@ class Response implements JsonSerializable
         }
 
         return $questionAnswers;
+    }
+
+    /**
+     * @return array
+     */
+    public function getEvents(): array
+    {
+        return $this->events;
+    }
+
+    /**
+     * @param array $events
+     *
+     * @return Response
+     */
+    public function setEvents(array $events): Response
+    {
+        $this->events = $events;
+
+        return $this;
     }
 }

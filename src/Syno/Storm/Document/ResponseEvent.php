@@ -3,11 +3,11 @@
 namespace Syno\Storm\Document;
 
 use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
-
+use JsonSerializable;
 /**
  * @ODM\Document(collection="response_event"))
  */
-class ResponseEvent
+class ResponseEvent implements JsonSerializable
 {
     /** @ODM\Id */
     private $id;
@@ -60,6 +60,17 @@ class ResponseEvent
         $this->responseId = $responseId;
         $this->surveyId   = $surveyId;
         $this->pageId     = $pageId;
+    }
+
+
+    public function jsonSerialize()
+    {
+        return [
+            'id'      => $this->id,
+            'time'    => $this->time->getTimestamp(),
+            'pageId'  => $this->pageId,
+            'message' => $this->message,
+        ];
     }
 
     /**

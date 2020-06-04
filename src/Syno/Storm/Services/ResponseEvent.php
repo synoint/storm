@@ -43,6 +43,41 @@ class ResponseEvent
     }
 
     /**
+     * @param string $responseId
+     *
+     * @return int|null
+     */
+    public function getResponseCompleteTime(string $responseId): ?int
+    {
+        $event = $this->dm->getRepository(Document\ResponseEvent::class)->findOneBy(
+            [
+                'responseId' => $responseId,
+                'message'    => ResponseEventLogger::SURVEY_COMPLETED,
+            ]
+        );
+
+        if($event) {
+            return $event->getTime()->getTimestamp();
+        }
+        return null;
+    }
+
+    /**
+     * @param string $responseId
+     *
+     * @return array
+     */
+    public function getResponseEvents(string $responseId): array
+    {
+        return $this->dm->getRepository(Document\ResponseEvent::class)->findBy(
+            [
+                'responseId' => $responseId
+            ]
+        );
+    }
+
+
+    /**
      * @param int $surveyId
      *
      * @return null|int
