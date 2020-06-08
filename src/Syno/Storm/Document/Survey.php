@@ -115,8 +115,9 @@ class Survey implements JsonSerializable
             'version'      => $this->version,
             'published'    => $this->published,
             'config'       => $this->config,
-            'parameters' => $this->parameters,
-            'urls'         => $this->urls
+            'parameters'   => $this->parameters,
+            'urls'         => $this->urls,
+            'pages'        => $this->pages
 
         ];
     }
