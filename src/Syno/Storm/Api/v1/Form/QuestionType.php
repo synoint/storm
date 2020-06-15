@@ -22,6 +22,8 @@ class QuestionType extends AbstractType
             ->add('required', CheckboxType::class)
             ->add('text', TextType::class)
             ->add('randomizeAnswers', CheckboxType::class)
+            ->add('randomizeRows', CheckboxType::class)
+            ->add('randomizeColumns', CheckboxType::class)
             ->add('questionTypeId', IntegerType::class)
 
             ->add('answers', CollectionType::class, [

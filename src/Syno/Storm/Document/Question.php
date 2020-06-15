@@ -69,6 +69,22 @@ class Question
     private $randomizeAnswers = false;
 
     /**
+     * @var bool
+     *
+     * @ODM\Field(type="boolean")
+     * @Assert\NotNull
+     */
+    private $randomizeRows = false;
+
+    /**
+     * @var bool
+     *
+     * @ODM\Field(type="boolean")
+     * @Assert\NotNull
+     */
+    private $randomizeColumns = false;
+
+    /**
      * @var string
      *
      * @ODM\Field(type="string")
@@ -372,6 +388,46 @@ class Question
     public function setRandomizeAnswers(bool $randomizeAnswers): self
     {
         $this->randomizeAnswers = $randomizeAnswers;
+
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function getRandomizeRows(): bool
+    {
+        return $this->randomizeRows;
+    }
+
+    /**
+     * @param bool $randomizeRows
+     *
+     * @return Question
+     */
+    public function setRandomizeRows(bool $randomizeRows): Question
+    {
+        $this->randomizeRows = $randomizeRows;
+
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function getRandomizeColumns(): bool
+    {
+        return $this->randomizeColumns;
+    }
+
+    /**
+     * @param bool $randomizeColumns
+     *
+     * @return Question
+     */
+    public function setRandomizeColumns(bool $randomizeColumns): Question
+    {
+        $this->randomizeColumns = $randomizeColumns;
 
         return $this;
     }

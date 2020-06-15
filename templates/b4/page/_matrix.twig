@@ -1,3 +1,14 @@
+{% set rows    = question.getRows() %}
+{% set columns = question.getColumns() %}
+
+{% if question.randomizeRows %}
+    {% set rows = rows|shuffle_array() %}
+{% endif %}
+
+{% if question.randomizeColumns %}
+    {% set columns = columns|shuffle_array() %}
+{% endif %}
+
 {% set break = false %}
 {% for rowCode,rowLabel in question.getRows() %}
     {% set errorMessage = form_errors(attribute(form, (question.getInputName(rowCode)))) %}
@@ -10,7 +21,7 @@
     <thead>
         <tr>
             <td></td>
-            {% for column in question.getColumns() %}
+            {% for column in columns %}
                 <th scope="col" class="d-none d-md-table-cell p-md-3 text-center font-weight-normal">
                     {{ column }}
                 </th>
@@ -18,7 +29,7 @@
         </tr>
     </thead>
     <tbody class="rounded overflow-hidden">
-        {% for rowCode,rowLabel in question.getRows() %}
+        {% for rowCode,rowLabel in rows %}
             <tr>
                 <th scope="row" class=" d-block d-md-table-cell text-center text-md-left p-md-3 mt-5 mt-md-0 align-middle font-weight-normal ">{{ rowLabel }}</th>
                 {% for child in attribute(form, (question.getInputName(rowCode))) %}

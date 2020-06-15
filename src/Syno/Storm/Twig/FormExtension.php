@@ -13,7 +13,8 @@ class FormExtension extends AbstractExtension
     public function getFilters()
     {
         return [
-            new TwigFilter('shuffle_answers', [$this, 'shuffleAnswers'])
+            new TwigFilter('shuffle_answers', [$this, 'shuffleAnswers']),
+            new TwigFilter('shuffle_array', [$this, 'shuffleArray'])
         ];
     }
 
@@ -48,4 +49,20 @@ class FormExtension extends AbstractExtension
 
         return $form;
     }
+
+    /**
+     * @param array $array
+     *
+     * @return array
+     */
+    function shuffleArray(array $array)
+    {
+        $orig = array_flip($array);
+        shuffle($array);
+        foreach($array as $key=>$n) {
+            $data[$n] = $orig[$n];
+        }
+        return array_flip($data);
+    }
+
 }

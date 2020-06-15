@@ -38,14 +38,17 @@
                                     {{ form_row(attribute(form, (question.getInputName))) }}
                                 {% elseif question.isLinearScaleMatrix %}
                                     {% set break = false %}
-                                    {% for key,row in question.getRows() %}
+                                    {% if question.randomizeRows %}
+                                        {% set rows = question.getRows()|shuffle_array() %}
+                                    {% endif %}
+                                    {% for key,row in rows %}
                                         {% set errorMessage = form_errors(attribute(form, (question.getInputName(key)))) %}
                                         {% if errorMessage is not empty and break == false %}
                                             {{ errorMessage|raw }}
                                             {% set break = true %}
                                         {% endif %}
                                     {% endfor %}
-                                    {% for key,row in question.getRows() %}
+                                    {% for key,row in rows %}
                                         {{ form_row(attribute(form, (question.getInputName(key)))) }}
                                     {% endfor %}
                                 {% elseif question.isText %}
