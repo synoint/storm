@@ -203,7 +203,7 @@ class PageController extends AbstractController
         $this->responseRequestHandler->setResponse($request, $response);
 
         $this->responseEventLogger->log(ResponseEventLogger::SURVEY_COMPLETED, $response);
-        $this->surveyEventLogger->logComplete($response, $survey);
+        $this->logSurveyComplete($response, $survey);
 
         $completeUrl = $survey->getCompleteUrl($response->getSource());
 
@@ -280,5 +280,24 @@ class PageController extends AbstractController
         }
 
         return null;
+    }
+
+    /**
+     * @param Document\Response $response
+     * @param Document\Survey   $survey
+     */
+    private function logSurveyComplete(Document\Response $response, Document\Survey $survey)
+    {
+        switch ($response->getMode()) {
+            case Document\Response::MODE_LIVE:
+                $this->surveyEventLogger->log(SurveyEventLogger::LIVE_COMPLETE, $survey);
+                break;
+            case Document\Response::MODE_TEST:
+                $this->surveyEventLogger->log(SurveyEventLogger::TEST_COMPLETE, $survey);
+                break;
+            case Document\Response::MODE_DEBUG:
+                $this->surveyEventLogger->log(SurveyEventLogger::DEBUG_COMPLETE, $survey);
+                break;
+        }
     }
 }
