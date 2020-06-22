@@ -203,7 +203,7 @@ class PageController extends AbstractController
         $this->responseRequestHandler->setResponse($request, $response);
 
         $this->responseEventLogger->log(ResponseEventLogger::SURVEY_COMPLETED, $response);
-        $this->surveyEventLogger->log(SurveyEventLogger::COMPLETE, $survey);
+        $this->surveyEventLogger->logComplete($response, $survey);
 
         $completeUrl = $survey->getCompleteUrl($response->getSource());
 

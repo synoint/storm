@@ -286,7 +286,8 @@ class SurveyController extends AbstractController implements TokenAuthenticatedC
                 'live_responses'     => $this->surveyEventService->count($surveyId, $version, SurveyEventLogger::LIVE_RESPONSE),
                 'screenouts'         => $this->surveyEventService->count($surveyId, $version, SurveyEventLogger::SCREENOUT),
                 'quality_screenouts' => $this->surveyEventService->count($surveyId, $version, SurveyEventLogger::QUALITY_SCREENOUT),
-                'completes'          => $this->surveyEventService->count($surveyId, $version, SurveyEventLogger::COMPLETE)
+                'test_completes'     => $this->surveyEventService->count($surveyId, $version, SurveyEventLogger::TEST_COMPLETE),
+                'live_completes'     => $this->surveyEventService->count($surveyId, $version, SurveyEventLogger::LIVE_COMPLETE)
             ];
         }
 

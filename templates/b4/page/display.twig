@@ -38,8 +38,9 @@
                                     {{ form_row(attribute(form, (question.getInputName))) }}
                                 {% elseif question.isLinearScaleMatrix %}
                                     {% set break = false %}
+                                    {% set rows = question.getRows() %}
                                     {% if question.randomizeRows %}
-                                        {% set rows = question.getRows()|shuffle_array() %}
+                                        {% set rows = rows|shuffle_array() %}
                                     {% endif %}
                                     {% for key,row in rows %}
                                         {% set errorMessage = form_errors(attribute(form, (question.getInputName(key)))) %}
