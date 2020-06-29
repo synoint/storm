@@ -15,7 +15,8 @@ class ConfigType extends AbstractType
     {
         $builder
             ->add('privacyConsentEnabled', CheckboxType::class, ['required' => false])
-            ->add('theme', HiddenType::class, ['required' => false, 'empty_data' => Document\Config::DEFAULT_THEME]);
+            ->add('theme', HiddenType::class, ['required' => false, 'empty_data' => Document\Config::DEFAULT_THEME])
+            ->add('colorTheme', HiddenType::class, ['required' => false, 'empty_data' => Document\Config::DEFAULT_COLOR_THEME]);
     }
 
     public function configureOptions(OptionsResolver $resolver)

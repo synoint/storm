@@ -24,7 +24,8 @@ Encore
      * and one CSS file (e.g. app.css) if your JavaScript imports CSS.
      */
     // .addEntry('materialize.common', './assets/materialize/common/index.js')
-    .addEntry('b4.common', './assets/b4/common/index.js')
+    .addEntry('b4.default', './assets/b4/default/index.js')
+    .addEntry('b4.pastel', './assets/b4/pastel/index.js')
     .addEntry('b4.page', './assets/b4/page/index.js')
     .addEntry('b4.page.debug', './assets/b4/page/debug.js')
     .addEntry('media.player', './assets/media_player/script.js')

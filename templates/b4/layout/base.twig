@@ -4,17 +4,17 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-        <title>{% block title %}{% endblock %}</title>
+        <title>{{ survey.config.colorTheme }}</title>
 
         {% block stylesheets %}
-            {{ encore_entry_link_tags('b4.common') }}
+            {{ encore_entry_link_tags(survey.config.theme ~ '.' ~ survey.config.colorTheme) }}
         {% endblock %}
     </head>
     <body>
         {% block body %}{% endblock %}
 
         {% block javascripts %}
-            {{ encore_entry_script_tags('b4.common') }}
+            {{ encore_entry_script_tags(survey.config.theme ~ '.' ~ survey.config.colorTheme) }}
         {% endblock %}
     </body>
 </html>

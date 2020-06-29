@@ -1,6 +1,7 @@
-import '../theme/general.css';
 // common styles
 require('./style.css');
+// application overrides
+require('./app.css');
 
 const $ = require('jquery');
 // this "modifies" the jquery module: adding behavior to it

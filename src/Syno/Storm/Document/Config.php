@@ -11,6 +11,7 @@ use JsonSerializable;
 class Config implements JsonSerializable
 {
     const DEFAULT_THEME = 'b4';
+    const DEFAULT_COLOR_THEME = 'default';
 
     /**
      * @var bool
@@ -38,9 +39,15 @@ class Config implements JsonSerializable
      */
     public $theme;
 
+    /**
+     * @ODM\Field(type="string")
+     */
+    public $colorTheme = 'default';
+
     public function __construct()
     {
-        $this->theme = self::DEFAULT_THEME;
+        $this->theme      = self::DEFAULT_THEME;
+        $this->colorTheme = self::DEFAULT_COLOR_THEME;
     }
 
     public function jsonSerialize()
@@ -49,7 +56,8 @@ class Config implements JsonSerializable
             'debugMode'             => $this->debugMode,
             'debugToken'            => $this->debugToken,
             'privacyConsentEnabled' => $this->privacyConsentEnabled,
-            'theme'                 => $this->theme
+            'theme'                 => $this->theme,
+            'colorTheme'            => $this->colorTheme
         ];
     }
 }
