@@ -1,188 +1,47 @@
-html,
-body {
-    min-height: 100%;
-}
-
-body {
-    display: -ms-flexbox;
-    display: -webkit-box;
-    display: flex;
-    -ms-flex-align: center;
-    -ms-flex-pack: center;
-    -webkit-box-align: center;
-    align-items: center;
-    -webkit-box-pack: center;
-    justify-content: center;
-    padding-top: 40px;
-    padding-bottom: 40px;
-    background: #FAFBFE;
+:root {
+    --primary: #00263b;
+    --secondary: #2A307E;
+    --light: #F0F4FF;
+    --info: #747b81;
+    --white: #fff;
+    --muted: #ddedfd;
+    --dark: #000;
 }
 
 footer {
-    position: fixed;
-    bottom: 0;
-    width: 100%;
-    height: 3.5rem;
-    background-color: #00263b;
+    background-color: var(--primary);
 }
 
 footer .progress-bar {
-    background-color: #F0F4FF;
+    background-color: var(--light);
 }
 
 footer .progress {
-    background-color: #747b81;
+    background-color: var(--info);
 }
 
-
-.form-control {
-    position: relative;
-    box-sizing: border-box;
-    height: auto;
-    padding: 10px;
-    font-size: 16px;
-}
-
-.syno-logo {
-    height: 2.5rem
-}
-
-.powered-by {
-    font-size: 0.54rem;
-    font-style: italic;
-    margin-left: 2rem
-}
-
-.footer-logo {
-    width: 3rem;
-    margin-top: -1.55rem;
-}
-
-.progress {
-    margin-top: 1.65rem;
-    height: 0.3rem;
-}
-
-.privacy-consent-container {
-    font-size: 80%;
-    height: -moz-available;
-    height: -webkit-fill-available;
-}
-
-.privacy-consent-container p {
-    line-height: 200%;
-}
 
 .linear-scale__button {
-    width: 40px;
-    height: 40px;
-    padding: 0;
-    text-align: center;
-    border: 1px solid #F0F4FF;
-    background: #F0F4FF;
-    line-height: 40px;
-    border-radius: 50%;
-    position: relative;
-    cursor: pointer;
-}
-
-.linear-scale__button input {
-    margin: 100% 50%;
-    width: 1px;
-    height: 1px;
+    border: 1px solid var(--light);
+    background: var(--light);
 }
 
 .linear-scale__button:hover,
 .linear-scale__button.active {
-    color: #fff !important;
-}
-
-.linear-scale__text-holder {
-    display: flex;
-    -ms-flex-wrap: wrap;
-    flex-wrap: wrap;
-    margin-right: -5px;
-    margin-left: -5px;
-    font-size: 13px;
-}
-
-.linear-scale__text-holder .col {
-    -ms-flex-preferred-size: 0;
-    flex-basis: 0;
-    -ms-flex-positive: 1;
-    flex-grow: 1;
-    max-width: 100%;
-    padding-right: 5px;
-    padding-left: 5px;
-}
-
-.linear-scale__text-holder .col:first-child {
-    text-align: left !important;
-}
-
-.linear-scale__text-holder .col:last-child {
-    text-align: right !important;
-}
-
-.linear-scale__text-holder .col label {
-    margin-bottom: 5px;
-}
-
-.linear-scale__radio-holder {
-    display: flex;
-    -ms-flex-wrap: wrap;
-    flex-wrap: wrap;
-    margin-right: -5px;
-    margin-left: -5px;
-}
-
-.linear-scale__radio-holder .col {
-    -ms-flex-preferred-size: 0;
-    flex-basis: 0;
-    -ms-flex-positive: 1;
-    flex-grow: 1;
-    max-width: 100%;
-    padding-right: 5px;
-    padding-left: 5px;
-}
-
-.page__content img {
-    max-width: 100%;
-}
-
-.custom-radio-filled .form-check,
-.custom-checkbox-filled .form-check {
-    padding-left: 0;
-    margin-top: 15px;
-}
-
-.custom-checkbox.custom-checkbox-filled,
-.custom-radio.custom-radio-filled {
-    padding-left: 0;
-}
-
-.question.card {
-    -webkit-box-shadow: 0 2px 16px -6px rgba(0, 0, 0, 0.27);
-    -moz-box-shadow: 0 2px 16px -6px rgba(0, 0, 0, 0.27);
-    box-shadow: 0 2px 16px -6px rgba(0, 0, 0, 0.27);
-}
-
-.custom-textarea,
-.custom-text {
-    margin-top: 15px;
+    color: var(--white);
 }
 
 
 .custom-radio-filled .custom-control-input:checked~.custom-control-label,
 .custom-checkbox-filled .custom-control-input:checked~.custom-control-label {
-    background: #2A307E;
-    color: #fff;
+    background: var(--secondary);
+    color: var(--white);
 }
 
 .custom-control-input:checked~.custom-control-label::before {
-    color: #2A307E;
-    border-color: #fff;
-    background-color: #fff;
+    color: var(--secondary);
+    border-color: var(--white);
+    background-color: var(--white);
 }
 
 .custom-radio-filled .custom-control-input:checked~.custom-control-label::after {
@@ -195,64 +54,18 @@ footer .progress {
 
 .custom-radio-filled .custom-control-label,
 .custom-checkbox-filled .custom-control-label {
-    display: block;
-    cursor: pointer;
-    text-align: left;
-    padding: 15px 15px 15px 50px;
-    background: #F0F4FF;
-    color: #000;
-    border-radius: .25rem;
-}
-
-.custom-radio-filled .custom-control-label::before,
-.custom-radio-filled .custom-control-label::after,
-.custom-radio-filled input,
-.custom-checkbox-filled .custom-control-label::before,
-.custom-checkbox-filled .custom-control-label::after,
-.custom-checkbox-filled input {
-    top: 50%;
-    margin-top: -0.5rem;
-    left: 20px;
-}
-
-.matrix {
-    height: 20px;
-}
-
-.matrix .form-check label {
-    height: 100%;
-}
-
-.matrix .custom-control {
-    padding: 0;
-}
-
-.matrix td {
-    padding: 0;
-    vertical-align: middle;
-}
-
-.free-text-input:focus {
-    outline: none;
-}
-
-.custom-error {
-    font-size: 13px;
-}
-
-.form-control.is-invalid,
-.was-validated .form-control:invalid {
-    background-image: inherit;
+    background: var(--light);
+    color: var(--dark);
 }
 
 @media (min-width: 768px) {
     .matrix tbody th {
-        border-bottom: 1px solid #fff;
+        border-bottom: 1px solid var(--white);
     }
 
     .matrix tbody td {
-        border-left: 1px solid #fff;
-        border-bottom: 1px solid #fff;
+        border-left: 1px solid var(--white);
+        border-bottom: 1px solid var(--white);
     }
 
     .matrix thead th {
@@ -260,28 +73,17 @@ footer .progress {
     }
 
     .custom-control-input:checked~.custom-control-label::before {
-        border-color: #2A307E;
-        background-color: #fff;
+        border-color: var(--secondary);
+        background-color: var(--white);
     }
 
-    .custom-radio-filled-md-center .custom-control-label::before,
-    .custom-radio-filled-md-center .custom-control-label::after,
-    .custom-radio-filled-md-center input,
-    .custom-checkbox-filled-md-center .custom-control-label::before,
-    .custom-checkbox-filled-md-center .custom-control-label::after,
-    .custom-checkbox-filled-md-center input {
-        top: 50%;
-        left: 50%;
-        margin-top: -0.5rem;
-        margin-left: -0.5rem;
-    }
 
     .matrix tbody tr:nth-of-type(odd) {
-        background: #F0F4FF;
+        background: var(--light);
     }
 
     .matrix tbody tr:nth-of-type(even) {
-        background: #ddedfd;
+        background: var(--muted);
     }
 
     .custom-radio-filled-md-center .form-check,
@@ -290,28 +92,4 @@ footer .progress {
         text-indent: -9999px;
     }
 
-    .custom-radio-filled-md-center .custom-control-label,
-    .custom-checkbox-filled-md-center .custom-control-label {
-        border-radius: 0;
-        height: 100%;
-        background: none !important;
-    }
-
-    .custom-checkbox-filled-md-center {
-        height: 100%;
-    }
-
-    .custom-checkbox-filled-md-center .form-check {
-        height: 100%;
-    }
-
-    .linear-scale__radio-holder {
-        display: block;
-        text-align: center;
-    }
-
-    .linear-scale__radio-holder .col {
-        display: inline-block;
-        width: auto;
-    }
 }
