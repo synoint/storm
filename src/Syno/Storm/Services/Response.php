@@ -60,6 +60,21 @@ class Response
     }
 
     /**
+     * @param int $questionId
+     *
+     * @return array
+     */
+    public function getAllByQuestionId(int $questionId)
+    {
+        return $this->dm
+            ->createQueryBuilder(Document\Response::class)
+            ->field('answers.questionId')
+            ->equals($questionId)
+            ->getQuery()
+            ->execute();
+    }
+
+    /**
      * @param int $surveyId
      *
      * @return int
