@@ -16,7 +16,7 @@ footer .progress-bar {
 }
 
 footer .progress {
-    background-color: var(--white);
+    background-color: #999;
 }
 
 
@@ -67,7 +67,7 @@ footer .progress {
 }
 
 .custom-radio-filled .custom-control-input:checked~.custom-control-label::after {
-    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='-4 -4 8 8'%3e%3ccircle r='3' fill='black'/%3e%3c/svg%3e") !important;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='-5 -5 8 8'%3e%3ccircle r='3' fill='black'/%3e%3c/svg%3e") !important;
 }
 
 .custom-checkbox-filled .custom-control-input:checked~.custom-control-label::after {

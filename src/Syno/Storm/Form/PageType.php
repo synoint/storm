@@ -227,19 +227,40 @@ class PageType extends AbstractType
         /** @var Document\Answer $answer */
         foreach ($question->getAnswers() as $answer) {
             if ($answer->getAnswerFieldTypeId() === Document\Answer::FIELD_TYPE_TEXT) {
-                $builder->add($question->getInputName($answer->getAnswerId()), TextType::class, [
-                    'attr'        => ['class' => 'custom-control custom-text'],
-                    'required'    => $question->isRequired(),
-                    'data'        => $respondentAnswers[$answer->getAnswerId()],
-                    'constraints' => [$question->isRequired() ? new NotBlank(['message' => $this->translator->trans('error.cant.be.blank'), 'groups' => ['form_validation_only']]) : null],
-                ]);
+                $options = [
+                    'attr'     => ['class' => 'custom-control custom-text'],
+                    'required' => $question->isRequired(),
+                    'data'     => $respondentAnswers[$answer->getAnswerId()] ?? ''
+                ];
+
+                if ($question->isRequired()) {
+                    $options['constraints'] = new NotBlank(
+                        [
+                            'message' => $this->translator->trans('error.cant.be.blank'),
+                            'groups' => ['form_validation_only']
+                        ]
+                    );
+                }
+                $builder->add($question->getInputName($answer->getAnswerId()), TextType::class, $options);
+
             } elseif ($answer->getAnswerFieldTypeId() === Document\Answer::FIELD_TYPE_TEXTAREA) {
-                $builder->add($question->getInputName($answer->getAnswerId()), TextareaType::class, [
-                    'attr'        => ['class' => 'custom-control custom-textarea'],
-                    'required'    => $question->isRequired(),
-                    'data'        => $respondentAnswers[$answer->getAnswerId()],
-                    'constraints' => [$question->isRequired() ? new NotBlank(['message' => $this->translator->trans('error.cant.be.blank'), 'groups' => ['form_validation_only']]) : null]
-                ]);
+
+                $options = [
+                    'attr'     => ['class' => 'custom-control custom-textarea'],
+                    'required' => $question->isRequired(),
+                    'data'     => $respondentAnswers[$answer->getAnswerId()] ?? '',
+                ];
+
+                if ($question->isRequired()) {
+                    $options['constraints'] = new NotBlank(
+                        [
+                            'message' => $this->translator->trans('error.cant.be.blank'),
+                            'groups' => ['form_validation_only']
+                        ]
+                    );
+                }
+
+                $builder->add($question->getInputName($answer->getAnswerId()), TextareaType::class, $options);
             }
         }
     }
