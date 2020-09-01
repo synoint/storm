@@ -11,6 +11,13 @@
 {% block body %}
 
     <div class="container page-content">
+
+        {% if 'mediametrie' == survey.config.colorTheme %}
+            <header class="text-center mb-4">
+                <img class="mediametrie_logo" src="{{ asset('build/images/logo.svg') }}" alt="Mediametrie" style="height: 80px" />
+            </header>
+        {% endif %}
+
         <div class="row container-sm justify-content-md-center ml-0">
 
             <div class="questions">

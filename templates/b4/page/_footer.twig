@@ -1,7 +1,11 @@
 <footer>
     <div class="position-absolute d-none d-lg-block d-xl-block">
-        <p class="mt-3 text-white powered-by">Powered by</p>
-        <img src="{{ asset('build/images/syno_white.png') }}" alt="Syno International Logo - White" class="position-absolute ml-3 footer-logo">
+        {% if 'mediametrie' == survey.config.colorTheme %}
+            <img src="{{ asset('build/images/logo_white.png') }}" alt="Mediametrie Logo - White" class="position-absolute mt-3 ml-3 footer-logo">
+        {% else %}
+            <p class="mt-3 text-white powered-by">Powered by</p>
+            <img src="{{ asset('build/images/syno_white.png') }}" alt="Syno International Logo - White" class="position-absolute ml-3 footer-logo">
+        {% endif %}
     </div>
     <div class="container">
         <div class="progress">

@@ -27,12 +27,13 @@ Encore
 	.addEntry("b4.default", "./assets/b4/default/index.js")
 	.addEntry("b4.pastel", "./assets/b4/pastel/index.js")
 	.addEntry("b4.classic", "./assets/b4/classic/index.js")
+	.addEntry("b4.mediametrie", "./assets/b4/mediametrie/index.js")
 	.addEntry("b4.page", "./assets/b4/page/index.js")
 	.addEntry("b4.page.debug", "./assets/b4/page/debug.js")
 	.addEntry("media.player", "./assets/media_player/script.js")
 
 	// When enabled, Webpack "splits" your files into smaller pieces for greater optimization.
-	.splitEntryChunks()
+	//.splitEntryChunks()
 
 	// will require an extra script tag for runtime.js
 	// but, you probably want this, unless you're building a single-page app
