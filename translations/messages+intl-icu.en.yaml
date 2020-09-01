@@ -1,10 +1,10 @@
 page.button.back: Back
 page.button.next: Next
-survey.title.default: 'Surveys'
+survey.title.default: 'Survey'
 survey.title.first_question: 'Welcome - First Question'
 survey.title.first_questions: 'Welcome - First Questions'
 survey.title.almost_done: 'Almost done'
-survey.title.1_3_completed: '1/3 completed '
+survey.title.1_3_completed: '1/3 completed'
 survey.title.1_2_completed: '1/2 completed'
 survey.title.2_3_completed: '2/3 completed'
 privacy_consent.page_title: 'Privacy consent'

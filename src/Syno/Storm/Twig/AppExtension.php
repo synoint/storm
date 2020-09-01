@@ -53,7 +53,7 @@ class AppExtension extends AbstractExtension
         }
 
         $progress = $this->surveyService->getProgress($survey, $page);
-        $text     = '';
+        $text     = 'survey.title.default';
         if ($progress >= 100) {
             $text = 'survey.thank_you';
         } elseif ($progress >= 80) {
