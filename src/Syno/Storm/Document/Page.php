@@ -16,6 +16,7 @@ class Page
     use TranslatableTrait;
 
     const VIDEO_TAG = '</video>';
+    const AUDIO_TAG = '</audio>';
 
     /**
      * @ODM\Id
@@ -179,9 +180,9 @@ class Page
     /**
      * @return bool
      */
-    public function hasVideo()
+    public function hasMedia()
     {
-        return strpos($this->getContent(), self::VIDEO_TAG) !== false;
+        return strpos($this->getContent(), self::VIDEO_TAG) !== false || strpos($this->getContent(), self::AUDIO_TAG) !== false;
     }
 
     /**
