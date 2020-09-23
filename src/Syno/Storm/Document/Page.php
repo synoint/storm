@@ -204,14 +204,4 @@ class Page
 
         return $this;
     }
-
-    public function sortQuestionsAndAnswers()
-    {
-        $this->questions = $this->sortQuestions();
-        /** @var Question $question */
-        foreach ($this->questions as $question) {
-            $question->sortOutAnswers();
-        }
-    }
-
 }
