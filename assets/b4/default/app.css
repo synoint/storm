@@ -28,7 +28,7 @@ footer .progress {
 
 .linear-scale__button:hover,
 .linear-scale__button.active {
-    color: var(--white);
+    color: var(--white) !important;
 }
 
 
