@@ -1,8 +1,17 @@
 {
+    "jean85/pretty-package-versions": {
+        "version": "1.5.1"
+    },
     "jwadhams/json-logic-php": {
         "version": "1.4.1"
     },
     "php": {
         "version": "7.3"
+    },
+    "symfony/polyfill-intl-normalizer": {
+        "version": "v1.18.1"
+    },
+    "symfony/polyfill-php80": {
+        "version": "v1.18.1"
     }
 }

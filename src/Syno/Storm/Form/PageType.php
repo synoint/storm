@@ -101,7 +101,8 @@ class PageType extends AbstractType
             'required'    => $question->isRequired(),
             'data'        => $questionAnswerIds ? reset($questionAnswerIds) : null,
             'expanded'    => !$question->containsSelectField(),
-            'constraints' => [$question->isRequired() ? new NotBlank(['message' => $this->translator->trans('error.one.option.required'), 'groups' => ['form_validation_only']]) : null],
+            'placeholder' => null,
+            'constraints' => $question->isRequired() ? [new NotBlank(['message' => $this->translator->trans('error.one.option.required'), 'groups' => ['form_validation_only']])] : null,
             'attr'        => ['class' => 'custom-control custom-radio custom-radio-filled'],
             'choice_attr' => function () {
                 return ['class' => 'custom-control-input'];
@@ -124,7 +125,8 @@ class PageType extends AbstractType
         $builder->add($question->getInputName(), ChoiceType::class, [
                 'choices'     => $question->getChoices(),
                 'required'    => $question->isRequired(),
-                'constraints' => [$question->isRequired() ? new Count(['min' => 1, 'minMessage' => $this->translator->trans('error.at.leat.one.option.required'), 'groups' => ['form_validation_only']]) : null],
+                'placeholder' => null,
+                'constraints' => $question->isRequired() ? [new Count(['min' => 1, 'minMessage' => $this->translator->trans('error.at.leat.one.option.required'), 'groups' => ['form_validation_only']])] : null,
                 'expanded'    => true,
                 'multiple'    => true,
                 'data'        => $questionAnswerIds,
@@ -208,8 +210,9 @@ class PageType extends AbstractType
                 'multiple'    => $multiple,
                 'expanded'    => true,
                 'data'        => $data,
+                'placeholder' => null,
                 'required'    => $question->isRequired(),
-                'constraints' => [$question->isRequired() ? $constraint : null],
+                'constraints' => $question->isRequired() ? [$constraint] : null,
                 'choice_attr' => function () {
                     return ['class' => 'custom-control-input'];
                 },
@@ -278,7 +281,7 @@ class PageType extends AbstractType
             'choices'     => $question->getAnswers(),
             'required'    => $question->isRequired(),
             'data'        => $questionAnswerIds ? $question->getAnswer(reset($questionAnswerIds)) : null,
-            'constraints' => [$question->isRequired() ? new NotBlank(['message' => $this->translator->trans('error.one.option.required'), 'groups' => ['form_validation_only']]) : null],
+            'constraints' => $question->isRequired() ? [new NotBlank(['message' => $this->translator->trans('error.one.option.required'), 'groups' => ['form_validation_only']])] : null,
             'label'       => $question->getText()
         ]);
     }
@@ -311,7 +314,7 @@ class PageType extends AbstractType
                 'choices'     => $array,
                 'data'        => $data,
                 'required'    => $question->isRequired(),
-                'constraints' => [$question->isRequired() ? new NotBlank(['message' => $this->translator->trans('error.one.option.in.each.row.required'), 'groups' => ['form_validation_only']]) : null],
+                'constraints' => $question->isRequired() ? [new NotBlank(['message' => $this->translator->trans('error.one.option.in.each.row.required'), 'groups' => ['form_validation_only']])] : null,
                 'label'       => $row
             ]);
         }
