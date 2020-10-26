@@ -9,7 +9,7 @@ git push;
 composer install;
 yarn install;
 yarn encore prod;
-eb deploy synostorm-live-php73;
+eb deploy synostorm-74;
 # Fix ODM permission bug
 chmod -R 777 ./var/cache/dev/doctrine
 echo "deployed!";
