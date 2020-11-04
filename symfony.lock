@@ -13,5 +13,8 @@
     },
     "symfony/polyfill-php80": {
         "version": "v1.18.1"
+    },
+    "webimpress/safe-writer": {
+        "version": "2.1.0"
     }
 }
