@@ -14,6 +14,9 @@
     "symfony/polyfill-php80": {
         "version": "v1.18.1"
     },
+    "syno/cint": {
+        "version": "0.12.6"
+    },
     "webimpress/safe-writer": {
         "version": "2.1.0"
     }

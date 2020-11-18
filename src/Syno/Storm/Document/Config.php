@@ -44,6 +44,11 @@ class Config implements JsonSerializable
      */
     public $colorTheme = 'default';
 
+    /**
+     * @ODM\Field(type="string")
+     */
+    public $cintDemandApiKey;
+
     public function __construct()
     {
         $this->theme      = self::DEFAULT_THEME;
@@ -57,7 +62,8 @@ class Config implements JsonSerializable
             'debugToken'            => $this->debugToken,
             'privacyConsentEnabled' => $this->privacyConsentEnabled,
             'theme'                 => $this->theme,
-            'colorTheme'            => $this->colorTheme
+            'colorTheme'            => $this->colorTheme,
+            'cintDemandApiKey'      => $this->cintDemandApiKey
         ];
     }
 }

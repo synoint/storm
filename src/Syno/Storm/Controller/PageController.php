@@ -99,7 +99,12 @@ class PageController extends AbstractController
                 foreach ($questions as $question) {
                     $answers = $this->responseRequestHandler->extractQuestionAnswers($question, $form->getData());
                     $response->addAnswer(new Document\ResponseAnswer($question->getQuestionId(), $answers));
+                }
 
+                $this->responseRequestHandler->saveResponse($response);
+                $this->responseEventLogger->log(ResponseEventLogger::ANSWERS_SAVED, $response);
+
+                foreach($questions as $question){
                     if (!empty($question->getScreenoutConditions())) {
                         $triggeredScreenout = $this->conditionService->applyScreenoutRule($response, $question->getScreenoutConditions());
                         if (!empty($triggeredScreenout)) {
@@ -124,9 +129,9 @@ class PageController extends AbstractController
                         }
                     }
                 }
-                $this->responseRequestHandler->saveResponse($response);
 
-                $this->responseEventLogger->log(ResponseEventLogger::ANSWERS_SAVED, $response);
+
+
 
                 if ($redirect !== null) {
                     return $redirect;
@@ -229,7 +234,7 @@ class PageController extends AbstractController
 
                 $response->setQualityScreenedOut(true);
 
-                $responseLogType    = ResponseEventLogger::SURVEY_SCREENOUTED;
+                $responseLogType    = ResponseEventLogger::SURVEY_QUALITY_SCREENOUTED;
                 $logType            = SurveyEventLogger::QUALITY_SCREENOUT;
                 $url                = $survey->getQualityScreenoutUrl($response->getSource());
                 $redirect           = $this->redirectToRoute('survey.quality_screenout', ['surveyId' => $survey->getSurveyId()]);
@@ -238,7 +243,7 @@ class PageController extends AbstractController
 
                 $response->setScreenedOut(true);
 
-                $responseLogType    = ResponseEventLogger::SURVEY_QUALITY_SCREENOUTED;
+                $responseLogType    = ResponseEventLogger::SURVEY_SCREENOUTED;
                 $logType            = SurveyEventLogger::SCREENOUT;
                 $url                = $survey->getScreenoutUrl($response->getSource());
                 $redirect           = $this->redirectToRoute('survey.screenout', ['surveyId' => $survey->getSurveyId()]);

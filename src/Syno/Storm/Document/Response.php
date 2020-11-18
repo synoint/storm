@@ -544,6 +544,17 @@ class Response implements JsonSerializable
     }
 
     /**
+     * @param string $code
+     * @return ?Parameter
+     */
+    public function getParameter(string $code): ?Parameter
+    {
+        return $this->parameters->filter(function(Parameter $parameter) use ($code) {
+            return $parameter->getCode() == $code;
+        })->current();
+    }
+
+    /**
      * @return null|int
      */
     public function getSource()
