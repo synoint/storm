@@ -12,7 +12,6 @@ class CintDemand
     const STATUS_SCREENOUT = 2;
     const STATUS_QUOTA_FULL = 3;
     const STATUS_QUALITY_TERMINATE = 4;
-    const STATUS_TIMED_OUT = 6;
 
     const GUID_PARAMETER = 'RID';
 
@@ -38,47 +37,13 @@ class CintDemand
     /**
      * @param Document\Survey $survey
      * @param Document\Response $surveyResponse
-     */
-    public function submitComplete(Document\Response $surveyResponse, Document\Survey $survey)
-    {
-        $this->submitStatus($survey, $surveyResponse->getParameter(self::GUID_PARAMETER), self::STATUS_COMPLETE);
-    }
-
-    /**
-     * @param Document\Response $surveyResponse
-     * @param Document\Survey $survey
-     */
-    public function submitScreenOut(Document\Response $surveyResponse, Document\Survey $survey)
-    {
-        $this->submitStatus($survey, $surveyResponse->getParameter(self::GUID_PARAMETER), self::STATUS_SCREENOUT);
-    }
-
-    /**
-     * @param Document\Response $surveyResponse
-     * @param Document\Survey $survey
-     */
-    public function submitQualityScreenOut(Document\Response $surveyResponse, Document\Survey $survey)
-    {
-        $this->submitStatus($survey, $surveyResponse->getParameter(self::GUID_PARAMETER), self::STATUS_QUALITY_TERMINATE);
-    }
-
-    /**
-     * @param Document\Response $surveyResponse
-     * @param Document\Survey $survey
-     */
-    public function submitQuotaFull(Document\Response $surveyResponse, Document\Survey $survey)
-    {
-        $this->submitStatus($survey, $surveyResponse->getParameter(self::GUID_PARAMETER), self::STATUS_QUOTA_FULL);
-    }
-
-    /**
-     * @param Document\Survey $survey
-     * @param Document\Parameter $guid
      * @param int $statusId
      */
-    private function submitStatus(Document\Survey $survey, Document\Parameter $guid, int $statusId)
+    public function submitStatus(Document\Survey $survey, Document\Response $surveyResponse, int $statusId)
     {
         $surveyConfig = $survey->getConfig();
+
+        $guid = $surveyResponse->getParameter(self::GUID_PARAMETER);
 
         if($surveyConfig->cintDemandApiKey && $guid->getValue()) {
             $this->clientFactory->loadClientApiKey($surveyConfig->cintDemandApiKey);

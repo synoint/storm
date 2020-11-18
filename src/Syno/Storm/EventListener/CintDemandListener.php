@@ -65,20 +65,26 @@ class CintDemandListener implements EventSubscriberInterface
             return;
         }
 
+        $outcomeStatus = null;
+
         if ($surveyResponse->isCompleted()) {
-            $this->cintDemandService->submitComplete($surveyResponse, $survey);
+            $outcomeStatus = $this->cintDemandService::STATUS_COMPLETE;
         }
 
         if ($surveyResponse->isScreenedOut()) {
-            $this->cintDemandService->submitScreenOut($surveyResponse, $survey);
+            $outcomeStatus = $this->cintDemandService::STATUS_SCREENOUT;
         }
 
         if ($surveyResponse->isQualityScreenedOut()) {
-            $this->cintDemandService->submitQualityScreenOut($surveyResponse, $survey);
+            $outcomeStatus = $this->cintDemandService::STATUS_QUALITY_TERMINATE;
         }
 
         if ($surveyResponse->isQuotaFull()) {
-            $this->cintDemandService->submitQuotaFull($surveyResponse, $survey);
+            $outcomeStatus = $this->cintDemandService::STATUS_QUOTA_FULL;
+        }
+
+        if($outcomeStatus) {
+            $this->cintDemandService->submitStatus($survey, $surveyResponse, $outcomeStatus);
         }
     }
 
