@@ -35,12 +35,3 @@ services:
     Syno\Storm\Services\Response:
         arguments:
             $responseIdPrefix: '%env(APP_REGION)%'
-
-    Syno\Cint\Demand\Client:
-        class: Syno\Cint\Demand\Client
-        factory: '@Cint\Demand\Factories\ClientFactory'
-        arguments:
-            $apiDomain:  '%env(CINT_DEMAND_API_DOMAIN)%'
-
-imports:
-    - { resource: ../src/Cint/services.yaml }
