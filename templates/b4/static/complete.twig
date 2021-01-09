@@ -1,0 +1,15 @@
+{% extends '/b4/layout/static.twig' %}
+
+{% block title %}
+    {{ 'survey.thank_you'|trans }}
+{% endblock %}
+
+{% block body %}
+    <svg class="i-checkmark text-success" viewBox="0 0 32 32" width="64" height="64" fill="none" stroke="currentcolor" stroke-linecap="round" stroke-linejoin="round" stroke-width="3">
+        <path d="M2 20 L12 28 30 4"></path>
+    </svg>
+    <h1 class="my-5 display-4">
+        {{ 'survey.thank_you'|trans }}
+    </h1>
+    <p>{{ 'survey_completed.answers_received'|trans }}</p>
+{% endblock %}

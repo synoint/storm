@@ -4,15 +4,13 @@ namespace Syno\Storm\EventListener;
 
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
-use Symfony\Component\HttpKernel\Event\ResponseEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\Routing\RouterInterface;
+use Syno\Storm\Document;
 use Syno\Storm\RequestHandler\Response;
 use Syno\Storm\RequestHandler\Survey;
 use Syno\Storm\Traits\RouteAware;
-use Syno\Storm\Document;
 
 class SurveyListener implements EventSubscriberInterface
 {
@@ -39,7 +37,6 @@ class SurveyListener implements EventSubscriberInterface
 
     public function onKernelRequest(RequestEvent $event)
     {
-        /** @var Request $request */
         $request = $event->getRequest();
 
         if (!$event->isMasterRequest() ||
@@ -87,7 +84,7 @@ class SurveyListener implements EventSubscriberInterface
             return;
         }
 
-        $event->setResponse(new RedirectResponse($this->router->generate('survey.unavailable')));
+        $event->setResponse(new RedirectResponse($this->router->generate('static.unavailable')));
     }
 
     /**

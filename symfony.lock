@@ -8,6 +8,12 @@
     "php": {
         "version": "7.3"
     },
+    "symfony/inflector": {
+        "version": "v5.0.11"
+    },
+    "symfony/mime": {
+        "version": "v5.0.11"
+    },
     "symfony/polyfill-intl-normalizer": {
         "version": "v1.18.1"
     },

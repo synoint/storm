@@ -1,0 +1,12 @@
+{% extends '/b4/layout/static.twig' %}
+
+{% block title %}{{ 'error_page.survey_unavailable'|trans }}{% endblock %}
+
+{% block body %}
+
+    <svg id="i-alert" class="text-secondary" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="64" height="64" fill="none" stroke="currentcolor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5">
+        <path d="M16 3 L30 29 2 29 Z M16 11 L16 19 M16 23 L16 25" />
+    </svg>
+    <p class="mt-5">{{ 'error_page.survey_unavailable'|trans }}</p>
+
+{% endblock %}

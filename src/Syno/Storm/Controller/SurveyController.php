@@ -195,14 +195,4 @@ class SurveyController extends AbstractController
             'survey' => $survey
         ]);
     }
-
-    /**
-     * @Route("%app.route_prefix%/s/unavailable", name="survey.unavailable")
-     *
-     * @return Response|RedirectResponse
-     */
-    public function unavailable()
-    {
-        return $this->render(Document\Config::DEFAULT_THEME . '/survey/unavailable.twig');
-    }
 }
