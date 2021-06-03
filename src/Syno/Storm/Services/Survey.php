@@ -38,6 +38,18 @@ class Survey
         $this->dm->flush();
     }
 
+    public function find(int $surveyId):? array
+    {
+        return $this->dm->getRepository(Document\Survey::class)->findBy(
+            [
+                'surveyId' => $surveyId
+            ],
+            [
+                'version' => 'DESC'
+            ]
+        );
+    }
+
     /**
      * @param int $surveyId
      * @param int $version

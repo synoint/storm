@@ -101,6 +101,22 @@ class Question
     private $questionTypeId;
 
     /**
+     * @var int
+     *
+     * @ODM\Field(type="int")
+     * @Assert\Positive
+     */
+    private $scoreModuleId;
+
+    /**
+     * @var int
+     *
+     * @ODM\Field(type="int")
+     * @Assert\Positive
+     */
+    private $scoreModuleParentId;
+
+    /**
      * @var Collection
      *
      * @ODM\EmbedMany(targetDocument=Answer::class)
@@ -348,6 +364,46 @@ class Question
     public function setQuestionTypeId(int $questionTypeId): self
     {
         $this->questionTypeId = $questionTypeId;
+
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getScoreModuleId():? int
+    {
+        return $this->scoreModuleId;
+    }
+
+    /**
+     * @param int $scoreModuleId
+     *
+     * @return Question
+     */
+    public function setScoreModuleId(int $scoreModuleId): self
+    {
+        $this->scoreModuleId = $scoreModuleId;
+
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getScoreModuleParentId():? int
+    {
+        return $this->scoreModuleParentId;
+    }
+
+    /**
+     * @param int $scoreModuleParentId
+     *
+     * @return Question
+     */
+    public function setScoreModuleParentId(int $scoreModuleParentId): self
+    {
+        $this->scoreModuleParentId = $scoreModuleParentId;
 
         return $this;
     }

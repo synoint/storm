@@ -8,6 +8,9 @@
     "php": {
         "version": "7.3"
     },
+    "symfony/deprecation-contracts": {
+        "version": "v2.2.0"
+    },
     "symfony/inflector": {
         "version": "v5.0.11"
     },

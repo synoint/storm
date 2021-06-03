@@ -25,6 +25,8 @@ class QuestionType extends AbstractType
             ->add('randomizeRows', CheckboxType::class)
             ->add('randomizeColumns', CheckboxType::class)
             ->add('questionTypeId', IntegerType::class)
+            ->add('scoreModuleId', IntegerType::class)
+            ->add('scoreModuleParentId', IntegerType::class)
 
             ->add('answers', CollectionType::class, [
                 'entry_type' => AnswerType::class,

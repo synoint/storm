@@ -89,6 +89,31 @@ class SurveyController extends AbstractController implements TokenAuthenticatedC
 
     /**
      * @param int $surveyId
+     *
+     * @Route(
+     *     "/{surveyId}",
+     *     name="storm_api.v1.survey.retrieve.all_version",
+     *     requirements={"id"="\d+"},
+     *     methods={"GET"}
+     * )
+     *
+     * @return JsonResponse
+     */
+    public function retrieveAllVersions(int $surveyId)
+    {
+        $survey = $this->surveyService->find($surveyId);
+        if (!$survey) {
+            return $this->json(
+                sprintf('Survey with ID: %d was not found', $surveyId),
+                404
+            );
+        }
+
+        return $this->json($survey);
+    }
+
+    /**
+     * @param int $surveyId
      * @param int $version
      *
      * @Route(
