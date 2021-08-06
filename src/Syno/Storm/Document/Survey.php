@@ -17,10 +17,10 @@ class Survey implements JsonSerializable
 {
     use TranslatableTrait;
 
-    const URL_TYPE_SCREENOUT            = 'screenout';
-    const URL_TYPE_QUALITY_SCREENOUT    = 'quality_screenout';
-    const URL_TYPE_COMPLETE             = 'complete';
-    const URL_TYPE_QUOTA_FULL           = 'quota_full';
+    const URL_TYPE_SCREENOUT = 'screenout';
+    const URL_TYPE_QUALITY_SCREENOUT = 'quality_screenout';
+    const URL_TYPE_COMPLETE = 'complete';
+    const URL_TYPE_QUOTA_FULL = 'quota_full';
 
     /** @ODM\Id */
     private $id;
@@ -101,7 +101,7 @@ class Survey implements JsonSerializable
     public function __construct()
     {
         $this->pages        = new ArrayCollection();
-        $this->parameters = new ArrayCollection();
+        $this->parameters   = new ArrayCollection();
         $this->urls         = new ArrayCollection();
         $this->languages    = new ArrayCollection();
         $this->translations = new ArrayCollection();
@@ -110,15 +110,14 @@ class Survey implements JsonSerializable
     public function jsonSerialize()
     {
         return [
-            'id'           => $this->id,
-            'surveyId'     => $this->surveyId,
-            'version'      => $this->version,
-            'published'    => $this->published,
-            'config'       => $this->config,
-            'parameters'   => $this->parameters,
-            'urls'         => $this->urls,
-            'pages'        => $this->pages
-
+            'id' => $this->id,
+            'surveyId' => $this->surveyId,
+            'version' => $this->version,
+            'published' => $this->published,
+            'config' => $this->config,
+            'parameters' => $this->parameters,
+            'urls' => $this->urls,
+            'pages' => $this->pages
         ];
     }
 
@@ -145,7 +144,7 @@ class Survey implements JsonSerializable
     /**
      * @return int
      */
-    public function getSurveyId():? int
+    public function getSurveyId(): ?int
     {
         return $this->surveyId;
     }
@@ -165,7 +164,7 @@ class Survey implements JsonSerializable
     /**
      * @return int
      */
-    public function getVersion():? int
+    public function getVersion(): ?int
     {
         return $this->version;
     }
@@ -251,7 +250,7 @@ class Survey implements JsonSerializable
         $result = null;
         /** @var Page $page */
         foreach ($this->pages as $page) {
-            foreach($page->getQuestions() as $question){
+            foreach ($page->getQuestions() as $question) {
                 if ($questionId === $question->getQuestionId()) {
                     $result = $page;
                     break;
@@ -270,7 +269,7 @@ class Survey implements JsonSerializable
     public function getNextPage(int $pageId)
     {
         $result = null;
-        $pick = false;
+        $pick   = false;
         /** @var Page $page */
         foreach ($this->pages as $page) {
             if ($pick) {
@@ -298,7 +297,7 @@ class Survey implements JsonSerializable
     /**
      * @return Config
      */
-    public function getConfig():? Config
+    public function getConfig(): ?Config
     {
         return $this->config;
     }
@@ -429,7 +428,7 @@ class Survey implements JsonSerializable
     /**
      * @return string|null
      */
-    public function getPrimaryLanguageLocale():? string
+    public function getPrimaryLanguageLocale(): ?string
     {
         /** @var Language $language */
         foreach ($this->languages as $language) {

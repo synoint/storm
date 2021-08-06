@@ -47,8 +47,7 @@ class PageController extends AbstractController
         SurveyEventLogger $surveyEventLogger,
         Services\Condition $conditionService,
         Services\Page $pageService
-    )
-    {
+    ) {
         $this->responseRequestHandler = $responseRequestHandler;
         $this->responseEventLogger    = $responseEventLogger;
         $this->surveyEventLogger      = $surveyEventLogger;
@@ -77,16 +76,16 @@ class PageController extends AbstractController
         Document\Page $page,
         Document\Response $response,
         Request $request
-    ): Response
-    {
-        $redirect = null;
+    ): Response {
+        $redirect  = null;
         $questions = $this->conditionService->filterQuestionsByShowCondition($page->getQuestions(), $response);
 
-        $respondentAnswers = $request->request->get('page') === null ? $response->getLastSavedAnswers() : $this->responseRequestHandler->extractAnswers($questions, $request->request->get('page'));
+        $respondentAnswers = $request->request->get('page') === null ? $response->getLastSavedAnswers() : $this->responseRequestHandler->extractAnswers($questions,
+            $request->request->get('page'));
 
         $form = $this->createForm(PageType::class, null,
             [
-                'questions'         => $questions,
+                'questions' => $questions,
                 'respondentAnswers' => $respondentAnswers
             ]);
         $form->handleRequest($request);
@@ -104,24 +103,28 @@ class PageController extends AbstractController
                 $this->responseRequestHandler->saveResponse($response);
                 $this->responseEventLogger->log(ResponseEventLogger::ANSWERS_SAVED, $response);
 
-                foreach($questions as $question){
+                foreach ($questions as $question) {
                     if (!empty($question->getScreenoutConditions())) {
-                        $triggeredScreenout = $this->conditionService->applyScreenoutRule($response, $question->getScreenoutConditions());
+                        $triggeredScreenout = $this->conditionService->applyScreenoutRule($response,
+                            $question->getScreenoutConditions());
                         if (!empty($triggeredScreenout)) {
-                            $redirect = $this->screenoutSurveyAndRedirect($request, $response, $survey, $triggeredScreenout);
+                            $redirect = $this->screenoutSurveyAndRedirect($request, $response, $survey,
+                                $triggeredScreenout);
                             break;
                         }
                     }
 
                     if (!empty($question->getJumpToConditions())) {
-                        $firedJumpCondition = $this->conditionService->applyJumpToRule($response, $question->getJumpToConditions());
+                        $firedJumpCondition = $this->conditionService->applyJumpToRule($response,
+                            $question->getJumpToConditions());
                         if (!empty($firedJumpCondition)) {
                             switch ($firedJumpCondition->getDestinationType()) {
                                 case Document\JumpToCondition::DESTINATION_TYPE_END_OF_SURVEY:
                                     $redirect = $this->completeSurveyAndRedirect($request, $response, $survey);
                                     break;
                                 case Document\JumpToCondition::DESTINATION_TYPE_QUESTION:
-                                    $redirect = $this->redirectSurveyToJump($survey, $firedJumpCondition->getDestination());
+                                    $redirect = $this->redirectSurveyToJump($survey,
+                                        $firedJumpCondition->getDestination());
                                     break;
                             }
 
@@ -129,9 +132,6 @@ class PageController extends AbstractController
                         }
                     }
                 }
-
-
-
 
                 if ($redirect !== null) {
                     return $redirect;
@@ -147,7 +147,7 @@ class PageController extends AbstractController
                     'page.index',
                     [
                         'surveyId' => $survey->getSurveyId(),
-                        'pageId'   => $nextPage->getPageId()
+                        'pageId' => $nextPage->getPageId()
                     ]
                 );
             }
@@ -159,13 +159,13 @@ class PageController extends AbstractController
 
         return $this->render(
             $survey->getConfig()->theme . '/page/display.twig', [
-            'survey'             => $survey,
-            'page'               => $page,
-            'questions'          => $questions,
-            'response'           => $response,
-            'form'               => $form->createView(),
-            'backButtonDisabled' => $survey->isFirstPage($page->getPageId())
-        ]
+                'survey' => $survey,
+                'page' => $page,
+                'questions' => $questions,
+                'response' => $response,
+                'form' => $form->createView(),
+                'backButtonDisabled' => $survey->isFirstPage($page->getPageId())
+            ]
         );
     }
 
@@ -220,33 +220,38 @@ class PageController extends AbstractController
     }
 
     /**
-     * @param Request $request
-     * @param Document\Response $response
-     * @param Document\Survey   $survey
-     * @param Document\ScreenoutCondition   $triggeredScreenout
+     * @param Request                     $request
+     * @param Document\Response           $response
+     * @param Document\Survey             $survey
+     * @param Document\ScreenoutCondition $triggeredScreenout
      *
      * @return RedirectResponse
      */
-    private function screenoutSurveyAndRedirect(Request $request, Document\Response $response, Document\Survey $survey, Document\ScreenoutCondition $triggeredScreenout)
-    {
+    private function screenoutSurveyAndRedirect(
+        Request $request,
+        Document\Response $response,
+        Document\Survey $survey,
+        Document\ScreenoutCondition $triggeredScreenout
+    ) {
         switch ($triggeredScreenout->getType()) {
             case Document\ScreenoutCondition::TYPE_QUALITY_SCREENOUT:
 
                 $response->setQualityScreenedOut(true);
 
-                $responseLogType    = ResponseEventLogger::SURVEY_QUALITY_SCREENOUTED;
-                $logType            = SurveyEventLogger::QUALITY_SCREENOUT;
-                $url                = $survey->getQualityScreenoutUrl($response->getSource());
-                $redirect           = $this->redirectToRoute('survey.quality_screenout', ['surveyId' => $survey->getSurveyId()]);
+                $responseLogType = ResponseEventLogger::SURVEY_QUALITY_SCREENOUTED;
+                $logType         = SurveyEventLogger::QUALITY_SCREENOUT;
+                $url             = $survey->getQualityScreenoutUrl($response->getSource());
+                $redirect        = $this->redirectToRoute('survey.quality_screenout',
+                    ['surveyId' => $survey->getSurveyId()]);
                 break;
             default:
 
                 $response->setScreenedOut(true);
 
-                $responseLogType    = ResponseEventLogger::SURVEY_SCREENOUTED;
-                $logType            = SurveyEventLogger::SCREENOUT;
-                $url                = $survey->getScreenoutUrl($response->getSource());
-                $redirect           = $this->redirectToRoute('survey.screenout', ['surveyId' => $survey->getSurveyId()]);
+                $responseLogType = ResponseEventLogger::SURVEY_SCREENOUTED;
+                $logType         = SurveyEventLogger::SCREENOUT;
+                $url             = $survey->getScreenoutUrl($response->getSource());
+                $redirect        = $this->redirectToRoute('survey.screenout', ['surveyId' => $survey->getSurveyId()]);
                 break;
         }
 
@@ -267,7 +272,7 @@ class PageController extends AbstractController
 
     /**
      * @param Document\Survey $survey
-     * @param int $questionId
+     * @param int             $questionId
      *
      * @return RedirectResponse
      */
@@ -279,7 +284,7 @@ class PageController extends AbstractController
             return $this->redirectToRoute(
                 'page.index', [
                     'surveyId' => $survey->getSurveyId(),
-                    'pageId'   => $jumpPage->getPageId()
+                    'pageId' => $jumpPage->getPageId()
                 ]
             );
         }

@@ -28,6 +28,7 @@ Encore
 	.addEntry("b4.pastel", "./assets/b4/pastel/index.js")
 	.addEntry("b4.classic", "./assets/b4/classic/index.js")
 	.addEntry("b4.mediametrie", "./assets/b4/mediametrie/index.js")
+	.addEntry("b4.ocean", "./assets/b4/ocean/index.js")
 	.addEntry("b4.page", "./assets/b4/page/index.js")
 	.addEntry("b4.page.debug", "./assets/b4/page/debug.js")
 	.addEntry("media.player", "./assets/media_player/script.js")
