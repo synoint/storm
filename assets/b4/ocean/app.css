@@ -24,6 +24,7 @@
 
 button.btn-primary, button.btn-outline-primary {
     background-color: var(--secondary);
+    margin-bottom: 5px;
     transition: background-color .2s;
     color: var(--white);
     border-radius: 0;
@@ -84,8 +85,14 @@ footer .progress {
 
 .custom-radio-filled .custom-control-label,
 .custom-checkbox-filled .custom-control-label {
-    /*background: var(--light);*/
     color: var(--dark);
+    padding-top: 0;
+    padding-bottom: 2px;
+}
+
+.custom-checkbox-filled .form-check, .custom-radio-filled .form-check {
+    padding-left: 0;
+    margin-top: 0px !important;
 }
 
 @media (min-width: 768px) {
@@ -121,5 +128,4 @@ footer .progress {
         margin: 0;
         text-indent: -9999px;
     }
-
 }
