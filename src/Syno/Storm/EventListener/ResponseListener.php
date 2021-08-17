@@ -83,7 +83,7 @@ class ResponseListener implements EventSubscriberInterface
             if ($surveyResponse) {
                 if ($surveyResponse->isCompleted() && !$this->isSurveyCompletionPage($request)) {
                     $response = new RedirectResponse(
-                        $this->router->generate('survey.complete', ['surveyId' => $survey->getSurveyId()])
+                        $this->router->generate('survey.complete', ['surveyId' => $survey->getSurveyId(), 'id' => $responseId])
                     );
                     $event->setResponse($response);
                     return;
@@ -91,7 +91,7 @@ class ResponseListener implements EventSubscriberInterface
 
                 if ($surveyResponse->isScreenedOut() && !$this->isSurveyScreenoutPage($request)) {
                     $response = new RedirectResponse(
-                        $this->router->generate('survey.screenout', ['surveyId' => $survey->getSurveyId()])
+                        $this->router->generate('survey.screenout', ['surveyId' => $survey->getSurveyId(), 'id' => $responseId])
                     );
                     $event->setResponse($response);
                     return;
@@ -99,7 +99,7 @@ class ResponseListener implements EventSubscriberInterface
 
                 if ($surveyResponse->isQualityScreenedOut() && !$this->isSurveyQualityScreenoutPage($request)) {
                     $response = new RedirectResponse(
-                        $this->router->generate('survey.quality_screenout', ['surveyId' => $survey->getSurveyId()])
+                        $this->router->generate('survey.quality_screenout', ['surveyId' => $survey->getSurveyId(), 'id' => $responseId])
                     );
                     $event->setResponse($response);
                     return;
