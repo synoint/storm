@@ -123,7 +123,6 @@ class Response
         $response->headers->clearCookie('id'. $surveyId);
     }
 
-
     /**
      * @param int    $surveyId
      * @param string $responseId

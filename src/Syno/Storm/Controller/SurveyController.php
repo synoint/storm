@@ -13,7 +13,6 @@ use Syno\Storm\Document;
 use Syno\Storm\Form\PrivacyConsentType;
 use Syno\Storm\Services\Survey;
 
-
 class SurveyController extends AbstractController
 {
     /** @var Survey */
@@ -34,7 +33,9 @@ class SurveyController extends AbstractController
 
     /**
      * @param Document\Survey $survey
+     * @param Request         $request
      *
+     * @return RedirectResponse
      * @Route(
      *     "%app.route_prefix%/s/{surveyId}",
      *     name="survey.index",
@@ -42,9 +43,8 @@ class SurveyController extends AbstractController
      *     methods={"GET"}
      * )
      *
-     * @return RedirectResponse
      */
-    public function index(Document\Survey $survey): Response
+    public function index(Document\Survey $survey, Request $request): Response
     {
         if ($survey->getConfig()->privacyConsentEnabled) {
             return $this->redirectToRoute('survey.privacy_consent', ['surveyId' => $survey->getSurveyId()]);
@@ -52,7 +52,8 @@ class SurveyController extends AbstractController
 
         return $this->redirectToRoute('page.index', [
             'surveyId' => $survey->getSurveyId(),
-            'pageId'   => $survey->getPages()->first()->getPageId()
+            'pageId' => $survey->getPages()->first()->getPageId(),
+            'id' => $request->query->get('id')
         ]);
     }
 
@@ -68,11 +69,12 @@ class SurveyController extends AbstractController
      *
      * @return RedirectResponse
      */
-    public function test(Document\Survey $survey): Response
+    public function test(Document\Survey $survey, Request $request): Response
     {
         return $this->redirectToRoute('page.index', [
             'surveyId' => $survey->getSurveyId(),
-            'pageId'   => $survey->getPages()->first()->getPageId()
+            'pageId' => $survey->getPages()->first()->getPageId(),
+            'id' => $request->query->get('id')
         ]);
     }
 
@@ -106,13 +108,14 @@ class SurveyController extends AbstractController
 
         return $this->redirectToRoute('page.index', [
             'surveyId' => $survey->getSurveyId(),
-            'pageId'   => $survey->getPages()->first()->getPageId()
+            'pageId' => $survey->getPages()->first()->getPageId(),
+            'id' => $request->query->get('id')
         ]);
     }
 
     /**
      * @param Document\Survey $survey
-     * @param Request $request
+     * @param Request         $request
      *
      * @Route(
      *     "%app.route_prefix%/privacy-consent/{surveyId}",
@@ -125,12 +128,13 @@ class SurveyController extends AbstractController
      */
     public function privacyConsent(Document\Survey $survey, Request $request)
     {
-       $form = $this->createForm(PrivacyConsentType::class);
+        $form = $this->createForm(PrivacyConsentType::class);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             return $this->redirectToRoute('page.index', [
                 'surveyId' => $survey->getSurveyId(),
-                'pageId'   => $survey->getPages()->first()->getPageId()
+                'pageId' => $survey->getPages()->first()->getPageId(),
+                'id' => $request->query->get('id')
             ]);
         }
 
