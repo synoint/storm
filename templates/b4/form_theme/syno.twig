@@ -84,6 +84,19 @@
 
 {% block linear_scale_matrix_widget %}
     <div class="d-inline-block">
+        <div class="linear-scale__text-holder linear-scale__text-holder-top d-none mt-1">
+            {% set choiceKey = 1 %}
+            {% for key,choice in form.vars.choices %}
+                {% if choice.data.columnLabel is not empty %}
+                    <div class="linear-scale__text-{{ choiceKey }} col text-center ">
+                        <label class="text-nowrap text-muted font-weight-normal" for="{{ choice.data.id }}">
+                            <span class="d-sm-none">{{ choice.data.columnCode }} - </span>{{ choice.data.columnLabel }}
+                        </label>
+                    </div>
+                    {% set choiceKey = choiceKey + 1 %}
+                {% endif %}
+            {% endfor %}
+        </div>
         <div class="linear-scale__radio-holder btn-group btn-group-toggle" data-toggle="buttons">
             {% for key,choice in form.vars.choices %}
                 <div class="col text-center">
@@ -100,14 +113,16 @@
                 </div>
             {% endfor %}
         </div>
-        <div class="linear-scale__text-holder mt-1">
+        <div class="linear-scale__text-holder linear-scale__text-holder-bottom mt-1">
+            {% set choiceKey = 1 %}
             {% for key,choice in form.vars.choices %}
                 {% if choice.data.columnLabel is not empty %}
-                    <div class="col text-center">
+                    <div class="linear-scale__text-{{ choiceKey }} col text-center ">
                         <label class="text-nowrap text-muted font-weight-normal" for="{{ choice.data.id }}">
                             <span class="d-sm-none">{{ choice.data.columnCode }} - </span>{{ choice.data.columnLabel }}
                         </label>
                     </div>
+                    {% set choiceKey = choiceKey + 1 %}
                 {% endif %}
             {% endfor %}
         </div>
