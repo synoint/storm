@@ -83,7 +83,7 @@ class ResponseListener implements EventSubscriberInterface
             if ($surveyResponse) {
                 if ($surveyResponse->isCompleted() && !$this->isSurveyCompletionPage($request)) {
                     $response = new RedirectResponse(
-                        $this->router->generate('survey.complete', ['surveyId' => $survey->getSurveyId(), 'id' => $responseId])
+                        $this->router->generate('survey.complete', ['surveyId' => $survey->getSurveyId()])
                     );
                     $event->setResponse($response);
                     return;
@@ -91,7 +91,7 @@ class ResponseListener implements EventSubscriberInterface
 
                 if ($surveyResponse->isScreenedOut() && !$this->isSurveyScreenoutPage($request)) {
                     $response = new RedirectResponse(
-                        $this->router->generate('survey.screenout', ['surveyId' => $survey->getSurveyId(), 'id' => $responseId])
+                        $this->router->generate('survey.screenout', ['surveyId' => $survey->getSurveyId()])
                     );
                     $event->setResponse($response);
                     return;
@@ -99,7 +99,7 @@ class ResponseListener implements EventSubscriberInterface
 
                 if ($surveyResponse->isQualityScreenedOut() && !$this->isSurveyQualityScreenoutPage($request)) {
                     $response = new RedirectResponse(
-                        $this->router->generate('survey.quality_screenout', ['surveyId' => $survey->getSurveyId(), 'id' => $responseId])
+                        $this->router->generate('survey.quality_screenout', ['surveyId' => $survey->getSurveyId()])
                     );
                     $event->setResponse($response);
                     return;
@@ -166,8 +166,7 @@ class ResponseListener implements EventSubscriberInterface
                     $surveyResponse = $this->responseRequestHandler->addUserAgent($request, $surveyResponse);
                     if ($surveyResponse->getPageId() && null !== $survey->getPage($surveyResponse->getPageId())) {
                         $event->setResponse(
-                            $this->getRedirectToPage($survey->getSurveyId(), $surveyResponse->getPageId(),
-                                $surveyResponse->getResponseId())
+                            $this->getRedirectToPage($survey->getSurveyId(), $surveyResponse->getPageId())
                         );
                         $this->responseEventLogger->log(ResponseEventLogger::SURVEY_RESUMED, $surveyResponse);
                     } else {
@@ -235,14 +234,9 @@ class ResponseListener implements EventSubscriberInterface
         $idFromCookie = $this->responseRequestHandler->getResponseIdFromCookie($request,
             $surveyResponse->getSurveyId());
 
-        if (!$request->query->get('id') && $surveyResponse->getResponseId() !== $idFromCookie) {
+        if ($surveyResponse->getResponseId() !== $idFromCookie) {
             $response->headers->setCookie(
                 $this->responseRequestHandler->getResponseIdCookie($surveyResponse)
-            );
-
-            $request->query->set('id', $surveyResponse->getResponseId());
-            $event->setResponse(
-                $this->getRedirectToEntrance($surveyResponse->getSurveyId(), $request->query->all())
             );
         }
     }
@@ -343,13 +337,6 @@ class ResponseListener implements EventSubscriberInterface
      */
     private function getRedirectToEntrance(int $surveyId, array $queryParams): RedirectResponse
     {
-        error_log($this->router->generate(
-            'survey.index',
-            array_merge(
-                ['surveyId' => $surveyId],
-                $queryParams
-            )
-        ));
         return new RedirectResponse(
             $this->router->generate(
                 'survey.index',
@@ -364,17 +351,15 @@ class ResponseListener implements EventSubscriberInterface
     /**
      * @param int    $surveyId
      * @param int    $pageId
-     * @param string $responseId
      *
      * @return RedirectResponse
      */
-    private function getRedirectToPage(int $surveyId, int $pageId, string $responseId): RedirectResponse
+    private function getRedirectToPage(int $surveyId, int $pageId): RedirectResponse
     {
         return new RedirectResponse(
             $this->router->generate('page.index', [
                 'surveyId' => $surveyId,
-                'pageId' => $pageId,
-                'id' => $responseId
+                'pageId' => $pageId
             ])
         );
     }

@@ -33,9 +33,7 @@ class SurveyController extends AbstractController
 
     /**
      * @param Document\Survey $survey
-     * @param Request         $request
      *
-     * @return RedirectResponse
      * @Route(
      *     "%app.route_prefix%/s/{surveyId}",
      *     name="survey.index",
@@ -43,8 +41,9 @@ class SurveyController extends AbstractController
      *     methods={"GET"}
      * )
      *
+     * @return RedirectResponse
      */
-    public function index(Document\Survey $survey, Request $request): Response
+    public function index(Document\Survey $survey): Response
     {
         if ($survey->getConfig()->privacyConsentEnabled) {
             return $this->redirectToRoute('survey.privacy_consent', ['surveyId' => $survey->getSurveyId()]);
@@ -52,8 +51,7 @@ class SurveyController extends AbstractController
 
         return $this->redirectToRoute('page.index', [
             'surveyId' => $survey->getSurveyId(),
-            'pageId' => $survey->getPages()->first()->getPageId(),
-            'id' => $request->query->get('id')
+            'pageId' => $survey->getPages()->first()->getPageId()
         ]);
     }
 
@@ -69,12 +67,11 @@ class SurveyController extends AbstractController
      *
      * @return RedirectResponse
      */
-    public function test(Document\Survey $survey, Request $request): Response
+    public function test(Document\Survey $survey): Response
     {
         return $this->redirectToRoute('page.index', [
             'surveyId' => $survey->getSurveyId(),
-            'pageId' => $survey->getPages()->first()->getPageId(),
-            'id' => $request->query->get('id')
+            'pageId' => $survey->getPages()->first()->getPageId()
         ]);
     }
 
@@ -108,8 +105,7 @@ class SurveyController extends AbstractController
 
         return $this->redirectToRoute('page.index', [
             'surveyId' => $survey->getSurveyId(),
-            'pageId' => $survey->getPages()->first()->getPageId(),
-            'id' => $request->query->get('id')
+            'pageId' => $survey->getPages()->first()->getPageId()
         ]);
     }
 
@@ -133,8 +129,7 @@ class SurveyController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             return $this->redirectToRoute('page.index', [
                 'surveyId' => $survey->getSurveyId(),
-                'pageId' => $survey->getPages()->first()->getPageId(),
-                'id' => $request->query->get('id')
+                'pageId' => $survey->getPages()->first()->getPageId()
             ]);
         }
 

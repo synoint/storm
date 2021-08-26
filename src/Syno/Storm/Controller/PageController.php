@@ -124,7 +124,7 @@ class PageController extends AbstractController
                                     break;
                                 case Document\JumpToCondition::DESTINATION_TYPE_QUESTION:
                                     $redirect = $this->redirectSurveyToJump($survey,
-                                        $firedJumpCondition->getDestination(), $request);
+                                        $firedJumpCondition->getDestination());
                                     break;
                             }
 
@@ -147,8 +147,7 @@ class PageController extends AbstractController
                     'page.index',
                     [
                         'surveyId' => $survey->getSurveyId(),
-                        'pageId' => $nextPage->getPageId(),
-                        'id' => $request->query->get('id')
+                        'pageId' => $nextPage->getPageId()
                     ]
                 );
             }
@@ -277,7 +276,7 @@ class PageController extends AbstractController
      *
      * @return RedirectResponse
      */
-    private function redirectSurveyToJump(Document\Survey $survey, int $questionId, Request $request)
+    private function redirectSurveyToJump(Document\Survey $survey, int $questionId)
     {
         $jumpPage = $survey->getPageByQuestion($questionId);
 
@@ -285,8 +284,7 @@ class PageController extends AbstractController
             return $this->redirectToRoute(
                 'page.index', [
                     'surveyId' => $survey->getSurveyId(),
-                    'pageId' => $jumpPage->getPageId(),
-                    'id' => $request->query->get('id')
+                    'pageId' => $jumpPage->getPageId()
                 ]
             );
         }
