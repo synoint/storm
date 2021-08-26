@@ -6,7 +6,6 @@
     --white: #fff;
     --muted: #ddedfd;
     --dark: #0a1c3a;
-    --notchSize: 10px;
 }
 
 .card-footer {
@@ -78,7 +77,6 @@ footer .progress {
         background-color: var(--white);
     }
 
-
     .matrix tbody tr:nth-of-type(odd) {
         background: var(--light);
     }
@@ -114,7 +112,17 @@ footer .progress {
         cursor: pointer;
         min-width: 140px;
         padding: .75rem;
-        clip-path: polygon(-1px -1px, -1px -10px, calc(100% + 1px) -10px, calc(100% + 1px) 0, calc(100% + 1px) calc(100% - 15px), calc(100% - 15px) calc(100% + 1px), 0 100%, 0 calc(100% - 4px));
+        clip-path:
+          polygon(
+            -1px -1px,
+            -1px -10px,
+            calc(100% + 1px) -10px,
+            calc(100% + 1px) 0,
+            calc(100% + 1px) calc(100% - 15px),
+            calc(100% - 15px) calc(100% + 1px),
+            0 100%,
+            0 calc(100% - 4px)
+          );
     }
 }
 
@@ -160,7 +168,8 @@ footer .progress {
             calc(100% + 1px) 0,
             calc(100% + 1px) calc(100% - 15px),
             calc(100% - 15px) calc(100% + 1px),
-            0 100%, 0 calc(100% - 4px)
+            0 100%,
+            0 calc(100% - 4px)
           );
     }
 
@@ -186,12 +195,12 @@ footer .progress {
           polygon(
             -1px -1px,
             -1px -10px,
-            calc(100% - var(--notchSize)) 0%,
-            100% var(--notchSize),
+            calc(100% - 10px) 0%,
+            100% 10px,
             100% 100%,
             100% 100%,
-            var(--notchSize) 100%,
-            0% calc(100% - var(--notchSize))
+            10px 100%,
+            0% calc(100% - 10px)
           );
     }
 
