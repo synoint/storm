@@ -1,11 +1,12 @@
 :root {
     --primary: #00263b;
     --secondary: #0068c8;
-    --light: #F0F4FF;
+    --light: #e2e8f6;
     --info: #747b81;
     --white: #fff;
     --muted: #ddedfd;
     --dark: #0a1c3a;
+    --notchSize: 10px;
 }
 
 .card-footer {
@@ -147,10 +148,20 @@ footer .progress {
         font-size: 14px;
         text-decoration: none;
         line-height: 10px;
-        height: auto;
+        width: 200px;
+        height: 40px;
         cursor: pointer;
         padding: .5rem;
-        clip-path: polygon(-1px -1px, -1px -10px, calc(100% + 1px) -10px, calc(100% + 1px) 0, calc(100% + 1px) calc(100% - 15px), calc(100% - 15px) calc(100% + 1px), 0 100%, 0 calc(100% - 4px));
+        clip-path:
+          polygon(
+            -1px -1px,
+            -1px -10px,
+            calc(100% + 1px) -10px,
+            calc(100% + 1px) 0,
+            calc(100% + 1px) calc(100% - 15px),
+            calc(100% - 15px) calc(100% + 1px),
+            0 100%, 0 calc(100% - 4px)
+          );
     }
 
     .matrix tbody th {
@@ -164,6 +175,24 @@ footer .progress {
 
     .matrix thead th {
         font-size: 14px;
+    }
+
+    .linear-scale__button {
+        width: 150px;
+        height: 40px;
+        border-radius: 0;
+        border: 0;
+        clip-path:
+          polygon(
+            -1px -1px,
+            -1px -10px,
+            calc(100% - var(--notchSize)) 0%,
+            100% var(--notchSize),
+            100% 100%,
+            100% 100%,
+            var(--notchSize) 100%,
+            0% calc(100% - var(--notchSize))
+          );
     }
 
     .linear-scale__text-holder {
@@ -186,6 +215,10 @@ footer .progress {
     .linear-scale__text-holder .col:first-child {
         text-align: center !important;
         padding-bottom: 5px;
+    }
+
+    .linear-scale__text-holder .col:last-child {
+        text-align: center !important;
     }
 
     .linear-scale__text-holder-bottom .linear-scale__text-1 {
