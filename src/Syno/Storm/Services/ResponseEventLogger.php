@@ -26,21 +26,13 @@ class ResponseEventLogger
     const ANSWERS_CLEARED = 'answers cleared';
     const ANSWERS_ERROR   = 'answers error';
 
-    /** @var DocumentManager */
-    private $dm;
+    private DocumentManager $dm;
 
-    /**
-     * @param DocumentManager $documentManager
-     */
     public function __construct(DocumentManager $documentManager)
     {
         $this->dm = $documentManager;
     }
 
-    /**
-     * @param string   $event
-     * @param Response $response
-     */
     public function log(string $event, Response $response)
     {
         if (!$response->isLive() && !$response->isTest()) {

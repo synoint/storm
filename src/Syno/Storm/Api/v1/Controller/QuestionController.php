@@ -14,32 +14,22 @@ use Syno\Storm\Services\Response;
  */
 class QuestionController extends AbstractController implements TokenAuthenticatedController
 {
-    /** @var Response */
-    private $responseService;
+    private Response $responseService;
 
-    /**
-     * QuestionController constructor.
-     *
-     * @param Response $responseService
-     */
     public function __construct(Response $responseService)
     {
         $this->responseService = $responseService;
     }
 
     /**
-     * @param int     $questionId
-     *
      * @Route(
      *     "/{questionId}/answers-result-count",
      *     name="storm_api.v1.question.answersResultCount",
      *     requirements={"id"="\d+"},
      *     methods={"GET"}
      * )
-     *
-     * @return JsonResponse
      */
-    public function answersResultCount(int $questionId)
+    public function answersResultCount(int $questionId): JsonResponse
     {
         $data     = [];
         $responses = $this->responseService->getAllByQuestionId($questionId);

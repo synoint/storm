@@ -18,21 +18,18 @@ class SurveyEventLogger
     const SCREENOUT         = 'screenout';
     const QUALITY_SCREENOUT = 'quality_screenout';
 
-    /** @var DocumentManager */
-    private $dm;
+    const SURVEY_CREATED     = 'created';
+    const SURVEY_PUBLISHED   = 'published';
+    const SURVEY_UNPUBLISHED = 'unpublished';
+    const SURVEY_DELETED     = 'deleted';
 
-    /**
-     * @param DocumentManager $documentManager
-     */
+    private DocumentManager $dm;
+
     public function __construct(DocumentManager $documentManager)
     {
         $this->dm = $documentManager;
     }
 
-    /**
-     * @param string $event
-     * @param Document\Survey $survey
-     */
     public function log(string $event, Document\Survey $survey)
     {
         $document = new SurveyEvent($survey->getSurveyId(), $survey->getVersion(), $event);

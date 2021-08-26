@@ -7,24 +7,13 @@ use Syno\Storm\Document;
 
 class SurveyEvent
 {
-    /** @var DocumentManager */
-    private $dm;
+    private DocumentManager $dm;
 
-    /**
-     * @param DocumentManager $documentManager
-     */
     public function __construct(DocumentManager $documentManager)
     {
         $this->dm = $documentManager;
     }
 
-    /**
-     * @param int $surveyId
-     * @param int $limit
-     * @param int $offset
-     *
-     * @return array
-     */
     public function getAllBySurveyId(int $surveyId, int $limit = 1000, int $offset = 0): array
     {
         return $this->dm->getRepository(Document\SurveyEvent::class)->findBy(
@@ -39,13 +28,6 @@ class SurveyEvent
         );
     }
 
-    /**
-     * @param int    $surveyId
-     * @param int    $version
-     * @param string $event
-     *
-     * @return int
-     */
     public function count(int $surveyId, int $version = null, string $event = null): int
     {
         $qb = $this->dm->createQueryBuilder(Document\SurveyEvent::class)->field('surveyId')->equals($surveyId);
@@ -61,12 +43,7 @@ class SurveyEvent
         return $qb->count()->getQuery()->execute();
     }
 
-    /**
-     * @param int $surveyId
-     *
-     * @return array
-     */
-    public function getAvailableVersions(int $surveyId)
+    public function getAvailableVersions(int $surveyId): array
     {
         return $this->dm->createQueryBuilder(Document\SurveyEvent::class)
             ->select('version')
@@ -76,11 +53,7 @@ class SurveyEvent
             ->execute();
     }
 
-    /**
-     * @param int $surveyId
-     * @param int $version
-     */
-    public function removeEvents(int $surveyId, int $version)
+    public function deleteEvents(int $surveyId, int $version)
     {
         $this->dm->createQueryBuilder(Document\SurveyEvent::class)
             ->remove()

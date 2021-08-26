@@ -7,15 +7,9 @@ use Syno\Storm\Document;
 
 class Response
 {
-    /** @var DocumentManager */
-    private $dm;
-    /** @var string */
-    private $responseIdPrefix;
+    private DocumentManager $dm;
+    private string          $responseIdPrefix;
 
-    /**
-     * @param DocumentManager $documentManager
-     * @param string          $responseIdPrefix
-     */
     public function __construct(DocumentManager $documentManager, string $responseIdPrefix)
     {
         $this->dm               = $documentManager;
@@ -23,9 +17,6 @@ class Response
     }
 
     /**
-     * @param int    $surveyId
-     * @param string $responseId
-     *
      * @return null|Document\Response
      */
     public function findBySurveyIdAndResponseId(int $surveyId, string $responseId):? object
@@ -38,13 +29,6 @@ class Response
         );
     }
 
-    /**
-     * @param int $surveyId
-     * @param int $limit
-     * @param int $offset
-     *
-     * @return array
-     */
     public function getAllBySurveyId(int $surveyId, int $limit = 1000, int $offset = 0): array
     {
         return $this->dm->getRepository(Document\Response::class)->findBy(
@@ -60,11 +44,22 @@ class Response
     }
 
     /**
-     * @param int $questionId
-     *
-     * @return array
+     * @return Document\Response[]
      */
-    public function getAllByQuestionId(int $questionId)
+    public function getAllBySurveyIdAndVersion(int $surveyId, int $version): array
+    {
+        return $this->dm->getRepository(Document\Response::class)->findBy(
+            [
+                'surveyId' => $surveyId,
+                'surveyVersion' => $version,
+            ]
+        );
+    }
+
+    /**
+     * @return Document\Response[]
+     */
+    public function getAllByQuestionId(int $questionId): array
     {
         return $this->dm
             ->createQueryBuilder(Document\Response::class)
@@ -74,11 +69,6 @@ class Response
             ->execute();
     }
 
-    /**
-     * @param int $surveyId
-     *
-     * @return int
-     */
     public function count(int $surveyId): int
     {
         return $this->dm
@@ -90,11 +80,6 @@ class Response
             ->execute();
     }
 
-    /**
-     * @param string|null $responseId
-     *
-     * @return Document\Response
-     */
     public function getNew(string $responseId = null): Document\Response
     {
         if (empty($responseId)) {
@@ -104,21 +89,13 @@ class Response
         return new Document\Response($responseId);
     }
 
-    /**
-     * @param Document\Response $response
-     */
     public function save(Document\Response $response)
     {
         $this->dm->persist($response);
         $this->dm->flush();
     }
 
-    /**
-     * @param string $route
-     *
-     * @return string
-     */
-    public function getModeByRoute(string $route)
+    public function getModeByRoute(string $route): string
     {
         switch ($route) {
             case 'survey.index':
@@ -137,9 +114,12 @@ class Response
         return $mode;
     }
 
-    /**
-     * @return string
-     */
+    public function delete(Document\Response $response)
+    {
+        $this->dm->remove($response);
+        $this->dm->flush();
+    }
+
     private function generateResponseId(): string
     {
         return uniqid($this->responseIdPrefix);

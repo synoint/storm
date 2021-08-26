@@ -7,20 +7,13 @@ use Syno\Storm\Document;
 
 class Survey
 {
-    /** @var DocumentManager */
-    private $dm;
+    private DocumentManager $dm;
 
-    /**
-     * @param DocumentManager $documentManager
-     */
     public function __construct(DocumentManager $documentManager)
     {
         $this->dm = $documentManager;
     }
 
-    /**
-     * @return Document\Survey
-     */
     public function getNew(): Document\Survey
     {
         $survey = new Document\Survey();
@@ -29,9 +22,6 @@ class Survey
         return $survey;
     }
 
-    /**
-     * @param Document\Survey $survey
-     */
     public function save(Document\Survey $survey)
     {
         $this->dm->persist($survey);
@@ -51,9 +41,6 @@ class Survey
     }
 
     /**
-     * @param int $surveyId
-     * @param int $version
-     *
      * @return null|Document\Survey
      */
     public function findBySurveyIdAndVersion(int $surveyId, int $version):? object
@@ -66,12 +53,7 @@ class Survey
         );
     }
 
-    /**
-     * @param int $surveyId
-     *
-     * @return int
-     */
-    public function findLatestVersion(int $surveyId)
+    public function findLatestVersion(int $surveyId):? int
     {
         $result = null;
         $surveys = $this->dm->getRepository(Document\Survey::class)->findBy(
@@ -90,8 +72,6 @@ class Survey
     }
 
     /**
-     * @param int $surveyId
-     *
      * @return null|Document\Survey
      */
     public function getPublished(int $surveyId):? object
@@ -104,9 +84,6 @@ class Survey
         );
     }
 
-    /**
-     * @param Document\Survey $survey
-     */
     public function publish(Document\Survey $survey)
     {
         $surveys = $this->dm->getRepository(Document\Survey::class)->findBy(
@@ -123,21 +100,13 @@ class Survey
         $this->dm->flush();
     }
 
-    /**
-     * @param Document\Survey $survey
-     */
     public function delete(Document\Survey $survey)
     {
         $this->dm->remove($survey);
         $this->dm->flush();
     }
 
-    /**
-     * @param Document\Survey $survey
-     *
-     * @return string
-     */
-    public function enableDebugMode(Document\Survey $survey)
+    public function enableDebugMode(Document\Survey $survey): string
     {
         $token = bin2hex(random_bytes(rand(16,20)));
         $survey->getConfig()->debugMode = true;
@@ -147,9 +116,6 @@ class Survey
         return $token;
     }
 
-    /**
-     * @param Document\Survey $survey
-     */
     public function disableDebugMode(Document\Survey $survey)
     {
         $survey->getConfig()->debugMode = false;
@@ -157,12 +123,6 @@ class Survey
         $this->dm->flush();
     }
 
-    /**
-     * @param Document\Survey $survey
-     * @param Document\Page   $currentPage
-     *
-     * @return int
-     */
     public function getProgress(Document\Survey $survey, Document\Page $currentPage): int
     {
         $pages            = $survey->getPages();

@@ -26,53 +26,46 @@ class SurveyController extends AbstractController implements TokenAuthenticatedC
     use FormAware;
     use JsonRequestAware;
 
-    /** @var Survey */
-    private $surveyService;
+    private Response          $responseService;
+    private ResponseEvent     $responseEventService;
+    private Survey            $surveyService;
+    private SurveyEvent       $surveyEventService;
+    private SurveyEventLogger $surveyEventLoggerService;
 
-    /** @var SurveyEvent */
-    private $surveyEventService;
-
-    /** @var Response */
-    private $responseService;
-
-    /** @var ResponseEvent */
-    private $responseEventService;
-
-    /**
-     * @param Survey        $surveyService
-     * @param SurveyEvent   $surveyEventService
-     * @param Response      $responseService
-     * @param ResponseEvent $responseEventService
-     */
     public function __construct(
+        Response $responseService,
+        ResponseEvent $responseEventService,
         Survey $surveyService,
         SurveyEvent $surveyEventService,
-        Response $responseService,
-        ResponseEvent $responseEventService
+        SurveyEventLogger $surveyEventLoggerService
     )
     {
-        $this->surveyService        = $surveyService;
-        $this->surveyEventService   = $surveyEventService;
-        $this->responseService      = $responseService;
-        $this->responseEventService = $responseEventService;
+        $this->responseService          = $responseService;
+        $this->responseEventService     = $responseEventService;
+        $this->surveyService            = $surveyService;
+        $this->surveyEventService       = $surveyEventService;
+        $this->surveyEventLoggerService = $surveyEventLoggerService;
     }
 
 
     /**
-     * @param Request $request
-     *
      * @Route(
      *     "",
      *     name="storm_api.v1.survey.create",
      *     methods={"POST"}
      * )
-     *
-     * @return JsonResponse
      */
-    public function create(Request $request)
+    public function create(Request $request): JsonResponse
     {
         $data = $this->getJson($request);
-        $this->removeVersionIfExists($data);
+
+        if (!empty($data['surveyId']) && !empty($data['version'])) {
+            $survey = $this->surveyService->findBySurveyIdAndVersion($data['surveyId'], $data['version']);
+            if ($survey) {
+                $this->deleteSurvey($survey);
+            }
+        }
+
 
         $survey = $this->surveyService->getNew();
 
@@ -80,6 +73,7 @@ class SurveyController extends AbstractController implements TokenAuthenticatedC
         $form->submit($data);
         if ($form->isValid()) {
             $this->surveyService->save($survey);
+            $this->surveyEventLoggerService->log(SurveyEventLogger::SURVEY_CREATED, $survey);
 
             return $this->json($survey->getId(), 201);
         }
@@ -88,18 +82,14 @@ class SurveyController extends AbstractController implements TokenAuthenticatedC
     }
 
     /**
-     * @param int $surveyId
-     *
      * @Route(
      *     "/{surveyId}",
      *     name="storm_api.v1.survey.retrieve.all_version",
      *     requirements={"id"="\d+"},
      *     methods={"GET"}
      * )
-     *
-     * @return JsonResponse
      */
-    public function retrieveAllVersions(int $surveyId)
+    public function retrieveAllVersions(int $surveyId): JsonResponse
     {
         $survey = $this->surveyService->find($surveyId);
         if (!$survey) {
@@ -113,19 +103,14 @@ class SurveyController extends AbstractController implements TokenAuthenticatedC
     }
 
     /**
-     * @param int $surveyId
-     * @param int $version
-     *
      * @Route(
      *     "/{surveyId}/{version}",
      *     name="storm_api.v1.survey.retrieve",
      *     requirements={"id"="\d+", "version"="\d+"},
      *     methods={"GET"}
      * )
-     *
-     * @return JsonResponse
      */
-    public function retrieve(int $surveyId, int $version)
+    public function retrieve(int $surveyId, int $version): JsonResponse
     {
         $survey = $this->surveyService->findBySurveyIdAndVersion($surveyId, $version);
         if (!$survey) {
@@ -139,19 +124,14 @@ class SurveyController extends AbstractController implements TokenAuthenticatedC
     }
 
     /**
-     * @param int $surveyId
-     * @param int $version
-     *
      * @Route(
      *     "/{surveyId}/{version}",
      *     name="storm_api.v1.survey.delete",
      *     requirements={"id"="\d+", "version"="\d+"},
      *     methods={"DELETE"}
      * )
-     *
-     * @return JsonResponse
      */
-    public function delete(int $surveyId, int $version)
+    public function delete(int $surveyId, int $version): JsonResponse
     {
         $survey = $this->surveyService->findBySurveyIdAndVersion($surveyId, $version);
         if (!$survey) {
@@ -161,26 +141,20 @@ class SurveyController extends AbstractController implements TokenAuthenticatedC
             );
         }
 
-        $this->surveyEventService->removeEvents($surveyId, $version);
-        $this->surveyService->delete($survey);
+        $this->deleteSurvey($survey);
 
         return $this->json('ok');
     }
 
     /**
-     * @param int $surveyId
-     * @param int $version
-     *
      * @Route(
      *     "/{surveyId}/{version}/publish",
      *     name="storm_api.v1.survey.publish",
      *     requirements={"id"="\d+", "version"="\d+"},
      *     methods={"PUT"}
      * )
-     *
-     * @return JsonResponse
      */
-    public function publish(int $surveyId, int $version)
+    public function publish(int $surveyId, int $version): JsonResponse
     {
         $survey = $this->surveyService->findBySurveyIdAndVersion($surveyId, $version);
         if (!$survey) {
@@ -191,24 +165,20 @@ class SurveyController extends AbstractController implements TokenAuthenticatedC
         }
         $this->surveyService->publish($survey);
 
+        $this->surveyEventLoggerService->log(SurveyEventLogger::SURVEY_PUBLISHED, $survey);
 
         return $this->json('ok');
     }
 
     /**
-     * @param int $surveyId
-     * @param int $version
-     *
      * @Route(
      *     "/{surveyId}/{version}/unpublish",
      *     name="storm_api.v1.survey.unpublish",
      *     requirements={"id"="\d+", "version"="\d+"},
      *     methods={"PUT"}
      * )
-     *
-     * @return JsonResponse
      */
-    public function unpublish(int $surveyId, int $version)
+    public function unpublish(int $surveyId, int $version): JsonResponse
     {
         $survey = $this->surveyService->findBySurveyIdAndVersion($surveyId, $version);
         if (!$survey) {
@@ -220,24 +190,20 @@ class SurveyController extends AbstractController implements TokenAuthenticatedC
         $survey->setPublished(false);
         $this->surveyService->save($survey);
 
+        $this->surveyEventLoggerService->log(SurveyEventLogger::SURVEY_UNPUBLISHED, $survey);
+
         return $this->json('ok');
     }
 
     /**
-     * @param int    $surveyId
-     * @param int    $version
-     * @param string $toggle
-     *
      * @Route(
      *     "/{surveyId}/{version}/debug/{toggle}",
      *     name="storm_api.v1.survey.debug",
      *     requirements={"id"="\d+", "version"="\d+", "toggle"="enable|disable"},
      *     methods={"PUT"}
      * )
-     *
-     * @return JsonResponse
      */
-    public function toggleDebugMode(int $surveyId, int $version, string $toggle)
+    public function toggleDebugMode(int $surveyId, int $version, string $toggle): JsonResponse
     {
         $survey = $this->surveyService->findBySurveyIdAndVersion($surveyId, $version);
         if (!$survey) {
@@ -263,19 +229,14 @@ class SurveyController extends AbstractController implements TokenAuthenticatedC
     }
 
     /**
-     * @param int     $surveyId
-     * @param Request $request
-     *
      * @Route(
      *     "/{surveyId}/events",
      *     name="storm_api.v1.survey.events",
      *     requirements={"id"="\d+"},
      *     methods={"GET"}
      * )
-     *
-     * @return JsonResponse
      */
-    public function events(int $surveyId, Request $request)
+    public function events(int $surveyId, Request $request): JsonResponse
     {
         return $this->json(
             $this->surveyEventService->getAllBySurveyId(
@@ -287,18 +248,14 @@ class SurveyController extends AbstractController implements TokenAuthenticatedC
     }
 
     /**
-     * @param int $surveyId
-     *
      * @Route(
      *     "/{surveyId}/events/summary",
      *     name="storm_api.v1.survey.event_count",
      *     requirements={"id"="\d+"},
      *     methods={"GET"}
      * )
-     *
-     * @return JsonResponse
      */
-    public function eventSummary(int $surveyId)
+    public function eventSummary(int $surveyId): JsonResponse
     {
         $result = [];
         foreach ($this->surveyEventService->getAvailableVersions($surveyId) as $version) {
@@ -320,36 +277,27 @@ class SurveyController extends AbstractController implements TokenAuthenticatedC
     }
 
     /**
-     * @param int $surveyId
-     *
      * @Route(
      *     "/{surveyId}/events/last/date",
      *     name="storm_api.v1.survey.event.last.date",
      *     requirements={"id"="\d+"},
      *     methods={"GET"}
      * )
-     *
-     * @return JsonResponse
      */
-    public function eventLastDate(int $surveyId)
+    public function eventLastDate(int $surveyId): JsonResponse
     {
         return $this->json($this->responseEventService->getLastDate($surveyId));
     }
 
     /**
-     * @param int     $surveyId
-     * @param Request $request
-     *
      * @Route(
      *     "/{surveyId}/responses",
      *     name="storm_api.v1.survey.responses",
      *     requirements={"id"="\d+"},
      *     methods={"GET"}
      * )
-     *
-     * @return JsonResponse
      */
-    public function responses(int $surveyId, Request $request)
+    public function responses(int $surveyId, Request $request): JsonResponse
     {
         $total = $this->responseService->count($surveyId);
         $limit = $request->query->getInt('limit', 1000000);
@@ -379,19 +327,14 @@ class SurveyController extends AbstractController implements TokenAuthenticatedC
     }
 
     /**
-     * @param int $surveyId
-     * @param string $responseId
-     *
      * @Route(
      *     "/{surveyId}/responses/{responseId}",
      *     name="storm_api.v1.survey.response",
      *     requirements={"surveyId"="\d+", "responseId"=".+"},
      *     methods={"GET"}
      * )
-     *
-     * @return JsonResponse
      */
-    public function response(int $surveyId, string $responseId)
+    public function response(int $surveyId, string $responseId): JsonResponse
     {
         $response = $this->responseService->findBySurveyIdAndResponseId($surveyId, $responseId);
 
@@ -406,17 +349,19 @@ class SurveyController extends AbstractController implements TokenAuthenticatedC
         return $this->json('Response not found', 404);
     }
 
-    /**
-     * @param array $params
-     */
-    protected function removeVersionIfExists(array $params)
+    protected function deleteSurvey(Document\Survey $survey)
     {
-        if (!empty($params['surveyId']) && !empty($params['version'])) {
-            $survey = $this->surveyService->findBySurveyIdAndVersion($params['surveyId'], $params['version']);
-            if ($survey) {
-                $this->surveyService->delete($survey);
+        $responses = $this->responseService->getAllBySurveyIdAndVersion($survey->getSurveyId(), $survey->getVersion());
+        if ($responses) {
+            foreach ($responses as $response) {
+                $this->responseEventService->deleteEvents($response->getResponseId());
+                $this->responseService->delete($response);
             }
         }
+
+        $this->surveyEventService->deleteEvents($survey->getSurveyId(), $survey->getVersion());
+        $this->surveyService->delete($survey);
+        $this->surveyEventLoggerService->log(SurveyEventLogger::SURVEY_DELETED, $survey);
     }
 
 }

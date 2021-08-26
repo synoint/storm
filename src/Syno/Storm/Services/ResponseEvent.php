@@ -7,22 +7,13 @@ use Syno\Storm\Document;
 
 class ResponseEvent
 {
-    /** @var DocumentManager */
-    private $dm;
+    private DocumentManager $dm;
 
-    /**
-     * @param DocumentManager $documentManager
-     */
     public function __construct(DocumentManager $documentManager)
     {
         $this->dm = $documentManager;
     }
 
-    /**
-     * @param int $surveyId
-     *
-     * @return array
-     */
     public function getSurveyCompletesMap(int $surveyId): array
     {
         $data = $this->dm
@@ -42,11 +33,6 @@ class ResponseEvent
         return $result;
     }
 
-    /**
-     * @param string $responseId
-     *
-     * @return int|null
-     */
     public function getResponseCompleteTime(string $responseId): ?int
     {
         $event = $this->dm->getRepository(Document\ResponseEvent::class)->findOneBy(
@@ -60,9 +46,7 @@ class ResponseEvent
     }
 
     /**
-     * @param string $responseId
-     *
-     * @return array
+     * @return Document\ResponseEvent[]
      */
     public function getResponseEvents(string $responseId): array
     {
@@ -74,13 +58,7 @@ class ResponseEvent
     }
 
 
-    /**
-     * @param int $surveyId
-     *
-     * @return null|int
-     * @throws \Exception
-     */
-    public function getLastDate(int $surveyId)
+    public function getLastDate(int $surveyId):? int
     {
         $response = $this->dm->getDocumentCollection(Document\ResponseEvent::class)->findOne(
             ['surveyId' => $surveyId],
@@ -88,6 +66,16 @@ class ResponseEvent
                 'projection' => ['time' => 1, '_id' => 0],
                 'sort'       => ['time' => -1],
             ]);
+
         return !empty($response) ? $response['time']->toDateTime()->getTimestamp() : null;
+    }
+
+    public function deleteEvents(int $responseId)
+    {
+        $this->dm->createQueryBuilder(Document\ResponseEvent::class)
+            ->remove()
+            ->field('responseId')->equals($responseId)
+            ->getQuery()
+            ->execute();
     }
 }

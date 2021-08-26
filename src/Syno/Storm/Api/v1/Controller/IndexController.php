@@ -16,10 +16,8 @@ class IndexController extends AbstractController implements TokenAuthenticatedCo
      * This is used to check availability of API
      *
      * @Route("", name="storm_api.v1.index")
-     *
-     * @return JsonResponse
      */
-    public function index()
+    public function index(): JsonResponse
     {
         return $this->json('ok');
     }
