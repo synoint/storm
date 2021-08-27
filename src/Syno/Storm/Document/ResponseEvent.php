@@ -47,12 +47,6 @@ class ResponseEvent implements JsonSerializable
      */
     private $message;
 
-    /**
-     * @param string $message
-     * @param string $responseId
-     * @param int    $surveyId
-     * @param int    $pageId
-     */
     public function __construct(string $message, string $responseId, int $surveyId, int $pageId = null)
     {
         $this->time       = new \DateTime();
@@ -66,10 +60,12 @@ class ResponseEvent implements JsonSerializable
     public function jsonSerialize()
     {
         return [
-            'id'      => $this->id,
-            'time'    => $this->time->getTimestamp(),
-            'pageId'  => $this->pageId,
-            'message' => $this->message,
+            'id'         => $this->id,
+            'time'       => $this->getTimestamp(),
+            'message'    => $this->message,
+            'responseId' => $this->responseId,
+            'surveyId'   => $this->surveyId,
+            'pageId'     => $this->pageId,
         ];
     }
 

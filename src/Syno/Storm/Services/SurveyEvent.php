@@ -28,6 +28,17 @@ class SurveyEvent
         );
     }
 
+    public function getAll(string $idOffset = '', int $limit = 1000)
+    {
+        $qb = $this->dm->createQueryBuilder(Document\SurveyEvent::class);
+        if ($idOffset) {
+            $qb->field('id')->gt($idOffset);
+        }
+        $qb->sort('id')->limit($limit);
+
+        return $qb->getQuery()->execute();
+    }
+
     public function count(int $surveyId, int $version = null, string $event = null): int
     {
         $qb = $this->dm->createQueryBuilder(Document\SurveyEvent::class)->field('surveyId')->equals($surveyId);

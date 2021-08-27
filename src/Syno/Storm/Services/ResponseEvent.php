@@ -14,7 +14,18 @@ class ResponseEvent
         $this->dm = $documentManager;
     }
 
-    public function getSurveyCompletesMap(int $surveyId): array
+    public function getAll(string $idOffset = '', int $limit = 1000)
+    {
+        $qb = $this->dm->createQueryBuilder(Document\ResponseEvent::class);
+        if ($idOffset) {
+            $qb->field('id')->gt($idOffset);
+        }
+        $qb->sort('id')->limit($limit);
+
+        return $qb->getQuery()->execute();
+    }
+
+    public function getResponseCompletionTimeMap(int $surveyId): array
     {
         $data = $this->dm
             ->createQueryBuilder(Document\ResponseEvent::class)
@@ -33,7 +44,7 @@ class ResponseEvent
         return $result;
     }
 
-    public function getResponseCompleteTime(string $responseId): ?int
+    public function getResponseCompletionTime(string $responseId): ?int
     {
         $event = $this->dm->getRepository(Document\ResponseEvent::class)->findOneBy(
             [
@@ -48,7 +59,7 @@ class ResponseEvent
     /**
      * @return Document\ResponseEvent[]
      */
-    public function getResponseEvents(string $responseId): array
+    public function getEventsByResponseId(string $responseId): array
     {
         return $this->dm->getRepository(Document\ResponseEvent::class)->findBy(
             [
@@ -56,7 +67,6 @@ class ResponseEvent
             ]
         );
     }
-
 
     public function getLastDate(int $surveyId):? int
     {

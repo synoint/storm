@@ -43,11 +43,6 @@ class SurveyEvent implements JsonSerializable
      */
     private $event;
 
-    /**
-     * @param string $surveyId
-     * @param int    $version
-     * @param string $event
-     */
     public function __construct(string $surveyId, int $version, string $event)
     {
         $this->time     = new \DateTime();
@@ -60,7 +55,7 @@ class SurveyEvent implements JsonSerializable
     {
         return [
             'id'       => $this->id,
-            'time'     => $this->time,
+            'time'     => $this->time->getTimestamp(),
             'surveyId' => $this->surveyId,
             'version'  => $this->version,
             'event'    => $this->event

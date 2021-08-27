@@ -307,7 +307,7 @@ class SurveyController extends AbstractController implements TokenAuthenticatedC
         if ($total) {
             $responses = $this->responseService->getAllBySurveyId($surveyId, $limit);
             if ($responses) {
-                $completesMap = $this->responseEventService->getSurveyCompletesMap($surveyId);
+                $completesMap = $this->responseEventService->getResponseCompletionTimeMap($surveyId);
                 /** @var Document\Response $response */
                 foreach ($responses as $response) {
                     if ($response->isCompleted()) {
@@ -340,9 +340,9 @@ class SurveyController extends AbstractController implements TokenAuthenticatedC
 
         if ($response) {
             if ($response->isCompleted()) {
-                $response->setCompletedAt($this->responseEventService->getResponseCompleteTime($responseId));
+                $response->setCompletedAt($this->responseEventService->getResponseCompletionTime($responseId));
             }
-            $response->setEvents($this->responseEventService->getResponseEvents($responseId));
+            $response->setEvents($this->responseEventService->getEventsByResponseId($responseId));
 
             return $this->json($response);
         }
