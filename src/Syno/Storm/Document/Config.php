@@ -49,6 +49,13 @@ class Config implements JsonSerializable
      */
     public $cintDemandApiKey;
 
+    /**
+     * @var bool
+     *
+     * @ODM\Field(type="boolean")
+     */
+    public $backButtonEnabled;
+
     public function __construct()
     {
         $this->theme      = self::DEFAULT_THEME;
@@ -63,7 +70,8 @@ class Config implements JsonSerializable
             'privacyConsentEnabled' => $this->privacyConsentEnabled,
             'theme'                 => $this->theme,
             'colorTheme'            => $this->colorTheme,
-            'cintDemandApiKey'      => $this->cintDemandApiKey
+            'cintDemandApiKey'      => $this->cintDemandApiKey,
+            'backButtonEnabled'     => $this->backButtonEnabled
         ];
     }
 }

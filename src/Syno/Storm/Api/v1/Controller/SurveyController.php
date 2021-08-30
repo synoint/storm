@@ -38,15 +38,13 @@ class SurveyController extends AbstractController implements TokenAuthenticatedC
         Survey $surveyService,
         SurveyEvent $surveyEventService,
         SurveyEventLogger $surveyEventLoggerService
-    )
-    {
+    ) {
         $this->responseService          = $responseService;
         $this->responseEventService     = $responseEventService;
         $this->surveyService            = $surveyService;
         $this->surveyEventService       = $surveyEventService;
         $this->surveyEventLoggerService = $surveyEventLoggerService;
     }
-
 
     /**
      * @Route(
@@ -65,7 +63,6 @@ class SurveyController extends AbstractController implements TokenAuthenticatedC
                 $this->deleteSurvey($survey);
             }
         }
-
 
         $survey = $this->surveyService->getNew();
 
@@ -260,16 +257,22 @@ class SurveyController extends AbstractController implements TokenAuthenticatedC
         $result = [];
         foreach ($this->surveyEventService->getAvailableVersions($surveyId) as $version) {
             $result[] = [
-                'version'            => $version,
-                'total'              => $this->surveyEventService->count($surveyId, $version),
-                'visits'             => $this->surveyEventService->count($surveyId, $version, SurveyEventLogger::VISIT),
-                'debug_responses'    => $this->surveyEventService->count($surveyId, $version, SurveyEventLogger::DEBUG_RESPONSE),
-                'test_responses'     => $this->surveyEventService->count($surveyId, $version, SurveyEventLogger::TEST_RESPONSE),
-                'live_responses'     => $this->surveyEventService->count($surveyId, $version, SurveyEventLogger::LIVE_RESPONSE),
-                'screenouts'         => $this->surveyEventService->count($surveyId, $version, SurveyEventLogger::SCREENOUT),
-                'quality_screenouts' => $this->surveyEventService->count($surveyId, $version, SurveyEventLogger::QUALITY_SCREENOUT),
-                'test_completes'     => $this->surveyEventService->count($surveyId, $version, SurveyEventLogger::TEST_COMPLETE),
-                'live_completes'     => $this->surveyEventService->count($surveyId, $version, SurveyEventLogger::LIVE_COMPLETE)
+                'version' => $version,
+                'total' => $this->surveyEventService->count($surveyId, $version),
+                'visits' => $this->surveyEventService->count($surveyId, $version, SurveyEventLogger::VISIT),
+                'debug_responses' => $this->surveyEventService->count($surveyId, $version,
+                    SurveyEventLogger::DEBUG_RESPONSE),
+                'test_responses' => $this->surveyEventService->count($surveyId, $version,
+                    SurveyEventLogger::TEST_RESPONSE),
+                'live_responses' => $this->surveyEventService->count($surveyId, $version,
+                    SurveyEventLogger::LIVE_RESPONSE),
+                'screenouts' => $this->surveyEventService->count($surveyId, $version, SurveyEventLogger::SCREENOUT),
+                'quality_screenouts' => $this->surveyEventService->count($surveyId, $version,
+                    SurveyEventLogger::QUALITY_SCREENOUT),
+                'test_completes' => $this->surveyEventService->count($surveyId, $version,
+                    SurveyEventLogger::TEST_COMPLETE),
+                'live_completes' => $this->surveyEventService->count($surveyId, $version,
+                    SurveyEventLogger::LIVE_COMPLETE)
             ];
         }
 
@@ -320,8 +323,8 @@ class SurveyController extends AbstractController implements TokenAuthenticatedC
         return $this->json(
             [
                 'responses' => $responses,
-                'limit'     => $limit,
-                'total'     => $total
+                'limit' => $limit,
+                'total' => $total
             ]
         );
     }
