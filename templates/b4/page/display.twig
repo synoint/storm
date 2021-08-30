@@ -11,11 +11,11 @@
 {% endblock %}
 
 {% block body %}
-
+    
     <div class="container page-content">
-
+        
         <div class="row container-sm justify-content-md-center ml-0 my-5">
-
+            
             <div class="questions">
                 {% if '' != page.content %}
                     <div class="col-12">
@@ -24,50 +24,53 @@
                         </div>
                     </div>
                 {% endif %}
-
+                
                 <div class="col-12">
                     {{ form_start(form, {'attr': {'novalidate':'novalidate', 'autocomplete': 'off'}}) }}
-
-                        {% for question in questions|sort ((a, b) => a.sortOrder <=> b.sortOrder) %}
-                            <div class="question card mb-5 p-5 border-0">
-                                <h5 class="text-center m-0 pb-4">
-                                    {{ question.getText() }}
-                                </h5>
-
-                                {% if question.isMatrix %}
-                                    {% include 'b4/page/_matrix.twig' %}
-                                {% elseif question.isLinearScale %}
-                                    {{ form_errors(attribute(form, (question.getInputName))) }}
-                                    {{ form_row(attribute(form, (question.getInputName))) }}
-                                {% elseif question.isLinearScaleMatrix %}
-                                    {% set break = false %}
-                                    {% set rows = question.getRows() %}
-                                    {% if question.randomizeRows %}
-                                        {% set rows = rows|shuffle_array() %}
-                                    {% endif %}
-                                    {% for key,row in rows %}
-                                        {% set errorMessage = form_errors(attribute(form, (question.getInputName(key)))) %}
-                                        {% if errorMessage is not empty and break == false %}
-                                            {{ errorMessage|raw }}
-                                            {% set break = true %}
-                                        {% endif %}
-                                    {% endfor %}
-                                    {% for key,row in rows %}
-                                        {{ form_row(attribute(form, (question.getInputName(key)))) }}
-                                    {% endfor %}
-                                {% elseif question.isText %}
-                                    {% for answer in question.answers %}
-                                        {{ form_errors(attribute(form, (question.getInputName(answer.answerId)))) }}
-                                        {{ form_widget(attribute(form, (question.getInputName(answer.answerId))), {'label': false}) }}
-                                    {% endfor %}
-                                {% elseif question.questionTypeId == constant('Syno\\Storm\\Document\\Question::TYPE_SINGLE_CHOICE') %}
-                                    {% include 'b4/page/_single_or_multiple_choice.twig' with { 'type': 'radio' } %}
-                                {% elseif question.questionTypeId == constant('Syno\\Storm\\Document\\Question::TYPE_MULTIPLE_CHOICE') %}
-                                    {% include 'b4/page/_single_or_multiple_choice.twig' with { 'type': 'checkbox' } %}
+                    
+                    {% for question in questions|sort ((a, b) => a.sortOrder <=> b.sortOrder) %}
+                        <div class="question card mb-5 p-5 border-0">
+                            <h5 class="text-center m-0 pb-4">
+                                {{ question.getText() }}
+                            </h5>
+                            
+                            {% if question.isMatrix %}
+                                {% include 'b4/page/_matrix.twig' %}
+                            {% elseif question.isLinearScale %}
+                                {{ form_errors(attribute(form, (question.getInputName))) }}
+                                {{ form_row(attribute(form, (question.getInputName))) }}
+                            {% elseif question.isLinearScaleMatrix %}
+                                {% set break = false %}
+                                {% set rows = question.getRows() %}
+                                {% if question.randomizeRows %}
+                                    {% set rows = rows|shuffle_array() %}
                                 {% endif %}
-                            </div>
-                        {% endfor %}
-
+                                {% for key,row in rows %}
+                                    {% set errorMessage = form_errors(attribute(form, (question.getInputName(key)))) %}
+                                    {% if errorMessage is not empty and break == false %}
+                                        {{ errorMessage|raw }}
+                                        {% set break = true %}
+                                    {% endif %}
+                                {% endfor %}
+                                {% for key,row in rows %}
+                                    {{ form_row(attribute(form, (question.getInputName(key)))) }}
+                                {% endfor %}
+                            {% elseif question.isText %}
+                                {% for answer in question.answers %}
+                                    {% if '' != answer.label %}
+                                        <label>{{ answer.label }}</label>
+                                    {% endif %}
+                                    {{ form_errors(attribute(form, (question.getInputName(answer.answerId)))) }}
+                                    {{ form_widget(attribute(form, (question.getInputName(answer.answerId)), {'label': false})) }}
+                                {% endfor %}
+                            {% elseif question.questionTypeId == constant('Syno\\Storm\\Document\\Question::TYPE_SINGLE_CHOICE') %}
+                                {% include 'b4/page/_single_or_multiple_choice.twig' with { 'type': 'radio' } %}
+                            {% elseif question.questionTypeId == constant('Syno\\Storm\\Document\\Question::TYPE_MULTIPLE_CHOICE') %}
+                                {% include 'b4/page/_single_or_multiple_choice.twig' with { 'type': 'checkbox' } %}
+                            {% endif %}
+                        </div>
+                    {% endfor %}
+                    
                     <div class="row pb-5">
                         <div class="col text-center">
                             {% if false == backButtonDisabled and true == survey.getConfig.backButtonEnabled %}
@@ -83,19 +86,19 @@
             </div>
         </div>
     </div>
-
+    
     {% if (response.isDebug) %}
-
+        
         {% include 'b4/page/_debug.twig' %}
-
+    
     {% elseif (response.isTest) %}
-
+        
         {% include 'b4/page/_test.twig' %}
-
+    
     {% else %}
-
+        
         {% include 'b4/page/_footer.twig' %}
-
+    
     {% endif %}
 
 {% endblock %}
@@ -103,15 +106,15 @@
 {% block javascripts %}
     {{ parent() }}
     {{ encore_entry_script_tags('b4.page') }}
-
-    {%  if page.hasMedia %}
+    
+    {% if page.hasMedia %}
         {{ encore_entry_script_tags('media.player') }}
     {% endif %}
 {% endblock %}
 
 {% block stylesheets %}
     {{ parent() }}
-    {%  if page.hasMedia %}
+    {% if page.hasMedia %}
         {{ encore_entry_link_tags('media.player') }}
     {% endif %}
 {% endblock %}
