@@ -1,26 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <!-- https://phpunit.readthedocs.io/en/latest/configuration.html -->
-<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:noNamespaceSchemaLocation="bin/.phpunit/phpunit.xsd"
-         backupGlobals="false"
-         colors="true"
-         bootstrap="config/bootstrap.php"
->
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/9.3/phpunit.xsd" backupGlobals="false" colors="true" bootstrap="config/bootstrap.php">
+    <coverage>
+        <include>
+            <directory>src</directory>
+        </include>
+        <report>
+            <text outputFile="php://stdout"/>
+        </report>
+    </coverage>
     <php>
-        <ini name="error_reporting" value="-1" />
-        <server name="APP_ENV" value="test" force="true" />
-        <server name="SHELL_VERBOSITY" value="-1" />
+        <ini name="error_reporting" value="-1"/>
+        <server name="APP_ENV" value="dev"/>
+        <server name="SHELL_VERBOSITY" value="-1"/>
         <server name="SYMFONY_DEPRECATIONS_HELPER" value="disabled=1"/>
-        <server name="SYMFONY_PHPUNIT_REMOVE" value="" />
-        <server name="SYMFONY_PHPUNIT_VERSION" value="7.5" />
+        <server name="SYMFONY_PHPUNIT_REMOVE" value=""/>
+        <server name="SYMFONY_PHPUNIT_VERSION" value="7.5"/>
+        <env name="APP_REGION" value="test"/>
         <env name="KERNEL_CLASS" value="Syno\Storm\Kernel"/>
-        <env name="APP_REGION" value="test" />
-        <env name="MONGODB_URL" value="mongodb://localhost:27017" />
-        <env name="MONGODB_DB" value="storm_1" />
-        <env name="STORM_API_TOKEN" value="" />
+        <env name="MONGODB_URL" value="mongodb://localhost:27017"/>
+        <env name="MONGODB_DB" value="storm_test"/>
+        <env name="STORM_API_TOKEN" value=""/>
     </php>
-
     <testsuites>
         <testsuite name="unit">
             <directory>tests/Unit</directory>
@@ -29,14 +30,8 @@
             <directory>tests/Api</directory>
         </testsuite>
     </testsuites>
-
-    <filter>
-        <whitelist>
-            <directory>src</directory>
-        </whitelist>
-    </filter>
-
     <listeners>
-        <listener class="Symfony\Bridge\PhpUnit\SymfonyTestsListener" />
+        <listener class="Symfony\Bridge\PhpUnit\SymfonyTestsListener"/>
     </listeners>
+    <logging/>
 </phpunit>

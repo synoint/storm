@@ -13,7 +13,7 @@ final class SurveyActionTest extends WebTestCase
     /** @var KernelBrowser */
     protected static $client;
 
-    public function setUp()
+    public function setUp(): void
     {
         self::$client = static::createClient(
             [], [

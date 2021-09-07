@@ -10,7 +10,7 @@ class SurveyTest extends TestCase
     /** @var Survey */
     private $document;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->document = new Survey();
         $this->setHiddenProperty($this->document, 'id', 123);
