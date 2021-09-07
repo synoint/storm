@@ -9,51 +9,22 @@ class Page
 {
     CONST ATTR = 'page';
 
-    /**
-     * @param Request $request
-     *
-     * @return bool
-     */
-    public function hasPageId(Request $request)
+    public function hasPageId(Request $request): bool
     {
         return $request->attributes->has('pageId');
     }
 
-    /**
-     * @param Request $request
-     *
-     * @return int
-     */
-    public function getPageId(Request $request)
+    public function getPageId(Request $request): int
     {
         return $request->attributes->getInt('pageId');
     }
 
-    /**
-     * @param Request       $request
-     * @param Document\Page $page
-     */
     public function setPage(Request $request, Document\Page $page)
     {
         $request->attributes->set(self::ATTR, $page);
     }
 
-    /**
-     * @param Request $request
-     *
-     * @return bool
-     */
-    public function hasPage(Request $request)
-    {
-        return $request->attributes->has(self::ATTR);
-    }
-
-    /**
-     * @param Request $request
-     *
-     * @return Document\Page
-     */
-    public function getPage(Request $request)
+    public function getPage(Request $request): Document\Page
     {
         $page = $request->attributes->get(self::ATTR);
         if (!$page instanceof Document\Page) {
@@ -62,6 +33,5 @@ class Page
 
         return $page;
     }
-
 
 }

@@ -13,73 +13,39 @@ class Survey
 
     CONST ATTR = 'survey';
 
-    /** @var Services\Survey */
-    private $surveyService;
+    private Services\Survey $surveyService;
 
-    /**
-     * @param Services\Survey $surveyService
-     */
     public function __construct(Services\Survey $surveyService)
     {
         $this->surveyService = $surveyService;
     }
 
-    /**
-     * @param Request $request
-     *
-     * @return bool
-     */
-    public function hasSurveyId(Request $request)
+    public function hasSurveyId(Request $request): bool
     {
         return $request->attributes->has('surveyId');
     }
 
-    /**
-     * @param int $surveyId
-     *
-     * @return Document\Survey|null
-     */
-    public function getPublished(int $surveyId)
+    public function getPublished(int $surveyId):? Document\Survey
     {
         return $this->surveyService->getPublished($surveyId);
     }
 
-    /**
-     * @param int $surveyId
-     * @param int $versionId
-     *
-     * @return Document\Survey|null
-     */
-    public function findSavedBySurveyIdAndVersion(int $surveyId, int $versionId)
+    public function findSavedBySurveyIdAndVersion(int $surveyId, int $versionId):? Document\Survey
     {
         return $this->surveyService->findBySurveyIdAndVersion($surveyId, $versionId);
     }
 
-    /**
-     * @param Request         $request
-     * @param Document\Survey $survey
-     */
     public function setSurvey(Request $request, Document\Survey $survey)
     {
         $request->attributes->set(self::ATTR, $survey);
     }
 
-    /**
-     * @param Request $request
-     *
-     * @return bool
-     */
-    public function hasSurvey(Request $request)
+    public function hasSurvey(Request $request): bool
     {
         return $request->attributes->has(self::ATTR);
     }
 
-    /**
-     * @param Request $request
-     *
-     * @return Document\Survey
-     */
-    public function getSurvey(Request $request)
+    public function getSurvey(Request $request): Document\Survey
     {
         $survey = $request->attributes->get(self::ATTR);
         if (!$survey instanceof Document\Survey) {
@@ -89,22 +55,12 @@ class Survey
         return $survey;
     }
 
-    /**
-     * @param Request $request
-     *
-     * @return int
-     */
-    public function getSurveyId(Request $request)
+    public function getSurveyId(Request $request): int
     {
         return $request->attributes->getInt('surveyId');
     }
 
-    /**
-     * @param Request $request
-     *
-     * @return int
-     */
-    public function getVersionId(Request $request)
+    public function getVersionId(Request $request): int
     {
         return $request->attributes->getInt(
             'versionId',

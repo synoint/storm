@@ -3,7 +3,6 @@
 namespace Syno\Storm\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -11,63 +10,45 @@ use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Syno\Storm\Document;
 use Syno\Storm\Form\PrivacyConsentType;
-use Syno\Storm\Services\Survey;
 
 class SurveyController extends AbstractController
 {
-    /** @var Survey */
-    private $surveyService;
-
-    /** @var EventDispatcherInterface */
-    private $dispatcher;
-
     /**
-     * @param Survey                   $surveyService
-     * @param EventDispatcherInterface $dispatcher
-     */
-    public function __construct(Survey $surveyService, EventDispatcherInterface $dispatcher)
-    {
-        $this->surveyService = $surveyService;
-        $this->dispatcher    = $dispatcher;
-    }
-
-    /**
-     * @param Document\Survey $survey
-     *
      * @Route(
      *     "%app.route_prefix%/s/{surveyId}",
      *     name="survey.index",
      *     requirements={"surveyId"="\d+"},
      *     methods={"GET"}
      * )
-     *
-     * @return RedirectResponse
      */
-    public function index(Document\Survey $survey): Response
+    public function index(Document\Survey $survey, Request $request): RedirectResponse
     {
-        if ($survey->getConfig()->privacyConsentEnabled) {
-            return $this->redirectToRoute('survey.privacy_consent', ['surveyId' => $survey->getSurveyId()]);
+        $attr = [
+            'surveyId' => $survey->getSurveyId(),
+            'pageId'   => $survey->getPages()->first()->getPageId()
+        ];
+
+        if ($request->query->has($request->getSession()->getName())) {
+            $attr[$request->getSession()->getName()] = $request->getSession()->getId();
         }
 
-        return $this->redirectToRoute('page.index', [
-            'surveyId' => $survey->getSurveyId(),
-            'pageId' => $survey->getPages()->first()->getPageId()
-        ]);
+        if ($survey->getConfig()->privacyConsentEnabled) {
+            unset($attr['pageId']);
+            return $this->redirectToRoute('survey.privacy_consent', $attr);
+        }
+
+        return $this->redirectToRoute('page.index', $attr);
     }
 
     /**
-     * @param Document\Survey $survey
-     *
      * @Route(
      *     "%app.route_prefix%/t/{surveyId}",
      *     name="survey.test",
      *     requirements={"surveyId"="\d+"},
      *     methods={"GET"}
      * )
-     *
-     * @return RedirectResponse
      */
-    public function test(Document\Survey $survey): Response
+    public function test(Document\Survey $survey): RedirectResponse
     {
         return $this->redirectToRoute('page.index', [
             'surveyId' => $survey->getSurveyId(),
@@ -76,19 +57,14 @@ class SurveyController extends AbstractController
     }
 
     /**
-     * @param Request         $request
-     * @param Document\Survey $survey
-     *
      * @Route(
      *     "%app.route_prefix%/d/{surveyId}/{versionId}",
      *     name="survey.debug",
      *     requirements={"surveyId"="\d+"},
      *     methods={"GET"}
      * )
-     *
-     * @return Response|RedirectResponse
      */
-    public function debug(Request $request, Document\Survey $survey): Response
+    public function debug(Request $request, Document\Survey $survey): RedirectResponse
     {
         $debugToken = $request->query->getAlnum('token');
         if (empty($debugToken)) {
@@ -110,9 +86,6 @@ class SurveyController extends AbstractController
     }
 
     /**
-     * @param Document\Survey $survey
-     * @param Request         $request
-     *
      * @Route(
      *     "%app.route_prefix%/privacy-consent/{surveyId}",
      *     name="survey.privacy_consent",
@@ -122,7 +95,7 @@ class SurveyController extends AbstractController
      *
      * @return Response|RedirectResponse
      */
-    public function privacyConsent(Document\Survey $survey, Request $request)
+    public function privacyConsent(Document\Survey $survey, Request $request): Response
     {
         $form = $this->createForm(PrivacyConsentType::class);
         $form->handleRequest($request);
@@ -139,18 +112,14 @@ class SurveyController extends AbstractController
     }
 
     /**
-     * @param Document\Survey $survey
-     *
      * @Route(
      *     "%app.route_prefix%/c/{surveyId}",
      *     name="survey.complete",
      *     requirements={"surveyId"="\d+"},
      *     methods={"GET"}
      * )
-     *
-     * @return Response|RedirectResponse
      */
-    public function complete(Document\Survey $survey)
+    public function complete(Document\Survey $survey): Response
     {
         return $this->render($survey->getConfig()->theme . '/survey/complete.twig', [
             'survey' => $survey
@@ -158,18 +127,14 @@ class SurveyController extends AbstractController
     }
 
     /**
-     * @param Document\Survey $survey
-     *
      * @Route(
      *     "%app.route_prefix%/sc/{surveyId}",
      *     name="survey.screenout",
      *     requirements={"surveyId"="\d+"},
      *     methods={"GET"}
      * )
-     *
-     * @return Response|RedirectResponse
      */
-    public function screenout(Document\Survey $survey)
+    public function screenOut(Document\Survey $survey): Response
     {
         return $this->render($survey->getConfig()->theme . '/survey/screenout.twig', [
             'survey' => $survey
@@ -177,20 +142,31 @@ class SurveyController extends AbstractController
     }
 
     /**
-     * @param Document\Survey $survey
-     *
      * @Route(
      *     "%app.route_prefix%/qsc/{surveyId}",
      *     name="survey.quality_screenout",
      *     requirements={"surveyId"="\d+"},
      *     methods={"GET"}
      * )
-     *
-     * @return Response|RedirectResponse
      */
-    public function qualityScreenout(Document\Survey $survey)
+    public function qualityScreenOut(Document\Survey $survey): Response
     {
         return $this->render($survey->getConfig()->theme . '/survey/quality_screenout.twig', [
+            'survey' => $survey
+        ]);
+    }
+
+    /**
+     * @Route(
+     *     "%app.route_prefix%/qf/{surveyId}",
+     *     name="survey.quota_full",
+     *     requirements={"surveyId"="\d+"},
+     *     methods={"GET"}
+     * )
+     */
+    public function quotaFull(Document\Survey $survey): Response
+    {
+        return $this->render($survey->getConfig()->theme . '/survey/screenout.twig', [
             'survey' => $survey
         ]);
     }

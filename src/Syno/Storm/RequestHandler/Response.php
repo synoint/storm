@@ -4,9 +4,7 @@ namespace Syno\Storm\RequestHandler;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
-use Symfony\Component\HttpFoundation\Cookie;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response as HttpResponse;
 use Syno\Storm\Document;
 use Syno\Storm\Document\ResponseAnswerValue;
 use Syno\Storm\Services;
@@ -16,31 +14,18 @@ class Response
 {
     CONST ATTR = 'response';
 
-    /** @var Services\Response */
-    private $responseService;
+    private Services\Response $responseService;
 
-    /**
-     * @param Services\Response $responseService
-     */
     public function __construct(Services\Response $responseService)
     {
         $this->responseService = $responseService;
     }
 
-    /**
-     * @param Request $request
-     * @param int     $surveyId
-     *
-     * @return string|null
-     */
-    public function getResponseId(Request $request, int $surveyId)
+    public function getResponseId(Request $request, int $surveyId):? string
     {
         $result = $request->query->get('id');
         if (!$result) {
             $result = $this->getResponseIdFromSession($request, $surveyId);
-            if (!$result) {
-                $result = $this->getResponseIdFromCookie($request, $surveyId);
-            }
         }
 
         if (null !== $result) {
@@ -57,20 +42,9 @@ class Response
         return $result;
     }
 
-    /**
-     * @param Request $request
-     * @param int     $surveyId
-     *
-     * @return string|null
-     */
-    public function getResponseIdFromSession(Request $request, int $surveyId)
+    public function getResponseIdFromSession(Request $request, int $surveyId):? string
     {
-        $result = null;
-        if ($request->hasPreviousSession()) {
-            $result = $request->getSession()->get('id' . $surveyId);
-        }
-
-        return $result;
+        return $request->getSession()->get('id' . $surveyId);
     }
 
     public function saveResponseIdInSession(Request $request, Document\Response $response)
@@ -83,82 +57,17 @@ class Response
         $request->getSession()->remove('id' . $surveyId);
     }
 
-    /**
-     * @param Request $request
-     * @param int     $surveyId
-     *
-     * @return string|null
-     */
-    public function getResponseIdFromCookie(Request $request, int $surveyId)
-    {
-        return $request->cookies->get('id' . $surveyId);
-    }
-
-    /**
-     * @param Document\Response $response
-     *
-     * @return Cookie
-     */
-    public function getResponseIdCookie(Document\Response $response)
-    {
-        return new Cookie(
-            'id' . $response->getSurveyId(),
-            $response->getResponseId(),
-            time() + 3600,
-            '/',
-            null,
-            null,
-            true,
-            false,
-            'None'
-        );
-    }
-
-    /**
-     * @param HttpResponse $response
-     * @param int          $surveyId
-     */
-    public function clearResponseIdCookie(HttpResponse $response, int $surveyId)
-    {
-        $response->headers->clearCookie('id'. $surveyId);
-    }
-
-    /**
-     * @param int    $surveyId
-     * @param string $responseId
-     *
-     * @return Document\Response|null
-     */
-    public function getSavedResponse(int $surveyId, string $responseId)
+    public function getSavedResponse(int $surveyId, string $responseId):? Document\Response
     {
         return $this->responseService->findBySurveyIdAndResponseId($surveyId, $responseId);
     }
 
-    /**
-     * @param Request         $request
-     * @param Document\Response $response
-     */
     public function setResponse(Request $request, Document\Response $response)
     {
         $request->attributes->set(self::ATTR, $response);
     }
 
-    /**
-     * @param Request $request
-     *
-     * @return bool
-     */
-    public function hasResponse(Request $request)
-    {
-        return $request->attributes->has(self::ATTR);
-    }
-
-    /**
-     * @param Request $request
-     *
-     * @return Document\Response
-     */
-    public function getResponse(Request $request)
+    public function getResponse(Request $request): Document\Response
     {
         $response = $request->attributes->get(self::ATTR);
         if (!$response instanceof Document\Response) {
@@ -168,21 +77,12 @@ class Response
         return $response;
     }
 
-    /**
-     * @param Request $request
-     */
     public function clearResponse(Request $request)
     {
         $request->attributes->remove(self::ATTR);
     }
 
-    /**
-     * @param Request         $request
-     * @param Document\Survey $survey
-     *
-     * @return Document\Response
-     */
-    public function getNewResponse(Request $request, Document\Survey $survey)
+    public function getNewResponse(Request $request, Document\Survey $survey): Document\Response
     {
         $responseId = $this->getResponseId($request, $survey->getSurveyId());
         $result = $this->responseService->getNew($responseId);
@@ -195,13 +95,7 @@ class Response
         return $result;
     }
 
-    /**
-     * @param Collection $surveyValues
-     * @param Request    $request
-     *
-     * @return ArrayCollection
-     */
-    public function extractParameters(Collection $surveyValues, Request $request)
+    public function extractParameters(Collection $surveyValues, Request $request): Collection
     {
         $result = new ArrayCollection();
         /** @var Document\Parameter $surveyValue */
@@ -216,21 +110,12 @@ class Response
         return $result;
     }
 
-    /**
-     * @param Document\Response $response
-     */
     public function saveResponse(Document\Response $response)
     {
         $this->responseService->save($response);
     }
 
-    /**
-     * @param Request           $request
-     * @param Document\Response $response
-     *
-     * @return Document\Response
-     */
-    public function addUserAgent(Request $request, Document\Response $response)
+    public function addUserAgent(Request $request, Document\Response $response): Document\Response
     {
         $response->addUserAgent(
             $request->getClientIp(),
@@ -240,7 +125,7 @@ class Response
         return $response;
     }
 
-    public function extractAnswers(Collection $questions, ?array $requestData)
+    public function extractAnswers(Collection $questions, ?array $requestData): array
     {
         $questionAnswers = [];
 
@@ -259,13 +144,7 @@ class Response
         return $questionAnswers;
     }
 
-    /**
-     * @param Document\Question $question
-     * @param array             $formData
-     *
-     * @return array|ArrayCollection
-     */
-    public function extractQuestionAnswers(Document\Question $question, array $formData)
+    public function extractQuestionAnswers(Document\Question $question, array $formData): Collection
     {
         $result = new ArrayCollection();
         switch ($question->getQuestionTypeId()) {
@@ -351,13 +230,6 @@ class Response
         return $result;
     }
 
-    /**
-     * @param array             $formData
-     * @param int               $answerId
-     * @param Document\Question $question
-     *
-     * @return string
-     */
     private function extractFreeTextValue(array $formData, int $answerId, Document\Question $question): ?string
     {
         $valueKey = $question->getInputName($answerId);
@@ -369,7 +241,7 @@ class Response
         return null;
     }
 
-    public function hasModeChanged(Request $request, string $surveyMode)
+    public function hasModeChanged(Request $request, string $surveyMode): bool
     {
         return $this->responseService->getModeByRoute($request->attributes->get('_route')) !== $surveyMode;
     }

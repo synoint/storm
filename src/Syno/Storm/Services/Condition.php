@@ -19,7 +19,7 @@ class Condition
         return null;
     }
 
-    public function applyJumpToRule(Document\Response $response, Collection $jumpToConditions): ?Document\JumpToCondition
+    public function applyJumpRule(Document\Response $response, Collection $jumpToConditions): ?Document\JumpToCondition
     {
         foreach($jumpToConditions as $jumpToCondition){
             if(JWadhams\JsonLogic::apply(json_decode($jumpToCondition->getRule()), $response->getLastAnswersId())){
@@ -41,6 +41,12 @@ class Condition
         return false;
     }
 
+    /**
+     * @param Collection        $questions
+     * @param Document\Response $response
+     *
+     * @return Collection|Document\Question[]
+     */
     public function filterQuestionsByShowCondition(Collection $questions, Document\Response $response): Collection
     {
         return $questions->filter(

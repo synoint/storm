@@ -16,18 +16,10 @@ class SurveyListener implements EventSubscriberInterface
 {
     use RouteAware;
 
-    /** @var Survey */
-    private $surveyRequestHandler;
-    /** @var Response */
-    private $responseRequestHandler;
-    /** @var RouterInterface */
-    private $router;
+    private Survey          $surveyRequestHandler;
+    private Response        $responseRequestHandler;
+    private RouterInterface $router;
 
-    /**
-     * @param Survey          $surveyRequestHandler
-     * @param Response        $responseRequestHandler
-     * @param RouterInterface $router
-     */
     public function __construct(Survey $surveyRequestHandler, Response $responseRequestHandler, RouterInterface $router)
     {
         $this->surveyRequestHandler   = $surveyRequestHandler;
@@ -41,6 +33,7 @@ class SurveyListener implements EventSubscriberInterface
 
         if (!$event->isMasterRequest() ||
             $this->isApiRoute($request) ||
+            $this->isEmbed($request) ||
             !$this->surveyRequestHandler->hasSurveyId($request)) {
             return;
         }
@@ -87,14 +80,11 @@ class SurveyListener implements EventSubscriberInterface
         $event->setResponse(new RedirectResponse($this->router->generate('static.unavailable')));
     }
 
-    /**
-     * @param Document\Survey $survey
-     * @param string        $currentLocale
-     * @param string|null   $fallbackLocale
-     *
-     * @return Document\Survey
-     */
-    protected function setLocale(Document\Survey $survey, string $currentLocale, string $fallbackLocale = null)
+    protected function setLocale(
+        Document\Survey $survey,
+        string $currentLocale,
+        string $fallbackLocale = null
+    ): Document\Survey
     {
         $survey->setCurrentLocale($currentLocale);
 

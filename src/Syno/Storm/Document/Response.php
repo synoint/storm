@@ -465,6 +465,11 @@ class Response implements JsonSerializable
         return $this;
     }
 
+    public function isDone(): bool
+    {
+        return $this->isScreenedOut() || $this->isQualityScreenedOut() || $this->isQuotaFull() || $this->isCompleted();
+    }
+
     /**
      * @return \DateTime
      */
@@ -536,17 +541,13 @@ class Response implements JsonSerializable
     }
 
     /**
-     * @return Collection
+     * @return Collection|Parameter[]
      */
-    public function getParameters()
+    public function getParameters(): Collection
     {
         return $this->parameters;
     }
 
-    /**
-     * @param string $code
-     * @return ?Parameter
-     */
     public function getParameter(string $code): ?Parameter
     {
         return $this->parameters->filter(function(Parameter $parameter) use ($code) {
@@ -554,10 +555,7 @@ class Response implements JsonSerializable
         })->current();
     }
 
-    /**
-     * @return null|int
-     */
-    public function getSource()
+    public function getSource():? int
     {
         foreach ($this->parameters as $parameter) {
             if ($parameter->getCode() == self::PARAM_SOURCE) {
@@ -568,21 +566,13 @@ class Response implements JsonSerializable
         return null;
     }
 
-    /**
-     * @param Collection $parameters
-     *
-     * @return self
-     */
-    public function setParameters($parameters): self
+    public function setParameters(Collection $parameters): self
     {
         $this->parameters = $parameters;
 
         return $this;
     }
 
-    /**
-     * @param Parameter $parameter
-     */
     public function addParameter(Parameter $parameter)
     {
         if (!$this->parameters->contains($parameter)) {

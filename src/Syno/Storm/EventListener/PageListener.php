@@ -15,20 +15,10 @@ use Syno\Storm\RequestHandler\Survey;
 
 class PageListener implements EventSubscriberInterface
 {
-    /** @var Page */
-    private $pageRequestHandler;
+    private Page            $pageRequestHandler;
+    private Survey          $surveyRequestHandler;
+    private RouterInterface $router;
 
-    /** @var Survey */
-    private $surveyRequestHandler;
-
-    /** @var RouterInterface */
-    private $router;
-
-    /**
-     * @param Page            $pageRequestHandler
-     * @param Survey          $surveyRequestHandler
-     * @param RouterInterface $router
-     */
     public function __construct(Page $pageRequestHandler, Survey $surveyRequestHandler, RouterInterface $router)
     {
         $this->pageRequestHandler   = $pageRequestHandler;
@@ -39,14 +29,8 @@ class PageListener implements EventSubscriberInterface
 
     public function onKernelRequest(RequestEvent $event)
     {
-        if (!$event->isMasterRequest()) {
-            return;
-        }
-
-        /** @var Request $request */
         $request = $event->getRequest();
-
-        if (!$this->pageRequestHandler->hasPageId($request)) {
+        if (!$event->isMasterRequest() || !$this->pageRequestHandler->hasPageId($request)) {
             return;
         }
 
@@ -68,14 +52,11 @@ class PageListener implements EventSubscriberInterface
         $event->setResponse(new RedirectResponse($this->router->generate('page.unavailable')));
     }
 
-    /**
-     * @param Document\Page $page
-     * @param string        $currentLocale
-     * @param string|null   $fallbackLocale
-     *
-     * @return Document\Page
-     */
-    protected function setLocale(Document\Page $page, string $currentLocale, string $fallbackLocale = null)
+    protected function setLocale(
+        Document\Page $page,
+        string $currentLocale,
+        string $fallbackLocale = null
+    ): Document\Page
     {
         $page->setCurrentLocale($currentLocale);
         /** @var Document\Question $question */

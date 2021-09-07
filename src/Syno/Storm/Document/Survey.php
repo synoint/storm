@@ -376,12 +376,7 @@ class Survey implements JsonSerializable
         return null;
     }
 
-    /**
-     * @param $source
-     *
-     * @return null|string
-     */
-    public function getQualityScreenoutUrl(?int $source)
+    public function getQualityScreenoutUrl(?int $source):? string
     {
         foreach ($this->getUrls() as $url) {
             /**@var SurveyUrl $url */

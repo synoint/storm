@@ -14,15 +14,9 @@ class SurveyEventListener implements EventSubscriberInterface
 {
     use RouteAware;
 
-    /** @var Survey */
-    private $surveyRequestHandler;
-    /** @var SurveyEventLogger */
-    private $surveyEventLogger;
+    private Survey            $surveyRequestHandler;
+    private SurveyEventLogger $surveyEventLogger;
 
-    /**
-     * @param Survey            $surveyRequestHandler
-     * @param SurveyEventLogger $surveyEventLogger
-     */
     public function __construct(Survey $surveyRequestHandler, SurveyEventLogger $surveyEventLogger)
     {
         $this->surveyRequestHandler = $surveyRequestHandler;
@@ -32,9 +26,7 @@ class SurveyEventListener implements EventSubscriberInterface
 
     public function onKernelRequest(RequestEvent $event)
     {
-        /** @var Request $request */
         $request = $event->getRequest();
-
         if ($event->isMasterRequest() && $this->isSurveyEntrance($request->attributes->get('_route'))) {
             $survey = $this->surveyRequestHandler->getSurvey($request);
             if ($survey) {

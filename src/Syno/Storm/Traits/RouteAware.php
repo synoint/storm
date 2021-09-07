@@ -5,33 +5,43 @@ use Symfony\Component\HttpFoundation\Request;
 
 trait RouteAware {
 
-    /**
-     * @param string $route
-     *
-     * @return bool
-     */
     protected function isSurveyEntrance(string $route): bool
     {
         return in_array($route, ['survey.index', 'survey.test', 'survey.debug']);
     }
 
-    /**
-     * @param Request $request
-     *
-     * @return bool
-     */
-    protected function isDebugRoute(Request $request)
+    protected function isDebugRoute(Request $request): bool
     {
         return 'survey.debug' === $request->attributes->get('_route');
     }
 
-    /**
-     * @param Request $request
-     *
-     * @return bool
-     */
-    protected function isApiRoute(Request $request)
+    protected function isApiRoute(Request $request): bool
     {
         return false !== strpos($request->attributes->get('_route'), 'storm_api');
+    }
+
+    protected function isEmbed(Request $request): bool
+    {
+        return 'embed' === $request->attributes->get('_route');
+    }
+
+    private function isSurveyCompletePage(Request $request): bool
+    {
+        return $request->attributes->get('_route') === 'survey.complete';
+    }
+
+    private function isSurveyScreenOutPage(Request $request): bool
+    {
+        return $request->attributes->get('_route') === 'survey.screenout';
+    }
+
+    private function isSurveyQualityScreenOutPage(Request $request): bool
+    {
+        return $request->attributes->get('_route') === 'survey.quality_screenout';
+    }
+
+    private function isSurveyQuotaFullPage(Request $request): bool
+    {
+        return $request->attributes->get('_route') === 'survey.quota_full';
     }
 }

@@ -3,6 +3,7 @@
 namespace Syno\Storm\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -53,5 +54,55 @@ class IndexController extends AbstractController
         }
 
         return $response;
+    }
+
+    /**
+     * @param Request $request
+     *
+     * @Route(
+     *     "%app.route_prefix%/embed/{surveyId}",
+     *     name="embed",
+     *     requirements={"surveyId"="\d+"},
+     *     methods={"GET"}
+     * )
+     *
+     * @return RedirectResponse
+     */
+    public function embed(Request $request): RedirectResponse
+    {
+        // previous session found in cookie
+        if ($request->hasPreviousSession()) {
+            return $this->redirectToRoute(
+                'survey.index',
+                [
+                    'surveyId'  => $request->attributes->getInt('surveyId'),
+                ]
+            );
+        }
+
+        // cookies not supported
+        if ($request->query->has('_ts')) {
+            $request->getSession()->start();
+            return $this->redirectToRoute(
+                'survey.index',
+                [
+                    'surveyId'                        => $request->attributes->getInt('surveyId'),
+                    $request->getSession()->getName() => $request->getSession()->getId()
+                ]
+            );
+        }
+
+        // cookie test
+        $ts = time();
+        $request->getSession()->set('_ts', $ts);
+
+        return $this->redirectToRoute(
+            'embed',
+            [
+                'surveyId' => $request->attributes->getInt('surveyId'),
+                '_ts'      => $ts
+            ]
+        );
+
     }
 }
