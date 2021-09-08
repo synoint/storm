@@ -80,7 +80,7 @@ class ResponseEvent
         return !empty($response) ? $response['time']->toDateTime()->getTimestamp() : null;
     }
 
-    public function deleteEvents(int $responseId)
+    public function deleteEvents(string $responseId)
     {
         $this->dm->createQueryBuilder(Document\ResponseEvent::class)
             ->remove()
