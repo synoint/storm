@@ -17,7 +17,7 @@ yarn encore prod;
 # replace with New Relic license
 sed -i "s/_THIS_KEY_IS_REPLACED_DURING_DEPLOYMENT_/${NEW_RELIC_LICENSE}/" .ebextensions/07_newrelic.config
 
-eb deploy synostorm-74;
+eb deploy synostorm-74-app-lb;
 
 # restore replacement string
 sed -i "s/${NEW_RELIC_LICENSE}/_THIS_KEY_IS_REPLACED_DURING_DEPLOYMENT_/" .ebextensions/07_newrelic.config
