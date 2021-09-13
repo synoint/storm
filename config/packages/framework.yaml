@@ -7,9 +7,8 @@ framework:
     # Remove or comment this section to explicitly disable session support.
     session:
         handler_id: '%env(resolve:SESSION_HANDLER_URL)%'
-#        cookie_secure: auto
-#        cookie_samesite: lax
-# use_cookies: true
+        cookie_secure: true
+        cookie_samesite: none
 
     #esi: true
     #fragments: true
