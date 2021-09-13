@@ -60,7 +60,7 @@ class Answer
     /**
      * @var bool
      *
-     * @ODM\Field(type="boolean")
+     * @ODM\Field(type="bool")
      * @Assert\NotNull
      */
     private $isExclusive = false;
@@ -68,7 +68,7 @@ class Answer
     /**
      * @var bool
      *
-     * @ODM\Field(type="boolean")
+     * @ODM\Field(type="bool")
      * @Assert\NotNull
      */
     private $isFreeText = false;

@@ -74,35 +74,35 @@ class Response implements JsonSerializable
     /**
      * @var bool
      *
-     * @ODM\Field(type="boolean")
+     * @ODM\Field(type="bool")
      */
     private $completed = false;
 
     /**
      * @var bool
      *
-     * @ODM\Field(type="boolean")
+     * @ODM\Field(type="bool")
      */
     private $screenedOut = false;
 
     /**
      * @var bool
      *
-     * @ODM\Field(type="boolean")
+     * @ODM\Field(type="bool")
      */
     private $qualityScreenedOut = false;
 
     /**
      * @var bool
      *
-     * @ODM\Field(type="boolean")
+     * @ODM\Field(type="bool")
      */
     private $quotaFull = false;
 
     /**
      * @var int
      *
-     * @ODM\Field(type="integer")
+     * @ODM\Field(type="int")
      */
     private $screenoutId;
 

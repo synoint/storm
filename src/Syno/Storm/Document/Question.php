@@ -55,7 +55,7 @@ class Question
     /**
      * @var bool
      *
-     * @ODM\Field(type="boolean")
+     * @ODM\Field(type="bool")
      * @Assert\NotNull
      */
     private $required = true;
@@ -63,7 +63,7 @@ class Question
     /**
      * @var bool
      *
-     * @ODM\Field(type="boolean")
+     * @ODM\Field(type="bool")
      * @Assert\NotNull
      */
     private $randomizeAnswers = false;
@@ -71,7 +71,7 @@ class Question
     /**
      * @var bool
      *
-     * @ODM\Field(type="boolean")
+     * @ODM\Field(type="bool")
      * @Assert\NotNull
      */
     private $randomizeRows = false;
@@ -79,7 +79,7 @@ class Question
     /**
      * @var bool
      *
-     * @ODM\Field(type="boolean")
+     * @ODM\Field(type="bool")
      * @Assert\NotNull
      */
     private $randomizeColumns = false;

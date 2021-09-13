@@ -20,7 +20,7 @@ class SurveyUrl implements JsonSerializable
     /**
      * @var string
      *
-     * @ODM\Field(type="integer")
+     * @ODM\Field(type="int")
      */
     private $source;
 

@@ -51,7 +51,7 @@ class Survey implements JsonSerializable
     /**
      * @var bool
      *
-     * @ODM\Field(type="boolean")
+     * @ODM\Field(type="bool")
      * @Assert\NotNull
      */
     private $published = false;

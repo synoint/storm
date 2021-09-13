@@ -17,7 +17,7 @@ class ScreenoutCondition
     private $id;
 
     /**
-     * @ODM\Field(type="integer")
+     * @ODM\Field(type="int")
      * @Assert\NotBlank
      */
     private $screenoutId;

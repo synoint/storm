@@ -22,7 +22,7 @@ class JumpToCondition
     private $rule;
 
     /**
-     * @ODM\Field(type="integer")
+     * @ODM\Field(type="int")
      */
     private $destination;
 

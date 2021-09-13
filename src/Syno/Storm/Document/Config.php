@@ -16,7 +16,7 @@ class Config implements JsonSerializable
     /**
      * @var bool
      *
-     * @ODM\Field(type="boolean")
+     * @ODM\Field(type="bool")
      */
     public $debugMode = false;
 
@@ -30,7 +30,7 @@ class Config implements JsonSerializable
     /**
      * @var bool
      *
-     * @ODM\Field(type="boolean")
+     * @ODM\Field(type="bool")
      */
     public $privacyConsentEnabled;
 
@@ -52,7 +52,7 @@ class Config implements JsonSerializable
     /**
      * @var bool
      *
-     * @ODM\Field(type="boolean")
+     * @ODM\Field(type="bool")
      */
     public $backButtonEnabled;
 

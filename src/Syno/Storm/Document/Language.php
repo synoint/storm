@@ -27,7 +27,7 @@ class Language implements JsonSerializable
     /**
      * @var boolean
      *
-     * @ODM\Field(type="boolean")
+     * @ODM\Field(type="bool")
      */
     private $primary = false;
 
