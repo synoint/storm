@@ -26,6 +26,9 @@ class ResponseEventLogger
     const ANSWERS_CLEARED = 'answers cleared';
     const ANSWERS_ERROR   = 'answers error';
 
+    const JUMPED_TO_END_OF_SURVEY = 'jumped to end';
+    const JUMPED_TO_PAGE          = 'jumped to page';
+
     private DocumentManager $dm;
 
     public function __construct(DocumentManager $documentManager)
@@ -48,6 +51,7 @@ class ResponseEventLogger
             case self::SURVEY_QUALITY_SCREENOUTED:
             case self::SURVEY_VERSION_UNAVAILABLE:
             case self::SURVEY_MODE_CHANGED:
+            case self::JUMPED_TO_END_OF_SURVEY:
                 $document = new ResponseEvent($event, $response->getResponseId(), $response->getSurveyId());
                 break;
             case self::SURVEY_RESUMED:
@@ -55,6 +59,7 @@ class ResponseEventLogger
             case self::ANSWERS_SAVED:
             case self::ANSWERS_CLEARED:
             case self::ANSWERS_ERROR:
+            case self::JUMPED_TO_PAGE:
                 $document = new ResponseEvent(
                     $event,
                     $response->getResponseId(),

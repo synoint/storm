@@ -40,7 +40,7 @@ class IndexController extends AbstractController
         $url = $request->query->get('url');
         if (!empty($url) && $request->getHost() === parse_url($url, PHP_URL_HOST)) {
             $route = $router->match(parse_url($url, PHP_URL_PATH));
-            if (isset($route['_route']) && $this->isSurveyEntrance($route['_route'])) {
+            if (isset($route['_route']) && $this->isSurveyEntranceRoute($route['_route'])) {
                 $response = $this->redirect($url);
             }
         }

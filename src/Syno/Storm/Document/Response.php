@@ -136,6 +136,7 @@ class Response implements JsonSerializable
      * @ODM\EmbedMany(targetDocument=ResponseAnswer::class)
      */
     private $answers;
+
     /**
      * @var array
      *
@@ -153,6 +154,7 @@ class Response implements JsonSerializable
         $this->responseId = $responseId;
         $this->userAgents = new ArrayCollection();
         $this->parameters = new ArrayCollection();
+        $this->answers    = new ArrayCollection();
         $this->createdAt  = new \DateTime();
         $this->events     = [];
     }
@@ -510,10 +512,6 @@ class Response implements JsonSerializable
         return $this;
     }
 
-    /**
-     * @param string $ipAddress
-     * @param string $userAgentString
-     */
     public function addUserAgent(string $ipAddress, string $userAgentString)
     {
         if (!$this->userAgentExists($ipAddress, $userAgentString)) {
@@ -522,13 +520,7 @@ class Response implements JsonSerializable
         }
     }
 
-    /**
-     * @param string $ipAddress
-     * @param string $userAgentString
-     *
-     * @return bool
-     */
-    private function userAgentExists(string $ipAddress, string $userAgentString)
+    private function userAgentExists(string $ipAddress, string $userAgentString): bool
     {
         /** @var ResponseUserAgent $userAgent */
         foreach ($this->userAgents as $userAgent) {
@@ -581,16 +573,13 @@ class Response implements JsonSerializable
     }
 
     /**
-     * @return Collection
+     * @return Collection|ResponseAnswer[]
      */
-    public function getAnswers()
+    public function getAnswers(): Collection
     {
         return $this->answers;
     }
 
-    /**
-     * @param ResponseAnswer $responseAnswer
-     */
     public function addAnswer(ResponseAnswer $responseAnswer)
     {
         $this->answers->set($responseAnswer->getQuestionId(), $responseAnswer);
@@ -601,44 +590,43 @@ class Response implements JsonSerializable
         $this->answers->clear();
     }
 
-    public function getLastAnswersId()
+    public function getLatestAnswerIds(): array
     {
-        $questionsId = [];
-        $answersId = [];
+        $questionIds = [];
+        $answerIds   = [];
 
         foreach ($this->getAnswers() as $responseAnswer) {
-            /**@var ResponseAnswer $responseAnswer */
-            $questionsId[$responseAnswer->getQuestionId()] = [];
+            $questionIds[$responseAnswer->getQuestionId()] = [];
             foreach ($responseAnswer->getAnswers() as $answer) {
-                $questionsId[$responseAnswer->getQuestionId()][] = [$answer->getAnswerId() => 1];
+                $questionIds[$responseAnswer->getQuestionId()][] = [$answer->getAnswerId() => 1];
             }
         }
 
-        foreach ($questionsId as $questionId) {
+        foreach ($questionIds as $questionId) {
             foreach ($questionId as $answers) {
                 foreach ($answers as $answerId => $value) {
-                    $answersId[$answerId] = $value;
+                    $answerIds[$answerId] = $value;
                 }
             }
         }
 
-        return $answersId;
+        return $answerIds;
     }
 
-    public function getLastSavedAnswers()
+    public function getLatestSavedAnswers(): array
     {
-        $questionAnswers = [];
+        $result = [];
 
         foreach ($this->getAnswers() as $responseAnswer) {
             /**@var ResponseAnswer $responseAnswer */
-            $questionAnswers[$responseAnswer->getQuestionId()] = [];
+            $result[$responseAnswer->getQuestionId()] = [];
             foreach ($responseAnswer->getAnswers() as $answer) {
                 /**@var ResponseAnswerValue $answer */
-                $questionAnswers[$responseAnswer->getQuestionId()][$answer->getAnswerId()] = $answer->getValue();
+                $result[$responseAnswer->getQuestionId()][$answer->getAnswerId()] = $answer->getValue();
             }
         }
 
-        return $questionAnswers;
+        return $result;
     }
 
     /**

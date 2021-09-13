@@ -186,7 +186,7 @@ class Page
     }
 
     /**
-     * @return Collection
+     * @return Collection|Question[]
      */
     public function getQuestions(): Collection
     {

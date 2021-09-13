@@ -261,12 +261,7 @@ class Survey implements JsonSerializable
         return $result;
     }
 
-    /**
-     * @param int $pageId
-     *
-     * @return Page|null
-     */
-    public function getNextPage(int $pageId)
+    public function getNextPage(int $pageId):? Page
     {
         $result = null;
         $pick   = false;
@@ -284,12 +279,7 @@ class Survey implements JsonSerializable
         return $result;
     }
 
-    /**
-     * @param int $pageId
-     *
-     * @return bool
-     */
-    public function isFirstPage(int $pageId)
+    public function isFirstPage(int $pageId): bool
     {
         return $pageId === $this->pages->first()->getPageId();
     }
@@ -342,12 +332,7 @@ class Survey implements JsonSerializable
         return $this->urls;
     }
 
-    /**
-     * @param $source
-     *
-     * @return null|string
-     */
-    public function getCompleteUrl(?int $source)
+    public function getCompleteUrl(?int $source):? string
     {
         foreach ($this->getUrls() as $url) {
             /**@var SurveyUrl $url */
@@ -359,12 +344,7 @@ class Survey implements JsonSerializable
         return null;
     }
 
-    /**
-     * @param $source
-     *
-     * @return null|string
-     */
-    public function getScreenoutUrl(?int $source)
+    public function getScreenoutUrl(?int $source):? string
     {
         foreach ($this->getUrls() as $url) {
             /**@var SurveyUrl $url */

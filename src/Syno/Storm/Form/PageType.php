@@ -21,20 +21,10 @@ use Syno\Storm\Validator\Constraints\OtherFilled;
 
 class PageType extends AbstractType
 {
-    /** @var TranslatorInterface */
-    private $translator;
+    private TranslatorInterface $translator;
+    private Services\Question   $questionService;
 
-    /** @var Services\Question */
-    private $questionService;
-
-    /**
-     * @param TranslatorInterface   $translator
-     * @param Services\Question     $questionService
-     */
-    public function __construct(
-        TranslatorInterface $translator,
-        Services\Question   $questionService
-    )
+    public function __construct(TranslatorInterface $translator, Services\Question $questionService)
     {
         $this->translator       = $translator;
         $this->questionService  = $questionService;
@@ -45,30 +35,30 @@ class PageType extends AbstractType
         /** @var Document\Question $question */
         foreach ($options['questions'] as $question) {
 
-            $respondentAnswers = !empty($options['respondentAnswers'][$question->getQuestionId()]) ? $options['respondentAnswers'][$question->getQuestionId()] : null;
+            $answerMap = $options['answers'][$question->getQuestionId()] ?? null;
 
             switch ($question->getQuestionTypeId()) {
                 case Document\Question::TYPE_SINGLE_CHOICE:
 
-                    $this->addSingleChoice($builder, $question, $respondentAnswers);
-                    $this->addFreeText($builder, $question, $respondentAnswers);
+                    $this->addSingleChoice($builder, $question, $answerMap);
+                    $this->addFreeText($builder, $question, $answerMap);
                     break;
                 case Document\Question::TYPE_MULTIPLE_CHOICE:
-                    $this->addMultipleChoice($builder, $question, $respondentAnswers);
-                    $this->addFreeText($builder, $question, $respondentAnswers);
+                    $this->addMultipleChoice($builder, $question, $answerMap);
+                    $this->addFreeText($builder, $question, $answerMap);
                     break;
                 case Document\Question::TYPE_SINGLE_CHOICE_MATRIX:
                 case Document\Question::TYPE_MULTIPLE_CHOICE_MATRIX:
-                    $this->addMatrix($builder, $question, $respondentAnswers);
+                    $this->addMatrix($builder, $question, $answerMap);
                     break;
                 case Document\Question::TYPE_TEXT:
-                    $this->addText($builder, $question, $respondentAnswers);
+                    $this->addText($builder, $question, $answerMap);
                     break;
                 case Document\Question::TYPE_LINEAR_SCALE:
-                    $this->addLinearScale($builder, $question, $respondentAnswers);
+                    $this->addLinearScale($builder, $question, $answerMap);
                     break;
                 case Document\Question::TYPE_LINEAR_SCALE_MATRIX:
-                    $this->addLinearScaleMatrix($builder, $question, $respondentAnswers);
+                    $this->addLinearScaleMatrix($builder, $question, $answerMap);
                     break;
             }
         }
@@ -81,7 +71,7 @@ class PageType extends AbstractType
         $resolver->setDefaults(
             [
                 'questions'         => null,
-                'respondentAnswers' => null,
+                'answers'           => null,
                 'validation_groups' => ['form_validation_only']
             ]
         );
@@ -90,11 +80,11 @@ class PageType extends AbstractType
     /**
      * @param FormBuilderInterface $builder
      * @param Document\Question    $question
-     * @param array                $respondentAnswers
+     * @param array                $answerMap
      */
-    private function addSingleChoice(FormBuilderInterface $builder, Document\Question $question, ?array $respondentAnswers)
+    private function addSingleChoice(FormBuilderInterface $builder, Document\Question $question, ?array $answerMap)
     {
-        $questionAnswerIds = $respondentAnswers ? array_keys($respondentAnswers) : null;
+        $questionAnswerIds = $answerMap ? array_keys($answerMap) : null;
 
         $builder->add($question->getInputName(), ChoiceType::class, [
             'choices'     => $question->getChoices(),
@@ -114,11 +104,11 @@ class PageType extends AbstractType
     /**
      * @param FormBuilderInterface  $builder
      * @param Document\Question     $question
-     * @param array                 $respondentAnswers
+     * @param array                 $answerMap
      */
-    private function addMultipleChoice(FormBuilderInterface $builder, Document\Question $question, ?array $respondentAnswers)
+    private function addMultipleChoice(FormBuilderInterface $builder, Document\Question $question, ?array $answerMap)
     {
-        $questionAnswerIds = $respondentAnswers ? array_keys($respondentAnswers) : null;
+        $questionAnswerIds = $answerMap ? array_keys($answerMap) : null;
 
         $selectedAnswersIsExclusive = $this->questionService->isSelectedAnswersExclusive($question, $questionAnswerIds);
 
@@ -131,7 +121,7 @@ class PageType extends AbstractType
                 'multiple'    => true,
                 'data'        => $questionAnswerIds,
                 'attr'        => ['class' => 'custom-control custom-checkbox custom-checkbox-filled'],
-                'choice_attr' => function ($answerId) use ($question, $selectedAnswersIsExclusive, $respondentAnswers) {
+                'choice_attr' => function ($answerId) use ($question, $selectedAnswersIsExclusive, $answerMap) {
 
                     $attr = ['class' => 'custom-control-input form-check-input'];
 
@@ -139,7 +129,7 @@ class PageType extends AbstractType
                         $attr['class'] .= ' exclusive';
                     }
 
-                    if ($selectedAnswersIsExclusive && !in_array($answerId, $respondentAnswers)) {
+                    if ($selectedAnswersIsExclusive && !in_array($answerId, $answerMap)) {
                         $attr['disabled'] = 'disabled';
                     }
 
@@ -153,9 +143,9 @@ class PageType extends AbstractType
     /**
      * @param FormBuilderInterface  $builder
      * @param Document\Question     $question
-     * @param array                 $respondentAnswers
+     * @param array                 $answerMap
      */
-    private function addFreeText(FormBuilderInterface $builder, Document\Question $question, ?array $respondentAnswers)
+    private function addFreeText(FormBuilderInterface $builder, Document\Question $question, ?array $answerMap)
     {
         /** @var Document\Answer $answer */
         foreach ($question->getAnswers() as $answer) {
@@ -164,9 +154,9 @@ class PageType extends AbstractType
                         'attr'     => ['class' => 'is-free-text-input'],
                         'required' => false,
                         'constraints' => [
-                            new OtherFilled(['answer' => $answer, 'respondentAnswers' => $respondentAnswers,  'groups' => ['form_validation_only']])
+                            new OtherFilled(['answer' => $answer, 'respondentAnswers' => $answerMap,  'groups' => ['form_validation_only']])
                         ],
-                        'data'     => isset($respondentAnswers[$answer->getAnswerId()]) ? $respondentAnswers[$answer->getAnswerId()] : null,
+                        'data'     => isset($answerMap[$answer->getAnswerId()]) ? $answerMap[$answer->getAnswerId()] : null,
                     ]
                 );
             }
@@ -176,11 +166,11 @@ class PageType extends AbstractType
     /**
      * @param FormBuilderInterface $builder
      * @param Document\Question    $question
-     * @param array                $respondentAnswers
+     * @param array                $answerMap
      */
-    private function addMatrix(FormBuilderInterface $builder, Document\Question $question, ?array $respondentAnswers)
+    private function addMatrix(FormBuilderInterface $builder, Document\Question $question, ?array $answerMap)
     {
-        $questionAnswerIds = $respondentAnswers ?(array) array_keys($respondentAnswers) : null;
+        $questionAnswerIds = $answerMap ?(array) array_keys($answerMap) : null;
 
         foreach (array_keys($question->getRows()) as $key => $rowCode) {
 
@@ -223,9 +213,9 @@ class PageType extends AbstractType
     /**
      * @param FormBuilderInterface $builder
      * @param Document\Question    $question
-     * @param array                $respondentAnswers
+     * @param array                $answerMap
      */
-    private function addText(FormBuilderInterface $builder, Document\Question $question, ?array $respondentAnswers)
+    private function addText(FormBuilderInterface $builder, Document\Question $question, ?array $answerMap)
     {
         /** @var Document\Answer $answer */
         foreach ($question->getAnswers() as $answer) {
@@ -233,7 +223,7 @@ class PageType extends AbstractType
                 $options = [
                     'attr'     => ['class' => 'custom-control custom-text'],
                     'required' => $question->isRequired(),
-                    'data'     => $respondentAnswers[$answer->getAnswerId()] ?? ''
+                    'data'     => $answerMap[$answer->getAnswerId()] ?? ''
                 ];
 
                 if ($question->isRequired()) {
@@ -251,7 +241,7 @@ class PageType extends AbstractType
                 $options = [
                     'attr'     => ['class' => 'custom-control custom-textarea'],
                     'required' => $question->isRequired(),
-                    'data'     => $respondentAnswers[$answer->getAnswerId()] ?? '',
+                    'data'     => $answerMap[$answer->getAnswerId()] ?? '',
                 ];
 
                 if ($question->isRequired()) {
@@ -271,11 +261,11 @@ class PageType extends AbstractType
     /**
      * @param FormBuilderInterface $builder
      * @param Document\Question    $question
-     * @param array                $respondentAnswers
+     * @param array                $answerMap
      */
-    private function addLinearScale(FormBuilderInterface $builder, Document\Question $question, ?array $respondentAnswers)
+    private function addLinearScale(FormBuilderInterface $builder, Document\Question $question, ?array $answerMap)
     {
-        $questionAnswerIds = !empty($respondentAnswers) ? array_keys($respondentAnswers) : null;
+        $questionAnswerIds = !empty($answerMap) ? array_keys($answerMap) : null;
 
         $builder->add($question->getInputName(), LinearScale::class, [
             'choices'     => $question->getAnswers(),
@@ -289,11 +279,11 @@ class PageType extends AbstractType
     /**
      * @param FormBuilderInterface $builder
      * @param Document\Question    $question
-     * @param array                $respondentAnswers
+     * @param array                $answerMap
      */
-    private function addLinearScaleMatrix(FormBuilderInterface $builder, Document\Question $question, ?array $respondentAnswers)
+    private function addLinearScaleMatrix(FormBuilderInterface $builder, Document\Question $question, ?array $answerMap)
     {
-        $questionAnswerIds = $respondentAnswers ?(array) array_keys($respondentAnswers) : null;
+        $questionAnswerIds = $answerMap ?(array) array_keys($answerMap) : null;
 
         foreach ($question->getRows() as $rowCode => $row) {
 

@@ -5,9 +5,24 @@ use Symfony\Component\HttpFoundation\Request;
 
 trait RouteAware {
 
-    protected function isSurveyEntrance(string $route): bool
+    protected function isSurveyEntrance(Request $request): bool
+    {
+        return $this->isSurveyEntranceRoute($request->attributes->get('_route'));
+    }
+
+    protected function isSurveyEntranceRoute(string $route): bool
     {
         return in_array($route, ['survey.index', 'survey.test', 'survey.debug']);
+    }
+
+    protected function getLiveEntranceRoute(): string
+    {
+        return 'survey.index';
+    }
+
+    protected function getTestEntranceRoute(): string
+    {
+        return 'survey.test';
     }
 
     protected function isDebugRoute(Request $request): bool

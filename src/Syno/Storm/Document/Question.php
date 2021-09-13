@@ -489,7 +489,7 @@ class Question
     }
 
     /**
-     * @return Collection
+     * @return Collection|Answer[]
      */
     public function getAnswers(): Collection
     {

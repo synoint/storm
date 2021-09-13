@@ -9,7 +9,7 @@ framework:
         handler_id: '%env(resolve:SESSION_HANDLER_URL)%'
 #        cookie_secure: auto
 #        cookie_samesite: lax
-        use_cookies: false
+# use_cookies: true
 
     #esi: true
     #fragments: true
