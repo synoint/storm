@@ -4,7 +4,6 @@ namespace Syno\Storm\Services;
 
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Routing\RouterInterface;
 use Syno\Storm\Document;
 use Syno\Storm\RequestHandler;
 use Syno\Storm\Traits\RouteAware;
@@ -214,6 +213,11 @@ class ResponseSession
     public function answeredWithErrors()
     {
         $this->responseEventLogger->log(ResponseEventLogger::ANSWERS_ERROR, $this->responseHandler->getResponse());
+    }
+
+    public function redirectToSessionCookieCheck(int $surveyId): RedirectResponse
+    {
+        return $this->responseRedirector->sessionCookieCheck($surveyId);
     }
 
 }

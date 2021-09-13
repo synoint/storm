@@ -8,6 +8,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Routing\RouterInterface;
+use Syno\Storm\Services\ResponseRedirector;
 use Syno\Storm\Traits\RouteAware;
 
 
@@ -60,49 +61,37 @@ class IndexController extends AbstractController
      * @param Request $request
      *
      * @Route(
-     *     "%app.route_prefix%/embed/{surveyId}",
-     *     name="embed",
+     *     "%app.route_prefix%/cookie_check/{surveyId}",
+     *     name="cookie_check",
      *     requirements={"surveyId"="\d+"},
      *     methods={"GET"}
      * )
      *
      * @return RedirectResponse
      */
-    public function embed(Request $request): RedirectResponse
+    public function cookieCheck(Request $request): RedirectResponse
     {
-        // previous session found in cookie
-        if ($request->hasPreviousSession()) {
+        $surveyId = $request->attributes->getInt('surveyId');
+        // previous session found
+        if ($request->hasPreviousSession() &&
+            $surveyId === $request->getSession()->get(ResponseRedirector::COOKIE_CHECK_KEY)
+        ) {
             return $this->redirectToRoute(
                 'survey.index',
                 [
-                    'surveyId'  => $request->attributes->getInt('surveyId'),
+                    'surveyId'  => $surveyId,
                 ]
             );
         }
 
-        // cookies not supported
-        if ($request->query->has('_ts')) {
-            $request->getSession()->start();
-            return $this->redirectToRoute(
-                'survey.index',
-                [
-                    'surveyId'                        => $request->attributes->getInt('surveyId'),
-                    $request->getSession()->getName() => $request->getSession()->getId()
-                ]
-            );
-        }
-
-        // cookie test
-        $ts = time();
-        $request->getSession()->set('_ts', $ts);
-
+        // cookies not supported, redirect with session ID in URL
+        $request->getSession()->start();
         return $this->redirectToRoute(
-            'embed',
+            'survey.index',
             [
-                'surveyId' => $request->attributes->getInt('surveyId'),
-                '_ts'      => $ts
+                'surveyId'                        => $surveyId,
+                $request->getSession()->getName() => $request->getSession()->getId()
             ]
         );
-
     }
 }

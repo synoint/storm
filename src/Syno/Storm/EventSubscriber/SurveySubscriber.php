@@ -34,7 +34,7 @@ class SurveySubscriber implements EventSubscriberInterface
             return;
         }
 
-        if ($this->isApiRoute($event->getRequest()) || $this->isEmbed($event->getRequest())) {
+        if ($this->isApiRoute($event->getRequest()) || $this->isCookieCheck($event->getRequest())) {
             return;
         }
 

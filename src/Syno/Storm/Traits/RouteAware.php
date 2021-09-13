@@ -20,11 +20,6 @@ trait RouteAware {
         return 'survey.index';
     }
 
-    protected function getTestEntranceRoute(): string
-    {
-        return 'survey.test';
-    }
-
     protected function isDebugRoute(Request $request): bool
     {
         return 'survey.debug' === $request->attributes->get('_route');
@@ -35,9 +30,9 @@ trait RouteAware {
         return false !== strpos($request->attributes->get('_route'), 'storm_api');
     }
 
-    protected function isEmbed(Request $request): bool
+    protected function isCookieCheck(Request $request): bool
     {
-        return 'embed' === $request->attributes->get('_route');
+        return 'cookie_check' === $request->attributes->get('_route');
     }
 
     private function isSurveyCompletePage(Request $request): bool

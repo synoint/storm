@@ -14,6 +14,8 @@ class ResponseRedirector
 {
     use RouteAware;
 
+    const COOKIE_CHECK_KEY = 'cookie_check';
+
     private RouterInterface $router;
     private RequestStack    $requestStack;
 
@@ -110,6 +112,15 @@ class ResponseRedirector
                 $map[$responseMode],
                 array_merge(['surveyId' => $surveyId], $params)
             )
+        );
+    }
+
+    public function sessionCookieCheck(int $surveyId): RedirectResponse
+    {
+        $this->requestStack->getCurrentRequest()->getSession()->set(self::COOKIE_CHECK_KEY, $surveyId);
+
+        return new RedirectResponse(
+            $this->router->generate('cookie_check', ['surveyId' => $surveyId, '_cb' => time()])
         );
     }
 

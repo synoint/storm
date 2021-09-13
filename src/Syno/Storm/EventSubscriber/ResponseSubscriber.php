@@ -10,26 +10,33 @@ use Symfony\Component\Routing\RouterInterface;
 use Syno\Storm\RequestHandler;
 use Syno\Storm\Services\ResponseSession;
 use Syno\Storm\Traits\RouteAware;
+use Psr\Log\LoggerInterface;
 
 
 class ResponseSubscriber implements EventSubscriberInterface
 {
     use RouteAware;
 
-    private RequestHandler\Survey   $surveyHandler;
+    private LoggerInterface         $logger;
+    private RequestHandler\Page     $pageHandler;
     private RequestHandler\Response $responseHandler;
+    private RequestHandler\Survey   $surveyHandler;
     private ResponseSession         $responseSession;
     private RouterInterface         $router;
 
     public function __construct(
-        RequestHandler\Survey   $surveyHandler,
+        LoggerInterface         $logger,
+        RequestHandler\Page     $pageHandler,
         RequestHandler\Response $responseHandler,
+        RequestHandler\Survey   $surveyHandler,
         ResponseSession         $responseSession,
         RouterInterface         $router
     )
     {
-        $this->surveyHandler   = $surveyHandler;
+        $this->logger          = $logger;
+        $this->pageHandler     = $pageHandler;
         $this->responseHandler = $responseHandler;
+        $this->surveyHandler   = $surveyHandler;
         $this->responseSession = $responseSession;
         $this->router          = $router;
     }
@@ -44,10 +51,18 @@ class ResponseSubscriber implements EventSubscriberInterface
             return;
         }
 
+        $this->logger->debug(__FUNCTION__);
+
         $survey   = $this->surveyHandler->getSurvey();
         $response = $this->responseHandler->getSaved($survey->getSurveyId());
         if ($response) {
             $this->responseHandler->setResponse($response);
+            return;
+        }
+
+        if ($this->pageHandler->hasPage()) {
+            // we have page, but no response initiated, redirect to session cookie support check
+            $event->setResponse($this->responseSession->redirectToSessionCookieCheck($survey->getSurveyId()));
         }
     }
 
@@ -63,6 +78,8 @@ class ResponseSubscriber implements EventSubscriberInterface
         if (!$this->responseHandler->hasResponse()) {
             return;
         }
+
+        $this->logger->debug(__FUNCTION__);
 
         $redirect = $this->responseSession->isFinishedButLost($this->surveyHandler->getSurvey(), $event->getRequest());
         if ($redirect) {
@@ -89,6 +106,8 @@ class ResponseSubscriber implements EventSubscriberInterface
         if ($response->getSurveyVersion() === $survey->getVersion()) {
             return;
         }
+
+        $this->logger->debug(__FUNCTION__);
 
         $previousSurvey = $this->surveyHandler->findSaved(
             $response->getSurveyId(),
@@ -121,6 +140,8 @@ class ResponseSubscriber implements EventSubscriberInterface
             return;
         }
 
+        $this->logger->debug(__FUNCTION__);
+
         $redirect = $this->responseSession->redirectOnModeChange($event->getRequest());
         if ($redirect) {
             $event->setResponse($redirect);
@@ -142,42 +163,13 @@ class ResponseSubscriber implements EventSubscriberInterface
             return;
         }
 
+        $this->logger->debug(__FUNCTION__);
+
         $redirect = $this->responseSession->resumeSurvey($this->surveyHandler->getSurvey());
 
         if ($redirect) {
             $event->setResponse($redirect);
         }
-    }
-
-    /**
-     * If we have no survey response and it's not an entrance page, redirect to entrance
-     *
-     * @param RequestEvent $event
-     */
-    public function handleLostVisitor(RequestEvent $event)
-    {
-        if (!$this->surveyHandler->hasSurvey()) {
-            return;
-        }
-
-        if ($this->responseHandler->hasResponse()) {
-            return;
-        }
-
-        if ($this->isSurveyEntrance($event->getRequest())) {
-            return;
-        }
-
-        $redirect = new RedirectResponse(
-            $this->router->generate(
-                $this->getLiveEntranceRoute(),
-                array_merge(
-                    ['surveyId' => $this->surveyHandler->getSurvey()->getSurveyId()],
-                    $event->getRequest()->query->all()
-                )
-            )
-        );
-        $event->setResponse($redirect);
     }
 
     /**
@@ -203,6 +195,8 @@ class ResponseSubscriber implements EventSubscriberInterface
             return;
         }
 
+        $this->logger->debug(__FUNCTION__);
+
         $this->responseSession->createResponse($this->surveyHandler->getSurvey());
     }
 
@@ -217,6 +211,8 @@ class ResponseSubscriber implements EventSubscriberInterface
             return;
         }
 
+        $this->logger->debug(__FUNCTION__);
+
         $this->responseHandler->addUserAgent($this->responseHandler->getResponse());
     }
 
@@ -229,7 +225,6 @@ class ResponseSubscriber implements EventSubscriberInterface
                 ['handleSurveyVersionChange', 6],
                 ['handleModeChange', 5],
                 ['handleSurveyResume', 4],
-                ['handleLostVisitor', 3],
                 ['createResponse', 2],
                 ['logUserAgent'],
             ]
