@@ -29,7 +29,6 @@ class PageType extends AbstractType
                 'by_reference'  => false,
                 'allow_add'     => true
             ]);
-        ;
     }
 
     public function configureOptions(OptionsResolver $resolver)

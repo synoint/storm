@@ -21,6 +21,11 @@ class SurveyType extends AbstractType
                 'by_reference'  => false,
                 'allow_add'     => true
             ])
+            ->add('css', CollectionType::class, [
+                'entry_type' => CssType::class,
+                'by_reference'  => false,
+                'allow_add'     => true
+            ])
             ->add('config', ConfigType::class)
             ->add('parameters', CollectionType::class, [
                 'entry_type' => ParameterType::class,

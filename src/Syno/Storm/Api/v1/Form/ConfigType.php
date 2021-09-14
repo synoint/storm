@@ -17,7 +17,6 @@ class ConfigType extends AbstractType
             ->add('privacyConsentEnabled', CheckboxType::class, ['required' => false])
             ->add('theme', HiddenType::class, ['required' => false, 'empty_data' => Document\Config::DEFAULT_THEME])
             ->add('cintDemandApiKey', HiddenType::class, ['required' => false])
-            ->add('colorTheme', HiddenType::class, ['required' => false, 'empty_data' => Document\Config::DEFAULT_COLOR_THEME])
             ->add('backButtonEnabled', CheckboxType::class, ['required' => false]);
     }
 

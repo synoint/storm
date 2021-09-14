@@ -92,6 +92,13 @@ class Survey implements JsonSerializable
     private $languages;
 
     /**
+     * @var  Collection
+     *
+     * @ODM\EmbedMany(targetDocument=Css::class)
+     */
+    private $css;
+
+    /**
      * @var Collection
      *
      * @ODM\EmbedMany(targetDocument=SurveyTranslation::class)
@@ -105,6 +112,7 @@ class Survey implements JsonSerializable
         $this->urls         = new ArrayCollection();
         $this->languages    = new ArrayCollection();
         $this->translations = new ArrayCollection();
+        $this->css          = new ArrayCollection();
     }
 
     public function jsonSerialize()
@@ -117,7 +125,8 @@ class Survey implements JsonSerializable
             'config' => $this->config,
             'parameters' => $this->parameters,
             'urls' => $this->urls,
-            'pages' => $this->pages
+            'pages' => $this->pages,
+            'css' => $this->css,
         ];
     }
 
@@ -435,9 +444,21 @@ class Survey implements JsonSerializable
      *
      * @return Survey
      */
-    public function setPublicTitle($publicTitle)
+    public function setPublicTitle($publicTitle): self
     {
         $this->publicTitle = $publicTitle;
+
+        return $this;
+    }
+
+    public function getCss(): Collection
+    {
+        return $this->css;
+    }
+
+    public function setCss(Collection $css): self
+    {
+        $this->css = $css;
 
         return $this;
     }

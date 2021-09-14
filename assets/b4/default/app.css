@@ -30,6 +30,9 @@ footer .progress {
     color: var(--white) !important;
 }
 
+.card-footer {
+    height: 100%;
+}
 
 .custom-radio-filled .custom-control-input:checked~.custom-control-label,
 .custom-checkbox-filled .custom-control-input:checked~.custom-control-label {
@@ -90,5 +93,4 @@ footer .progress {
         margin: 0;
         text-indent: -9999px;
     }
-
 }

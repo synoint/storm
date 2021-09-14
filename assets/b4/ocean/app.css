@@ -9,46 +9,46 @@
 }
 
 .card-footer {
-    background: var(--secondary);
-    color: var(--dark);
+    background: #0068c8;
+    color: #0a1c3a;
 }
 
 .custom-control {
     background: #ffffff;
-    color: var(--dark);
+    color: #0a1c3a;
 }
 
 footer {
-    background-color: var(--secondary);
+    background-color: #0068c8;
 }
 
 footer .progress-bar {
-    background-color: var(--light);
+    background-color: #e2e8f6;
 }
 
 footer .progress {
-    background-color: var(--info);
+    background-color: #747b81;
 }
 
 .linear-scale__button {
-    border: 1px solid var(--light);
-    background: var(--light);
+    border: 1px solid #e2e8f6;
+    background: #e2e8f6;
 }
 
 .linear-scale__button:hover,
 .linear-scale__button.active {
-    color: var(--white) !important;
+    color: #fff !important;
 }
 
 .custom-radio-filled .custom-control-input:checked ~ .custom-control-label,
 .custom-checkbox-filled .custom-control-input:checked ~ .custom-control-label {
-    color: var(--dark);
+    color: #0a1c3a;
 }
 
 .custom-control-input:checked ~ .custom-control-label::before {
-    color: var(--secondary);
-    border-color: var(--dark);
-    background-color: var(--dark);
+    color: #0068c8;
+    border-color: #0a1c3a;
+    background-color: #0a1c3a;
 }
 
 .custom-radio-filled .custom-control-input:checked ~ .custom-control-label::after {
@@ -61,7 +61,7 @@ footer .progress {
 
 .custom-radio-filled .custom-control-label,
 .custom-checkbox-filled .custom-control-label {
-    color: var(--dark);
+    color: #0a1c3a;
     padding-top: 0;
     padding-bottom: 2px;
 }
@@ -73,16 +73,16 @@ footer .progress {
 
 @media (min-width: 768px) {
     .custom-control-input:checked ~ .custom-control-label::before {
-        border-color: var(--secondary);
-        background-color: var(--white);
+        border-color: #0068c8;
+        background-color: #fff;
     }
 
     .matrix tbody tr:nth-of-type(odd) {
-        background: var(--light);
+        background: #e2e8f6;
     }
 
     .matrix tbody tr:nth-of-type(even) {
-        background: var(--muted);
+        background: #ddedfd;
     }
 
     .custom-radio-filled-md-center .form-check,
@@ -97,10 +97,10 @@ footer .progress {
 
     button.btn-primary,
     button.btn-outline-primary {
-        background-color: var(--secondary);
+        background-color: #0068c8;
         margin-bottom: 5px;
         transition: background-color .2s;
-        color: var(--white);
+        color: #fff;
         border-radius: 0;
         border: 0;
         text-align: center;
@@ -146,10 +146,10 @@ footer .progress {
 
     button.btn-primary,
     button.btn-outline-primary {
-        background-color: var(--secondary);
+        background-color: #0068c8;
         margin-bottom: 5px;
         transition: background-color .2s;
-        color: var(--white);
+        color: #fff;
         border-radius: 0;
         border: 0;
         text-align: center;
@@ -174,12 +174,12 @@ footer .progress {
     }
 
     .matrix tbody th {
-        border-bottom: 1px solid var(--white);
+        border-bottom: 1px solid #fff;
     }
 
     .matrix tbody td {
-        border-left: 1px solid var(--white);
-        border-bottom: 1px solid var(--white);
+        border-left: 1px solid #fff;
+        border-bottom: 1px solid #fff;
     }
 
     .matrix thead th {

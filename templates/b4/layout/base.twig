@@ -7,10 +7,18 @@
         <title>{% block title %}{% endblock %}</title>
 
         {% block stylesheets %}
+            {{ encore_entry_link_tags('b4.default') }}
             {% if survey is defined %}
-                {{ encore_entry_link_tags(survey.config.theme ~ '.' ~ survey.config.colorTheme) }}
-            {% else %}
-                {{ encore_entry_link_tags('b4.default') }}
+                {% for style in survey.css %}
+                    {% if loop.first %}<style>{% endif %}
+                    {% if true == style.default %}
+                        {{ style.css }}
+                    {% endif %}
+                    {% if false == style.default and app.request.locale == style.language %}
+                        {{ style.css }}
+                    {% endif %}
+                    {% if loop.last %}</style>{% endif %}
+                {% endfor %}
             {% endif %}
         {% endblock %}
     </head>
