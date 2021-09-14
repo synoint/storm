@@ -30,7 +30,7 @@ class ResponseRedirector
         if ($response) {
             $url = $survey->getCompleteUrl($response->getSource());
             if ($url) {
-                return new RedirectResponse($url, $this->populateParameters($url, $response->getParameters()));
+                return new RedirectResponse($this->populateParameters($url, $response->getParameters()));
             }
         }
 
