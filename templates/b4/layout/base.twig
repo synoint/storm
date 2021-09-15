@@ -1,36 +1,42 @@
 <!DOCTYPE html>
 <html lang="{{ app.request.locale }}">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-        <title>{% block title %}{% endblock %}</title>
-
-        {% block stylesheets %}
-            {{ encore_entry_link_tags('b4.default') }}
-            {% if survey is defined %}
-                {% for style in survey.css %}
-                    {% if loop.first %}<style>{% endif %}
-                    {% if true == style.default %}
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta http-equiv="X-UA-Compatible" content="ie=edge"/>
+    <title>{% block title %}{% endblock %}</title>
+    
+    {% block stylesheets %}
+        {{ encore_entry_link_tags('b4.default') }}
+        
+        {% if survey is defined %}
+            {% for style in survey.css %}
+                {% if true == style.default %}
+                  <style>
+                    {{ style.css }}
+                  </style>
+                {% endif %}
+            {% endfor %}
+            
+            {% for style in survey.css %}
+                {% if false == style.default and app.request.locale == style.language %}
+                    <style>
                         {{ style.css }}
-                    {% endif %}
-                    {% if false == style.default and app.request.locale == style.language %}
-                        {{ style.css }}
-                    {% endif %}
-                    {% if loop.last %}</style>{% endif %}
-                {% endfor %}
-            {% endif %}
-        {% endblock %}
-    </head>
-    <body>
-        {% block body %}{% endblock %}
+                    </style>
+                {% endif %}
+            {% endfor %}
+        {% endif %}
+    {% endblock %}
+</head>
+<body>
+{% block body %}{% endblock %}
 
-        {% block javascripts %}
-            {% if survey is defined %}
-                {{ encore_entry_script_tags(survey.config.theme ~ '.' ~ survey.config.colorTheme) }}
-            {% else %}
-                {{ encore_entry_script_tags('b4.default') }}
-            {% endif %}
-        {% endblock %}
-    </body>
+{% block javascripts %}
+    {% if survey is defined %}
+        {{ encore_entry_script_tags(survey.config.theme ~ '.' ~ survey.config.colorTheme) }}
+    {% else %}
+        {{ encore_entry_script_tags('b4.default') }}
+    {% endif %}
+{% endblock %}
+</body>
 </html>
