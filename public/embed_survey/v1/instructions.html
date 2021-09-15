@@ -1,0 +1,175 @@
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <style>
+        body {
+            color: rgba(0, 0, 0, 0.87);
+            margin: 0;
+            font-size: 0.875rem;
+            font-family: "Roboto", "Helvetica", "Arial", sans-serif;
+            font-weight: 400;
+            line-height: 1.43;
+            letter-spacing: 0.01071em;
+            background-color: #fafafa;
+        }
+
+        .MuiBackdrop-root {
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            display: flex;
+            z-index: -1;
+            position: fixed;
+            align-items: center;
+            justify-content: center;
+            background-color: rgba(0, 0, 0, 0.5);
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .MuiDialog-container {
+            height: 100%;
+            outline: 0;
+        }
+
+        .MuiDialog-scrollBody {
+            overflow-x: hidden;
+            overflow-y: auto;
+            text-align: center;
+        }
+
+        .MuiDialog-paperWidthSm {
+            max-width: 600px;
+        }
+
+
+        .MuiDialog-paperScrollBody {
+            display: inline-block;
+            text-align: left;
+            vertical-align: middle;
+        }
+
+        .MuiDialog-paper {
+            margin: 32px;
+            position: relative;
+            overflow-y: auto;
+        }
+
+        .MuiPaper-root {
+            color: rgba(0, 0, 0, 0.87);
+            transition: box-shadow 300ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
+            background-color: #fff;
+        }
+
+        .MuiPaper-elevation24 {
+            box-shadow: 0px 11px 15px -7px rgb(0 0 0 / 20%), 0px 24px 38px 3px rgb(0 0 0 / 14%), 0px 9px 46px 8px rgb(0 0 0 / 12%);
+        }
+
+        .MuiPaper-rounded {
+            border-radius: 4px;
+        }
+
+        .MuiPaper-elevation1 {
+            box-shadow: 0px 2px 1px -1px rgb(0 0 0 / 20%), 0px 1px 1px 0px rgb(0 0 0 / 14%), 0px 1px 3px 0px rgb(0 0 0 / 12%);
+        }
+
+        .MuiCardHeader-root {
+            display: flex;
+            padding: 16px;
+            align-items: center;
+        }
+
+        .styles_box__2jIRs {
+            padding: 24px 0;
+        }
+
+        .styles_spaced__16mMP {
+            padding: 24px;
+        }
+
+        .MuiTypography-h6 {
+            font-size: 1.25rem;
+            font-family: "Roboto", "Helvetica", "Arial", sans-serif;
+            font-weight: 500;
+            line-height: 1.6;
+            letter-spacing: 0.0075em;
+        }
+
+        .MuiTypography-h5 {
+            font-size: 1.5rem;
+            font-family: "Roboto", "Helvetica", "Arial", sans-serif;
+            font-weight: 400;
+            line-height: 1.334;
+            letter-spacing: 0em;
+        }
+
+        .MuiTypography-root {
+            margin: 0;
+        }
+
+        strong, b {
+            font-weight: 700;
+        }
+
+        .styles_codeBlockWrapper__I_b8o {
+            display: block;
+            font-family: monospace;
+            white-space: pre;
+            margin: 1em 0px;
+        }
+
+        .MuiTypography-displayBlock {
+            display: block;
+        }
+
+        code {
+            font-family: monospace;
+        }
+
+        .styles_codeBlock__3Oy67 {
+            background-color: #eee;
+            display: block;
+            border: 1px solid #999;
+            padding: 20px;
+            overflow-x: scroll;
+        }
+    </style>
+</head>
+<body>
+<div role="presentation" class="MuiDialog-root" style="position: fixed; z-index: 1300; inset: 0px;">
+    <div tabindex="0" data-test="sentinelStart"></div>
+    <div class="MuiDialog-container MuiDialog-scrollBody" role="none presentation" tabindex="-1" style="opacity: 1; transition: opacity 225ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;">
+        <div class="MuiPaper-root MuiDialog-paper MuiDialog-paperScrollBody MuiDialog-paperWidthSm MuiPaper-elevation24 MuiPaper-rounded" role="dialog"
+             aria-labelledby="manageQuizzes_dialogTitle">
+            <div class="MuiPaper-root MuiCard-root MuiPaper-elevation1 MuiPaper-rounded">
+                <div class="MuiCardHeader-root" id="manageQuizzes_dialogTitle">
+                    <div class="MuiCardHeader-content"><span class="MuiTypography-root MuiCardHeader-title MuiTypography-h5 MuiTypography-displayBlock">Embed instructions</span>
+                    </div>
+                </div>
+                <div class="styles_box__2jIRs styles_spaced__16mMP">
+                    <p class="MuiTypography-root MuiTypography-h6">Basic usage</p>
+                    <div class="styles_box__2jIRs">
+                        <p class="MuiTypography-root MuiTypography-h6"><b>Firstly include the Syno Satisfaction Survey embed library in the &lt;head&gt; of your page</b></p>
+                        <pre class="styles_codeBlockWrapper__I_b8o"><code class="styles_codeBlock__3Oy67">&lt;html&gt;<br>&nbsp;&lt;head&gt;<br>&nbsp;&nbsp;...<br>&nbsp;&nbsp;<b>&lt;script src="https://survey.synointcdn.com/embed_survey/v1/s-survey.js"&gt;&lt;/script&gt;</b><br>&nbsp;&nbsp;...<br>&nbsp;&lt;/head&gt;<br>&nbsp;&lt;body&gt;<br>&nbsp;...</code></pre>
+                        <div class="styles_box__2jIRs styles_small__2QL0w"></div>
+                        <p class="MuiTypography-root MuiTypography-h6"><b>Then place the following code into the body of the page to render survey invitation dialog</b></p>
+                        <pre class="styles_codeBlockWrapper__I_b8o">
+                            <code class="styles_codeBlock__3Oy67">
+                                <br>&lt;div id="survey-container-id"&gt;&lt;/div&gt;<br>...<br>&lt;script&gt;<br>&nbsp;synoSS.init({<br>&nbsp;&nbsp;'containerId': '<b>survey-container-id</b>',<br>&nbsp;&nbsp;'surveyURL': '<b>https://survey.synoint.com</b>',<br>&nbsp;&nbsp;'titleText': '<b>👋 Hi, do you have 60 seconds to help us improve our experience?</b>',<br>&nbsp;&nbsp;'hintText': '<b>Don’t worry, all responses are anonymous.</b>',<br>&nbsp;&nbsp;'buttonLabel': '<b>Next</b>',<br>&nbsp;&nbsp;'buttonColor': '<b>rgb(224, 104, 145)</b>',<br>&nbsp;&nbsp;'containerColor': '<b>rgb(51, 51, 51)</b>',<br>  'skipURLs': <b>['https://www.odeon.co.uk/checkout',''https://www.odeon.co.uk/cart']</b>,<br>  'invitationTimeout': <b>60</b>});<br>&lt;/script&gt;<br>...
+                            </code>
+                        </pre>
+                        <p><b><i>'survey-container-id'</i></b> is ID of parent element where survey will be inserted</p>
+                        <p><b><i>'surveyURL'</i></b> will be provided by Syno</p>
+                        <p class="MuiTypography-root MuiTypography-h6">If user will be recognized as satisfaction survey candidate then invitation dialog like one below will be shown in page bottom right corner</p><br />
+                        <div><img style="width:100%" src="survey-invitation-dialog.png" /></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div tabindex="0" data-test="sentinelEnd"></div>
+</div>
+
+</body>
+</html>
