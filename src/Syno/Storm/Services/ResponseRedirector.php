@@ -44,7 +44,7 @@ class ResponseRedirector
         if ($response) {
             $url = $survey->getScreenoutUrl($response->getSource());
             if ($url) {
-                return new RedirectResponse($url, $this->populateParameters($url, $response->getParameters()));
+                return new RedirectResponse($this->populateParameters($url, $response->getParameters()));
             }
         }
 
@@ -58,7 +58,7 @@ class ResponseRedirector
         if ($response) {
             $url = $survey->getQualityScreenoutUrl($response->getSource());
             if ($url) {
-                return new RedirectResponse($url, $this->populateParameters($url, $response->getParameters()));
+                return new RedirectResponse($this->populateParameters($url, $response->getParameters()));
             }
         }
 
