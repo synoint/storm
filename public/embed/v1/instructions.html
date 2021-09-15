@@ -1,7 +1,8 @@
-<html>
+<html lang="en">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Syno Survey - Embedding Instructions</title>
     <style>
         body {
             color: rgba(0, 0, 0, 0.87);
@@ -40,9 +41,8 @@
         }
 
         .MuiDialog-paperWidthSm {
-            max-width: 600px;
+            max-width: 800px;
         }
-
 
         .MuiDialog-paperScrollBody {
             display: inline-block;
@@ -63,7 +63,7 @@
         }
 
         .MuiPaper-elevation24 {
-            box-shadow: 0px 11px 15px -7px rgb(0 0 0 / 20%), 0px 24px 38px 3px rgb(0 0 0 / 14%), 0px 9px 46px 8px rgb(0 0 0 / 12%);
+            box-shadow: 0 11px 15px -7px rgb(0 0 0 / 20%), 0 24px 38px 3px rgb(0 0 0 / 14%), 0 9px 46px 8px rgb(0 0 0 / 12%);
         }
 
         .MuiPaper-rounded {
@@ -71,7 +71,7 @@
         }
 
         .MuiPaper-elevation1 {
-            box-shadow: 0px 2px 1px -1px rgb(0 0 0 / 20%), 0px 1px 1px 0px rgb(0 0 0 / 14%), 0px 1px 3px 0px rgb(0 0 0 / 12%);
+            box-shadow: 0 2px 1px -1px rgb(0 0 0 / 20%), 0 1px 1px 0 rgb(0 0 0 / 14%), 0 1px 3px 0 rgb(0 0 0 / 12%);
         }
 
         .MuiCardHeader-root {
@@ -101,7 +101,7 @@
             font-family: "Roboto", "Helvetica", "Arial", sans-serif;
             font-weight: 400;
             line-height: 1.334;
-            letter-spacing: 0em;
+            letter-spacing: 0;
         }
 
         .MuiTypography-root {
@@ -116,7 +116,7 @@
             display: block;
             font-family: monospace;
             white-space: pre;
-            margin: 1em 0px;
+            margin: 1em 0;
         }
 
         .MuiTypography-displayBlock {
@@ -137,32 +137,66 @@
     </style>
 </head>
 <body>
-<div role="presentation" class="MuiDialog-root" style="position: fixed; z-index: 1300; inset: 0px;">
+<div role="presentation" class="MuiDialog-root">
     <div tabindex="0" data-test="sentinelStart"></div>
-    <div class="MuiDialog-container MuiDialog-scrollBody" role="none presentation" tabindex="-1" style="opacity: 1; transition: opacity 225ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;">
+    <div class="MuiDialog-container MuiDialog-scrollBody" role="presentation" tabindex="-1" style="opacity: 1; transition: opacity 225ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;">
         <div class="MuiPaper-root MuiDialog-paper MuiDialog-paperScrollBody MuiDialog-paperWidthSm MuiPaper-elevation24 MuiPaper-rounded" role="dialog"
              aria-labelledby="manageQuizzes_dialogTitle">
             <div class="MuiPaper-root MuiCard-root MuiPaper-elevation1 MuiPaper-rounded">
                 <div class="MuiCardHeader-root" id="manageQuizzes_dialogTitle">
-                    <div class="MuiCardHeader-content"><span class="MuiTypography-root MuiCardHeader-title MuiTypography-h5 MuiTypography-displayBlock">Embed instructions</span>
+                    <div class="MuiCardHeader-content">
+                        <span class="MuiTypography-root MuiCardHeader-title MuiTypography-h5 MuiTypography-displayBlock">
+                            Syno Survey - Embedding Instructions
+                        </span>
                     </div>
                 </div>
                 <div class="styles_box__2jIRs styles_spaced__16mMP">
-                    <p class="MuiTypography-root MuiTypography-h6">Basic usage</p>
+                    <p class="MuiTypography-root MuiTypography-h6">Basic Usage</p>
                     <div class="styles_box__2jIRs">
-                        <p class="MuiTypography-root MuiTypography-h6"><b>Firstly include the Syno Satisfaction Survey embed library in the &lt;head&gt; of your page</b></p>
-                        <pre class="styles_codeBlockWrapper__I_b8o"><code class="styles_codeBlock__3Oy67">&lt;html&gt;<br>&nbsp;&lt;head&gt;<br>&nbsp;&nbsp;...<br>&nbsp;&nbsp;<b>&lt;script src="https://survey.synointcdn.com/embed_survey/v1/s-survey.js"&gt;&lt;/script&gt;</b><br>&nbsp;&nbsp;...<br>&nbsp;&lt;/head&gt;<br>&nbsp;&lt;body&gt;<br>&nbsp;...</code></pre>
-                        <div class="styles_box__2jIRs styles_small__2QL0w"></div>
-                        <p class="MuiTypography-root MuiTypography-h6"><b>Then place the following code into the body of the page to render survey invitation dialog</b></p>
+                        <p class="MuiTypography-root MuiTypography-h6">
+                            <b>Firstly, include the Syno Survey embedding script in the &lt;head&gt; of your page</b>
+                        </p>
                         <pre class="styles_codeBlockWrapper__I_b8o">
                             <code class="styles_codeBlock__3Oy67">
-                                <br>&lt;div id="survey-container-id"&gt;&lt;/div&gt;<br>...<br>&lt;script&gt;<br>&nbsp;synoSS.init({<br>&nbsp;&nbsp;'containerId': '<b>survey-container-id</b>',<br>&nbsp;&nbsp;'surveyURL': '<b>https://survey.synoint.com</b>',<br>&nbsp;&nbsp;'titleText': '<b>👋 Hi, do you have 60 seconds to help us improve our experience?</b>',<br>&nbsp;&nbsp;'hintText': '<b>Don’t worry, all responses are anonymous.</b>',<br>&nbsp;&nbsp;'buttonLabel': '<b>Next</b>',<br>&nbsp;&nbsp;'buttonColor': '<b>rgb(224, 104, 145)</b>',<br>&nbsp;&nbsp;'containerColor': '<b>rgb(51, 51, 51)</b>',<br>  'skipURLs': <b>['https://www.odeon.co.uk/checkout',''https://www.odeon.co.uk/cart']</b>,<br>  'invitationTimeout': <b>60</b>});<br>&lt;/script&gt;<br>...
+&lt;html&gt;<br>&nbsp;&lt;head&gt;
+&nbsp;&nbsp;...
+&nbsp;&nbsp;<b>&lt;script src="https://survey.synointcdn.com/embed/v1/script.min.js"&gt;&lt;/script&gt;</b>
+&nbsp;&nbsp;...
+&nbsp;&lt;/head&gt;
+&nbsp;&lt;body&gt;
+&nbsp;...
                             </code>
                         </pre>
-                        <p><b><i>'survey-container-id'</i></b> is ID of parent element where survey will be inserted</p>
-                        <p><b><i>'surveyURL'</i></b> will be provided by Syno</p>
-                        <p class="MuiTypography-root MuiTypography-h6">If user will be recognized as satisfaction survey candidate then invitation dialog like one below will be shown in page bottom right corner</p><br />
-                        <div><img style="width:100%" src="survey-invitation-dialog.png" /></div>
+                        <div class="styles_box__2jIRs styles_small__2QL0w"></div>
+                        <p class="MuiTypography-root MuiTypography-h6">
+                            <b>Then place the following code into the body of the page to render survey invitation dialog</b>
+                        </p>
+                        <pre class="styles_codeBlockWrapper__I_b8o">
+                            <code class="styles_codeBlock__3Oy67">
+                                <br>&lt;div id="survey-container-id"&gt;&lt;/div&gt;...
+                                <br>&lt;script&gt;
+&nbsp;synoES.init({
+&nbsp;&nbsp;'containerId': '<b>survey-container-id</b>',
+&nbsp;&nbsp;'surveyURL': '<b>https://survey-provider-example-domain.com/en/s/12345</b>',
+&nbsp;&nbsp;'titleText': '<b>👋 Hi, do you have 60 seconds to help us improve our experience?</b>',
+&nbsp;&nbsp;'hintText': '<b>Don’t worry, all responses are anonymous.</b>',
+&nbsp;&nbsp;'buttonLabel': '<b>Next</b>',
+&nbsp;&nbsp;'buttonColor': '<b>rgb(224, 104, 145)</b>',
+&nbsp;&nbsp;'containerColor': '<b>rgb(51, 51, 51)</b>',
+&nbsp;&nbsp;'skipURLs': <b>['https://example.com/checkout','https://www.example.com/cart']</b>,
+&nbsp;&nbsp;'invitationTimeout': <b>60</b>
+});
+&lt;/script&gt;
+...
+                            </code>
+                        </pre>
+                        <p><b>containerId</b> - ID of the parent element where survey will be inserted</p>
+                        <p><b>surveyURL</b> - live public URL for Syno Survey</p>
+                        <p class="MuiTypography-root MuiTypography-h6">
+                            If a user is recognized as a survey candidate then an invitation dialog like the one below
+                            will be shown in bottom right corner of the page:
+                        </p><br />
+                        <div><img style="width:100%" src="survey-invitation-dialog.png" alt="Survey dialog" /></div>
                     </div>
                 </div>
             </div>

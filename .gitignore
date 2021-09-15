@@ -4,6 +4,8 @@
 /.env.local.php
 /.env.*.local
 /public/bundles/
+/public/embed/test/
+!/public/embed/test/.gitignore
 /var/
 /vendor/
 ###< symfony/framework-bundle ###
