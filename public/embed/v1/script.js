@@ -140,6 +140,7 @@ if (!window.synoES) {
         INVITATION_TIMEOUT: 0,//seconds
         SESSION_START_COOKIE: 'es_session_start',
         SESSION_ALIVE_COOKIE: 'es_session_last',
+        SURVEY_POOL_COOKIE: 'es_pool'
     }
 
     function InvitationTimeoutHandler(settings) {
@@ -210,14 +211,26 @@ if (!window.synoES) {
 
 
         synoES_SETTINGS.CONTAINER_ID = settings.containerId;
-        synoES_SETTINGS.INVITATION_TIMEOUT = settings.invitationTimeout || 0;
+        synoES_SETTINGS.INVITATION_TIMEOUT = settings.invitationTimeoutSeconds || 0;
         settings.titleText = settings.titleText || 'Title (titleText)!';
         settings.hintText = settings.hintText || 'hintText';
         settings.buttonLabel = settings.buttonLabel || 'Next';
         settings.buttonColor = settings.buttonColor || 'rgb(224, 104, 145)';
         settings.containerColor = settings.containerColor || 'rgb(51, 51, 51)';
 
-        if (settings['invitationTimeout']) {
+        if(settings['surveyPoolSizePercent']){
+            var isInPool = synoES_Cookie.get(synoES_SETTINGS.SURVEY_POOL_COOKIE);
+            if(!isInPool){
+                var poolExpirationHours = (parseInt(settings['surveyPoolExpirationDays']) || 30) * 24;
+                isInPool = Math.random() * 100 > parseInt(settings['surveyPoolSizePercent']) ? 'n' : 'y';
+                synoES_Cookie.set(synoES_SETTINGS.SURVEY_POOL_COOKIE, isInPool, poolExpirationHours);
+            }
+            if('n'==isInPool){
+                return;
+            }
+        }
+
+        if(settings['invitationTimeoutSeconds']){
             synoES.invitationTimeoutHandler = new InvitationTimeoutHandler(settings);
             synoES.invitationTimeoutHandler.init();
         } else {
