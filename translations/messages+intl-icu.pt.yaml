@@ -1,0 +1,6 @@
+page.button.back: 'Atrás'
+page.button.next: 'Seguinte'
+survey.thank_you: 'Obrigado!'
+survey_completed.answers_received: 'Obrigado por ter concluído este inquérito.'
+error_page.survey_unavailable: 'Este inquérito já não está disponível.'
+error.one.option.required: 'Por favor selecione a resposta'

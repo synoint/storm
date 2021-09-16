@@ -1,0 +1,6 @@
+page.button.back: 'Zurück'
+page.button.next: 'Weiter'
+survey.thank_you: 'Vielen Dank!'
+survey_completed.answers_received: 'Vielen Dank für die Beantwortung des Fragebogens.'
+error_page.survey_unavailable: 'Diese Umfrage ist beendet und steht nicht mehr zur Verfügung.'
+error.one.option.required: "Bitte machen Sie mindestens ein Kreuz"
