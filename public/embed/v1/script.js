@@ -218,19 +218,19 @@ if (!window.synoES) {
         settings.buttonColor = settings.buttonColor || 'rgb(224, 104, 145)';
         settings.containerColor = settings.containerColor || 'rgb(51, 51, 51)';
 
-        if(settings['surveyPoolSizePercent']){
+        if (settings['surveyPoolSizePercent']) {
             var isInPool = synoES_Cookie.get(synoES_SETTINGS.SURVEY_POOL_COOKIE);
-            if(!isInPool){
+            if (!isInPool) {
                 var poolExpirationHours = (parseInt(settings['surveyPoolExpirationDays']) || 30) * 24;
                 isInPool = Math.random() * 100 > parseInt(settings['surveyPoolSizePercent']) ? 'n' : 'y';
                 synoES_Cookie.set(synoES_SETTINGS.SURVEY_POOL_COOKIE, isInPool, poolExpirationHours);
             }
-            if('n'==isInPool){
+            if ('n' === isInPool) {
                 return;
             }
         }
 
-        if(settings['invitationTimeoutSeconds']){
+        if (settings['invitationTimeoutSeconds']) {
             synoES.invitationTimeoutHandler = new InvitationTimeoutHandler(settings);
             synoES.invitationTimeoutHandler.init();
         } else {
@@ -278,7 +278,7 @@ if (!window.synoES) {
     };
 
     synoES.survey.getSurveyTemplate = function (settings) {
-        var tempalteChunks = [
+        var templateChunks = [
             '<div class="sss-survey-container">',
             '<div class="sss-invitation-container" style="background: ' + settings.containerColor + ';">',
             '<button class="sss-collapse-button" style="background: ' + settings.containerColor + ';" ',
@@ -286,10 +286,8 @@ if (!window.synoES) {
             '<button class="sss-close-button" style="background: ' + settings.containerColor + ';" ',
             'onclick="return synoES.survey.closeInvitationPopup();"><span class="sss-close-button-icon">x</span></button>',
             '<form class="sss-invitation-form">',
-            '<div class="_hj-1ZstO__styles__surveyBody">',
             '<div class="sss-info-text">' + settings.titleText + '</div>',
             '<div class="sss-info-text-hint">' + settings.hintText + '</div>',
-            '</div>',
             '<div class="sss-action-container">',
             '<div style="float: right !important;">',
             '<button type="button" onclick="synoES.survey.loadSurvey(\'' + settings.surveyURL + '\');" style="background-color: ' + settings.buttonColor + ' !important;" class="sss-action-button">',
@@ -303,6 +301,6 @@ if (!window.synoES) {
             '</div>',
         ];
 
-        return tempalteChunks.join('');
+        return templateChunks.join('');
     };
 }
