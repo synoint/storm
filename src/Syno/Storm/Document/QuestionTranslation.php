@@ -20,26 +20,19 @@ class QuestionTranslation implements JsonSerializable
      */
     private $text;
 
-    public function jsonSerialize()
+    public function jsonSerialize(): array
     {
         return [
-            'text' => $this->text
+            'locale' => $this->locale,
+            'text'   => $this->text
         ];
     }
 
-    /**
-     * @return string|null
-     */
     public function getText():? string
     {
         return $this->text;
     }
 
-    /**
-     * @param string $text
-     *
-     * @return self
-     */
     public function setText(string $text): self
     {
         $this->text = $text;
