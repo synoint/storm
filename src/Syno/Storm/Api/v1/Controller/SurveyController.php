@@ -292,66 +292,6 @@ class SurveyController extends AbstractController implements TokenAuthenticatedC
         return $this->json($this->responseEventService->getLastDate($surveyId));
     }
 
-    /**
-     * @Route(
-     *     "/{surveyId}/responses",
-     *     name="storm_api.v1.survey.responses",
-     *     requirements={"id"="\d+"},
-     *     methods={"GET"}
-     * )
-     */
-    public function responses(int $surveyId, Request $request): JsonResponse
-    {
-        $total = $this->responseService->count($surveyId);
-        $limit = $request->query->getInt('limit', 1000000);
-        $limit = max($limit, 1);
-
-        $responses = [];
-        if ($total) {
-            $responses = $this->responseService->getAllBySurveyId($surveyId, $limit);
-            if ($responses) {
-                $completesMap = $this->responseEventService->getResponseCompletionTimeMap($surveyId);
-                /** @var Document\Response $response */
-                foreach ($responses as $response) {
-                    if ($response->isCompleted()) {
-                        $response->setCompletedAt($completesMap[$response->getResponseId()] ?? 0);
-                    }
-                }
-            }
-        }
-
-        return $this->json(
-            [
-                'responses' => $responses,
-                'limit' => $limit,
-                'total' => $total
-            ]
-        );
-    }
-
-    /**
-     * @Route(
-     *     "/{surveyId}/responses/{responseId}",
-     *     name="storm_api.v1.survey.response",
-     *     requirements={"surveyId"="\d+", "responseId"=".+"},
-     *     methods={"GET"}
-     * )
-     */
-    public function response(int $surveyId, string $responseId): JsonResponse
-    {
-        $response = $this->responseService->findBySurveyIdAndResponseId($surveyId, $responseId);
-
-        if ($response) {
-            if ($response->isCompleted()) {
-                $response->setCompletedAt($this->responseEventService->getResponseCompletionTime($responseId));
-            }
-            $response->setEvents($this->responseEventService->getEventsByResponseId($responseId));
-
-            return $this->json($response);
-        }
-        return $this->json('Response not found', 404);
-    }
-
     protected function deleteSurvey(Document\Survey $survey)
     {
         $responses = $this->responseService->getAllBySurveyIdAndVersion($survey->getSurveyId(), $survey->getVersion());
