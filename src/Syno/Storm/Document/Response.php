@@ -162,6 +162,7 @@ class Response implements JsonSerializable
     public function jsonSerialize()
     {
         return [
+            'id'                 => $this->id,
             'responseId'         => $this->responseId,
             'surveyId'           => $this->surveyId,
             'surveyVersion'      => $this->surveyVersion,
