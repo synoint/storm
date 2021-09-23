@@ -51,11 +51,11 @@ class SurveyEvent implements JsonSerializable
         $this->event    = $event;
     }
 
-    public function jsonSerialize()
+    public function jsonSerialize(): array
     {
         return [
             'id'       => $this->id,
-            'time'     => $this->time->getTimestamp(),
+            'time'     => $this->time->format('Y-m-d H:i:s.v'),
             'surveyId' => $this->surveyId,
             'version'  => $this->version,
             'event'    => $this->event

@@ -57,11 +57,11 @@ class ResponseEvent implements JsonSerializable
     }
 
 
-    public function jsonSerialize()
+    public function jsonSerialize(): array
     {
         return [
             'id'         => $this->id,
-            'time'       => $this->getTimestamp(),
+            'time'       => $this->time->format('Y-m-d H:i:s.v'),
             'message'    => $this->message,
             'responseId' => $this->responseId,
             'surveyId'   => $this->surveyId,
@@ -69,17 +69,11 @@ class ResponseEvent implements JsonSerializable
         ];
     }
 
-    /**
-     * @return int
-     */
     public function getTimestamp(): int
     {
         return $this->time->getTimestamp();
     }
 
-    /**
-     * @return string
-     */
     public function getResponseId(): string
     {
         return $this->responseId;
