@@ -5,6 +5,7 @@
     "php": "^7.4",
     "ext-ctype": "*",
     "ext-iconv": "*",
+    "ext-json": "*",
     "ext-mongodb": "^1.6",
     "doctrine/mongodb-odm-bundle": "^4.1",
     "gedmo/doctrine-extensions": "^2.4",
@@ -21,18 +22,21 @@
     "symfony/serializer": "5.0.*",
     "symfony/translation": "5.0.*",
     "symfony/twig-bundle": "5.0.*",
-    "symfony/twig-pack": "^1.0",
     "symfony/validator": "5.0.*",
     "symfony/webpack-encore-bundle": "^1.7",
     "symfony/yaml": "5.0.*",
     "syno/cint": "^0.12.5",
-    "ext-json": "*"
+    "twig/extra-bundle": "^2.12|^3.0",
+    "twig/twig": "^2.12|^3.0"
   },
   "require-dev": {
+    "phpunit/phpunit": "^9.5",
+    "symfony/browser-kit": "^5.0",
+    "symfony/css-selector": "^5.0",
     "symfony/maker-bundle": "^1.14",
     "symfony/phpunit-bridge": "^5.0",
-    "symfony/profiler-pack": "^1.0",
-    "symfony/test-pack": "^1.0"
+    "symfony/stopwatch": "^5.0",
+    "symfony/web-profiler-bundle": "^5.0"
   },
   "config": {
     "preferred-install": {
