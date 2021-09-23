@@ -31,22 +31,21 @@ class QuestionController extends AbstractController implements TokenAuthenticate
      */
     public function answersResultCount(int $questionId): JsonResponse
     {
-        $data     = [];
+        $data      = [];
         $responses = $this->responseService->getAllByQuestionId($questionId);
-        /** @var Document\Response $response */
         foreach ($responses as $response) {
-            /** @var Document\ResponseAnswer $responseAnswer */
             foreach ($response->getAnswers() as $responseAnswer) {
-                if($responseAnswer->getQuestionId() == $questionId) {
+                if ($responseAnswer->getQuestionId() == $questionId) {
                     foreach ($responseAnswer->getAnswers() as $answer) {
-                        if(!isset($data[$answer->getAnswerId()])) {
+                        if (!isset($data[$answer->getAnswerId()])) {
                             $data[$answer->getAnswerId()] = 0;
                         }
-                        $data[$answer->getAnswerId()] +=1;
+                        $data[$answer->getAnswerId()] += 1;
                     }
                 }
             }
         }
+
         return $this->json($data);
     }
 

@@ -59,7 +59,7 @@ class Response
     /**
      * @return Document\Response[]
      */
-    public function getAllByQuestionId(int $questionId): array
+    public function getAllByQuestionId(int $questionId)
     {
         return $this->dm
             ->createQueryBuilder(Document\Response::class)
