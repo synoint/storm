@@ -69,7 +69,8 @@ class PageController extends AbstractController
             'questions'          => $this->responseSessionManager->getQuestions(),
             'response'           => $this->responseSessionManager->getResponse(),
             'form'               => $form->createView(),
-            'backButtonDisabled' => $survey->isFirstPage($page->getPageId())
+            'backButtonDisabled' => $survey->isFirstPage($page->getPageId()),
+            'isLastPage'         => $survey->isLastPage($page->getPageId())
         ]);
     }
 

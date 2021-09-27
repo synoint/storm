@@ -1,5 +1,6 @@
 page.button.back: 'Atrás'
 page.button.next: 'Siguiente'
+page.button.submit: 'Enviar'
 survey.thank_you: '¡Muchas gracias!'
 survey_completed.answers_received: 'Sus respuestas han sido correctamente guardadas.'
 error_page.survey_unavailable: 'Lo sentimos, la encuesta está expirada y ya no está disponible.'

@@ -1,5 +1,6 @@
 page.button.back: 'Takaisin'
 page.button.next: 'Seuraava'
+page.button.submit: 'Lähetä'
 survey.thank_you: 'Kiitos!'
 survey_completed.answers_received: 'Kiitos vastauksistasi.'
 error_page.survey_unavailable: 'Tämä kysely ei ole enää saatavilla.'

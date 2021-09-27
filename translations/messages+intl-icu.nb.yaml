@@ -1,5 +1,6 @@
 page.button.back: 'Tilbake'
 page.button.next: 'Neste'
+page.button.submit: 'Lever besvarelse'
 survey.thank_you: 'Takk!'
 survey_completed.answers_received: 'Takk for at du fullførte denne undersøkelsen.'
 error_page.survey_unavailable: 'Denne undersøkelsen er ikke lenger tilgjengelig.'

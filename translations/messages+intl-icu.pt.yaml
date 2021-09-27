@@ -1,5 +1,6 @@
 page.button.back: 'Atrás'
 page.button.next: 'Seguinte'
+page.button.submit: 'Submeter'
 survey.thank_you: 'Obrigado!'
 survey_completed.answers_received: 'Obrigado por ter concluído este inquérito.'
 error_page.survey_unavailable: 'Este inquérito já não está disponível.'

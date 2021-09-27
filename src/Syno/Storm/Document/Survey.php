@@ -293,6 +293,11 @@ class Survey implements JsonSerializable
         return $pageId === $this->pages->first()->getPageId();
     }
 
+    public function isLastPage(int $pageId): bool
+    {
+        return $pageId === $this->pages->last()->getPageId();
+    }
+
     /**
      * @return Config
      */

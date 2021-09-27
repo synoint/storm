@@ -1,5 +1,6 @@
 page.button.back: 'Zurück'
 page.button.next: 'Weiter'
+page.button.submit: 'Senden'
 survey.thank_you: 'Vielen Dank!'
 survey_completed.answers_received: 'Vielen Dank für die Beantwortung des Fragebogens.'
 error_page.survey_unavailable: 'Diese Umfrage ist beendet und steht nicht mehr zur Verfügung.'

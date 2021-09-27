@@ -1,5 +1,6 @@
-page.button.back: Back
-page.button.next: Next
+page.button.back: 'Back'
+page.button.next: 'Next'
+page.button.submit: 'Submit'
 survey.title.default: 'Survey'
 survey.title.first_question: 'Welcome - First Question'
 survey.title.first_questions: 'Welcome - First Questions'
