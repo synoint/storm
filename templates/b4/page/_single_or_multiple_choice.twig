@@ -5,24 +5,24 @@
  {{ form_errors(attribute(form, (question.getInputName))) }}
 
 {% set break = false %}
-{% for child in questionField  %}
+{% for child in questionField %}
     {% if attribute(form, (question.getInputName(child.vars.value))) is defined and not break %}
-    {% set freeTextInput = attribute(form, (question.getInputName(child.vars.value))) %}
+        {% set freeTextInput = attribute(form, (question.getInputName(child.vars.value))) %}
         {{ form_errors(freeTextInput) }}
         {% set break = true %}
     {% endif %}
 {% endfor %}
 
 <div id="{{ questionField.vars.id }}"
-     class="{{questionField.vars.attr.class}}">
+     class="{{ questionField.vars.attr.class }}">
     {% for child in questionField %}
         <div class="form-check">
             <input autocomplete="off" type="{{ type }}" id="{{ child.vars.id }}" name="{{ child.vars.full_name }}"
             {% for key, attribute in child.vars.attr %}
                 {{ key }}="{{ attribute }}"
             {% endfor %}
-                    value="{{ child.vars.value }}" {% if child.vars.checked %}checked="checked"{% endif %}>
-            <label class="form-check-label custom-control-label"
+            value="{{ child.vars.value }}" {% if child.vars.checked %}checked="checked"{% endif %}>
+            <label class="form-check-label custom-control-label{% if child.vars.attr['row_attr'] is defined %} {{ child.vars.attr['row_attr'] }}{% endif %}"
                    for="{{ child.vars.id }}">
                 <div class="d-flex flex-row w-100">
                     <div class="d-flex align-items-center"> {{ child.vars.label }}</div>

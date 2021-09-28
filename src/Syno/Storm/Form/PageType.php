@@ -26,8 +26,8 @@ class PageType extends AbstractType
 
     public function __construct(TranslatorInterface $translator, Services\Question $questionService)
     {
-        $this->translator       = $translator;
-        $this->questionService  = $questionService;
+        $this->translator      = $translator;
+        $this->questionService = $questionService;
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options)
@@ -39,7 +39,6 @@ class PageType extends AbstractType
 
             switch ($question->getQuestionTypeId()) {
                 case Document\Question::TYPE_SINGLE_CHOICE:
-
                     $this->addSingleChoice($builder, $question, $answerMap);
                     $this->addFreeText($builder, $question, $answerMap);
                     break;
@@ -70,8 +69,8 @@ class PageType extends AbstractType
     {
         $resolver->setDefaults(
             [
-                'questions'         => null,
-                'answers'           => null,
+                'questions' => null,
+                'answers' => null,
                 'validation_groups' => ['form_validation_only']
             ]
         );
@@ -80,31 +79,36 @@ class PageType extends AbstractType
     /**
      * @param FormBuilderInterface $builder
      * @param Document\Question    $question
-     * @param array                $answerMap
+     * @param array|null           $answerMap
      */
     private function addSingleChoice(FormBuilderInterface $builder, Document\Question $question, ?array $answerMap)
     {
         $questionAnswerIds = $answerMap ? array_keys($answerMap) : null;
 
         $builder->add($question->getInputName(), ChoiceType::class, [
-            'choices'     => $question->getChoices(),
-            'required'    => $question->isRequired(),
-            'data'        => $questionAnswerIds ? reset($questionAnswerIds) : null,
-            'expanded'    => !$question->containsSelectField(),
+            'choices' => $question->getChoices(),
+            'required' => $question->isRequired(),
+            'data' => $questionAnswerIds ? reset($questionAnswerIds) : null,
+            'expanded' => !$question->containsSelectField(),
             'placeholder' => null,
-            'constraints' => $question->isRequired() ? [new NotBlank(['message' => $this->translator->trans('error.one.option.required'), 'groups' => ['form_validation_only']])] : null,
-            'attr'        => ['class' => 'custom-control custom-radio custom-radio-filled'],
+            'constraints' => $question->isRequired() ? [
+                new NotBlank([
+                    'message' => $this->translator->trans('error.one.option.required'),
+                    'groups' => ['form_validation_only']
+                ])
+            ] : null,
+            'attr' => ['class' => 'custom-control custom-radio custom-radio-filled'],
             'choice_attr' => function () {
                 return ['class' => 'custom-control-input'];
             },
-            'label_attr'  => ['class' => 'custom-control-label']
+            'label_attr' => ['class' => 'custom-control-label']
         ]);
     }
 
     /**
-     * @param FormBuilderInterface  $builder
-     * @param Document\Question     $question
-     * @param array                 $answerMap
+     * @param FormBuilderInterface $builder
+     * @param Document\Question    $question
+     * @param array|null           $answerMap
      */
     private function addMultipleChoice(FormBuilderInterface $builder, Document\Question $question, ?array $answerMap)
     {
@@ -113,20 +117,27 @@ class PageType extends AbstractType
         $selectedAnswersIsExclusive = $this->questionService->isSelectedAnswersExclusive($question, $questionAnswerIds);
 
         $builder->add($question->getInputName(), ChoiceType::class, [
-                'choices'     => $question->getChoices(),
-                'required'    => $question->isRequired(),
+                'choices' => $question->getChoices(),
+                'required' => $question->isRequired(),
                 'placeholder' => null,
-                'constraints' => $question->isRequired() ? [new Count(['min' => 1, 'minMessage' => $this->translator->trans('error.at.leat.one.option.required'), 'groups' => ['form_validation_only']])] : null,
-                'expanded'    => true,
-                'multiple'    => true,
-                'data'        => $questionAnswerIds,
-                'attr'        => ['class' => 'custom-control custom-checkbox custom-checkbox-filled'],
+                'constraints' => $question->isRequired() ? [
+                    new Count([
+                        'min' => 1,
+                        'minMessage' => $this->translator->trans('error.at.leat.one.option.required'),
+                        'groups' => ['form_validation_only']
+                    ])
+                ] : null,
+                'expanded' => true,
+                'multiple' => true,
+                'data' => $questionAnswerIds,
+                'attr' => ['class' => 'custom-control custom-checkbox custom-checkbox-filled'],
                 'choice_attr' => function ($answerId) use ($question, $selectedAnswersIsExclusive, $answerMap) {
-
+                    $attr['row_attr'] = '';
                     $attr = ['class' => 'custom-control-input form-check-input'];
 
                     if ($question->getAnswer($answerId)->getIsExclusive()) {
                         $attr['class'] .= ' exclusive';
+                        $attr['row_attr'] = 'exclusive';
                     }
 
                     if ($selectedAnswersIsExclusive && !in_array($answerId, $answerMap)) {
@@ -135,15 +146,15 @@ class PageType extends AbstractType
 
                     return $attr;
                 },
-                'label_attr'  => ['class' => 'custom-control-label']
-        ]
+                'label_attr' => ['class' => 'custom-control-label abc'],
+            ]
         );
     }
 
     /**
-     * @param FormBuilderInterface  $builder
-     * @param Document\Question     $question
-     * @param array                 $answerMap
+     * @param FormBuilderInterface $builder
+     * @param Document\Question    $question
+     * @param array|null           $answerMap
      */
     private function addFreeText(FormBuilderInterface $builder, Document\Question $question, ?array $answerMap)
     {
@@ -151,12 +162,16 @@ class PageType extends AbstractType
         foreach ($question->getAnswers() as $answer) {
             if ($answer->getIsFreeText()) {
                 $builder->add($question->getInputName($answer->getAnswerId()), TextType::class, [
-                        'attr'     => ['class' => 'is-free-text-input'],
+                        'attr' => ['class' => 'is-free-text-input'],
                         'required' => false,
                         'constraints' => [
-                            new OtherFilled(['answer' => $answer, 'respondentAnswers' => $answerMap,  'groups' => ['form_validation_only']])
+                            new OtherFilled([
+                                'answer' => $answer,
+                                'respondentAnswers' => $answerMap,
+                                'groups' => ['form_validation_only']
+                            ])
                         ],
-                        'data'     => isset($answerMap[$answer->getAnswerId()]) ? $answerMap[$answer->getAnswerId()] : null,
+                        'data' => $answerMap[$answer->getAnswerId()] ?? null,
                     ]
                 );
             }
@@ -166,42 +181,47 @@ class PageType extends AbstractType
     /**
      * @param FormBuilderInterface $builder
      * @param Document\Question    $question
-     * @param array                $answerMap
+     * @param array|null           $answerMap
      */
     private function addMatrix(FormBuilderInterface $builder, Document\Question $question, ?array $answerMap)
     {
-        $questionAnswerIds = $answerMap ?(array) array_keys($answerMap) : null;
+        $questionAnswerIds = $answerMap ? (array) array_keys($answerMap) : null;
 
         foreach (array_keys($question->getRows()) as $key => $rowCode) {
-
-            $data = [];
-
+            $data    = [];
             $choices = [];
             foreach (array_keys($question->getColumns()) as $columnCode) {
-                $answer = $question->getMatrixAnswer($rowCode, $columnCode);
+                $answer                             = $question->getMatrixAnswer($rowCode, $columnCode);
                 $choices[$answer->getColumnLabel()] = $answer->getAnswerId();
 
-                 if($questionAnswerIds && in_array($answer->getAnswerId(), $questionAnswerIds)){
-                     $data[] = $answer->getAnswerId();
-                 }
+                if ($questionAnswerIds && in_array($answer->getAnswerId(), $questionAnswerIds)) {
+                    $data[] = $answer->getAnswerId();
+                }
             }
 
             $multiple = (Document\Question::TYPE_MULTIPLE_CHOICE_MATRIX === $question->getQuestionTypeId());
 
             if ($multiple) {
-                $constraint = new Count(['min' => 1, 'minMessage' => $this->translator->trans('error.at.least.one.option.in.each.row.required'), 'groups' => ['form_validation_only']]);
+                $constraint = new Count([
+                    'min' => 1,
+                    'minMessage' => $this->translator->trans('error.at.least.one.option.in.each.row.required'),
+                    'groups' => ['form_validation_only']
+                ]);
             } else {
-                $data = reset($data);
-                $constraint = new NotBlank(['message' => $this->translator->trans('error.one.option.in.each.row.required'), 'groups' => ['form_validation_only']]);
+                $data       = reset($data);
+                $constraint = new NotBlank([
+                    'message' => $this->translator->trans('error.one.option.in.each.row.required'),
+                    'groups' => ['form_validation_only']
+                ]);
             }
 
             $builder->add($question->getInputName($rowCode), ChoiceType::class, [
-                'choices'     => $choices,
-                'multiple'    => $multiple,
-                'expanded'    => true,
-                'data'        => $data,
+                'choices' => $choices,
+                'multiple' => $multiple,
+                'expanded' => true,
+                'data' => $data,
                 'placeholder' => null,
-                'required'    => $question->isRequired(),
+                'required' => $question->isRequired(),
                 'constraints' => $question->isRequired() ? [$constraint] : null,
                 'choice_attr' => function () {
                     return ['class' => 'custom-control-input'];
@@ -213,7 +233,7 @@ class PageType extends AbstractType
     /**
      * @param FormBuilderInterface $builder
      * @param Document\Question    $question
-     * @param array                $answerMap
+     * @param array|null           $answerMap
      */
     private function addText(FormBuilderInterface $builder, Document\Question $question, ?array $answerMap)
     {
@@ -221,9 +241,9 @@ class PageType extends AbstractType
         foreach ($question->getAnswers() as $answer) {
             if ($answer->getAnswerFieldTypeId() === Document\Answer::FIELD_TYPE_TEXT) {
                 $options = [
-                    'attr'     => ['class' => 'custom-control custom-text'],
+                    'attr' => ['class' => 'custom-control custom-text'],
                     'required' => $question->isRequired(),
-                    'data'     => $answerMap[$answer->getAnswerId()] ?? ''
+                    'data' => $answerMap[$answer->getAnswerId()] ?? ''
                 ];
 
                 if ($question->isRequired()) {
@@ -239,9 +259,9 @@ class PageType extends AbstractType
             } elseif ($answer->getAnswerFieldTypeId() === Document\Answer::FIELD_TYPE_TEXTAREA) {
 
                 $options = [
-                    'attr'     => ['class' => 'custom-control custom-textarea'],
+                    'attr' => ['class' => 'custom-control custom-textarea'],
                     'required' => $question->isRequired(),
-                    'data'     => $answerMap[$answer->getAnswerId()] ?? '',
+                    'data' => $answerMap[$answer->getAnswerId()] ?? '',
                 ];
 
                 if ($question->isRequired()) {
@@ -261,51 +281,59 @@ class PageType extends AbstractType
     /**
      * @param FormBuilderInterface $builder
      * @param Document\Question    $question
-     * @param array                $answerMap
+     * @param array|null           $answerMap
      */
     private function addLinearScale(FormBuilderInterface $builder, Document\Question $question, ?array $answerMap)
     {
         $questionAnswerIds = !empty($answerMap) ? array_keys($answerMap) : null;
 
         $builder->add($question->getInputName(), LinearScale::class, [
-            'choices'     => $question->getAnswers(),
-            'required'    => $question->isRequired(),
-            'data'        => $questionAnswerIds ? $question->getAnswer(reset($questionAnswerIds)) : null,
-            'constraints' => $question->isRequired() ? [new NotBlank(['message' => $this->translator->trans('error.one.option.required'), 'groups' => ['form_validation_only']])] : null,
-            'label'       => $question->getText()
+            'choices' => $question->getAnswers(),
+            'required' => $question->isRequired(),
+            'data' => $questionAnswerIds ? $question->getAnswer(reset($questionAnswerIds)) : null,
+            'constraints' => $question->isRequired() ? [
+                new NotBlank([
+                    'message' => $this->translator->trans('error.one.option.required'),
+                    'groups' => ['form_validation_only']
+                ])
+            ] : null,
+            'label' => $question->getText()
         ]);
     }
 
     /**
      * @param FormBuilderInterface $builder
      * @param Document\Question    $question
-     * @param array                $answerMap
+     * @param array|null           $answerMap
      */
     private function addLinearScaleMatrix(FormBuilderInterface $builder, Document\Question $question, ?array $answerMap)
     {
-        $questionAnswerIds = $answerMap ?(array) array_keys($answerMap) : null;
+        $questionAnswerIds = $answerMap ? (array) array_keys($answerMap) : null;
 
         foreach ($question->getRows() as $rowCode => $row) {
-
-            $data = null;
-            $choices = [];
+            $data  = null;
             $array = new ArrayCollection();
+
             foreach (array_keys($question->getColumns()) as $columnCode) {
                 $answer = $question->getMatrixAnswer($rowCode, $columnCode);
                 $array->add($answer);
-                $choices[$answer->getColumnLabel()] = $answer->getAnswerId();
 
-                if($questionAnswerIds && in_array($answer->getAnswerId(), $questionAnswerIds)){
+                if ($questionAnswerIds && in_array($answer->getAnswerId(), $questionAnswerIds)) {
                     $data = $answer;
                 }
             }
 
             $builder->add($question->getInputName($rowCode), LinearScaleMatrix::class, [
-                'choices'     => $array,
-                'data'        => $data,
-                'required'    => $question->isRequired(),
-                'constraints' => $question->isRequired() ? [new NotBlank(['message' => $this->translator->trans('error.one.option.in.each.row.required'), 'groups' => ['form_validation_only']])] : null,
-                'label'       => $row
+                'choices' => $array,
+                'data' => $data,
+                'required' => $question->isRequired(),
+                'constraints' => $question->isRequired() ? [
+                    new NotBlank([
+                        'message' => $this->translator->trans('error.one.option.in.each.row.required'),
+                        'groups' => ['form_validation_only']
+                    ])
+                ] : null,
+                'label' => $row
             ]);
         }
     }

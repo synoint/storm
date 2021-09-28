@@ -48,6 +48,10 @@ footer {
   height: 2.5rem
 }
 
+.form-check-label.exclusive {
+  background: #ddedfd !important;
+}
+
 .powered-by {
   font-size: 0.54rem;
   font-style: italic;
