@@ -6,7 +6,7 @@
 parameters:
     env(MONGODB_URL): ''
     env(MONGODB_DB): ''
-    app.available_locales: as|af|am|sq|ar|eu|be|bn|bs|bg|ca|cy|zh_CN|zh_HK|zh_TW|hr|cs|da|nl|nl_NL-informal|en|en_GB|et|fi|fr|gl|de|de_CH|de_AT|de_DE-informal|gu|el|hi|he|hu|is|id|ga|it|it_IT-formal|ja|kn|ko|lt|lv|mk|ms|ml|mt|mr|my_MM|nb|nn|om|or|fa|pl|pt|pt_BR|pa|ru|ro|sk|si|sl|sr|es|es_CL|es_MX|sv|te|ta|tr|th|uk|ur|vi
+    app.available_locales: as|af|am|sq|ar|eu|be|bn|bs|bg|ca|cy|zh_CN|zh_HK|zh_TW|hr|cs|da|nl|nl_NL-informal|en|en_GB|et|fi|fr|gl|de|de_CH|de_AT|de_DE-informal|gu|el|hi|he|hu|is|id|ga|it|it_IT-formal|ja|kn|ko|lt|lv|mk|ms|ml|mt|mr|my_MM|nb|nn|or|fa|pl|pt|pt_BR|pa|ru|ro|sk|si|sl|sr|es|es_CL|es_MX|sv|te|ta|tr|th|uk|ur|vi|orm|en_CA|en_SG|en_IE|en_US
     app.route_prefix: '/{_locale}'
 
 services:
