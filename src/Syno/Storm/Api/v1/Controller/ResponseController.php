@@ -89,7 +89,8 @@ class ResponseController extends AbstractController implements TokenAuthenticate
 
             return $this->json($response);
         }
-        return $this->json('Response not found', 404);
+
+        return $this->json('Response data not found', 404);
     }
 
 }

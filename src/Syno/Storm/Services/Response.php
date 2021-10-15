@@ -19,11 +19,11 @@ class Response
     /**
      * @return null|Document\Response
      */
-    public function findBySurveyIdAndResponseId(int $surveyId, string $responseId):? object
+    public function findBySurveyIdAndResponseId(int $surveyId, string $responseId): ?object
     {
         return $this->dm->getRepository(Document\Response::class)->findOneBy(
             [
-                'surveyId'   => $surveyId,
+                'surveyId' => $surveyId,
                 'responseId' => $responseId
             ]
         );
