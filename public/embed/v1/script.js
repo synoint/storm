@@ -222,7 +222,7 @@ if (!window.synoES) {
             var isInPool = synoES_Cookie.get(synoES_SETTINGS.SURVEY_POOL_COOKIE);
             if (!isInPool) {
                 var poolExpirationHours = (parseInt(settings['surveyPoolExpirationDays']) || 30) * 24;
-                isInPool = Math.random() * 100 > parseInt(settings['surveyPoolSizePercent']) ? 'n' : 'y';
+                isInPool = Math.random() * 100 > parseFloat(settings['surveyPoolSizePercent']) ? 'n' : 'y';
                 synoES_Cookie.set(synoES_SETTINGS.SURVEY_POOL_COOKIE, isInPool, poolExpirationHours);
             }
             if ('n' === isInPool) {
