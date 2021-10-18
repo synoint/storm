@@ -10,26 +10,27 @@ class ResponseEventLogger
 {
     const RESPONSE_CREATED = 'created';
     const RESPONSE_CLEARED = 'cleared';
-    const RESPONSE_IS_LOW_QUALITY = 'low quality';
-    const RESPONSE_IS_GOOD_QUALITY = 'good quality';
+    const SURVEY_ENTERED = 'survey entered';
 
-    const SURVEY_ENTERED             = 'survey entered';
-    const SURVEY_RESUMED             = 'survey resumed';
-    const SURVEY_COMPLETED           = 'survey completed';
+    const SURVEY_RESUMED = 'survey resumed';
+    const SURVEY_COMPLETED = 'survey completed';
     const SURVEY_VERSION_UNAVAILABLE = 'survey version unavailable';
+
+    const QUALITY_SCREENOUT = 'quality screenout';
+    const QUALITY_SCREENOUT_CLEARED = 'quality screenout cleared';
 
     const SURVEY_MODE_CHANGED = 'survey mode changed';
 
-    const SURVEY_SCREENOUTED            = 'survey screenouted';
-    const SURVEY_QUALITY_SCREENOUTED    = 'survey quality screenouted';
+    const SURVEY_SCREENOUTED = 'survey screenouted';
+    const SURVEY_QUALITY_SCREENOUTED = 'survey quality screenouted';
 
-    const PAGE_ENTERED    = 'page entered';
-    const ANSWERS_SAVED   = 'answers saved';
+    const PAGE_ENTERED = 'page entered';
+    const ANSWERS_SAVED = 'answers saved';
     const ANSWERS_CLEARED = 'answers cleared';
-    const ANSWERS_ERROR   = 'answers error';
+    const ANSWERS_ERROR = 'answers error';
 
     const JUMPED_TO_END_OF_SURVEY = 'jumped to end';
-    const JUMPED_TO_PAGE          = 'jumped to page';
+    const JUMPED_TO_PAGE = 'jumped to page';
 
     private DocumentManager $dm;
 
@@ -47,8 +48,8 @@ class ResponseEventLogger
         switch ($event) {
             case self::RESPONSE_CREATED:
             case self::RESPONSE_CLEARED:
-            case self::RESPONSE_IS_LOW_QUALITY:
-            case self::RESPONSE_IS_GOOD_QUALITY:
+            case self::QUALITY_SCREENOUT:
+            case self::QUALITY_SCREENOUT_CLEARED:
             case self::SURVEY_ENTERED:
             case self::SURVEY_COMPLETED:
             case self::SURVEY_SCREENOUTED:
