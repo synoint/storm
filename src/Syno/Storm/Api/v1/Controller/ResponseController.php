@@ -10,6 +10,7 @@ use Syno\Storm\Api\Controller\TokenAuthenticatedController;
 use Syno\Storm\Document;
 use Syno\Storm\Services\Response;
 use Syno\Storm\Services\ResponseEvent;
+use Syno\Storm\Services\ResponseEventLogger;
 use Syno\Storm\Traits\FormAware;
 use Syno\Storm\Traits\JsonRequestAware;
 
@@ -21,15 +22,23 @@ class ResponseController extends AbstractController implements TokenAuthenticate
     use FormAware;
     use JsonRequestAware;
 
-    private Response          $responseService;
-    private ResponseEvent     $responseEventService;
+    private Response            $responseService;
+    private ResponseEvent       $responseEventService;
+    private ResponseEventLogger $responseEventLogger;
 
+    /**
+     * @param Response            $responseService
+     * @param ResponseEvent       $responseEventService
+     * @param ResponseEventLogger $responseEventLogger
+     */
     public function __construct(
         Response $responseService,
-        ResponseEvent $responseEventService
+        ResponseEvent $responseEventService,
+        ResponseEventLogger $responseEventLogger
     ) {
-        $this->responseService          = $responseService;
-        $this->responseEventService     = $responseEventService;
+        $this->responseService      = $responseService;
+        $this->responseEventService = $responseEventService;
+        $this->responseEventLogger  = $responseEventLogger;
     }
 
     /**
@@ -63,10 +72,37 @@ class ResponseController extends AbstractController implements TokenAuthenticate
         return $this->json(
             [
                 'responses' => $responses,
-                'limit'     => $limit,
-                'total'     => $total
+                'limit' => $limit,
+                'total' => $total
             ]
         );
+    }
+
+    /**
+     * @Route(
+     *     "/{surveyId}/response/{responseId}/quality-status/{status}",
+     *     name="storm_api.v1.response.quality_status",
+     *     requirements={"surveyId"="\d+", "responseId"=".+", "sttus"="\d+"},
+     *     methods={"POST"}
+     * )
+     */
+    public function qualityStatus(int $surveyId, string $responseId, int $status): JsonResponse
+    {
+        $response = $this->responseService->findBySurveyIdAndResponseId($surveyId, $responseId);
+
+        if ($response) {
+            if ($response->isCompleted()) {
+                $response->setLowQuality($status);
+                $this->responseService->save($response);
+
+                $event = ($status) ? ResponseEventLogger::RESPONSE_IS_LOW_QUALITY : ResponseEventLogger::RESPONSE_IS_GOOD_QUALITY;
+                $this->responseEventLogger->log($event, $response);
+            }
+
+            return $this->json($response);
+        }
+
+        return $this->json(['message' => 'Response data is not found']);
     }
 
     /**
@@ -92,5 +128,4 @@ class ResponseController extends AbstractController implements TokenAuthenticate
 
         return $this->json('Response data not found', 404);
     }
-
 }

@@ -7,16 +7,16 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
 
 use JsonSerializable;
+
 /**
  * @ODM\Document(collection="response"))
  * @ODM\UniqueIndex(keys={"surveyId"="asc", "responseId"="asc"})
  */
 class Response implements JsonSerializable
 {
-    const MODE_LIVE  = 'live';
-    const MODE_TEST  = 'test';
+    const MODE_LIVE = 'live';
+    const MODE_TEST = 'test';
     const MODE_DEBUG = 'debug';
-
     const PARAM_SOURCE = 'SOURCE';
 
     /** @ODM\Id */
@@ -107,6 +107,13 @@ class Response implements JsonSerializable
     private $screenoutId;
 
     /**
+     * @var bool
+     *
+     * @ODM\Field(type="bool")
+     */
+    private $lowQuality = false;
+
+    /**
      * @ODM\Field(type="date")
      */
     private $createdAt;
@@ -162,25 +169,26 @@ class Response implements JsonSerializable
     public function jsonSerialize()
     {
         return [
-            'id'                 => $this->id,
-            'responseId'         => $this->responseId,
-            'surveyId'           => $this->surveyId,
-            'surveyVersion'      => $this->surveyVersion,
-            'pageId'             => $this->pageId,
-            'pageCode'           => $this->pageCode,
-            'mode'               => $this->mode,
-            'locale'             => $this->locale,
-            'completed'          => $this->completed,
-            'screenedOut'        => $this->screenedOut,
+            'id' => $this->id,
+            'responseId' => $this->responseId,
+            'surveyId' => $this->surveyId,
+            'surveyVersion' => $this->surveyVersion,
+            'pageId' => $this->pageId,
+            'pageCode' => $this->pageCode,
+            'mode' => $this->mode,
+            'locale' => $this->locale,
+            'completed' => $this->completed,
+            'screenedOut' => $this->screenedOut,
             'qualityScreenedOut' => $this->qualityScreenedOut,
-            'quotaFull'          => $this->quotaFull,
-            'screenoutId'        => $this->screenoutId,
-            'createdAt'          => $this->createdAt->getTimestamp(),
-            'completedAt'        => $this->completedAt,
-            'userAgents'         => $this->userAgents,
-            'parameters'         => $this->parameters,
-            'answers'            => $this->answers,
-            'events'             => $this->events
+            'quotaFull' => $this->quotaFull,
+            'screenoutId' => $this->screenoutId,
+            'lowQuality' => $this->lowQuality,
+            'createdAt' => $this->createdAt->getTimestamp(),
+            'completedAt' => $this->completedAt,
+            'userAgents' => $this->userAgents,
+            'parameters' => $this->parameters,
+            'answers' => $this->answers,
+            'events' => $this->events
         ];
     }
 
@@ -267,7 +275,7 @@ class Response implements JsonSerializable
     /**
      * @return int
      */
-    public function getPageId():? int
+    public function getPageId(): ?int
     {
         return $this->pageId;
     }
@@ -473,6 +481,18 @@ class Response implements JsonSerializable
         return $this->isScreenedOut() || $this->isQualityScreenedOut() || $this->isQuotaFull() || $this->isCompleted();
     }
 
+    public function isLowQuality(): bool
+    {
+        return $this->lowQuality;
+    }
+
+    public function setLowQuality(bool $lowQuality): self
+    {
+        $this->lowQuality = $lowQuality;
+
+        return $this;
+    }
+
     /**
      * @return \DateTime
      */
@@ -516,7 +536,7 @@ class Response implements JsonSerializable
     public function addUserAgent(string $ipAddress, string $userAgentString)
     {
         if (!$this->userAgentExists($ipAddress, $userAgentString)) {
-            $userAgent = new ResponseUserAgent($ipAddress, $userAgentString);
+            $userAgent          = new ResponseUserAgent($ipAddress, $userAgentString);
             $this->userAgents[] = $userAgent;
         }
     }
@@ -543,12 +563,12 @@ class Response implements JsonSerializable
 
     public function getParameter(string $code): ?Parameter
     {
-        return $this->parameters->filter(function(Parameter $parameter) use ($code) {
+        return $this->parameters->filter(function (Parameter $parameter) use ($code) {
             return $parameter->getCode() == $code;
         })->current();
     }
 
-    public function getSource():? int
+    public function getSource(): ?int
     {
         foreach ($this->parameters as $parameter) {
             if ($parameter->getCode() == self::PARAM_SOURCE) {

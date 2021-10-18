@@ -10,6 +10,8 @@ class ResponseEventLogger
 {
     const RESPONSE_CREATED = 'created';
     const RESPONSE_CLEARED = 'cleared';
+    const RESPONSE_IS_LOW_QUALITY = 'low quality';
+    const RESPONSE_IS_GOOD_QUALITY = 'good quality';
 
     const SURVEY_ENTERED             = 'survey entered';
     const SURVEY_RESUMED             = 'survey resumed';
@@ -45,6 +47,8 @@ class ResponseEventLogger
         switch ($event) {
             case self::RESPONSE_CREATED:
             case self::RESPONSE_CLEARED:
+            case self::RESPONSE_IS_LOW_QUALITY:
+            case self::RESPONSE_IS_GOOD_QUALITY:
             case self::SURVEY_ENTERED:
             case self::SURVEY_COMPLETED:
             case self::SURVEY_SCREENOUTED:

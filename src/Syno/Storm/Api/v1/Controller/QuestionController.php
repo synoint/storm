@@ -6,7 +6,6 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
 use Syno\Storm\Api\Controller\TokenAuthenticatedController;
-use Syno\Storm\Document;
 use Syno\Storm\Services\Response;
 
 /**
@@ -34,13 +33,15 @@ class QuestionController extends AbstractController implements TokenAuthenticate
         $data      = [];
         $responses = $this->responseService->getAllByQuestionId($questionId);
         foreach ($responses as $response) {
-            foreach ($response->getAnswers() as $responseAnswer) {
-                if ($responseAnswer->getQuestionId() == $questionId) {
-                    foreach ($responseAnswer->getAnswers() as $answer) {
-                        if (!isset($data[$answer->getAnswerId()])) {
-                            $data[$answer->getAnswerId()] = 0;
+            if (!$response->isLowQuality()) {
+                foreach ($response->getAnswers() as $responseAnswer) {
+                    if ($responseAnswer->getQuestionId() == $questionId) {
+                        foreach ($responseAnswer->getAnswers() as $answer) {
+                            if (!isset($data[$answer->getAnswerId()])) {
+                                $data[$answer->getAnswerId()] = 0;
+                            }
+                            $data[$answer->getAnswerId()] += 1;
                         }
-                        $data[$answer->getAnswerId()] += 1;
                     }
                 }
             }
@@ -48,5 +49,4 @@ class QuestionController extends AbstractController implements TokenAuthenticate
 
         return $this->json($data);
     }
-
 }
