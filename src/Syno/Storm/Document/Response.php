@@ -14,9 +14,9 @@ use JsonSerializable;
  */
 class Response implements JsonSerializable
 {
-    const MODE_LIVE = 'live';
-    const MODE_TEST = 'test';
-    const MODE_DEBUG = 'debug';
+    const MODE_LIVE    = 'live';
+    const MODE_TEST    = 'test';
+    const MODE_DEBUG   = 'debug';
     const PARAM_SOURCE = 'SOURCE';
 
     /** @ODM\Id */
@@ -169,26 +169,26 @@ class Response implements JsonSerializable
     public function jsonSerialize()
     {
         return [
-            'id' => $this->id,
-            'responseId' => $this->responseId,
-            'surveyId' => $this->surveyId,
-            'surveyVersion' => $this->surveyVersion,
-            'pageId' => $this->pageId,
-            'pageCode' => $this->pageCode,
-            'mode' => $this->mode,
-            'locale' => $this->locale,
-            'completed' => $this->completed,
-            'screenedOut' => $this->screenedOut,
+            'id'                 => $this->id,
+            'responseId'         => $this->responseId,
+            'surveyId'           => $this->surveyId,
+            'surveyVersion'      => $this->surveyVersion,
+            'pageId'             => $this->pageId,
+            'pageCode'           => $this->pageCode,
+            'mode'               => $this->mode,
+            'locale'             => $this->locale,
+            'completed'          => $this->completed,
+            'screenedOut'        => $this->screenedOut,
             'qualityScreenedOut' => $this->qualityScreenedOut,
-            'quotaFull' => $this->quotaFull,
-            'screenoutId' => $this->screenoutId,
-            'lowQuality' => $this->lowQuality,
-            'createdAt' => $this->createdAt->getTimestamp(),
-            'completedAt' => $this->completedAt,
-            'userAgents' => $this->userAgents,
-            'parameters' => $this->parameters,
-            'answers' => $this->answers,
-            'events' => $this->events
+            'quotaFull'          => $this->quotaFull,
+            'screenoutId'        => $this->screenoutId,
+            'lowQuality'         => $this->lowQuality,
+            'createdAt'          => $this->createdAt->getTimestamp(),
+            'completedAt'        => $this->completedAt,
+            'userAgents'         => $this->userAgents,
+            'parameters'         => $this->parameters,
+            'answers'            => $this->getAnswers(),
+            'events'             => $this->events
         ];
     }
 
@@ -598,7 +598,14 @@ class Response implements JsonSerializable
      */
     public function getAnswers(): Collection
     {
-        return $this->answers;
+        $latest = [];
+        // we need this to get the latest answers
+        foreach ($this->answers as $answer) {
+            $latest[$answer->getQuestionId()] = $answer;
+        }
+
+        // array_value re-indexes array and prevents from turning this collection into object when serializing to json
+        return new ArrayCollection(array_values($latest));
     }
 
     public function addAnswer(ResponseAnswer $responseAnswer)
@@ -611,36 +618,23 @@ class Response implements JsonSerializable
         $this->answers->clear();
     }
 
-    public function getLatestAnswerIds(): array
+    public function getAnswerIdMap(): array
     {
-        $questionIds = [];
-        $answerIds   = [];
-
+        $result = [];
         foreach ($this->getAnswers() as $responseAnswer) {
-            $questionIds[$responseAnswer->getQuestionId()] = [];
             foreach ($responseAnswer->getAnswers() as $answer) {
-                $questionIds[$responseAnswer->getQuestionId()][] = [$answer->getAnswerId() => 1];
+                $result[$answer->getAnswerId()] = 1;
             }
         }
 
-        foreach ($questionIds as $questionId) {
-            foreach ($questionId as $answers) {
-                foreach ($answers as $answerId => $value) {
-                    $answerIds[$answerId] = $value;
-                }
-            }
-        }
-
-        return $answerIds;
+        return $result;
     }
 
-    public function getLatestSavedAnswers(): array
+    public function getAnswerIdValueMap(): array
     {
         $result = [];
 
         foreach ($this->getAnswers() as $responseAnswer) {
-            /**@var ResponseAnswer $responseAnswer */
-            $result[$responseAnswer->getQuestionId()] = [];
             foreach ($responseAnswer->getAnswers() as $answer) {
                 /**@var ResponseAnswerValue $answer */
                 $result[$responseAnswer->getQuestionId()][$answer->getAnswerId()] = $answer->getValue();

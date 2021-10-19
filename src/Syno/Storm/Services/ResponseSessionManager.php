@@ -71,7 +71,7 @@ class ResponseSessionManager
             return $this->answerHandler->getAnswerMap($this->getQuestions(), $formData);
         }
 
-        return $this->responseHandler->getResponse()->getLatestSavedAnswers();
+        return $this->responseHandler->getResponse()->getAnswerIdValueMap();
     }
 
     public function saveAnswers(array $formData)
