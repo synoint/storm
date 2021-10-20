@@ -51,20 +51,31 @@ class ResponseController extends AbstractController implements TokenAuthenticate
      */
     public function all(int $surveyId, Request $request): JsonResponse
     {
-        $total = $this->responseService->count($surveyId);
         $limit = $request->query->getInt('limit', 1000000);
-        $limit = max($limit, 1);
 
-        $responses = [];
+        $params = [];
+        if ($request->query->get('mode')) {
+            $params['mode'] = $request->query->get('mode');
+        }
+
+        if ($request->query->get('status')) {
+            $isCompleted = false;
+            if ('completed' === $request->query->get('status')) {
+                $isCompleted = true;
+            }
+            $params['completed'] = $isCompleted;
+        }
+
+        $responses = $this->responseService->getAllBySurveyId($surveyId, $limit, 0, $params);
+        $total     = count($responses);
+        $limit     = max($limit, 1);
+
         if ($total) {
-            $responses = $this->responseService->getAllBySurveyId($surveyId, $limit);
-            if ($responses) {
-                $completesMap = $this->responseEventService->getResponseCompletionTimeMap($surveyId);
-                /** @var Document\Response $response */
-                foreach ($responses as $response) {
-                    if ($response->isCompleted()) {
-                        $response->setCompletedAt($completesMap[$response->getResponseId()] ?? 0);
-                    }
+            $completesMap = $this->responseEventService->getResponseCompletionTimeMap($surveyId);
+            /** @var Document\Response $response */
+            foreach ($responses as $response) {
+                if ($response->isCompleted()) {
+                    $response->setCompletedAt($completesMap[$response->getResponseId()] ?? 0);
                 }
             }
         }

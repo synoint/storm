@@ -29,14 +29,20 @@ class Response
         );
     }
 
-    public function getAllBySurveyId(int $surveyId, int $limit = 1000, int $offset = 0): array
+    public function getAllBySurveyId(int $surveyId, int $limit = 1000, int $offset = 0, array $params = []): array
     {
+        $criteria['surveyId'] = $surveyId;
+
+        if (isset($params['mode'])) {
+          $criteria['mode'] = $params['mode'];
+        }
+
+        if (isset($params['completed'])) {
+            $criteria['completed'] = $params['completed'];
+        }
+
         return $this->dm->getRepository(Document\Response::class)->findBy(
-            [
-                'surveyId' => $surveyId,
-                'mode' => 'live',
-                'completed' => true,
-            ],
+            $criteria,
             [
                 'id' => 'DESC'
             ],
@@ -58,23 +64,19 @@ class Response
         );
     }
 
-    /**
-     * @return Document\Response[]
-     */
-    public function getAllByQuestionId(int $questionId)
+    public function getAllByQuestionId(int $questionId, array $params = []): array
     {
-        return $this->dm
-            ->createQueryBuilder(Document\Response::class)
-            ->field('answers.questionId')
-            ->equals($questionId)
-            ->field('mode')
-            ->equals('live')
-            ->field('completed')
-            ->equals(true)
-            ->field('qualityScreenedOut')
-            ->equals(false)
-            ->getQuery()
-            ->execute();
+        $criteria['answers.questionId'] = $questionId;
+
+        if (isset($params['mode'])) {
+            $criteria['mode'] = $params['mode'];
+        }
+
+        if (isset($params['completed'])) {
+            $criteria['completed'] = $params['completed'];
+        }
+
+        return $this->dm->getRepository(Document\Response::class)->findBy($criteria);
     }
 
     public function count(int $surveyId): int
@@ -83,10 +85,6 @@ class Response
             ->createQueryBuilder(Document\Response::class)
             ->field('surveyId')
             ->equals($surveyId)
-            ->field('mode')
-            ->equals('live')
-            ->field('completed')
-            ->equals(true)
             ->count()
             ->getQuery()
             ->execute();
