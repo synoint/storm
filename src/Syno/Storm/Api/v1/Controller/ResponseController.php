@@ -92,7 +92,7 @@ class ResponseController extends AbstractController implements TokenAuthenticate
 
         if ($response) {
             if ($response->isCompleted()) {
-                $response->setLowQuality($status);
+                $response->setQualityScreenedOut($status);
                 $this->responseService->save($response);
 
                 $event = ($status) ? ResponseEventLogger::QUALITY_SCREENOUT : ResponseEventLogger::QUALITY_SCREENOUT_CLEARED;

@@ -33,7 +33,9 @@ class Response
     {
         return $this->dm->getRepository(Document\Response::class)->findBy(
             [
-                'surveyId' => $surveyId
+                'surveyId' => $surveyId,
+                'mode' => 'live',
+                'completed' => true,
             ],
             [
                 'id' => 'DESC'
@@ -65,6 +67,12 @@ class Response
             ->createQueryBuilder(Document\Response::class)
             ->field('answers.questionId')
             ->equals($questionId)
+            ->field('mode')
+            ->equals('live')
+            ->field('completed')
+            ->equals(true)
+            ->field('qualityScreenedOut')
+            ->equals(false)
             ->getQuery()
             ->execute();
     }
@@ -75,6 +83,10 @@ class Response
             ->createQueryBuilder(Document\Response::class)
             ->field('surveyId')
             ->equals($surveyId)
+            ->field('mode')
+            ->equals('live')
+            ->field('completed')
+            ->equals(true)
             ->count()
             ->getQuery()
             ->execute();

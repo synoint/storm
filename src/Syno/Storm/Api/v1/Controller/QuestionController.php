@@ -32,21 +32,22 @@ class QuestionController extends AbstractController implements TokenAuthenticate
     {
         $data      = [];
         $responses = $this->responseService->getAllByQuestionId($questionId);
+
+        $temp = [];
+
         foreach ($responses as $response) {
-            if (!$response->isLowQuality()) {
-                foreach ($response->getAnswers() as $responseAnswer) {
-                    if ($responseAnswer->getQuestionId() == $questionId) {
-                        foreach ($responseAnswer->getAnswers() as $answer) {
-                            if (!isset($data[$answer->getAnswerId()])) {
-                                $data[$answer->getAnswerId()] = 0;
-                            }
-                            $data[$answer->getAnswerId()] += 1;
+            foreach ($response->getAnswers() as $responseAnswer) {
+                if ($responseAnswer->getQuestionId() == $questionId) {
+                    foreach ($responseAnswer->getAnswers() as $answer) {
+                        if (!isset($data[$answer->getAnswerId()])) {
+                            $data[$answer->getAnswerId()] = 0;
                         }
+                        $data[$answer->getAnswerId()] += 1;
                     }
                 }
             }
         }
-
+//dd($data);
         return $this->json($data);
     }
 }

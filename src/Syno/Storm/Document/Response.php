@@ -107,13 +107,6 @@ class Response implements JsonSerializable
     private $screenoutId;
 
     /**
-     * @var bool
-     *
-     * @ODM\Field(type="bool")
-     */
-    private $lowQuality = false;
-
-    /**
      * @ODM\Field(type="date")
      */
     private $createdAt;
@@ -182,7 +175,6 @@ class Response implements JsonSerializable
             'qualityScreenedOut' => $this->qualityScreenedOut,
             'quotaFull'          => $this->quotaFull,
             'screenoutId'        => $this->screenoutId,
-            'lowQuality'         => $this->lowQuality,
             'createdAt'          => $this->createdAt->getTimestamp(),
             'completedAt'        => $this->completedAt,
             'userAgents'         => $this->userAgents,
@@ -479,18 +471,6 @@ class Response implements JsonSerializable
     public function isDone(): bool
     {
         return $this->isScreenedOut() || $this->isQualityScreenedOut() || $this->isQuotaFull() || $this->isCompleted();
-    }
-
-    public function isLowQuality(): bool
-    {
-        return $this->lowQuality;
-    }
-
-    public function setLowQuality(bool $lowQuality): self
-    {
-        $this->lowQuality = $lowQuality;
-
-        return $this;
     }
 
     /**
