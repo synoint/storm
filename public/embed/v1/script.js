@@ -136,11 +136,13 @@ if (!window.synoES) {
 
     var synoES_SETTINGS = {
         CONTAINER_ID: "",
+        SURVEY_FREQUENCY_DAYS: 30,
         SESSION_DURATION: 55,//seconds
         INVITATION_TIMEOUT: 0,//seconds
         SESSION_START_COOKIE: 'es_session_start',
         SESSION_ALIVE_COOKIE: 'es_session_last',
-        SURVEY_POOL_COOKIE: 'es_pool'
+        SURVEY_POOL_COOKIE: 'es_pool',
+        SURVEY_FREQUENCY_COOKIE: 'es_survey_shown'
     }
 
     function InvitationTimeoutHandler(settings) {
@@ -201,6 +203,10 @@ if (!window.synoES) {
     }
 
     synoES.init = function (settings) {
+        //if survey invitation was closed or survey started
+        if (synoES_Cookie.get(synoES_SETTINGS.SURVEY_FREQUENCY_COOKIE)) {
+            return;
+        }
         if (settings['skipURLs'] && settings['skipURLs'].length > 0) {
             for (var index in settings.skipURLs) {
                 if (settings.skipURLs[index] === document.location.href) {
@@ -247,6 +253,7 @@ if (!window.synoES) {
     synoES.survey.closeInvitationPopup = function () {
         var rootElement = document.getElementById(synoES_SETTINGS.CONTAINER_ID);
         rootElement.parentNode.removeChild(rootElement);
+        synoES_Cookie.set(synoES_SETTINGS.SURVEY_FREQUENCY_COOKIE, 1, synoES_SETTINGS.SURVEY_FREQUENCY_DAYS*24);
     };
 
     synoES.survey.updateInvitationPopupVisibility = function () {
@@ -275,6 +282,8 @@ if (!window.synoES) {
         surveyIframe.frameBorder = 0;
         surveyIframe.src = synoSurveyURL;
         surveyIframeContainer.appendChild(surveyIframe);
+
+        synoES_Cookie.set(synoES_SETTINGS.SURVEY_FREQUENCY_COOKIE, 1, synoES_SETTINGS.SURVEY_FREQUENCY_DAYS*24);
     };
 
     synoES.survey.getSurveyTemplate = function (settings) {
