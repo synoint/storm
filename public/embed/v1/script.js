@@ -142,7 +142,9 @@ if (!window.synoES) {
         SESSION_START_COOKIE: 'es_session_start',
         SESSION_ALIVE_COOKIE: 'es_session_last',
         SURVEY_POOL_COOKIE: 'es_pool',
-        SURVEY_FREQUENCY_COOKIE: 'es_survey_shown'
+        SURVEY_FREQUENCY_COOKIE: 'es_survey_shown',
+        TRACKING_PIXEL: 'https://c.cintnetworks.com/?a=2495&i=',
+        TRACKING_ENABLED: true
     }
 
     function InvitationTimeoutHandler(settings) {
@@ -218,6 +220,7 @@ if (!window.synoES) {
 
         synoES_SETTINGS.CONTAINER_ID = settings.containerId;
         synoES_SETTINGS.INVITATION_TIMEOUT = settings.invitationTimeoutSeconds || 0;
+        synoES_SETTINGS.TRACKING_ENABLED = !(settings.enableTracking === false);
         settings.titleText = settings.titleText || 'Title (titleText)!';
         settings.hintText = settings.hintText || 'hintText';
         settings.buttonLabel = settings.buttonLabel || 'Next';
@@ -248,6 +251,12 @@ if (!window.synoES) {
     synoES.survey.show = function (settings) {
         var rootElement = document.getElementById(synoES_SETTINGS.CONTAINER_ID);
         rootElement.innerHTML = synoES.survey.getSurveyTemplate(settings);
+
+        if (synoES_SETTINGS.TRACKING_ENABLED) {
+            var surveyID = settings.surveyURL.split('/')[5];
+            var imgRequest = new Image(0, 0);
+            imgRequest.src = synoES_SETTINGS.TRACKING_PIXEL+surveyID+'&e=1';
+        }
     }
 
     synoES.survey.closeInvitationPopup = function () {

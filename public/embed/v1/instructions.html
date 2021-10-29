@@ -185,7 +185,8 @@
 &nbsp;&nbsp;'skipURLs': <b>['https://example.com/checkout','https://www.example.com/cart']</b>,
 &nbsp;&nbsp;'invitationTimeoutSeconds': <b>60</b>,
 &nbsp;&nbsp;'surveyPoolSizePercent': <b>10</b>,
-&nbsp;&nbsp;'surveyPoolExpirationDays': <b>30</b>
+&nbsp;&nbsp;'surveyPoolExpirationDays': <b>30</b>,
+&nbsp;&nbsp;'enableTracking': <b>false</b>
 });
 &lt;/script&gt;
 ...
@@ -193,6 +194,11 @@
                         </pre>
                         <p><b>containerId</b> - ID of the parent element where survey will be inserted</p>
                         <p><b>surveyURL</b> - live public URL for Syno Survey</p>
+                        <p><b>skipURLs</b> - survey invitation will not be shown on these URLs</p>
+                        <p><b>invitationTimeoutSeconds</b> - survey invitation will not be shown at once but after 'invitationTimeoutSeconds' passed</p>
+                        <p><b>surveyPoolSizePercent</b> - survey invitation will be shown only to certain specific percent of users (browsers)</p>
+                        <p><b>surveyPoolExpirationDays</b> - used in conjunction with 'surveyPoolSizePercent' setting. Specify amount of days user will stay in (or out of) invittion pool.</p>
+                        <p><b>enableTracking</b> - is 'true' by default if nothing set. Enabled events tracking like invitation popup shown.</p>
                         <p class="MuiTypography-root">
                             If a user is recognized as a survey candidate then an invitation dialog like the one below
                             will be shown in bottom right corner of the page:
