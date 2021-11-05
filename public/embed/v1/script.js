@@ -270,12 +270,12 @@ if (!window.synoES) {
         var expandCollapseButtonStyle = document.querySelector('.sss-collapse-button-icon').style;
         if (containerStyle.transform) {
             containerStyle.removeProperty('transform');
-            expandCollapseButtonStyle.backgroundPosition = '-32px 0';
+            document.getElementById('sss-collapse-button-img').setAttribute('d','M30 12 L16 24 2 12');
             document.querySelector('.sss-invitation-container').style.marginBottom = '0px';
         } else {
             document.querySelector('.sss-invitation-container').style.transform = "translateY(100%)";
             document.querySelector('.sss-invitation-container').style.marginBottom = '8px';
-            expandCollapseButtonStyle.backgroundPosition = '0 0';
+            document.getElementById('sss-collapse-button-img').setAttribute('d','M30 20 L16 8 2 20');
         }
     };
 
@@ -300,16 +300,22 @@ if (!window.synoES) {
             '<div class="sss-survey-container">',
             '<div class="sss-invitation-container" style="background: ' + settings.containerColor + ';">',
             '<button class="sss-collapse-button" style="background: ' + settings.containerColor + ';" ',
-            'onclick="return synoES.survey.updateInvitationPopupVisibility();"><span class="sss-collapse-button-icon"></span></button>',
+            'onclick="return synoES.survey.updateInvitationPopupVisibility();"><span class="sss-collapse-button-icon">',
+            '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="10" height="10" fill="none" stroke="currentcolor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">',
+            '<path id="sss-collapse-button-img" d="M30 12 L16 24 2 12" /></svg></span></button>',
             '<button class="sss-close-button" style="background: ' + settings.containerColor + ';" ',
-            'onclick="return synoES.survey.closeInvitationPopup();"><span class="sss-close-button-icon">x</span></button>',
+            'onclick="return synoES.survey.closeInvitationPopup();"><span class="sss-close-button-icon">',
+            '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="10" height="10" fill="none" stroke="currentcolor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">',
+            '<path d="M2 30 L30 2 M30 30 L2 2" /></svg></span></button>',
             '<form class="sss-invitation-form">',
             '<div class="sss-info-text">' + settings.titleText + '</div>',
             '<div class="sss-info-text-hint">' + settings.hintText + '</div>',
             '<div class="sss-action-container">',
             '<div style="float: right !important;">',
             '<button type="button" onclick="synoES.survey.loadSurvey(\'' + settings.surveyURL + '\');" style="background-color: ' + settings.buttonColor + ' !important;" class="sss-action-button">',
-            settings.buttonLabel + '<span class="sss-action-button-icon"></span></button>',
+            settings.buttonLabel + '<span class="sss-action-button-icon">',
+            '<svg id="i-chevron-right" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="12" height="12" fill="none" stroke="currentcolor" stroke-linecap="round" stroke-linejoin="round" stroke-width="4">',
+            '<path d="M12 30 L24 16 12 2" /></svg></span></button>',
             '</div>',
             '</div>',
             '</form>',
