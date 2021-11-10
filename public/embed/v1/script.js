@@ -287,7 +287,7 @@ if (!window.synoES) {
 
         var surveyIframe = document.createElement('IFRAME');
         surveyIframe.width = '100%';
-        surveyIframe.height = '600px';
+        surveyIframe.height = '590px';
         surveyIframe.frameBorder = 0;
         surveyIframe.src = synoSurveyURL;
         surveyIframeContainer.appendChild(surveyIframe);
