@@ -226,6 +226,8 @@ if (!window.synoES) {
         settings.buttonLabel = settings.buttonLabel || 'Next';
         settings.buttonColor = settings.buttonColor || 'rgb(224, 104, 145)';
         settings.containerColor = settings.containerColor || 'rgb(51, 51, 51)';
+        settings.supportURL = settings.supportURL || '';
+        settings.supportText = settings.supportText || '';
 
         if (settings['surveyPoolSizePercent']) {
             var isInPool = synoES_Cookie.get(synoES_SETTINGS.SURVEY_POOL_COOKIE);
@@ -287,7 +289,7 @@ if (!window.synoES) {
 
         var surveyIframe = document.createElement('IFRAME');
         surveyIframe.width = '100%';
-        surveyIframe.height = '590px';
+        surveyIframe.height = '600px';
         surveyIframe.frameBorder = 0;
         surveyIframe.src = synoSurveyURL;
         surveyIframeContainer.appendChild(surveyIframe);
@@ -296,6 +298,7 @@ if (!window.synoES) {
     };
 
     synoES.survey.getSurveyTemplate = function (settings) {
+        var supportBlockDisplay = settings.supportURL && settings.supportText ? 'block' : 'none';
         var templateChunks = [
             '<div class="sss-survey-container">',
             '<div class="sss-invitation-container" style="background: ' + settings.containerColor + ';">',
@@ -310,17 +313,16 @@ if (!window.synoES) {
             '<form class="sss-invitation-form">',
             '<div class="sss-info-text">' + settings.titleText + '</div>',
             '<div class="sss-info-text-hint">' + settings.hintText + '</div>',
-            '<div class="sss-action-container">',
-            '<div style="float: right !important;">',
+            '<div class="sss-action-container" style="text-align:right">',
             '<button type="button" onclick="synoES.survey.loadSurvey(\'' + settings.surveyURL + '\');" style="background-color: ' + settings.buttonColor + ' !important;" class="sss-action-button">',
             settings.buttonLabel + '<span class="sss-action-button-icon">',
             '<svg id="i-chevron-right" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="12" height="12" fill="none" stroke="currentcolor" stroke-linecap="round" stroke-linejoin="round" stroke-width="4">',
             '<path d="M12 30 L24 16 12 2" /></svg></span></button>',
             '</div>',
-            '</div>',
             '</form>',
             '<div class="sss-survey-iframe-container">',
             '</div>',
+            '<div style="display:' + supportBlockDisplay + '" class="sss-support-text-container"><a target="_blank" href="' + settings.supportURL + '">' + settings.supportText + '</a></div>',
             '</div>',
             '</div>',
         ];

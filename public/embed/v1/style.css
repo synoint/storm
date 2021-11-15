@@ -99,14 +99,30 @@ div.sss-invitation-container {
     white-space: pre-wrap;
 }
 
+div.sss-support-text-container {
+    width: 100%;
+    border-top: 1px solid;
+    padding: 6px;
+    box-sizing: border-box;
+    font-style: italic;
+    font-size: 12px;
+    text-align: center;
+}
+
+.sss-support-text-container a{
+    color: rgb(204, 204, 204) !important;
+    padding: 0 12px 12px;
+}
+
 div.sss-action-container {
     border-top-color: rgb(26, 26, 26) !important;
     width: 100%;
     border-top: 1px solid;
+    padding: 6px;
+    box-sizing: border-box;
 }
 
 .sss-action-button {
-    margin: 12px 12px 12px 0;
     font-size: 13px !important;
     font-weight: bold !important;
     padding: 7px 10px !important;
@@ -144,6 +160,6 @@ div.sss-action-container {
     box-shadow: 0 0 7px 0 rgb(0 0 0 / 30%) !important;
     border-radius: 5px 5px 0 0;
     background-color: rgb(51, 51, 51);
-    padding-top: 0.5rem;
+    padding-top: 20px;
     overflow: hidden;
 }
