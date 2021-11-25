@@ -3,6 +3,7 @@
 namespace Syno\Storm\Services;
 
 use Syno\Storm\Document;
+use Doctrine\Common\Collections\Collection;
 
 class Question
 {
@@ -17,5 +18,16 @@ class Question
         }
 
         return false;
+    }
+
+    public function buildCodeKeyArray(Collection $questions): array
+    {
+        $questionCodes = [];
+
+        foreach ($questions as $question) {
+            $questionCodes[$question->getCode()] = $question;
+        }
+
+        return $questionCodes;
     }
 }

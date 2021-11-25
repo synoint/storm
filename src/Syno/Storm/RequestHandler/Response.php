@@ -16,16 +16,19 @@ class Response
     private RequestStack      $requestStack;
     private ResponseId        $responseId;
     private Services\Response $responseService;
+    private Services\Question $questionService;
 
     public function __construct(
         RequestStack $requestStack,
         ResponseId $responseId,
-        Services\Response $responseService
+        Services\Response $responseService,
+        Services\Question $questionService
     )
     {
         $this->requestStack    = $requestStack;
         $this->responseId      = $responseId;
         $this->responseService = $responseService;
+        $this->questionService = $questionService;
     }
 
     public function getResponse(): Document\Response
@@ -90,19 +93,29 @@ class Response
         return $result;
     }
 
-    public function extractParameters(Collection $surveyValues): Collection
+    public function setAnswers(Document\Response $response, Collection $questions): Document\Response
     {
-        $result = new ArrayCollection();
-        /** @var Document\Parameter $surveyValue */
-        foreach ($surveyValues as $surveyValue) {
-            if ($this->requestStack->getCurrentRequest()->query->has($surveyValue->getUrlParam())) {
-                $value = clone $surveyValue;
-                $value->setValue($this->requestStack->getCurrentRequest()->query->get($value->getUrlParam()));
-                $result[] = $value;
+        $questionsByCode = $this->questionService->buildCodeKeyArray($questions);
+
+        foreach ($this->requestStack->getCurrentRequest()->query->all() as $key => $value) {
+            if (isset($questionsByCode[$key])) {
+
+                $question = $questionsByCode[$key];
+
+                if ($question->getQuestionTypeId() == Document\Question::TYPE_TEXT) {
+                    $response->addAnswer($this->createAnswer($question->getAnswers()->first(), $question->getQuestionId(), $value));
+                } else {
+                    foreach ($question->getAnswers() as $answer) {
+                        if ($answer->getCode() == $value) {
+                            $response->addAnswer($this->createAnswer($answer, $question->getQuestionId(), $value));
+                            break;
+                        }
+                    }
+                }
             }
         }
 
-        return $result;
+        return $response;
     }
 
     public function addUserAgent(Document\Response $response)
@@ -121,4 +134,18 @@ class Response
         );
     }
 
+    private function createAnswer(Document\Answer $answer, int $questionId, string $value): Document\ResponseAnswer
+    {
+        return new Document\ResponseAnswer(
+            $questionId,
+            new ArrayCollection(
+                [
+                    new Document\ResponseAnswerValue(
+                        $answer->getAnswerId(),
+                        $value
+                    )
+                ]
+            )
+        );
+    }
 }

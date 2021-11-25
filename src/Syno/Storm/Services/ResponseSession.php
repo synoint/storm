@@ -107,11 +107,8 @@ class ResponseSession
     public function createResponse(Document\Survey $survey)
     {
         $response = $this->responseHandler->getNew($survey);
-        $response->setParameters(
-            $this->responseHandler->extractParameters(
-                $survey->getParameters()
-            )
-        );
+        $response = $this->responseHandler->setAnswers($response, $survey->getQuestions());
+
         $this->responseHandler->saveResponse($response, true);
 
         $this->responseEventLogger->log(ResponseEventLogger::RESPONSE_CREATED, $response);

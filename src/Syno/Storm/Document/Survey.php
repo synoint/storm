@@ -270,6 +270,21 @@ class Survey implements JsonSerializable
         return $result;
     }
 
+    /**
+     * @return Collection|Question[]
+     */
+    public function getQuestions()
+    {
+        $questions = new ArrayCollection();
+
+        /** @var Page $page */
+        foreach ($this->pages as $page) {
+            $questions = new ArrayCollection(array_merge($questions->toArray(), $page->getQuestions()->toArray()));
+        }
+
+        return $questions;
+    }
+
     public function getNextPage(int $pageId):? Page
     {
         $result = null;
