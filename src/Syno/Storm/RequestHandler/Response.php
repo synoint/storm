@@ -129,7 +129,7 @@ class Response
         $result = [];
 
         $page = $this->requestStack->getCurrentRequest()->query->get("p");
-        if(!empty($page)) {
+        if(!empty($page) && is_array($page)) {
             /** @var Question $question */
             foreach ($survey->getQuestions() as $question) {
                 $result[$question->getQuestionId()] = [];

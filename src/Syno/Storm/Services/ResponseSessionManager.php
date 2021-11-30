@@ -67,7 +67,7 @@ class ResponseSessionManager
 
     public function getAnswerMap(?array $formData): array
     {
-        if ($formData) {
+        if ($formData && is_array($formData)) {
             return $this->answerHandler->getAnswerMap($this->getQuestions(), $formData);
         }
 
