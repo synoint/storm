@@ -2,10 +2,9 @@
 
 namespace Syno\Storm\RequestHandler;
 
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Syno\Storm\Document;
+use Syno\Storm\Document\Question;
 use Syno\Storm\Services;
 
 
@@ -16,19 +15,19 @@ class Response
     private RequestStack      $requestStack;
     private ResponseId        $responseId;
     private Services\Response $responseService;
-    private Services\Question $questionService;
+    private Answer            $answerRequestHandler;
 
     public function __construct(
-        RequestStack $requestStack,
-        ResponseId $responseId,
+        RequestStack      $requestStack,
+        ResponseId        $responseId,
         Services\Response $responseService,
-        Services\Question $questionService
+        Answer            $answerRequestHandler
     )
     {
-        $this->requestStack    = $requestStack;
-        $this->responseId      = $responseId;
-        $this->responseService = $responseService;
-        $this->questionService = $questionService;
+        $this->requestStack         = $requestStack;
+        $this->responseId           = $responseId;
+        $this->responseService      = $responseService;
+        $this->answerRequestHandler = $answerRequestHandler;
     }
 
     public function getResponse(): Document\Response
@@ -74,8 +73,6 @@ class Response
         return $responseId ? $this->responseService->findBySurveyIdAndResponseId($surveyId, $responseId) : null;
     }
 
-
-
     public function getNew(Document\Survey $survey): Document\Response
     {
         $responseId = $this->responseId->get($survey->getSurveyId());
@@ -91,31 +88,6 @@ class Response
             ->setLocale($this->requestStack->getCurrentRequest()->attributes->get('_locale'));
 
         return $result;
-    }
-
-    public function setAnswers(Document\Response $response, Collection $questions): Document\Response
-    {
-        $questionsByCode = $this->questionService->buildCodeKeyArray($questions);
-
-        foreach ($this->requestStack->getCurrentRequest()->query->all() as $key => $value) {
-            if (isset($questionsByCode[$key])) {
-
-                $question = $questionsByCode[$key];
-
-                if ($question->getQuestionTypeId() == Document\Question::TYPE_TEXT) {
-                    $response->addAnswer($this->createAnswer($question->getAnswers()->first(), $question->getQuestionId(), $value));
-                } else {
-                    foreach ($question->getAnswers() as $answer) {
-                        if ($answer->getCode() == $value) {
-                            $response->addAnswer($this->createAnswer($answer, $question->getQuestionId(), $value));
-                            break;
-                        }
-                    }
-                }
-            }
-        }
-
-        return $response;
     }
 
     public function addUserAgent(Document\Response $response)
@@ -134,18 +106,19 @@ class Response
         );
     }
 
-    private function createAnswer(Document\Answer $answer, int $questionId, string $value): Document\ResponseAnswer
+    public function setAnswers($survey): array
     {
-        return new Document\ResponseAnswer(
-            $questionId,
-            new ArrayCollection(
-                [
-                    new Document\ResponseAnswerValue(
-                        $answer->getAnswerId(),
-                        $value
-                    )
-                ]
-            )
-        );
+        $result = [];
+
+        $page = $this->requestStack->getCurrentRequest()->query->get("page");
+        /** @var Question $question */
+        foreach ($survey->getQuestions() as $question) {
+            $result[$question->getQuestionId()] = [];
+            foreach ($this->answerRequestHandler->extractAnswers($question, $page) as $answer) {
+                $result[$question->getQuestionId()][$answer->getAnswerId()] = $answer->getValue();
+            }
+        }
+
+        return $result;
     }
 }

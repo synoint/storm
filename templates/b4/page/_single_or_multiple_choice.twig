@@ -1,8 +1,8 @@
-{% set questionField = attribute(form, (question.getInputName)) %}
+{% set questionField = attribute(form, (question.getCode)) %}
 {% if question.randomizeAnswers %}
     {% set questionField = questionField|shuffle_answers(question) %}
 {% endif %}
- {{ form_errors(attribute(form, (question.getInputName))) }}
+ {{ form_errors(attribute(form, (question.getCode))) }}
 
 {% set break = false %}
 {% for child in questionField %}
@@ -27,8 +27,12 @@
                 <div class="d-flex flex-row w-100">
                     <div class="d-flex align-items-center"> {{ child.vars.label | raw }}</div>
                 </div>
-                {% if attribute(form, (question.getInputName(child.vars.value))) is defined %}
-                    {% set freeTextInput = attribute(form, (question.getInputName(child.vars.value))) %}
+
+                {% set answer = question.getAnswerByCode(child.vars.value) %}
+
+                {% if attribute(form, (question.getInputName(answer.code))) is defined and answer.isFreeText %}
+
+                    {% set freeTextInput = attribute(form, (question.getInputName(answer.code))) %}
                     <div class="flex-fill bg-white rounded rounded-pill d-flex mt-1">
                         <div class="pl-2 pr-1">
                             <svg class="text-secondary" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"

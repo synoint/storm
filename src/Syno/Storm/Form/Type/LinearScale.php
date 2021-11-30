@@ -17,7 +17,7 @@ class LinearScale extends AbstractType
                 return ['class' => 'custom-control-input'];
             },
             'choice_value' => function(?Document\Answer $choice) {
-                return $choice ? $choice->getAnswerId() : '';
+                return $choice ? $choice->getCode() : '';
             },
             'choice_label' => function (?Document\Answer $choice) {
                 return $choice ? $choice->getLabel() : '';

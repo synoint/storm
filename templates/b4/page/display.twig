@@ -60,8 +60,8 @@
                                     {% if '' != answer.label %}
                                         <label>{{ answer.label }}</label>
                                     {% endif %}
-                                    {{ form_errors(attribute(form, (question.getInputName(answer.answerId)))) }}
-                                    {{ form_widget(attribute(form, (question.getInputName(answer.answerId)), {'label': false})) }}
+                                    {{ form_errors(attribute(form, (question.getInputName(answer.code)))) }}
+                                    {{ form_widget(attribute(form, (question.getInputName(answer.code)), {'label': false})) }}
                                 {% endfor %}
                             {% elseif question.questionTypeId == constant('Syno\\Storm\\Document\\Question::TYPE_SINGLE_CHOICE') %}
                                 {% include 'b4/page/_single_or_multiple_choice.twig' with { 'type': 'radio' } %}

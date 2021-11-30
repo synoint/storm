@@ -2,9 +2,11 @@
 
 namespace Syno\Storm\Services;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Syno\Storm\Document;
+use Syno\Storm\Document\Question;
 use Syno\Storm\RequestHandler;
 use Syno\Storm\Traits\RouteAware;
 
@@ -107,7 +109,25 @@ class ResponseSession
     public function createResponse(Document\Survey $survey)
     {
         $response = $this->responseHandler->getNew($survey);
-        $response = $this->responseHandler->setAnswers($response, $survey->getQuestions());
+
+        foreach($this->responseHandler->setAnswers($survey) as $questionId => $answers){
+
+            if(!empty($answers)) {
+
+                $newAnswers = [];
+
+                foreach ($answers as $answerId => $value) {
+                    $newAnswers[] = new Document\ResponseAnswerValue(
+                        $answerId,
+                        $value
+                    );
+                }
+
+                $newAnswer = new Document\ResponseAnswer($questionId, new ArrayCollection($newAnswers));
+
+                $response->addAnswer($newAnswer);
+            }
+        }
 
         $this->responseHandler->saveResponse($response, true);
 

@@ -49,33 +49,39 @@ class Answer
         $result = new ArrayCollection();
         switch ($question->getQuestionTypeId()) {
             case Question::TYPE_SINGLE_CHOICE:
-                $key = $question->getInputName();
-                if (!empty($formData[$key]) &&
-                    is_int($formData[$key]) &&
-                    $question->answerIdExists($formData[$key])
+                $key = $question->getCode();
+
+                if (!empty($formData[$key]) && $question->answerCodeExists($formData[$key])
                 ) {
-                    if ($question->getAnswer($formData[$key])->getIsFreeText()) {
+
+                    $answer = $question->getAnswerByCode($formData[$key]);
+
+                    if ($answer->getIsFreeText()) {
                         $result[] = new ResponseAnswerValue(
-                            $formData[$key],
-                            $this->extractFreeTextValue($formData, $formData[$key], $question)
+                            $answer->getAnswerId(),
+                            $this->extractFreeTextValue($formData, $answer->getCode(), $question)
                         );
                     } else {
-                        $result[] = new ResponseAnswerValue($formData[$key]);
+                        $result[] = new ResponseAnswerValue($answer->getAnswerId());
                     }
                 }
                 break;
             case Question::TYPE_MULTIPLE_CHOICE:
-                $key = $question->getInputName();
+                $key = $question->getCode();
                 if (!empty($formData[$key]) && is_array($formData[$key])) {
-                    foreach ($formData[$key] as $answerId) {
-                        if ($question->answerIdExists($answerId)) {
-                            if ($question->getAnswer($answerId)->getIsFreeText()) {
+                    foreach ($formData[$key] as $answerCode) {
+
+                        if ($question->answerCodeExists($answerCode)) {
+
+                            $answer = $question->getAnswerByCode($answerCode);
+
+                            if ($answer->getIsFreeText()) {
                                 $result[] = new ResponseAnswerValue(
-                                    $answerId,
-                                    $this->extractFreeTextValue($formData, $answerId, $question)
+                                    $answer->getAnswerId(),
+                                    $this->extractFreeTextValue($formData,  $answer->getCode(), $question)
                                 );
                             } else {
-                                $result[] = new ResponseAnswerValue($answerId);
+                                $result[] = new ResponseAnswerValue($answer->getAnswerId());
                             }
                         }
                     }
@@ -84,11 +90,14 @@ class Answer
             case Question::TYPE_SINGLE_CHOICE_MATRIX:
                 foreach (array_keys($question->getRows()) as $rowCode) {
                     $key = $question->getInputName($rowCode);
-                    if (!empty($formData[$key]) &&
-                        is_int($formData[$key]) &&
-                        $question->answerIdExists($formData[$key])
-                    ) {
-                        $result[] = new ResponseAnswerValue($formData[$key]);
+
+                    if (!empty($formData[$key])) {
+
+                        $answer = $question->getAnswerByRowAndColumn($this->extractAnswerCode($key), $formData[$key]);
+
+                        if($answer) {
+                            $result[] = new ResponseAnswerValue($answer->getAnswerId());
+                        }
                     }
                 }
                 break;
@@ -97,9 +106,12 @@ class Answer
                     $key = $question->getInputName($rowCode);
                     if (!empty($formData[$key]) &&
                         is_array($formData[$key])) {
-                        foreach ($formData[$key] as $answerId) {
-                            if ($question->answerIdExists($answerId)) {
-                                $result[] = new ResponseAnswerValue($answerId);
+                        foreach ($formData[$key] as $column) {
+
+                            $answer = $question->getAnswerByRowAndColumn($this->extractAnswerCode($key), $column);
+
+                            if ($answer) {
+                                $result[] = new ResponseAnswerValue($answer->getAnswerId());
                             }
                         }
                     }
@@ -108,7 +120,7 @@ class Answer
             case Question::TYPE_TEXT:
                 /** @var AnswerDocument $answer */
                 foreach ($question->getAnswers() as $answer) {
-                    $key = $question->getInputName($answer->getAnswerId());
+                    $key = $question->getInputName($answer->getCode());
                     if (!empty($formData[$key]) && is_string($formData[$key])) {
                         $value    = trim($formData[$key]);
                         $value    = filter_var($value, FILTER_SANITIZE_STRING);
@@ -119,26 +131,51 @@ class Answer
                 break;
             case Question::TYPE_LINEAR_SCALE:
                 $key = $question->getInputName();
-                if (!empty($formData[$key]) && $formData[$key] instanceof AnswerDocument) {
-                    $result[] = new ResponseAnswerValue($formData[$key]->getAnswerId());
+                if (!empty($formData[$key])) {
+
+                    $code = $formData[$key];
+
+                    if($formData[$key] instanceof AnswerDocument){
+                        $code = $formData[$key]->getCode();
+
+                    }
+
+                    $answer = $question->getAnswerByCode($code);
+
+                    $result[] = new ResponseAnswerValue($answer->getAnswerId());
                 }
                 break;
             case Question::TYPE_LINEAR_SCALE_MATRIX:
+
                 foreach (array_keys($question->getRows()) as $rowCode) {
                     $key = $question->getInputName($rowCode);
-                    if (!empty($formData[$key]) && $formData[$key] instanceof AnswerDocument) {
-                        $result[] = new ResponseAnswerValue($formData[$key]->getAnswerId());
+
+                    if (!empty($formData[$key])) {
+
+                        $column = $formData[$key];
+
+                        if($formData[$key] instanceof AnswerDocument){
+                            $column = $formData[$key]->getColumnCode();
+                        }
+
+                        $answer = $question->getAnswerByRowAndColumn($this->extractAnswerCode($key), $column);
+
+                        if(!empty($answer)){
+
+                            $result[] = new ResponseAnswerValue($answer->getAnswerId());
+                        }
                     }
                 }
+
                 break;
         }
 
         return $result;
     }
 
-    private function extractFreeTextValue(array $formData, int $answerId, Question $question): ?string
+    private function extractFreeTextValue(array $formData, int $answerCode, Question $question): ?string
     {
-        $valueKey = $question->getInputName($answerId);
+        $valueKey = $question->getInputName($answerCode);
         if (!empty($formData[$valueKey]) && is_string($formData[$valueKey])) {
             $value = trim($formData[$valueKey]);
             $value = filter_var($value, FILTER_SANITIZE_STRING);
@@ -149,5 +186,11 @@ class Answer
         return null;
     }
 
+    private function extractAnswerCode(string $key): ?string
+    {
+        $split = explode("_", $key);
+
+        return count($split) > 1 ? $split[count($split)-1] : null;
+    }
 
 }

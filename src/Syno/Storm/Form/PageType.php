@@ -85,10 +85,21 @@ class PageType extends AbstractType
     {
         $questionAnswerIds = $answerMap ? array_keys($answerMap) : null;
 
-        $builder->add($question->getInputName(), ChoiceType::class, [
-            'choices' => $question->getChoices(),
+        $choices = [];
+        $data = null;
+
+        foreach($question->getAnswers() as $answer){
+            $choices[$answer->getLabel()] = $answer->getCode();
+
+            if ($questionAnswerIds && in_array($answer->getAnswerId(), $questionAnswerIds)) {
+                $data = $answer->getCode();
+            }
+        }
+
+        $builder->add($question->getCode(), ChoiceType::class, [
+            'choices' => $choices,
             'required' => $question->isRequired(),
-            'data' => $questionAnswerIds ? reset($questionAnswerIds) : null,
+            'data' => $data,
             'expanded' => !$question->containsSelectField(),
             'placeholder' => null,
             'constraints' => $question->isRequired() ? [
@@ -114,29 +125,42 @@ class PageType extends AbstractType
     {
         $questionAnswerIds = $answerMap ? array_keys($answerMap) : null;
 
+        $choices = [];
+
         $selectedAnswersIsExclusive = $this->questionService->isSelectedAnswersExclusive($question, $questionAnswerIds);
 
-        $builder->add($question->getInputName(), ChoiceType::class, [
-                'choices' => $question->getChoices(),
-                'required' => $question->isRequired(),
+        foreach($question->getAnswers() as $answer){
+            $choices[$answer->getLabel()] = $answer->getCode();
+
+            if ($questionAnswerIds && in_array($answer->getAnswerId(), $questionAnswerIds)) {
+                $data[] = $answer->getCode();
+            }
+        }
+
+        $builder->add($question->getCode(), ChoiceType::class, [
+                'choices'     => $choices,
+                'required'    => $question->isRequired(),
                 'placeholder' => null,
                 'constraints' => $question->isRequired() ? [
                     new Count([
-                        'min' => 1,
+                        'min'        => 1,
                         'minMessage' => $this->translator->trans('error.at.leat.one.option.required'),
-                        'groups' => ['form_validation_only']
+                        'groups'     => ['form_validation_only']
                     ])
                 ] : null,
-                'expanded' => true,
-                'multiple' => true,
-                'data' => $questionAnswerIds,
-                'attr' => ['class' => 'custom-control custom-checkbox custom-checkbox-filled'],
+                'expanded'    => true,
+                'multiple'    => true,
+                'data'        => $data,
+                'attr'        => ['class' => 'custom-control custom-checkbox custom-checkbox-filled'],
                 'choice_attr' => function ($answerId) use ($question, $selectedAnswersIsExclusive, $answerMap) {
-                    $attr['row_attr'] = '';
-                    $attr = ['class' => 'custom-control-input form-check-input'];
 
-                    if ($question->getAnswer($answerId)->getIsExclusive()) {
-                        $attr['class'] .= ' exclusive';
+
+                    $attr['row_attr'] = '';
+                    $attr             = ['class' => 'custom-control-input form-check-input'];
+
+
+                    if ($question->getAnswerByCode($answerId)->getIsExclusive()) {
+                        $attr['class']    .= ' exclusive';
                         $attr['row_attr'] = 'exclusive';
                     }
 
@@ -146,7 +170,7 @@ class PageType extends AbstractType
 
                     return $attr;
                 },
-                'label_attr' => ['class' => 'custom-control-label abc'],
+                'label_attr'  => ['class' => 'custom-control-label abc'],
             ]
         );
     }
@@ -161,14 +185,14 @@ class PageType extends AbstractType
         /** @var Document\Answer $answer */
         foreach ($question->getAnswers() as $answer) {
             if ($answer->getIsFreeText()) {
-                $builder->add($question->getInputName($answer->getAnswerId()), TextType::class, [
+                $builder->add($question->getInputName($answer->getCode()), TextType::class, [
                         'attr' => ['class' => 'is-free-text-input'],
                         'required' => false,
                         'constraints' => [
                             new OtherFilled([
-                                'answer' => $answer,
+                                'answer'            => $answer,
                                 'respondentAnswers' => $answerMap,
-                                'groups' => ['form_validation_only']
+                                'groups'            => ['form_validation_only']
                             ])
                         ],
                         'data' => $answerMap[$answer->getAnswerId()] ?? null,
@@ -190,12 +214,13 @@ class PageType extends AbstractType
         foreach (array_keys($question->getRows()) as $key => $rowCode) {
             $data    = [];
             $choices = [];
+
             foreach (array_keys($question->getColumns()) as $columnCode) {
                 $answer                             = $question->getMatrixAnswer($rowCode, $columnCode);
-                $choices[$answer->getColumnLabel()] = $answer->getAnswerId();
+                $choices[$answer->getColumnLabel()] = $answer->getColumnCode();
 
                 if ($questionAnswerIds && in_array($answer->getAnswerId(), $questionAnswerIds)) {
-                    $data[] = $answer->getAnswerId();
+                    $data[] = $answer->getColumnCode();
                 }
             }
 
@@ -254,7 +279,7 @@ class PageType extends AbstractType
                         ]
                     );
                 }
-                $builder->add($question->getInputName($answer->getAnswerId()), TextType::class, $options);
+                $builder->add($question->getInputName($answer->getCode()), TextType::class, $options);
 
             } elseif ($answer->getAnswerFieldTypeId() === Document\Answer::FIELD_TYPE_TEXTAREA) {
 
@@ -273,7 +298,7 @@ class PageType extends AbstractType
                     );
                 }
 
-                $builder->add($question->getInputName($answer->getAnswerId()), TextareaType::class, $options);
+                $builder->add($question->getInputName($answer->getCode()), TextareaType::class, $options);
             }
         }
     }
@@ -285,19 +310,27 @@ class PageType extends AbstractType
      */
     private function addLinearScale(FormBuilderInterface $builder, Document\Question $question, ?array $answerMap)
     {
+        $data = null;
         $questionAnswerIds = !empty($answerMap) ? array_keys($answerMap) : null;
 
+        foreach ($question->getAnswers() as $answer) {
+
+            if ($questionAnswerIds && in_array($answer->getAnswerId(), $questionAnswerIds)) {
+                $data = $answer;
+            }
+        }
+
         $builder->add($question->getInputName(), LinearScale::class, [
-            'choices' => $question->getAnswers(),
-            'required' => $question->isRequired(),
-            'data' => $questionAnswerIds ? $question->getAnswer(reset($questionAnswerIds)) : null,
+            'choices'     => $question->getAnswers(),
+            'required'    => $question->isRequired(),
+            'data'        => $data,
             'constraints' => $question->isRequired() ? [
                 new NotBlank([
                     'message' => $this->translator->trans('error.one.option.required'),
-                    'groups' => ['form_validation_only']
+                    'groups'  => ['form_validation_only']
                 ])
             ] : null,
-            'label' => $question->getText()
+            'label'       => $question->getText()
         ]);
     }
 
@@ -336,5 +369,10 @@ class PageType extends AbstractType
                 'label' => $row
             ]);
         }
+    }
+
+    public function getBlockPrefix(): string
+    {
+        return "p";
     }
 }

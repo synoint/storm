@@ -510,11 +510,23 @@ class Question
         return $choices;
     }
 
-    public function answerIdExists(int $answerId)
+    public function answerIdExists(int $answerId): bool
     {
         /** @var Answer $answer */
         foreach ($this->answers as $answer) {
             if ($answer->getAnswerId() === $answerId) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public function answerCodeExists(string $answerCode): bool
+    {
+        /** @var Answer $answer */
+        foreach ($this->answers as $answer) {
+            if ($answer->getCode() === $answerCode) {
                 return true;
             }
         }
@@ -534,6 +546,32 @@ class Question
                 return $answer;
             }
         }
+        return null;
+    }
+
+    /**
+     * @param string $answerCode
+     *
+     * @return Answer|null
+     */
+    public function getAnswerByCode(string $answerCode): ?Answer
+    {
+        foreach ($this->answers as $answer) {
+            if ($answer->getCode() == $answerCode) {
+                return $answer;
+            }
+        }
+        return null;
+    }
+
+    public function getAnswerByRowAndColumn( $row,  $column): ?Answer
+    {
+        foreach ($this->answers as $answer) {
+            if ($answer->getRowCode() == $row && $answer->getColumnCode() == $column) {
+                return $answer;
+            }
+        }
+
         return null;
     }
 
@@ -602,7 +640,7 @@ class Question
      */
     public function getInputName(string $suffix = null): string
     {
-        return self::INPUT_PREFIX . $this->questionId . ((null !== $suffix) ? '_' . $suffix : '');
+        return $this->code . ((null !== $suffix) ? '_' . $suffix : '');
     }
 
     /**

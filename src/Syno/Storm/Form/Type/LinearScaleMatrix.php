@@ -17,7 +17,7 @@ class LinearScaleMatrix extends AbstractType
                 return ['class' => 'custom-control-input'];
             },
             'choice_value' => function(?Document\Answer $choice) {
-                return $choice ? $choice->getAnswerId() : '';
+                return $choice ? $choice->getColumnCode() : '';
             },
             'choice_label' => function (?Document\Answer $choice) {
                 return $choice ? $choice->getLabel() : '';
