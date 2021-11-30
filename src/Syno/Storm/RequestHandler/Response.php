@@ -110,7 +110,7 @@ class Response
     {
         $result = [];
 
-        $page = $this->requestStack->getCurrentRequest()->query->get("page");
+        $page = $this->requestStack->getCurrentRequest()->query->get("p");
         /** @var Question $question */
         foreach ($survey->getQuestions() as $question) {
             $result[$question->getQuestionId()] = [];
