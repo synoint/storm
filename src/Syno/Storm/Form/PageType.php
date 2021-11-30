@@ -126,6 +126,7 @@ class PageType extends AbstractType
         $questionAnswerIds = $answerMap ? array_keys($answerMap) : null;
 
         $choices = [];
+        $data    = [];
 
         $selectedAnswersIsExclusive = $this->questionService->isSelectedAnswersExclusive($question, $questionAnswerIds);
 
