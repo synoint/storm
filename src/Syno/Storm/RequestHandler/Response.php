@@ -2,6 +2,8 @@
 
 namespace Syno\Storm\RequestHandler;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Syno\Storm\Document;
 use Syno\Storm\Document\Question;
@@ -89,6 +91,22 @@ class Response
 
         return $result;
     }
+
+    public function extractParameters(Collection $surveyValues): Collection
+    {
+        $result = new ArrayCollection();
+        /** @var Document\Parameter $surveyValue */
+        foreach ($surveyValues as $surveyValue) {
+            if ($this->requestStack->getCurrentRequest()->query->has($surveyValue->getUrlParam())) {
+                $value = clone $surveyValue;
+                $value->setValue($this->requestStack->getCurrentRequest()->query->get($value->getUrlParam()));
+                $result[] = $value;
+            }
+        }
+
+        return $result;
+    }
+
 
     public function addUserAgent(Document\Response $response)
     {

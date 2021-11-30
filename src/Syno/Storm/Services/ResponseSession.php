@@ -110,6 +110,12 @@ class ResponseSession
     {
         $response = $this->responseHandler->getNew($survey);
 
+        $response->setParameters(
+            $this->responseHandler->extractParameters(
+                $survey->getParameters()
+            )
+        );
+
         foreach($this->responseHandler->setAnswers($survey) as $questionId => $answers){
 
             if(!empty($answers)) {
