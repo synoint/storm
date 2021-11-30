@@ -111,14 +111,15 @@ class Response
         $result = [];
 
         $page = $this->requestStack->getCurrentRequest()->query->get("p");
-        /** @var Question $question */
-        foreach ($survey->getQuestions() as $question) {
-            $result[$question->getQuestionId()] = [];
-            foreach ($this->answerRequestHandler->extractAnswers($question, $page) as $answer) {
-                $result[$question->getQuestionId()][$answer->getAnswerId()] = $answer->getValue();
+        if(!empty($page)) {
+            /** @var Question $question */
+            foreach ($survey->getQuestions() as $question) {
+                $result[$question->getQuestionId()] = [];
+                foreach ($this->answerRequestHandler->extractAnswers($question, $page) as $answer) {
+                    $result[$question->getQuestionId()][$answer->getAnswerId()] = $answer->getValue();
+                }
             }
         }
-
         return $result;
     }
 }
