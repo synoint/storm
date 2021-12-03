@@ -66,7 +66,7 @@ class Question
      * @ODM\Field(type="bool")
      * @Assert\NotNull
      */
-    private $hidden = true;
+    private $hidden;
 
     /**
      * @var bool
@@ -272,7 +272,7 @@ class Question
     /**
      * @return bool
      */
-    public function isHidden(): bool
+    public function isHidden(): ?bool
     {
         return $this->hidden;
     }
