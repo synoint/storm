@@ -25,7 +25,7 @@ class SurveyController extends AbstractController
     {
         $attr = [
             'surveyId' => $survey->getSurveyId(),
-            'pageId'   => $survey->getPages()->first()->getPageId()
+            'pageId'   => $survey->getFirstPage()->getPageId()
         ];
 
         if ($request->query->has($request->getSession()->getName())) {
@@ -52,7 +52,7 @@ class SurveyController extends AbstractController
     {
         return $this->redirectToRoute('page.index', [
             'surveyId' => $survey->getSurveyId(),
-            'pageId' => $survey->getPages()->first()->getPageId()
+            'pageId'   => $survey->getFirstPage()->getPageId()
         ]);
     }
 

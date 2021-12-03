@@ -194,6 +194,18 @@ class Page
     }
 
     /**
+     * @return Collection|Question[]
+     */
+    public function getVisibleQuestions(): Collection
+    {
+        return $this->questions->filter(function(Question $question){
+            return !$question->isHidden();
+        });
+    }
+
+
+
+    /**
      * @param $questions
      *
      * @return self

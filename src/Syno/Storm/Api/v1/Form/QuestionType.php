@@ -20,6 +20,7 @@ class QuestionType extends AbstractType
             ->add('code', TextType::class)
             ->add('sortOrder', IntegerType::class)
             ->add('required', CheckboxType::class)
+            ->add('hidden', CheckboxType::class)
             ->add('text', TextType::class)
             ->add('randomizeAnswers', CheckboxType::class)
             ->add('randomizeRows', CheckboxType::class)

@@ -57,7 +57,7 @@ class ResponseSessionManager
         if (null === $this->questions) {
             $this->questions =
                 $this->conditionService->filterQuestionsByShowCondition(
-                    $this->pageHandler->getPage()->getQuestions(),
+                    $this->pageHandler->getPage()->getVisibleQuestions(),
                     $this->responseHandler->getResponse()
                 );
         }

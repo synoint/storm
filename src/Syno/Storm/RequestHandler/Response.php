@@ -98,9 +98,12 @@ class Response
         /** @var Document\Parameter $surveyValue */
         foreach ($surveyValues as $surveyValue) {
             if ($this->requestStack->getCurrentRequest()->query->has($surveyValue->getUrlParam())) {
-                $value = clone $surveyValue;
-                $value->setValue($this->requestStack->getCurrentRequest()->query->get($value->getUrlParam()));
-                $result[] = $value;
+
+                if(!is_array($this->requestStack->getCurrentRequest()->query->get($surveyValue->getUrlParam()))) {
+                    $value = clone $surveyValue;
+                    $value->setValue($this->requestStack->getCurrentRequest()->query->get($value->getUrlParam()));
+                    $result[] = $value;
+                }
             }
         }
 

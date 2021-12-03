@@ -66,6 +66,14 @@ class Question
      * @ODM\Field(type="bool")
      * @Assert\NotNull
      */
+    private $hidden = true;
+
+    /**
+     * @var bool
+     *
+     * @ODM\Field(type="bool")
+     * @Assert\NotNull
+     */
     private $randomizeAnswers = false;
 
     /**
@@ -257,6 +265,26 @@ class Question
     public function setRequired(bool $required): self
     {
         $this->required = $required;
+
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isHidden(): bool
+    {
+        return $this->hidden;
+    }
+
+    /**
+     * @param bool $hidden
+     *
+     * @return Question
+     */
+    public function setHidden(bool $hidden): self
+    {
+        $this->hidden = $hidden;
 
         return $this;
     }
