@@ -144,7 +144,8 @@ if (!window.synoES) {
         SURVEY_POOL_COOKIE: 'es_pool',
         SURVEY_FREQUENCY_COOKIE: 'es_survey_shown',
         TRACKING_PIXEL: 'https://c.cintnetworks.com/?a=2495&i=',
-        TRACKING_ENABLED: true
+        TRACKING_ENABLED: true,
+        DEBUG_PARAMETER: 'trigger_es_widget=1'
     }
 
     function InvitationTimeoutHandler(settings) {
@@ -205,18 +206,6 @@ if (!window.synoES) {
     }
 
     synoES.init = function (settings) {
-        //if survey invitation was closed or survey started
-        if (synoES_Cookie.get(synoES_SETTINGS.SURVEY_FREQUENCY_COOKIE)) {
-            return;
-        }
-        if (settings['skipURLs'] && settings['skipURLs'].length > 0) {
-            for (var index in settings.skipURLs) {
-                if (settings.skipURLs[index] === document.location.href) {
-                    return;
-                }
-            }
-        }
-
 
         synoES_SETTINGS.CONTAINER_ID = settings.containerId;
         synoES_SETTINGS.INVITATION_TIMEOUT = settings.invitationTimeoutSeconds || 0;
@@ -228,6 +217,24 @@ if (!window.synoES) {
         settings.containerColor = settings.containerColor || 'rgb(51, 51, 51)';
         settings.supportURL = settings.supportURL || '';
         settings.supportText = settings.supportText || '';
+
+        var debugMode = document.location.href.indexOf(synoES_SETTINGS.DEBUG_PARAMETER) > 0;
+        if( debugMode ){
+            synoES.survey.show(settings);
+            return;
+        }
+
+        //if survey invitation was closed or survey started
+        if (synoES_Cookie.get(synoES_SETTINGS.SURVEY_FREQUENCY_COOKIE)) {
+            return;
+        }
+        if (settings['skipURLs'] && settings['skipURLs'].length > 0) {
+            for (var index in settings.skipURLs) {
+                if (settings.skipURLs[index] === document.location.href) {
+                    return;
+                }
+            }
+        }
 
         if (settings['surveyPoolSizePercent']) {
             var isInPool = synoES_Cookie.get(synoES_SETTINGS.SURVEY_POOL_COOKIE);
