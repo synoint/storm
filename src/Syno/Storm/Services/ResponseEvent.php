@@ -25,6 +25,18 @@ class ResponseEvent
         return $qb->getQuery()->execute();
     }
 
+    public function getAllBySurvey(int $managerSurveyId, string $idOffset = '')
+    {
+        $qb = $this->dm->createQueryBuilder(Document\ResponseEvent::class);
+        if ($idOffset) {
+            $qb->field('id')->gt($idOffset);
+        }
+
+        $qb->addAnd(['surveyId' => $managerSurveyId]);
+
+        return $qb->getQuery()->execute();
+    }
+
     public function getResponseCompletionTimeMap(int $surveyId): array
     {
         $data = $this->dm

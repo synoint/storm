@@ -59,4 +59,22 @@ class EventController extends AbstractController implements TokenAuthenticatedCo
             )
         );
     }
+
+    /**
+     * @Route(
+     *     "/{surveyId}/response-events",
+     *     name="storm_api.v1.event.survey.response_events",
+     *     requirements={"surveyId"="\d+"},
+     *     methods={"GET"}
+     * )
+     */
+    public function surveyResponseEvents(int $surveyId, Request $request): JsonResponse
+    {
+        return $this->json(
+            $this->responseEvent->getAllBySurvey(
+                $surveyId,
+                $request->query->getAlnum('offset')
+            )
+        );
+    }
 }
