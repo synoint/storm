@@ -101,7 +101,6 @@ class Response
 
     public function save(Document\Response $response)
     {
-//        $this->dm->clear();
         $this->dm->persist($response);
         $this->dm->flush();
     }
