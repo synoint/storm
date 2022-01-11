@@ -15,8 +15,6 @@ class Question
 {
     use TranslatableTrait;
 
-    const INPUT_PREFIX = 'q_';
-
     const TYPE_SINGLE_CHOICE          = 1;
     const TYPE_MULTIPLE_CHOICE        = 2;
     const TYPE_SINGLE_CHOICE_MATRIX   = 3;

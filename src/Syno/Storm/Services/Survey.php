@@ -53,6 +53,11 @@ class Survey
         );
     }
 
+    public function detachSurvey($survey)
+    {
+        $this->dm->detach($survey);
+    }
+
     public function findLatestVersion(int $surveyId):? int
     {
         $result = null;

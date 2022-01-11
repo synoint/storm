@@ -2,15 +2,15 @@
 
 namespace Syno\Storm\Document;
 
-use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\ArrayCollection;
-use Symfony\Component\Validator\Constraints as Assert;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
 use JsonSerializable;
+use Symfony\Component\Validator\Constraints as Assert;
 use Syno\Storm\Traits\TranslatableTrait;
 
 /**
- * @ODM\Document(collection="survey", readOnly=true))
+ * @ODM\Document(collection="survey"))
  * @ODM\UniqueIndex(keys={"surveyId"="asc", "version"="asc"})
  */
 class Survey implements JsonSerializable

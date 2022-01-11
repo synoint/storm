@@ -54,7 +54,11 @@ class Survey
 
     public function getPublished(int $surveyId):? Document\Survey
     {
-        return $this->surveyService->getPublished($surveyId);
+        $survey = $this->surveyService->getPublished($surveyId);
+
+        $this->surveyService->detachSurvey($survey);
+
+        return $survey;
     }
 
     public function findSaved(int $surveyId, int $versionId):? Document\Survey
