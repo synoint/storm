@@ -26,8 +26,7 @@ class ResponseSessionManager
         RequestHandler\Response $responseHandler,
         RequestHandler\Survey $surveyHandler,
         ResponseSession $responseSession
-    )
-    {
+    ) {
         $this->conditionService = $conditionService;
         $this->answerHandler    = $answerHandler;
         $this->pageHandler      = $pageHandler;
@@ -51,13 +50,18 @@ class ResponseSessionManager
         return $this->responseHandler->getResponse();
     }
 
-
     public function getQuestions(): Collection
     {
         if (null === $this->questions) {
             $this->questions =
                 $this->conditionService->filterQuestionsByShowCondition(
                     $this->pageHandler->getPage()->getVisibleQuestions(),
+                    $this->responseHandler->getResponse()
+                );
+
+            $this->questions =
+                $this->conditionService->filterQuestionAnswersByShowCondition(
+                    $this->questions,
                     $this->responseHandler->getResponse()
                 );
         }
@@ -82,7 +86,7 @@ class ResponseSessionManager
         );
     }
 
-    public function redirectOnScreenOut():? RedirectResponse
+    public function redirectOnScreenOut(): ?RedirectResponse
     {
         foreach ($this->getQuestions() as $question) {
             if ($question->getScreenoutConditions()->isEmpty()) {
@@ -108,7 +112,7 @@ class ResponseSessionManager
         return null;
     }
 
-    public function redirectOnJump():? RedirectResponse
+    public function redirectOnJump(): ?RedirectResponse
     {
         foreach ($this->getQuestions() as $question) {
             if ($question->getJumpToConditions()->isEmpty()) {

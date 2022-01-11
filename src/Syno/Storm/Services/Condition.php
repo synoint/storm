@@ -2,16 +2,19 @@
 
 namespace Syno\Storm\Services;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use JWadhams;
 use Syno\Storm\Document;
 
 class Condition
 {
-    public function applyScreenoutRule(Document\Response $response, Collection $screenoutConditions): ?Document\ScreenoutCondition
-    {
-        foreach($screenoutConditions as $screenoutCondition){
-            if(JWadhams\JsonLogic::apply(json_decode($screenoutCondition->getRule()), $response->getAnswerIdMap())){
+    public function applyScreenoutRule(
+        Document\Response $response,
+        Collection $screenoutConditions
+    ): ?Document\ScreenoutCondition {
+        foreach ($screenoutConditions as $screenoutCondition) {
+            if (JWadhams\JsonLogic::apply(json_decode($screenoutCondition->getRule()), $response->getAnswerIdMap())) {
                 return $screenoutCondition;
             }
         }
@@ -21,8 +24,8 @@ class Condition
 
     public function applyJumpRule(Document\Response $response, Collection $jumpToConditions): ?Document\JumpToCondition
     {
-        foreach($jumpToConditions as $jumpToCondition){
-            if(JWadhams\JsonLogic::apply(json_decode($jumpToCondition->getRule()), $response->getAnswerIdMap())){
+        foreach ($jumpToConditions as $jumpToCondition) {
+            if (JWadhams\JsonLogic::apply(json_decode($jumpToCondition->getRule()), $response->getAnswerIdMap())) {
                 return $jumpToCondition;
             }
         }
@@ -32,8 +35,8 @@ class Condition
 
     public function applyShowRule(Document\Response $response, Collection $showConditions): bool
     {
-        foreach($showConditions as $showCondition){
-            if(JWadhams\JsonLogic::apply(json_decode($showCondition->getRule()), $response->getAnswerIdMap())){
+        foreach ($showConditions as $showCondition) {
+            if (JWadhams\JsonLogic::apply(json_decode($showCondition->getRule()), $response->getAnswerIdMap())) {
                 return true;
             }
         }
@@ -54,8 +57,40 @@ class Condition
                 /** @var Document\Question $question */
                 $showConditions = $question->getShowConditions();
 
-                return $showConditions->count() == 0 || ($showConditions->count() && $this->applyShowRule($response, $showConditions));
+                return $showConditions->count() == 0 || ($showConditions->count() && $this->applyShowRule($response,
+                            $showConditions));
             }
         );
+    }
+
+    /**
+     * @param Collection        $questions
+     * @param Document\Response $response
+     *
+     * @return ArrayCollection|Document\Question[]
+     */
+    public function filterQuestionAnswersByShowCondition(
+        Collection $questions,
+        Document\Response $response
+    ): ArrayCollection {
+        $filteredResults = new ArrayCollection();
+
+        /** @var Document\Question $question */
+        foreach ($questions as $question) {
+            $answers = $question->getAnswers()->filter(
+                function ($answer) use ($response) {
+                    /** @var Document\Answer $answer */
+                    $showConditions = $answer->getShowConditions();
+
+                    return $showConditions->count() == 0 || ($showConditions->count() && $this->applyShowRule($response,
+                                $showConditions));
+                }
+            );
+
+            $question = $question->setAnswers($answers);
+            $filteredResults->add($question);
+        }
+
+        return $filteredResults;
     }
 }

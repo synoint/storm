@@ -2,6 +2,7 @@
 
 namespace Syno\Storm\Controller;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -29,7 +30,6 @@ class PageController extends AbstractController
      */
     public function index(Document\Survey $survey, Document\Page $page, Request $request): Response
     {
-
         $form = $this->createForm(
             PageType::class,
             null,

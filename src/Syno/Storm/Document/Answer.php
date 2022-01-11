@@ -15,11 +15,11 @@ class Answer
 {
     use TranslatableTrait;
 
-    const FIELD_TYPE_TEXT     = 1;
+    const FIELD_TYPE_TEXT = 1;
     const FIELD_TYPE_TEXTAREA = 2;
-    const FIELD_TYPE_RADIO    = 3;
+    const FIELD_TYPE_RADIO = 3;
     const FIELD_TYPE_CHECKBOX = 4;
-    const FIELD_TYPE_SELECT   = 5;
+    const FIELD_TYPE_SELECT = 5;
 
     /**
      * @ODM\Id
@@ -109,12 +109,18 @@ class Answer
      */
     protected $translations;
 
+    /**
+     * @var Collection
+     *
+     * @ODM\EmbedMany(targetDocument=ShowCondition::class)
+     */
+    private $showConditions;
 
     public function __construct()
     {
-        $this->translations = new ArrayCollection();
+        $this->translations   = new ArrayCollection();
+        $this->showConditions = new ArrayCollection();
     }
-
 
     /**
      * @return mixed
@@ -139,7 +145,7 @@ class Answer
     /**
      * @return int
      */
-    public function getAnswerId():? int
+    public function getAnswerId(): ?int
     {
         return $this->answerId;
     }
@@ -219,7 +225,7 @@ class Answer
     /**
      * @return int
      */
-    public function getSortOrder():? int
+    public function getSortOrder(): ?int
     {
         return $this->sortOrder;
     }
@@ -256,12 +262,10 @@ class Answer
         return $this;
     }
 
-
-
     /**
      * @return int
      */
-    public function getAnswerFieldTypeId():? int
+    public function getAnswerFieldTypeId(): ?int
     {
         return $this->answerFieldTypeId;
     }
@@ -301,7 +305,7 @@ class Answer
     /**
      * @return string|null
      */
-    public function getLabel():? string
+    public function getLabel(): ?string
     {
         /** @var AnswerTranslation $translation */
         $translation = $this->getTranslation();
@@ -377,5 +381,17 @@ class Answer
         $this->columnLabel = $columnLabel;
 
         return $this;
+    }
+
+    public function setShowConditions($showConditions): self
+    {
+        $this->showConditions = $showConditions;
+
+        return $this;
+    }
+
+    public function getShowConditions(): Collection
+    {
+        return $this->showConditions;
     }
 }

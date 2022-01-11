@@ -3,8 +3,6 @@
 namespace Syno\Storm\Document;
 
 use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
-use Doctrine\Common\Collections\Collection;
-use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -12,7 +10,6 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class ShowCondition
 {
-
     /**
      * @ODM\Field(type="string")
      * @Assert\NotBlank

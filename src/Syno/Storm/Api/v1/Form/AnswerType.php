@@ -32,14 +32,19 @@ class AnswerType extends AbstractType
                 'entry_type'   => AnswerTranslationType::class,
                 'by_reference' => false,
                 'allow_add'    => true
+            ])
+            ->add('showConditions', CollectionType::class, [
+                'entry_type'   => ShowConditionType::class,
+                'by_reference' => false,
+                'allow_add'    => true
             ]);
     }
 
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
-           'data_class'      => Document\Answer::class,
-           'csrf_protection' => false
+            'data_class'      => Document\Answer::class,
+            'csrf_protection' => false
         ]);
     }
 }

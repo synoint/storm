@@ -76,6 +76,7 @@ class ResponseEventLogger
                 throw new \InvalidArgumentException(sprintf('Unknown response event "%s"', $event));
         }
 
+//        $this->dm->clear();
         $this->dm->persist($document);
         $this->dm->flush();
     }

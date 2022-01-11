@@ -10,7 +10,7 @@ use JsonSerializable;
 use Syno\Storm\Traits\TranslatableTrait;
 
 /**
- * @ODM\Document(collection="survey"))
+ * @ODM\Document(collection="survey", readOnly=true))
  * @ODM\UniqueIndex(keys={"surveyId"="asc", "version"="asc"})
  */
 class Survey implements JsonSerializable

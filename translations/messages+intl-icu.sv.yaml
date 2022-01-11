@@ -33,7 +33,7 @@ error_page.survey_unavailable: 'Denna undersökning är inte längre tillgängli
 error_page.continue: 'Fortsätt till'
 error.cant.be.blank: "Det här fältet kan inte lämnas tomt."
 error.one.option.required: "Du måste göra ett val."
-error.at.leat.one.option.required: "Du måste göra minst ett val"
+error.at.least.one.option.required: "Du måste göra minst ett val"
 error.at.least.one.option.in.each.row.required: 'Du måste göra minst ett val på varje rad.'
 error.one.option.in.each.row.required: 'Du måste göra ett val på varje rad.'
 survey.thank_you: 'Tack!'

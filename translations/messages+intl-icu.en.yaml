@@ -39,6 +39,6 @@ error_page.survey_unavailable: 'This survey is no longer available.'
 error_page.page_unavailable: 'This page is no longer available.'
 error.cant.be.blank: "This field can't be blank"
 error.one.option.required: "One option must be selected"
-error.at.leat.one.option.required: "At least one option must be selected."
+error.at.least.one.option.required: "At least one option must be selected."
 error.at.least.one.option.in.each.row.required: 'At least one option in each row must be selected.'
 error.one.option.in.each.row.required: 'One option must be selected in each row.'

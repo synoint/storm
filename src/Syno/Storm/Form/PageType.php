@@ -145,7 +145,7 @@ class PageType extends AbstractType
                 'constraints' => $question->isRequired() ? [
                     new Count([
                         'min'        => 1,
-                        'minMessage' => $this->translator->trans('error.at.leat.one.option.required'),
+                        'minMessage' => $this->translator->trans('error.at.least.one.option.required'),
                         'groups'     => ['form_validation_only']
                     ])
                 ] : null,
@@ -154,8 +154,6 @@ class PageType extends AbstractType
                 'data'        => $data,
                 'attr'        => ['class' => 'custom-control custom-checkbox custom-checkbox-filled'],
                 'choice_attr' => function ($answerId) use ($question, $selectedAnswersIsExclusive, $answerMap) {
-
-
                     $attr['row_attr'] = '';
                     $attr             = ['class' => 'custom-control-input form-check-input'];
 
@@ -171,7 +169,7 @@ class PageType extends AbstractType
 
                     return $attr;
                 },
-                'label_attr'  => ['class' => 'custom-control-label abc'],
+                'label_attr'  => ['class' => 'custom-control-label'],
             ]
         );
     }
