@@ -118,15 +118,17 @@ class Survey implements JsonSerializable
     public function jsonSerialize()
     {
         return [
-            'id' => $this->id,
-            'surveyId' => $this->surveyId,
-            'version' => $this->version,
-            'published' => $this->published,
-            'config' => $this->config,
-            'parameters' => $this->parameters,
-            'urls' => $this->urls,
-            'pages' => $this->pages,
-            'css' => $this->css,
+            'id'           => $this->id,
+            'surveyId'     => $this->surveyId,
+            'version'      => $this->version,
+            'languages'    => $this->languages,
+            'translations' => $this->translations,
+            'published'    => $this->published,
+            'config'       => $this->config,
+            'parameters'   => $this->parameters,
+            'urls'         => $this->urls,
+            'pages'        => $this->pages,
+            'css'          => $this->css,
         ];
     }
 
