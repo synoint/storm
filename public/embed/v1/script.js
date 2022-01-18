@@ -258,6 +258,7 @@ if (!window.synoES) {
     };
 
     synoES.survey.show = function (settings) {
+        synoES.survey.loadSurveyURL(settings);
         var rootElement = document.getElementById(synoES_SETTINGS.CONTAINER_ID);
         rootElement.innerHTML = synoES.survey.getSurveyTemplate(settings);
 
@@ -267,6 +268,22 @@ if (!window.synoES) {
             imgRequest.src = synoES_SETTINGS.TRACKING_PIXEL+surveyID+'&e=1';
         }
     }
+
+    synoES.survey.loadSurveyURL = function (settings) {
+        if(settings.surveyURLs && settings.surveyURLs.length > 0){
+            var rand = Math.random() * 100;
+            var curRange = 0;
+            for (var index in settings.surveyURLs) {
+                curRange += settings.surveyURLs[index].weightPercent;
+                if (rand <= curRange) {
+                    settings.surveyURL = settings.surveyURLs[index].url;
+                    break;
+                }
+            }
+        }else{
+            //keep using 'settings.surveyURL'
+        }
+    };
 
     synoES.survey.closeInvitationPopup = function () {
         var rootElement = document.getElementById(synoES_SETTINGS.CONTAINER_ID);

@@ -177,6 +177,10 @@
 &nbsp;synoES.init({
 &nbsp;&nbsp;'containerId': '<b>survey-container-id</b>',
 &nbsp;&nbsp;'surveyURL': '<b>https://survey-provider-example-domain.com/en/s/12345</b>',
+&nbsp;&nbsp;'surveyURLs': <b>[
+    {'url': 'https://survey-provider-example-domain.com/en/s/12345', 'weightPercent': 40}, 
+    {'url': 'https://another.survey/1', 'weightPercent': 60}
+&nbsp;&nbsp;]</b>,
 &nbsp;&nbsp;'titleText': '<b>👋 Hi, do you have 60 seconds to help us improve our experience?</b>',
 &nbsp;&nbsp;'hintText': '<b>Don’t worry, all responses are anonymous.</b>',
 &nbsp;&nbsp;'buttonLabel': '<b>Next</b>',
@@ -196,6 +200,7 @@
                         </pre>
                         <p><b>containerId</b> - ID of the parent element where survey will be inserted. <b style="color:red">IMPORTANT! Invitation popup container element should be child of BODY element, in other words stay on top level of BODY tag.</b></p>
                         <p><b>surveyURL</b> - live public URL for Syno Survey</p>
+                        <p><b>surveyURLs</b> - List of public URLs for Syno Survey with each survey weight set. Listed surveys distribution will be made based on weight percent values and sum should always match 100. This parameter overrides 'surveyURL' parameter.</p>
                         <p><b>skipURLs</b> - survey invitation will not be shown on these URLs</p>
                         <p><b>invitationTimeoutSeconds</b> - survey invitation will not be shown at once but after 'invitationTimeoutSeconds' passed</p>
                         <p><b>surveyPoolSizePercent</b> - survey invitation will be shown only to certain specific percent of users (browsers)</p>
