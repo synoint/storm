@@ -114,8 +114,8 @@ class Survey
     public function enableDebugMode(Document\Survey $survey): string
     {
         $token = bin2hex(random_bytes(rand(16,20)));
-        $survey->getConfig()->debugMode = true;
-        $survey->getConfig()->debugToken = $token;
+        $survey->getConfig()->setDebugMode(true);
+        $survey->getConfig()->setDebugToken($token);
         $this->dm->flush();
 
         return $token;
@@ -123,8 +123,8 @@ class Survey
 
     public function disableDebugMode(Document\Survey $survey)
     {
-        $survey->getConfig()->debugMode = false;
-        $survey->getConfig()->debugToken = null;
+        $survey->getConfig()->setDebugMode(false);
+        $survey->getConfig()->setDebugToken(null);
         $this->dm->flush();
     }
 

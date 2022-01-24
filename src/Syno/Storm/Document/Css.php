@@ -15,26 +15,64 @@ class Css implements JsonSerializable
      *
      * @ODM\Field(type="bool")
      */
-    public $default;
+    private $default;
 
     /**
      * @ODM\Field(type="string")
      */
-    public $language;
+    private $language;
 
     /**
      * @var string
      *
      * @ODM\Field(type="string")
      */
-    public $css;
+    private $css;
 
-    public function jsonSerialize()
+    public function jsonSerialize(): array
     {
         return [
-            'default' => $this->default,
+            'default'  => $this->default,
             'language' => $this->language,
-            'css' => $this->css,
+            'css'      => $this->css,
         ];
     }
+
+    public function isDefault(): bool
+    {
+        return (bool) $this->default;
+    }
+
+    public function setDefault(bool $default): self
+    {
+        $this->default = $default;
+
+        return $this;
+    }
+
+    public function getLanguage():? string
+    {
+        return $this->language;
+    }
+
+    public function setLanguage(string $language)
+    {
+        $this->language = $language;
+
+        return $this;
+    }
+
+    public function getCss():? string
+    {
+        return $this->css;
+    }
+
+    public function setCss(string $css): self
+    {
+        $this->css = $css;
+
+        return $this;
+    }
+
+
 }

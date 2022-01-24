@@ -92,7 +92,7 @@ class Survey implements JsonSerializable
     private $languages;
 
     /**
-     * @var  Collection
+     * @var Collection
      *
      * @ODM\EmbedMany(targetDocument=Css::class)
      */
@@ -111,11 +111,11 @@ class Survey implements JsonSerializable
         $this->parameters   = new ArrayCollection();
         $this->urls         = new ArrayCollection();
         $this->languages    = new ArrayCollection();
-        $this->translations = new ArrayCollection();
         $this->css          = new ArrayCollection();
+        $this->translations = new ArrayCollection();
     }
 
-    public function jsonSerialize()
+    public function jsonSerialize(): array
     {
         return [
             'id'           => $this->id,
@@ -132,80 +132,48 @@ class Survey implements JsonSerializable
         ];
     }
 
-    /**
-     * @return mixed
-     */
     public function getId()
     {
         return $this->id;
     }
 
-    /**
-     * @param mixed $id
-     *
-     * @return Survey
-     */
-    public function setId($id)
+    public function setId($id): self
     {
         $this->id = $id;
 
         return $this;
     }
 
-    /**
-     * @return int
-     */
     public function getSurveyId(): ?int
     {
         return $this->surveyId;
     }
 
-    /**
-     * @param int $surveyId
-     *
-     * @return Survey
-     */
-    public function setSurveyId(int $surveyId): Survey
+    public function setSurveyId(int $surveyId): self
     {
         $this->surveyId = $surveyId;
 
         return $this;
     }
 
-    /**
-     * @return int
-     */
     public function getVersion(): ?int
     {
         return $this->version;
     }
 
-    /**
-     * @param int $version
-     *
-     * @return Survey
-     */
-    public function setVersion(int $version): Survey
+    public function setVersion(int $version): self
     {
         $this->version = $version;
 
         return $this;
     }
 
-    /**
-     * @return bool
-     */
     public function isPublished(): bool
     {
         return $this->published;
     }
 
-    /**
-     * @param bool $published
-     *
-     * @return Survey
-     */
-    public function setPublished(bool $published): Survey
+    public function setPublished(bool $published): self
     {
         $this->published = $published;
 
@@ -213,44 +181,30 @@ class Survey implements JsonSerializable
     }
 
     /**
-     * @return Collection
+     * @return Collection|Page[]
      */
-    public function getPages()
+    public function getPages(): Collection
     {
         return $this->pages;
     }
 
-    /**
-     * @return Page
-     */
-    public function getFirstPage()
+    public function getFirstPage(): Page
     {
         return $this->pages->filter(function(Page $page){
             return $page->getQuestions()->count() == 0 || $page->getVisibleQuestions()->count() > 0;
         })->first();
     }
 
-    /**
-     * @param $pages
-     *
-     * @return Survey
-     */
-    public function setPages($pages): Survey
+    public function setPages($pages): self
     {
         $this->pages = $pages;
 
         return $this;
     }
 
-    /**
-     * @param int $pageId
-     *
-     * @return Page|null
-     */
-    public function getPage(int $pageId)
+    public function getPage(int $pageId):? Page
     {
         $result = null;
-        /** @var Page $page */
         foreach ($this->pages as $page) {
             if ($pageId === $page->getPageId()) {
                 $result = $page;
@@ -261,15 +215,9 @@ class Survey implements JsonSerializable
         return $result;
     }
 
-    /**
-     * @param int $questionId
-     *
-     * @return Page|null
-     */
-    public function getPageByQuestion(int $questionId)
+    public function getPageByQuestion(int $questionId):? Page
     {
         $result = null;
-        /** @var Page $page */
         foreach ($this->pages as $page) {
             foreach ($page->getQuestions() as $question) {
                 if ($questionId === $question->getQuestionId()) {
@@ -285,7 +233,7 @@ class Survey implements JsonSerializable
     /**
      * @return Collection|Question[]
      */
-    public function getQuestions()
+    public function getQuestions(): Collection
     {
         $questions = new ArrayCollection();
 
@@ -301,7 +249,6 @@ class Survey implements JsonSerializable
     {
         $result = null;
         $pick   = false;
-        /** @var Page $page */
         foreach ($this->pages as $page) {
             if ($pick) {
                 $result = $page;
@@ -325,50 +272,31 @@ class Survey implements JsonSerializable
         return $pageId === $this->pages->last()->getPageId();
     }
 
-    /**
-     * @return Config
-     */
     public function getConfig(): ?Config
     {
         return $this->config;
     }
 
-    /**
-     * @param Config $config
-     *
-     * @return Survey
-     */
-    public function setConfig(Config $config): Survey
+    public function setConfig(Config $config): self
     {
         $this->config = $config;
 
         return $this;
     }
 
-    /**
-     * @return Collection
-     */
-    public function getParameters()
+    public function getParameters(): Collection
     {
         return $this->parameters;
     }
 
-    /**
-     * @param $parameters
-     *
-     * @return Survey
-     */
-    public function setParameters($parameters): Survey
+    public function setParameters($parameters): self
     {
         $this->parameters = $parameters;
 
         return $this;
     }
 
-    /**
-     * @return Collection
-     */
-    public function getUrls()
+    public function getUrls(): Collection
     {
         return $this->urls;
     }
@@ -409,12 +337,7 @@ class Survey implements JsonSerializable
         return null;
     }
 
-    /**
-     * @param $urls
-     *
-     * @return Survey
-     */
-    public function setUrls($urls): Survey
+    public function setUrls($urls): self
     {
         $this->urls = $urls;
 
@@ -422,18 +345,13 @@ class Survey implements JsonSerializable
     }
 
     /**
-     * @return Collection
+     * @return Collection|Language[]
      */
     public function getLanguages(): Collection
     {
         return $this->languages;
     }
 
-    /**
-     * @param Collection $languages
-     *
-     * @return self
-     */
     public function setLanguages(Collection $languages): self
     {
         $this->languages = $languages;
@@ -441,12 +359,8 @@ class Survey implements JsonSerializable
         return $this;
     }
 
-    /**
-     * @return string|null
-     */
     public function getPrimaryLanguageLocale(): ?string
     {
-        /** @var Language $language */
         foreach ($this->languages as $language) {
             if ($language->isPrimary()) {
 
@@ -457,10 +371,7 @@ class Survey implements JsonSerializable
         return null;
     }
 
-    /**
-     * @return string
-     */
-    public function getPublicTitle()
+    public function getPublicTitle():? string
     {
         /** @var SurveyTranslation $translation */
         $translation = $this->getTranslation();
@@ -471,11 +382,6 @@ class Survey implements JsonSerializable
         return $this->publicTitle;
     }
 
-    /**
-     * @param mixed $publicTitle
-     *
-     * @return Survey
-     */
     public function setPublicTitle($publicTitle): self
     {
         $this->publicTitle = $publicTitle;

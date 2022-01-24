@@ -20,26 +20,18 @@ class SurveyTranslation implements JsonSerializable
      */
     private $publicTitle;
 
-    public function jsonSerialize()
+    public function jsonSerialize(): array
     {
         return [
             'publicTitle' => $this->publicTitle
         ];
     }
 
-    /**
-     * @return string|null
-     */
     public function getPublicTitle():? string
     {
         return $this->publicTitle;
     }
 
-    /**
-     * @param string $publicTitle
-     *
-     * @return self
-     */
     public function setPublicTitle(string $publicTitle): self
     {
         $this->publicTitle = $publicTitle;

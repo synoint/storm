@@ -144,11 +144,6 @@ class Response implements JsonSerializable
      */
     private $events;
 
-    /**
-     * @param string $responseId
-     *
-     * @throws \Exception
-     */
     public function __construct(string $responseId)
     {
         $this->responseId = $responseId;
@@ -159,7 +154,7 @@ class Response implements JsonSerializable
         $this->events     = [];
     }
 
-    public function jsonSerialize()
+    public function jsonSerialize(): array
     {
         return [
             'id'                 => $this->id,
@@ -184,39 +179,23 @@ class Response implements JsonSerializable
         ];
     }
 
-    /**
-     * @return mixed
-     */
-    public function getId()
+    public function getId():? string
     {
         return $this->id;
     }
 
-    /**
-     * @param mixed $id
-     *
-     * @return self
-     */
-    public function setId($id)
+    public function setId($id): self
     {
         $this->id = $id;
 
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getResponseId(): string
     {
         return $this->responseId;
     }
 
-    /**
-     * @param string $responseId
-     *
-     * @return self
-     */
     public function setResponseId(string $responseId): self
     {
         $this->responseId = $responseId;
@@ -224,19 +203,11 @@ class Response implements JsonSerializable
         return $this;
     }
 
-    /**
-     * @return int
-     */
     public function getSurveyId(): int
     {
         return $this->surveyId;
     }
 
-    /**
-     * @param int $surveyId
-     *
-     * @return self
-     */
     public function setSurveyId(int $surveyId): self
     {
         $this->surveyId = $surveyId;
@@ -244,19 +215,11 @@ class Response implements JsonSerializable
         return $this;
     }
 
-    /**
-     * @return int
-     */
     public function getSurveyVersion(): int
     {
         return $this->surveyVersion;
     }
 
-    /**
-     * @param int $surveyVersion
-     *
-     * @return self
-     */
     public function setSurveyVersion(int $surveyVersion): self
     {
         $this->surveyVersion = $surveyVersion;
@@ -264,59 +227,35 @@ class Response implements JsonSerializable
         return $this;
     }
 
-    /**
-     * @return int
-     */
     public function getPageId(): ?int
     {
         return $this->pageId;
     }
 
-    /**
-     * @param int|null $pageId
-     *
-     * @return self
-     */
-    public function setPageId(int $pageId = null): self
+    public function setPageId(?int $pageId = null): self
     {
         $this->pageId = $pageId;
 
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getPageCode(): string
     {
         return $this->pageCode;
     }
 
-    /**
-     * @param string $pageCode
-     *
-     * @return Response
-     */
-    public function setPageCode(string $pageCode): Response
+    public function setPageCode(string $pageCode): self
     {
         $this->pageCode = $pageCode;
 
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getMode(): string
     {
         return $this->mode;
     }
 
-    /**
-     * @param string $mode
-     *
-     * @return self
-     */
     public function setMode(string $mode): self
     {
         $this->mode = $mode;
@@ -324,43 +263,26 @@ class Response implements JsonSerializable
         return $this;
     }
 
-    /**
-     * @return bool
-     */
     public function isDebug(): bool
     {
         return self::MODE_DEBUG === $this->mode;
     }
 
-    /**
-     * @return bool
-     */
     public function isTest(): bool
     {
         return self::MODE_TEST === $this->mode;
     }
 
-    /**
-     * @return bool
-     */
     public function isLive(): bool
     {
         return self::MODE_LIVE === $this->mode;
     }
 
-    /**
-     * @return string
-     */
     public function getLocale(): string
     {
         return $this->locale;
     }
 
-    /**
-     * @param string $locale
-     *
-     * @return self
-     */
     public function setLocale(string $locale): self
     {
         $this->locale = $locale;
@@ -368,19 +290,11 @@ class Response implements JsonSerializable
         return $this;
     }
 
-    /**
-     * @return bool
-     */
     public function isCompleted(): bool
     {
         return $this->completed;
     }
 
-    /**
-     * @param bool $completed
-     *
-     * @return self
-     */
     public function setCompleted(bool $completed): self
     {
         $this->completed = $completed;
@@ -388,19 +302,11 @@ class Response implements JsonSerializable
         return $this;
     }
 
-    /**
-     * @return bool
-     */
     public function isScreenedOut(): bool
     {
         return $this->screenedOut;
     }
 
-    /**
-     * @param bool $screenedOut
-     *
-     * @return self
-     */
     public function setScreenedOut(bool $screenedOut): self
     {
         $this->screenedOut = $screenedOut;
@@ -408,19 +314,11 @@ class Response implements JsonSerializable
         return $this;
     }
 
-    /**
-     * @return bool
-     */
     public function isQualityScreenedOut(): bool
     {
         return $this->qualityScreenedOut;
     }
 
-    /**
-     * @param bool $qualityScreenedOut
-     *
-     * @return self
-     */
     public function setQualityScreenedOut(bool $qualityScreenedOut): self
     {
         $this->qualityScreenedOut = $qualityScreenedOut;
@@ -428,19 +326,11 @@ class Response implements JsonSerializable
         return $this;
     }
 
-    /**
-     * @return bool
-     */
     public function isQuotaFull(): bool
     {
         return $this->quotaFull;
     }
 
-    /**
-     * @param bool $quotaFull
-     *
-     * @return self
-     */
     public function setQuotaFull(bool $quotaFull): self
     {
         $this->quotaFull = $quotaFull;
@@ -448,19 +338,11 @@ class Response implements JsonSerializable
         return $this;
     }
 
-    /**
-     * @return mixed
-     */
-    public function getScreenoutId()
+    public function getScreenoutId():? int
     {
         return $this->screenoutId;
     }
 
-    /**
-     * @param mixed $screenoutId
-     *
-     * @return self
-     */
     public function setScreenoutId($screenoutId)
     {
         $this->screenoutId = $screenoutId;
@@ -473,19 +355,11 @@ class Response implements JsonSerializable
         return $this->isScreenedOut() || $this->isQualityScreenedOut() || $this->isQuotaFull() || $this->isCompleted();
     }
 
-    /**
-     * @return \DateTime
-     */
     public function getCreatedAt(): \DateTime
     {
         return $this->createdAt;
     }
 
-    /**
-     * @param int $completedAt
-     *
-     * @return self
-     */
     public function setCompletedAt(int $completedAt): self
     {
         $this->completedAt = $completedAt;
@@ -494,19 +368,14 @@ class Response implements JsonSerializable
     }
 
     /**
-     * @return ArrayCollection
+     * @return Collection|ResponseUserAgent[]
      */
-    public function getUserAgents(): ArrayCollection
+    public function getUserAgents(): Collection
     {
         return $this->userAgents;
     }
 
-    /**
-     * @param ArrayCollection $userAgents
-     *
-     * @return self
-     */
-    public function setUserAgents(ArrayCollection $userAgents): self
+    public function setUserAgents(Collection $userAgents): self
     {
         $this->userAgents = $userAgents;
 
@@ -525,7 +394,7 @@ class Response implements JsonSerializable
     {
         /** @var ResponseUserAgent $userAgent */
         foreach ($this->userAgents as $userAgent) {
-            if ($userAgent->ipAddress === $ipAddress && $userAgent->userAgent === $userAgentString) {
+            if ($userAgent->getIpAddress() === $ipAddress && $userAgent->getUserAgent() === $userAgentString) {
                 return true;
             }
         }
@@ -593,7 +462,7 @@ class Response implements JsonSerializable
         $this->answers->set($responseAnswer->getQuestionId(), $responseAnswer);
     }
 
-    public function clearAnswers()
+    public function clearAnswers(): void
     {
         $this->answers->clear();
     }

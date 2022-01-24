@@ -13,6 +13,7 @@ class Condition
         Document\Response $response,
         Collection $screenoutConditions
     ): ?Document\ScreenoutCondition {
+        /** @var Document\ScreenoutCondition $screenoutCondition */
         foreach ($screenoutConditions as $screenoutCondition) {
             if (JWadhams\JsonLogic::apply(json_decode($screenoutCondition->getRule()), $response->getAnswerIdMap())) {
                 return $screenoutCondition;
@@ -24,6 +25,7 @@ class Condition
 
     public function applyJumpRule(Document\Response $response, Collection $jumpToConditions): ?Document\JumpToCondition
     {
+        /** @var Document\JumpToCondition $jumpToCondition */
         foreach ($jumpToConditions as $jumpToCondition) {
             if (JWadhams\JsonLogic::apply(json_decode($jumpToCondition->getRule()), $response->getAnswerIdMap())) {
                 return $jumpToCondition;
@@ -35,6 +37,7 @@ class Condition
 
     public function applyShowRule(Document\Response $response, Collection $showConditions): bool
     {
+        /** @var Document\ShowCondition $showCondition */
         foreach ($showConditions as $showCondition) {
             if (JWadhams\JsonLogic::apply(json_decode($showCondition->getRule()), $response->getAnswerIdMap())) {
                 return true;

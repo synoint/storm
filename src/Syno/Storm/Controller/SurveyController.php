@@ -32,7 +32,7 @@ class SurveyController extends AbstractController
             $attr[$request->getSession()->getName()] = $request->getSession()->getId();
         }
 
-        if ($survey->getConfig()->privacyConsentEnabled) {
+        if ($survey->getConfig()->isPrivacyConsentEnabled()) {
             unset($attr['pageId']);
             return $this->redirectToRoute('survey.privacy_consent', $attr);
         }
@@ -71,11 +71,11 @@ class SurveyController extends AbstractController
             throw new HttpException(400, 'Empty debug token, please provide the token in the URL');
         }
 
-        if (false === $survey->getConfig()->debugMode) {
+        if (!$survey->getConfig()->isDebugMode()) {
             throw new HttpException(403, 'This survey cannot be accessed in debug mode');
         }
 
-        if ($debugToken !== $survey->getConfig()->debugToken) {
+        if ($debugToken !== $survey->getConfig()->getDebugToken()) {
             throw new HttpException(403, 'Invalid debug token');
         }
 
@@ -106,7 +106,7 @@ class SurveyController extends AbstractController
             ]);
         }
 
-        return $this->render($survey->getConfig()->theme . '/survey/privacy_consent.twig', [
+        return $this->render($survey->getConfig()->getTheme() . '/survey/privacy_consent.twig', [
             'form' => $form->createView()
         ]);
     }
@@ -121,7 +121,7 @@ class SurveyController extends AbstractController
      */
     public function complete(Document\Survey $survey): Response
     {
-        return $this->render($survey->getConfig()->theme . '/survey/complete.twig', [
+        return $this->render($survey->getConfig()->getTheme() . '/survey/complete.twig', [
             'survey' => $survey
         ]);
     }
@@ -136,7 +136,7 @@ class SurveyController extends AbstractController
      */
     public function screenOut(Document\Survey $survey): Response
     {
-        return $this->render($survey->getConfig()->theme . '/survey/screenout.twig', [
+        return $this->render($survey->getConfig()->getTheme() . '/survey/screenout.twig', [
             'survey' => $survey
         ]);
     }
@@ -151,7 +151,7 @@ class SurveyController extends AbstractController
      */
     public function qualityScreenOut(Document\Survey $survey): Response
     {
-        return $this->render($survey->getConfig()->theme . '/survey/quality_screenout.twig', [
+        return $this->render($survey->getConfig()->getTheme() . '/survey/quality_screenout.twig', [
             'survey' => $survey
         ]);
     }
@@ -166,7 +166,7 @@ class SurveyController extends AbstractController
      */
     public function quotaFull(Document\Survey $survey): Response
     {
-        return $this->render($survey->getConfig()->theme . '/survey/screenout.twig', [
+        return $this->render($survey->getConfig()->getTheme() . '/survey/screenout.twig', [
             'survey' => $survey
         ]);
     }

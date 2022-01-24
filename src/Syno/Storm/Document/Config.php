@@ -10,7 +10,7 @@ use JsonSerializable;
  */
 class Config implements JsonSerializable
 {
-    const DEFAULT_THEME = 'b4';
+    const DEFAULT_THEME       = 'b4';
     const DEFAULT_COLOR_THEME = 'default';
 
     /**
@@ -18,43 +18,43 @@ class Config implements JsonSerializable
      *
      * @ODM\Field(type="bool")
      */
-    public $debugMode = false;
+    private $debugMode = false;
 
     /**
      * @var string
      *
      * @ODM\Field(type="string")
      */
-    public $debugToken;
+    private $debugToken;
 
     /**
      * @var bool
      *
      * @ODM\Field(type="bool")
      */
-    public $privacyConsentEnabled;
+    private $privacyConsentEnabled;
 
     /**
      * @ODM\Field(type="string")
      */
-    public $theme;
+    private $theme;
 
     /**
      * @ODM\Field(type="string")
      */
-    public $colorTheme = 'default';
+    private $colorTheme = 'default';
 
     /**
      * @ODM\Field(type="string")
      */
-    public $cintDemandApiKey;
+    private $cintDemandApiKey;
 
     /**
      * @var bool
      *
      * @ODM\Field(type="bool")
      */
-    public $backButtonEnabled;
+    private $backButtonEnabled;
 
     public function __construct()
     {
@@ -62,16 +62,100 @@ class Config implements JsonSerializable
         $this->colorTheme = self::DEFAULT_COLOR_THEME;
     }
 
-    public function jsonSerialize()
+    public function jsonSerialize(): array
     {
         return [
-            'debugMode'             => $this->debugMode,
-            'debugToken'            => $this->debugToken,
-            'privacyConsentEnabled' => $this->privacyConsentEnabled,
-            'theme'                 => $this->theme,
-            'colorTheme'            => $this->colorTheme,
-            'cintDemandApiKey'      => $this->cintDemandApiKey,
-            'backButtonEnabled'     => $this->backButtonEnabled
+            'debugMode'             => $this->isDebugMode(),
+            'debugToken'            => $this->getDebugToken(),
+            'privacyConsentEnabled' => $this->isPrivacyConsentEnabled(),
+            'theme'                 => $this->getTheme(),
+            'colorTheme'            => $this->getColorTheme(),
+            'cintDemandApiKey'      => $this->getCintDemandApiKey(),
+            'backButtonEnabled'     => $this->isBackButtonEnabled()
         ];
+    }
+
+    public function isDebugMode(): bool
+    {
+        return $this->debugMode;
+    }
+
+    public function setDebugMode(bool $debugMode): self
+    {
+        $this->debugMode = $debugMode;
+
+        return $this;
+    }
+
+    public function getDebugToken(): string
+    {
+        return $this->debugToken;
+    }
+
+    public function setDebugToken(?string $debugToken): self
+    {
+        $this->debugToken = $debugToken;
+
+        return $this;
+    }
+
+    public function isPrivacyConsentEnabled(): bool
+    {
+        return $this->privacyConsentEnabled;
+    }
+
+    public function setPrivacyConsentEnabled(bool $privacyConsentEnabled): self
+    {
+        $this->privacyConsentEnabled = $privacyConsentEnabled;
+
+        return $this;
+    }
+
+    public function getTheme(): string
+    {
+        return $this->theme;
+    }
+
+    public function setTheme(string $theme): self
+    {
+        $this->theme = $theme;
+
+        return $this;
+    }
+
+    public function getColorTheme(): string
+    {
+        return $this->colorTheme;
+    }
+
+    public function setColorTheme(string $colorTheme): self
+    {
+        $this->colorTheme = $colorTheme;
+
+        return $this;
+    }
+
+    public function getCintDemandApiKey()
+    {
+        return $this->cintDemandApiKey;
+    }
+
+    public function setCintDemandApiKey($cintDemandApiKey)
+    {
+        $this->cintDemandApiKey = $cintDemandApiKey;
+
+        return $this;
+    }
+
+    public function isBackButtonEnabled(): bool
+    {
+        return $this->backButtonEnabled;
+    }
+
+    public function setBackButtonEnabled(bool $backButtonEnabled): self
+    {
+        $this->backButtonEnabled = $backButtonEnabled;
+
+        return $this;
     }
 }

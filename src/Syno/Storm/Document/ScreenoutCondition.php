@@ -42,84 +42,52 @@ class ScreenoutCondition
         return $this->id;
     }
 
-    /**
-     * @param mixed $id
-     *
-     * @return self
-     */
-    public function setId($id)
+    public function setId($id): self
     {
         $this->id = $id;
 
         return $this;
     }
 
-    /**
-     * @return mixed
-     */
-    public function getRule()
+    public function getRule(): string
     {
         return $this->rule;
     }
 
-    /**
-     * @param mixed $rule
-     *
-     * @return self
-     */
-    public function setRule($rule)
+    public function setRule(string $rule): self
     {
         $this->rule = $rule;
 
         return $this;
     }
 
-    /**
-     * @return array
-     */
-    public function getSupportedTypes()
+    public function getSupportedTypes(): array
     {
         return [self::TYPE_SCREENOUT, self::TYPE_QUALITY_SCREENOUT];
     }
 
-    /**
-     * @return string
-     */
-    public function getType()
+    public function getType(): string
     {
         return $this->type;
     }
 
-    /**
-     * @param string $type
-     *
-     * @return self
-     */
-    public function setType(string $type)
+    public function setType(string $type): self
     {
-        if(in_array($type, $this->getSupportedTypes())) {
-            $this->type = $type;
-        } else {
+        if (!in_array($type, $this->getSupportedTypes())) {
             throw new \InvalidArgumentException(sprintf('Unsupported screenout type: "%s"', $type));
         }
+
+        $this->type = $type;
 
         return $this;
     }
 
-    /**
-     * @return mixed
-     */
-    public function getScreenoutId()
+    public function getScreenoutId(): int
     {
         return $this->screenoutId;
     }
 
-    /**
-     * @param int $screenoutId
-     *
-     * @return self
-     */
-    public function setScreenoutId($screenoutId)
+    public function setScreenoutId(int $screenoutId): self
     {
         $this->screenoutId = $screenoutId;
 

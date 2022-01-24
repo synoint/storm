@@ -15,26 +15,22 @@ class ResponseUserAgent implements JsonSerializable
      *
      * @ODM\Field(type="string")
      */
-    public $ipAddress;
+    private $ipAddress;
 
     /**
      * @var string
      *
      * @ODM\Field(type="string")
      */
-    public $userAgent;
+    private $userAgent;
 
     /**
      * @var \DateTime
      *
      * @ODM\Field(type="date")
      */
-    public $createdAt;
+    private $createdAt;
 
-    /**
-     * @param string    $ipAddress
-     * @param string    $userAgent
-     */
     public function __construct(string $ipAddress, string $userAgent)
     {
         $this->ipAddress = $ipAddress;
@@ -42,14 +38,27 @@ class ResponseUserAgent implements JsonSerializable
         $this->createdAt = new \DateTime();
     }
 
-    public function jsonSerialize()
+    public function jsonSerialize(): array
     {
         return [
-            'ipAddress' => $this->ipAddress,
-            'userAgent' => $this->userAgent,
-            'createdAt' => $this->createdAt->getTimestamp()
+            'ipAddress' => $this->getIpAddress(),
+            'userAgent' => $this->getUserAgent(),
+            'createdAt' => $this->getCreatedAt()->getTimestamp()
         ];
     }
 
+    public function getIpAddress(): string
+    {
+        return $this->ipAddress;
+    }
 
+    public function getUserAgent(): string
+    {
+        return $this->userAgent;
+    }
+
+    public function getCreatedAt(): \DateTime
+    {
+        return $this->createdAt;
+    }
 }

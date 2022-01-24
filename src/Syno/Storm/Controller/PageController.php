@@ -63,7 +63,7 @@ class PageController extends AbstractController
             $this->responseSessionManager->saveProgress();
         }
 
-        return $this->render($survey->getConfig()->theme . '/page/display.twig', [
+        return $this->render($survey->getConfig()->getTheme() . '/page/display.twig', [
             'survey'             => $survey,
             'page'               => $page,
             'questions'          => $this->responseSessionManager->getQuestions(),
