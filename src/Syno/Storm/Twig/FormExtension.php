@@ -9,7 +9,6 @@ use Twig\TwigFilter;
 
 class FormExtension extends AbstractExtension
 {
-
     public function getFilters(): array
     {
         return [
@@ -20,23 +19,26 @@ class FormExtension extends AbstractExtension
 
     public function shuffleAnswers(FormView $form, Question $question): FormView
     {
-        shuffle($form->vars['form']->children);
         $exclusives      = [];
         $freeTextAnswers = [];
         foreach ($form->vars['form']->children as $index => $child) {
-            if ($question->getAnswer($child->vars['value'])->getIsExclusive()) {
-                $exclusives[] = $child;
-                unset($form->vars['form']->children[$index]);
-            }
-            if ($question->getAnswer($child->vars['value'])->getIsFreeText()) {
-                $freeTextAnswers[] = $child;
-                unset($form->vars['form']->children[$index]);
+            $answer = $question->getAnswerByCode($child->vars['value']);
+            if ($answer) {
+                if ($answer->getIsExclusive()) {
+                    $exclusives[] = $child;
+                    unset($form->vars['form']->children[$index]);
+                }
+                if ($answer->getIsFreeText()) {
+                    $freeTextAnswers[] = $child;
+                    unset($form->vars['form']->children[$index]);
+                }
             }
         }
-        // Exclusive should be last because exclusive is answer option 'none' which is always the last one.
+        shuffle($form->vars['form']->children);
         foreach($freeTextAnswers as $freeTextAnswer) {
             $form->vars['form']->children[] = $freeTextAnswer;
         }
+        // Exclusive should be last because exclusive is answer option 'none' which is always the last one.
         foreach($exclusives as $exclusive) {
             $form->vars['form']->children[] = $exclusive;
         }
