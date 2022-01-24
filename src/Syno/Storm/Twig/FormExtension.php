@@ -10,7 +10,7 @@ use Twig\TwigFilter;
 class FormExtension extends AbstractExtension
 {
 
-    public function getFilters()
+    public function getFilters(): array
     {
         return [
             new TwigFilter('shuffle_answers', [$this, 'shuffleAnswers']),
@@ -18,13 +18,7 @@ class FormExtension extends AbstractExtension
         ];
     }
 
-    /**
-     * @param FormView $form
-     * @param Question $question
-     *
-     * @return FormView
-     */
-    public function shuffleAnswers(FormView $form, Question $question)
+    public function shuffleAnswers(FormView $form, Question $question): FormView
     {
         shuffle($form->vars['form']->children);
         $exclusives      = [];
@@ -50,12 +44,7 @@ class FormExtension extends AbstractExtension
         return $form;
     }
 
-    /**
-     * @param array $array
-     *
-     * @return array
-     */
-    function shuffleArray(array $array)
+    public function shuffleArray(array $array): array
     {
         $orig = array_flip($array);
         shuffle($array);

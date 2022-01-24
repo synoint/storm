@@ -49,7 +49,7 @@ class ScreenoutCondition
         return $this;
     }
 
-    public function getRule(): string
+    public function getRule():? string
     {
         return $this->rule;
     }
@@ -66,7 +66,7 @@ class ScreenoutCondition
         return [self::TYPE_SCREENOUT, self::TYPE_QUALITY_SCREENOUT];
     }
 
-    public function getType(): string
+    public function getType():? string
     {
         return $this->type;
     }
@@ -82,7 +82,7 @@ class ScreenoutCondition
         return $this;
     }
 
-    public function getScreenoutId(): int
+    public function getScreenoutId():? int
     {
         return $this->screenoutId;
     }

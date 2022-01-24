@@ -2,6 +2,7 @@
 
 namespace Syno\Storm\Api\v1\Form;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -37,7 +38,7 @@ class QuestionType extends AbstractType
             ->add('showConditions', CollectionType::class, [
                 'entry_type' => ShowConditionType::class,
                 'by_reference'  => false,
-                'allow_add'     => true
+                'allow_add'     => true,
             ])
             ->add('jumpToConditions', CollectionType::class, [
                 'entry_type' => JumpToConditionType::class,

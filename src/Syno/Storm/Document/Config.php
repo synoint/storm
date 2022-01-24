@@ -32,7 +32,7 @@ class Config implements JsonSerializable
      *
      * @ODM\Field(type="bool")
      */
-    private $privacyConsentEnabled;
+    private $privacyConsentEnabled = false;
 
     /**
      * @ODM\Field(type="string")
@@ -54,7 +54,7 @@ class Config implements JsonSerializable
      *
      * @ODM\Field(type="bool")
      */
-    private $backButtonEnabled;
+    private $backButtonEnabled = true;
 
     public function __construct()
     {
@@ -87,7 +87,7 @@ class Config implements JsonSerializable
         return $this;
     }
 
-    public function getDebugToken(): string
+    public function getDebugToken():? string
     {
         return $this->debugToken;
     }

@@ -64,7 +64,7 @@ class Question
      * @ODM\Field(type="bool")
      * @Assert\NotNull
      */
-    private $hidden;
+    private $hidden = false;
 
     /**
      * @var bool
@@ -167,39 +167,23 @@ class Question
         $this->translations        = new ArrayCollection();
     }
 
-    /**
-     * @return mixed
-     */
-    public function getId()
+    public function getId():? string
     {
         return $this->id;
     }
 
-    /**
-     * @param mixed $id
-     *
-     * @return Question
-     */
-    public function setId($id)
+    public function setId($id): self
     {
         $this->id = $id;
 
         return $this;
     }
 
-    /**
-     * @return int
-     */
     public function getQuestionId():? int
     {
         return $this->questionId;
     }
 
-    /**
-     * @param int $questionId
-     *
-     * @return Question
-     */
     public function setQuestionId(int $questionId): self
     {
         $this->questionId = $questionId;
@@ -207,39 +191,23 @@ class Question
         return $this;
     }
 
-    /**
-     * @return mixed
-     */
-    public function getCode()
+    public function getCode():? string
     {
         return $this->code;
     }
 
-    /**
-     * @param mixed $code
-     *
-     * @return Question
-     */
-    public function setCode($code)
+    public function setCode(string $code): self
     {
         $this->code = $code;
 
         return $this;
     }
 
-    /**
-     * @return int
-     */
     public function getSortOrder():? int
     {
         return $this->sortOrder;
     }
 
-    /**
-     * @param int $sortOrder
-     *
-     * @return Question
-     */
     public function setSortOrder(int $sortOrder): self
     {
         $this->sortOrder = $sortOrder;
@@ -247,19 +215,11 @@ class Question
         return $this;
     }
 
-    /**
-     * @return bool
-     */
     public function isRequired(): bool
     {
         return $this->required;
     }
 
-    /**
-     * @param bool $required
-     *
-     * @return Question
-     */
     public function setRequired(bool $required): self
     {
         $this->required = $required;
@@ -267,19 +227,11 @@ class Question
         return $this;
     }
 
-    /**
-     * @return bool
-     */
-    public function isHidden(): ?bool
+    public function isHidden(): bool
     {
         return $this->hidden;
     }
 
-    /**
-     * @param bool $hidden
-     *
-     * @return Question
-     */
     public function setHidden(bool $hidden): self
     {
         $this->hidden = $hidden;
@@ -287,10 +239,7 @@ class Question
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getText()
+    public function getText():? string
     {
         /** @var QuestionTranslation $translation */
         $translation = $this->getTranslation();
@@ -302,91 +251,54 @@ class Question
         return $this->text;
     }
 
-    /**
-     * @param mixed $text
-     *
-     * @return Question
-     */
-    public function setText($text)
+    public function setText($text): self
     {
         $this->text = $text;
 
         return $this;
     }
 
-    /**
-     * @param mixed $showConditions
-     *
-     * @return Question
-     */
-    public function setShowConditions($showConditions)
+    public function getShowConditions(): Collection
+    {
+        return $this->showConditions;
+    }
+
+    public function setShowConditions($showConditions): self
     {
         $this->showConditions = $showConditions;
 
         return $this;
     }
 
-    /**
-     * @return Collection
-     */
-    public function getShowConditions(): Collection
-    {
-        return $this->showConditions;
-    }
-
-    /**
-     * @return Collection
-     */
-    public function getJumpToConditions()
+    public function getJumpToConditions(): Collection
     {
         return $this->jumpToConditions;
     }
 
-    /**
-     * @param mixed $jumpToLogic
-     *
-     * @return Question
-     */
-    public function setJumpToConditions($jumpToConditions)
+    public function setJumpToConditions($jumpToConditions): self
     {
         $this->jumpToConditions = $jumpToConditions;
 
         return $this;
     }
 
-    /**
-     * @return Collection
-     */
-    public function getScreenoutConditions()
+    public function getScreenoutConditions(): Collection
     {
         return $this->screenoutConditions;
     }
 
-    /**
-     * @param mixed $screenoutConditions
-     *
-     * @return Question
-     */
-    public function setScreenoutConditions($screenoutConditions)
+    public function setScreenoutConditions($screenoutConditions): self
     {
         $this->screenoutConditions = $screenoutConditions;
 
         return $this;
     }
 
-    /**
-     * @return int
-     */
     public function getQuestionTypeId():? int
     {
         return $this->questionTypeId;
     }
 
-    /**
-     * @param int $questionTypeId
-     *
-     * @return Question
-     */
     public function setQuestionTypeId(int $questionTypeId): self
     {
         $this->questionTypeId = $questionTypeId;
@@ -394,19 +306,11 @@ class Question
         return $this;
     }
 
-    /**
-     * @return int
-     */
     public function getScoreModuleId():? int
     {
         return $this->scoreModuleId;
     }
 
-    /**
-     * @param int $scoreModuleId
-     *
-     * @return Question
-     */
     public function setScoreModuleId(int $scoreModuleId): self
     {
         $this->scoreModuleId = $scoreModuleId;
@@ -414,19 +318,11 @@ class Question
         return $this;
     }
 
-    /**
-     * @return int
-     */
     public function getScoreModuleParentId():? int
     {
         return $this->scoreModuleParentId;
     }
 
-    /**
-     * @param int $scoreModuleParentId
-     *
-     * @return Question
-     */
     public function setScoreModuleParentId(int $scoreModuleParentId): self
     {
         $this->scoreModuleParentId = $scoreModuleParentId;
@@ -434,39 +330,31 @@ class Question
         return $this;
     }
 
-    public function isMatrix()
+    public function isMatrix(): bool
     {
         return in_array($this->questionTypeId, [self::TYPE_SINGLE_CHOICE_MATRIX, self::TYPE_MULTIPLE_CHOICE_MATRIX]);
     }
 
-    public function isText()
+    public function isText(): bool
     {
         return self::TYPE_TEXT === $this->questionTypeId;
     }
 
-    public function isLinearScale()
+    public function isLinearScale(): bool
     {
         return self::TYPE_LINEAR_SCALE === $this->questionTypeId;
     }
 
-    public function isLinearScaleMatrix()
+    public function isLinearScaleMatrix(): bool
     {
         return self::TYPE_LINEAR_SCALE_MATRIX === $this->questionTypeId;
     }
 
-    /**
-     * @return bool
-     */
     public function getRandomizeAnswers(): bool
     {
         return $this->randomizeAnswers;
     }
 
-    /**
-     * @param bool $randomizeAnswers
-     *
-     * @return Question
-     */
     public function setRandomizeAnswers(bool $randomizeAnswers): self
     {
         $this->randomizeAnswers = $randomizeAnswers;
@@ -474,40 +362,24 @@ class Question
         return $this;
     }
 
-    /**
-     * @return bool
-     */
     public function getRandomizeRows(): bool
     {
         return $this->randomizeRows;
     }
 
-    /**
-     * @param bool $randomizeRows
-     *
-     * @return Question
-     */
-    public function setRandomizeRows(bool $randomizeRows): Question
+    public function setRandomizeRows(bool $randomizeRows): self
     {
         $this->randomizeRows = $randomizeRows;
 
         return $this;
     }
 
-    /**
-     * @return bool
-     */
     public function getRandomizeColumns(): bool
     {
         return $this->randomizeColumns;
     }
 
-    /**
-     * @param bool $randomizeColumns
-     *
-     * @return Question
-     */
-    public function setRandomizeColumns(bool $randomizeColumns): Question
+    public function setRandomizeColumns(bool $randomizeColumns): self
     {
         $this->randomizeColumns = $randomizeColumns;
 
@@ -522,9 +394,6 @@ class Question
         return $this->answers;
     }
 
-    /**
-     * @return array
-     */
     public function getChoices(): array
     {
         $choices = [];
@@ -538,8 +407,7 @@ class Question
 
     public function answerIdExists(int $answerId): bool
     {
-        /** @var Answer $answer */
-        foreach ($this->answers as $answer) {
+        foreach ($this->getAnswers() as $answer) {
             if ($answer->getAnswerId() === $answerId) {
                 return true;
             }
@@ -551,7 +419,7 @@ class Question
     public function answerCodeExists(string $answerCode): bool
     {
         /** @var Answer $answer */
-        foreach ($this->answers as $answer) {
+        foreach ($this->getAnswers() as $answer) {
             if ($answer->getCode() === $answerCode) {
                 return true;
             }
@@ -560,14 +428,9 @@ class Question
         return false;
     }
 
-    /**
-     * @param int $answerId
-     *
-     * @return Answer|null
-     */
     public function getAnswer(int $answerId): ?Answer
     {
-        foreach ($this->answers as $answer) {
+        foreach ($this->getAnswers() as $answer) {
             if ($answer->getAnswerId() == $answerId) {
                 return $answer;
             }
@@ -575,24 +438,20 @@ class Question
         return null;
     }
 
-    /**
-     * @param string $answerCode
-     *
-     * @return Answer|null
-     */
     public function getAnswerByCode(string $answerCode): ?Answer
     {
-        foreach ($this->answers as $answer) {
+        foreach ($this->getAnswers() as $answer) {
             if ($answer->getCode() == $answerCode) {
                 return $answer;
             }
         }
+
         return null;
     }
 
     public function getAnswerByRowAndColumn( $row,  $column): ?Answer
     {
-        foreach ($this->answers as $answer) {
+        foreach ($this->getAnswers() as $answer) {
             if ($answer->getRowCode() == $row && $answer->getColumnCode() == $column) {
                 return $answer;
             }
@@ -601,11 +460,6 @@ class Question
         return null;
     }
 
-    /**
-     * @param $answers
-     *
-     * @return Question
-     */
     public function setAnswers($answers): self
     {
         $this->answers = $answers;
@@ -613,7 +467,7 @@ class Question
         return $this;
     }
 
-    public function getRows()
+    public function getRows(): array
     {
         $result = [];
         /** @var Answer $answer */
@@ -626,7 +480,7 @@ class Question
         return $result;
     }
 
-    public function getColumns()
+    public function getColumns(): array
     {
         $result = [];
         /** @var Answer $answer */
@@ -639,13 +493,7 @@ class Question
         return $result;
     }
 
-    /**
-     * @param string $rowCode
-     * @param string $columnCode
-     *
-     * @return Answer
-     */
-    public function getMatrixAnswer(string $rowCode, string $columnCode)
+    public function getMatrixAnswer(string $rowCode, string $columnCode): Answer
     {
         /** @var Answer $answer */
         foreach ($this->answers as $answer) {
@@ -659,20 +507,12 @@ class Question
         );
     }
 
-    /**
-     * @param string $suffix
-     *
-     * @return string
-     */
     public function getInputName(string $suffix = null): string
     {
         return $this->code . ((null !== $suffix) ? '_' . $suffix : '');
     }
 
-    /**
-     * @return bool
-     */
-    public function containsSelectField()
+    public function containsSelectField(): bool
     {
         if ($this->answers->count()) {
             return $this->answers->first()->getAnswerFieldTypeId() === Answer::FIELD_TYPE_SELECT;
