@@ -2,7 +2,6 @@
 
 namespace Syno\Storm\Controller;
 
-use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -30,11 +29,13 @@ class PageController extends AbstractController
      */
     public function index(Document\Survey $survey, Document\Page $page, Request $request): Response
     {
+        $filteredQuestions = $this->responseSessionManager->getQuestions();
+
         $form = $this->createForm(
             PageType::class,
             null,
             [
-                'questions' => $this->responseSessionManager->getQuestions(),
+                'questions' => $filteredQuestions,
                 'answers'   => $this->responseSessionManager->getAnswerMap($request->request->get('p') ?? $request->query->get('p'))
             ]
         );
@@ -44,7 +45,7 @@ class PageController extends AbstractController
 
             if ($form->isValid()) {
 
-                $this->responseSessionManager->saveAnswers($form->getData());
+                $this->responseSessionManager->saveAnswers($form->getData(), $filteredQuestions);
 
                 $redirect = $this->responseSessionManager->redirectOnScreenOut();
                 if (!$redirect) {
@@ -66,7 +67,7 @@ class PageController extends AbstractController
         return $this->render($survey->getConfig()->getTheme() . '/page/display.twig', [
             'survey'             => $survey,
             'page'               => $page,
-            'questions'          => $this->responseSessionManager->getQuestions(),
+            'questions'          => $filteredQuestions,
             'response'           => $this->responseSessionManager->getResponse(),
             'form'               => $form->createView(),
             'backButtonDisabled' => $survey->isFirstPage($page->getPageId()),

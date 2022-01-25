@@ -35,11 +35,6 @@ class ResponseSessionManager
         $this->responseSession  = $responseSession;
     }
 
-    public function getSurvey(): Document\Survey
-    {
-        return $this->surveyHandler->getSurvey();
-    }
-
     public function getPage(): Document\Page
     {
         return $this->pageHandler->getPage();
@@ -78,12 +73,12 @@ class ResponseSessionManager
         return $this->responseHandler->getResponse()->getAnswerIdValueMap();
     }
 
-    public function saveAnswers(array $formData)
+    public function saveAnswers(array $formData, Collection $questions)
     {
-        $this->responseSession->saveAnswers(
-            $this->responseHandler->getResponse(),
-            $this->answerHandler->getAnswers($this->getQuestions(), $formData)
-        );
+        $answers = $this->answerHandler->getAnswers($questions, $formData);
+        if (!$answers->isEmpty()) {
+            $this->responseSession->saveAnswers($this->responseHandler->getResponse(), $answers);
+        }
     }
 
     public function redirectOnScreenOut(): ?RedirectResponse

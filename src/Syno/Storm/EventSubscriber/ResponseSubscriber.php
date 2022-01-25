@@ -3,12 +3,12 @@
 namespace Syno\Storm\EventSubscriber;
 
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\Routing\RouterInterface;
 use Syno\Storm\RequestHandler;
 use Syno\Storm\Services\ResponseSession;
+use Syno\Storm\Services\ResponseSessionManager;
 use Syno\Storm\Traits\RouteAware;
 use Psr\Log\LoggerInterface;
 
@@ -22,6 +22,7 @@ class ResponseSubscriber implements EventSubscriberInterface
     private RequestHandler\Response $responseHandler;
     private RequestHandler\Survey   $surveyHandler;
     private ResponseSession         $responseSession;
+    private ResponseSessionManager  $responseSessionManager;
     private RouterInterface         $router;
 
     public function __construct(
@@ -30,15 +31,17 @@ class ResponseSubscriber implements EventSubscriberInterface
         RequestHandler\Response $responseHandler,
         RequestHandler\Survey   $surveyHandler,
         ResponseSession         $responseSession,
+        ResponseSessionManager  $responseSessionManager,
         RouterInterface         $router
     )
     {
-        $this->logger          = $logger;
-        $this->pageHandler     = $pageHandler;
-        $this->responseHandler = $responseHandler;
-        $this->surveyHandler   = $surveyHandler;
-        $this->responseSession = $responseSession;
-        $this->router          = $router;
+        $this->logger                 = $logger;
+        $this->pageHandler            = $pageHandler;
+        $this->responseHandler        = $responseHandler;
+        $this->surveyHandler          = $surveyHandler;
+        $this->responseSession        = $responseSession;
+        $this->responseSessionManager = $responseSessionManager;
+        $this->router                 = $router;
     }
 
     public function setResponse(RequestEvent $event)
@@ -200,6 +203,33 @@ class ResponseSubscriber implements EventSubscriberInterface
         $this->responseSession->createResponse($this->surveyHandler->getSurvey());
     }
 
+    /**
+     * @param RequestEvent $event
+     */
+    public function saveAnswersPassedInUrl(RequestEvent $event)
+    {
+        if (!$event->isMasterRequest()) {
+            return;
+        }
+
+        if (!$this->responseHandler->hasResponse()) {
+            return;
+        }
+
+        if (!$this->isSurveyEntrance($event->getRequest())) {
+            return;
+        }
+
+        $this->logger->debug(__FUNCTION__);
+
+        $data = $event->getRequest()->query->get("p");
+        if (!is_array($data)) {
+            return;
+        }
+
+        $this->responseSessionManager->saveAnswers($data, $this->surveyHandler->getSurvey()->getQuestions());
+    }
+
     public function logUserAgent(RequestEvent $event)
     {
         if (!$this->responseHandler->hasResponse()) {
@@ -226,6 +256,7 @@ class ResponseSubscriber implements EventSubscriberInterface
                 ['handleModeChange', 5],
                 ['handleSurveyResume', 4],
                 ['createResponse', 2],
+                ['saveAnswersPassedInUrl', 1],
                 ['logUserAgent'],
             ]
         ];

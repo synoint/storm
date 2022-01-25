@@ -27,21 +27,23 @@ class Answer
         return $result;
     }
 
-    public function getAnswers(Collection $questions, array $formData): array
+    /**
+     * @return Collection|ResponseAnswer[]
+     */
+    public function getAnswers(Collection $questions, array $formData): Collection
     {
-        $result = [];
+        $result = new ArrayCollection();
         foreach ($questions as $question) {
             $answers = $this->extractAnswers($question, $formData);
-            $result[] = new ResponseAnswer($question->getQuestionId(), $answers);
+            if (!$answers->isEmpty()) {
+                $result[] = new ResponseAnswer($question->getQuestionId(), $answers);
+            }
         }
 
         return $result;
     }
 
     /**
-     * @param Question $question
-     * @param array             $formData
-     *
      * @return Collection|ResponseAnswerValue[]
      */
     public function extractAnswers(Question $question, array $formData): Collection
@@ -51,8 +53,7 @@ class Answer
             case Question::TYPE_SINGLE_CHOICE:
                 $key = $question->getCode();
 
-                if (!empty($formData[$key]) && $question->answerCodeExists($formData[$key])
-                ) {
+                if (!empty($formData[$key]) && $question->answerCodeExists($formData[$key])) {
 
                     $answer = $question->getAnswerByCode($formData[$key]);
 

@@ -447,19 +447,26 @@ class Response implements JsonSerializable
      */
     public function getAnswers(): Collection
     {
-        $latest = [];
-        // we need this to get the latest answers
-        foreach ($this->answers as $answer) {
-            $latest[$answer->getQuestionId()] = $answer;
-        }
-
-        // array_value re-indexes array and prevents from turning this collection into object when serializing to json
-        return new ArrayCollection(array_values($latest));
+        return $this->answers;
     }
 
-    public function addAnswer(ResponseAnswer $responseAnswer)
+    public function saveAnswers(Collection $answers)
     {
-        $this->answers->set($responseAnswer->getQuestionId(), $responseAnswer);
+        /** @var ResponseAnswer $newAnswer */
+        foreach ($answers as $newAnswer) {
+            $replaced = false;
+            /** @var ResponseAnswer $existingAnswer */
+            foreach ($this->answers as $existingAnswer) {
+                if ($existingAnswer->getQuestionId() == $newAnswer->getQuestionId()) {
+                    $existingAnswer->setAnswers($newAnswer->getAnswers());
+                    $replaced = true;
+                    break;
+                }
+            }
+            if (!$replaced) {
+                $this->answers[] = $newAnswer;
+            }
+        }
     }
 
     public function clearAnswers(): void

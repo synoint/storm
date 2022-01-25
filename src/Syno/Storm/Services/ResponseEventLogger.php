@@ -2,6 +2,7 @@
 
 namespace Syno\Storm\Services;
 
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ODM\MongoDB\DocumentManager;
 use Syno\Storm\Document\Response;
 use Syno\Storm\Document\ResponseEvent;
@@ -10,27 +11,27 @@ class ResponseEventLogger
 {
     const RESPONSE_CREATED = 'created';
     const RESPONSE_CLEARED = 'cleared';
-    const SURVEY_ENTERED = 'survey entered';
+    const SURVEY_ENTERED   = 'survey entered';
 
-    const SURVEY_RESUMED = 'survey resumed';
-    const SURVEY_COMPLETED = 'survey completed';
+    const SURVEY_RESUMED             = 'survey resumed';
+    const SURVEY_COMPLETED           = 'survey completed';
     const SURVEY_VERSION_UNAVAILABLE = 'survey version unavailable';
 
-    const QUALITY_SCREENOUT = 'quality screenout';
+    const QUALITY_SCREENOUT         = 'quality screenout';
     const QUALITY_SCREENOUT_CLEARED = 'quality screenout cleared';
 
     const SURVEY_MODE_CHANGED = 'survey mode changed';
 
-    const SURVEY_SCREENOUTED = 'survey screenouted';
+    const SURVEY_SCREENOUTED         = 'survey screenouted';
     const SURVEY_QUALITY_SCREENOUTED = 'survey quality screenouted';
 
-    const PAGE_ENTERED = 'page entered';
-    const ANSWERS_SAVED = 'answers saved';
+    const PAGE_ENTERED    = 'page entered';
+    const ANSWERS_SAVED   = 'answers saved';
     const ANSWERS_CLEARED = 'answers cleared';
-    const ANSWERS_ERROR = 'answers error';
+    const ANSWERS_ERROR   = 'answers error';
 
     const JUMPED_TO_END_OF_SURVEY = 'jumped to end';
-    const JUMPED_TO_PAGE = 'jumped to page';
+    const JUMPED_TO_PAGE          = 'jumped to page';
 
     private DocumentManager $dm;
 
@@ -39,7 +40,7 @@ class ResponseEventLogger
         $this->dm = $documentManager;
     }
 
-    public function log(string $event, Response $response)
+    public function log(string $event, Response $response, Collection $answers = null)
     {
         if (!$response->isLive() && !$response->isTest()) {
             return;
@@ -61,7 +62,6 @@ class ResponseEventLogger
                 break;
             case self::SURVEY_RESUMED:
             case self::PAGE_ENTERED:
-            case self::ANSWERS_SAVED:
             case self::ANSWERS_CLEARED:
             case self::ANSWERS_ERROR:
             case self::JUMPED_TO_PAGE:
@@ -70,6 +70,15 @@ class ResponseEventLogger
                     $response->getResponseId(),
                     $response->getSurveyId(),
                     $response->getPageId()
+                );
+                break;
+            case self::ANSWERS_SAVED:
+                $document = new ResponseEvent(
+                    $event,
+                    $response->getResponseId(),
+                    $response->getSurveyId(),
+                    $response->getPageId(),
+                    $answers
                 );
                 break;
             default:

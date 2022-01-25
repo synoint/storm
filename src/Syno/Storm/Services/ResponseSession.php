@@ -2,11 +2,10 @@
 
 namespace Syno\Storm\Services;
 
-use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Syno\Storm\Document;
-use Syno\Storm\Document\Question;
 use Syno\Storm\RequestHandler;
 use Syno\Storm\Traits\RouteAware;
 
@@ -116,25 +115,6 @@ class ResponseSession
             )
         );
 
-        foreach($this->responseHandler->setAnswers($survey) as $questionId => $answers){
-
-            if(!empty($answers)) {
-
-                $newAnswers = [];
-
-                foreach ($answers as $answerId => $value) {
-                    $newAnswers[] = new Document\ResponseAnswerValue(
-                        $answerId,
-                        $value
-                    );
-                }
-
-                $newAnswer = new Document\ResponseAnswer($questionId, new ArrayCollection($newAnswers));
-
-                $response->addAnswer($newAnswer);
-            }
-        }
-
         $this->responseHandler->saveResponse($response, true);
 
         $this->responseEventLogger->log(ResponseEventLogger::RESPONSE_CREATED, $response);
@@ -143,15 +123,12 @@ class ResponseSession
         $this->surveyEventLogger->logResponse($response, $survey);
     }
 
-    public function saveAnswers(Document\Response $response, array $answers): Document\Response
+    public function saveAnswers(Document\Response $response, Collection $answers): Document\Response
     {
-        foreach ($answers as $answer) {
-            $response->addAnswer($answer);
-        }
-
+        $response->saveAnswers($answers);
         $this->responseHandler->saveResponse($response);
 
-        $this->responseEventLogger->log(ResponseEventLogger::ANSWERS_SAVED, $response);
+        $this->responseEventLogger->log(ResponseEventLogger::ANSWERS_SAVED, $response, $answers);
 
         return $response;
     }

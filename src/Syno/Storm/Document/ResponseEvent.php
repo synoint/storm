@@ -2,6 +2,7 @@
 
 namespace Syno\Storm\Document;
 
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
 use JsonSerializable;
 /**
@@ -47,13 +48,27 @@ class ResponseEvent implements JsonSerializable
      */
     private $message;
 
-    public function __construct(string $message, string $responseId, int $surveyId, int $pageId = null)
+    /**
+     * @var Collection
+     *
+     * @ODM\EmbedMany(targetDocument=ResponseAnswer::class)
+     */
+    private $answers;
+
+    public function __construct(
+        string $message,
+        string $responseId,
+        int $surveyId,
+        int $pageId = null,
+        Collection $answers = null
+    )
     {
         $this->time       = new \DateTime();
         $this->message    = $message;
         $this->responseId = $responseId;
         $this->surveyId   = $surveyId;
         $this->pageId     = $pageId;
+        $this->answers    = $answers;
     }
 
 
@@ -66,6 +81,7 @@ class ResponseEvent implements JsonSerializable
             'responseId' => $this->responseId,
             'surveyId'   => $this->surveyId,
             'pageId'     => $this->pageId,
+            'answers'    => $this->answers
         ];
     }
 

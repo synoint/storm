@@ -17,19 +17,16 @@ class Response
     private RequestStack      $requestStack;
     private ResponseId        $responseId;
     private Services\Response $responseService;
-    private Answer            $answerRequestHandler;
 
     public function __construct(
         RequestStack      $requestStack,
         ResponseId        $responseId,
-        Services\Response $responseService,
-        Answer            $answerRequestHandler
+        Services\Response $responseService
     )
     {
-        $this->requestStack         = $requestStack;
-        $this->responseId           = $responseId;
-        $this->responseService      = $responseService;
-        $this->answerRequestHandler = $answerRequestHandler;
+        $this->requestStack    = $requestStack;
+        $this->responseId      = $responseId;
+        $this->responseService = $responseService;
     }
 
     public function getResponse(): Document\Response
@@ -92,15 +89,15 @@ class Response
         return $result;
     }
 
-    public function extractParameters(Collection $surveyValues): Collection
+    public function extractParameters(Collection $surveyParameters): Collection
     {
         $result = new ArrayCollection();
-        /** @var Document\Parameter $surveyValue */
-        foreach ($surveyValues as $surveyValue) {
-            if ($this->requestStack->getCurrentRequest()->query->has($surveyValue->getUrlParam())) {
+        /** @var Document\Parameter $surveyParameter */
+        foreach ($surveyParameters as $surveyParameter) {
+            if ($this->requestStack->getCurrentRequest()->query->has($surveyParameter->getUrlParam())) {
 
-                if(!is_array($this->requestStack->getCurrentRequest()->query->get($surveyValue->getUrlParam()))) {
-                    $value = clone $surveyValue;
+                if(!is_array($this->requestStack->getCurrentRequest()->query->get($surveyParameter->getUrlParam()))) {
+                    $value = clone $surveyParameter;
                     $value->setValue($this->requestStack->getCurrentRequest()->query->get($value->getUrlParam()));
                     $result[] = $value;
                 }
@@ -125,22 +122,5 @@ class Response
         return $surveyMode !== $this->responseService->getModeByRoute(
             $this->requestStack->getCurrentRequest()->attributes->get('_route')
         );
-    }
-
-    public function setAnswers($survey): array
-    {
-        $result = [];
-
-        $page = $this->requestStack->getCurrentRequest()->query->get("p");
-        if(!empty($page) && is_array($page)) {
-            /** @var Question $question */
-            foreach ($survey->getQuestions() as $question) {
-                $result[$question->getQuestionId()] = [];
-                foreach ($this->answerRequestHandler->extractAnswers($question, $page) as $answer) {
-                    $result[$question->getQuestionId()][$answer->getAnswerId()] = $answer->getValue();
-                }
-            }
-        }
-        return $result;
     }
 }
