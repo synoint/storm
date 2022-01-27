@@ -10,20 +10,14 @@ use Syno\Storm\Services;
 
 class AppExtension extends AbstractExtension
 {
-    /** @var Services\Survey */
-    private $surveyService;
+    private Services\Survey $surveyService;
 
-    /**
-     * AppExtension constructor.
-     *
-     * @param Services\Survey $surveyService
-     */
     public function __construct(Services\Survey $surveyService)
     {
         $this->surveyService = $surveyService;
     }
 
-    public function getFunctions()
+    public function getFunctions(): array
     {
         return [
             new TwigFunction(
@@ -37,12 +31,6 @@ class AppExtension extends AbstractExtension
         ];
     }
 
-    /**
-     * @param Survey $survey
-     * @param Page   $page
-     *
-     * @return string
-     */
     public function getPagePrefix(Survey $survey, Page $page): string
     {
         if ($survey->isFirstPage($page->getPageId())) {

@@ -37,3 +37,16 @@ yarn-error.log
 /phpunit.xml
 .phpunit.result.cache
 ###< phpunit/phpunit ###
+
+# Added by composer, but not needed for now. Please, remove from here is required later
+assets/app.js
+assets/bootstrap.js
+assets/controllers.json
+assets/controllers/
+assets/styles/
+config/packages/cache.yaml
+config/packages/prod/deprecations.yaml
+config/preload.php
+src/Controller/
+src/Document/
+templates/base.html.twig
