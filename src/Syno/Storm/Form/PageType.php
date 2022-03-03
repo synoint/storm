@@ -143,40 +143,44 @@ class PageType extends AbstractType
             }
         }
 
-        $builder->add($question->getCode(), ChoiceType::class, [
-                'choices'     => $choices,
-                'required'    => $question->isRequired(),
-                'placeholder' => null,
-                'constraints' => $question->isRequired() ? [
-                    new Count([
-                        'min'        => 1,
-                        'minMessage' => $this->translator->trans('error.at.least.one.option.required'),
-                        'groups'     => ['form_validation_only']
-                    ])
-                ] : null,
-                'expanded'    => true,
-                'multiple'    => true,
-                'data'        => $data,
-                'attr'        => ['class' => 'custom-control custom-checkbox custom-checkbox-filled'],
-                'choice_attr' => function ($answerId) use ($question, $selectedAnswersIsExclusive, $answerMap) {
-                    $attr['row_attr'] = '';
-                    $attr             = ['class' => 'custom-control-input form-check-input'];
+        $options = [
+            'choices'     => $choices,
+            'required'    => $question->isRequired(),
+            'placeholder' => null,
+            'expanded'    => true,
+            'multiple'    => true,
+            'data'        => $data,
+            'attr'        => ['class' => 'custom-control custom-checkbox custom-checkbox-filled'],
+            'choice_attr' => function ($answerId) use ($question, $selectedAnswersIsExclusive, $answerMap) {
+                $attr['row_attr'] = '';
+                $attr             = ['class' => 'custom-control-input form-check-input'];
 
 
-                    if ($question->getAnswerByCode($answerId)->getIsExclusive()) {
-                        $attr['class']    .= ' exclusive';
-                        $attr['row_attr'] = 'exclusive';
-                    }
+                if ($question->getAnswerByCode($answerId)->getIsExclusive()) {
+                    $attr['class']    .= ' exclusive';
+                    $attr['row_attr'] = 'exclusive';
+                }
 
-                    if ($selectedAnswersIsExclusive && !in_array($answerId, $answerMap)) {
-                        $attr['disabled'] = 'disabled';
-                    }
+                if ($selectedAnswersIsExclusive && !in_array($answerId, $answerMap)) {
+                    $attr['disabled'] = 'disabled';
+                }
 
-                    return $attr;
-                },
-                'label_attr'  => ['class' => 'custom-control-label'],
-            ]
-        );
+                return $attr;
+            },
+            'label_attr'  => ['class' => 'custom-control-label']
+        ];
+
+        if ($question->isRequired()) {
+            $options['constraints'] = [
+                new Count([
+                    'min'        => 1,
+                    'minMessage' => $this->translator->trans('error.at.least.one.option.required'),
+                    'groups'     => ['form_validation_only']
+                ])
+            ];
+        }
+
+        $builder->add($question->getCode(), ChoiceType::class, $options);
     }
 
     /**
@@ -244,18 +248,23 @@ class PageType extends AbstractType
                 ]);
             }
 
-            $builder->add($question->getInputName($rowCode), ChoiceType::class, [
+            $options = [
                 'choices' => $choices,
                 'multiple' => $multiple,
                 'expanded' => true,
                 'data' => $data,
                 'placeholder' => null,
                 'required' => $question->isRequired(),
-                'constraints' => $question->isRequired() ? [$constraint] : null,
                 'choice_attr' => function () {
                     return ['class' => 'custom-control-input'];
                 },
-            ]);
+            ];
+
+            if ($question->isRequired()) {
+                $options['constraints'] = [$constraint];
+            }
+
+            $builder->add($question->getInputName($rowCode), ChoiceType::class, $options);
         }
     }
 
@@ -324,18 +333,23 @@ class PageType extends AbstractType
             }
         }
 
-        $builder->add($question->getInputName(), LinearScale::class, [
+        $options = [
             'choices'     => $question->getAnswers(),
             'required'    => $question->isRequired(),
             'data'        => $data,
-            'constraints' => $question->isRequired() ? [
+            'label'       => $question->getText()
+        ];
+
+        if ($question->isRequired()) {
+            $options['constraints'] = [
                 new NotBlank([
                     'message' => $this->translator->trans('error.one.option.required'),
                     'groups'  => ['form_validation_only']
                 ])
-            ] : null,
-            'label'       => $question->getText()
-        ]);
+            ];
+        }
+
+        $builder->add($question->getInputName(), LinearScale::class, $options);
     }
 
     /**
@@ -360,18 +374,23 @@ class PageType extends AbstractType
                 }
             }
 
-            $builder->add($question->getInputName($rowCode), LinearScaleMatrix::class, [
+            $options = [
                 'choices' => $array,
                 'data' => $data,
                 'required' => $question->isRequired(),
-                'constraints' => $question->isRequired() ? [
+                'label' => $row
+            ];
+
+            if ($question->isRequired()) {
+                $options['constraints'] = [
                     new NotBlank([
                         'message' => $this->translator->trans('error.one.option.in.each.row.required'),
                         'groups' => ['form_validation_only']
                     ])
-                ] : null,
-                'label' => $row
-            ]);
+                ];
+            }
+
+            $builder->add($question->getInputName($rowCode), LinearScaleMatrix::class, $options);
         }
     }
 
