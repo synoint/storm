@@ -96,24 +96,29 @@ class PageType extends AbstractType
             }
         }
 
-        $builder->add($question->getCode(), ChoiceType::class, [
+        $options = [
             'choices' => $choices,
             'required' => $question->isRequired(),
             'data' => $data,
             'expanded' => !$question->containsSelectField(),
             'placeholder' => null,
-            'constraints' => $question->isRequired() ? [
-                new NotBlank([
-                    'message' => $this->translator->trans('error.one.option.required'),
-                    'groups' => ['form_validation_only']
-                ])
-            ] : null,
             'attr' => ['class' => 'custom-control custom-radio custom-radio-filled'],
             'choice_attr' => function () {
                 return ['class' => 'custom-control-input'];
             },
             'label_attr' => ['class' => 'custom-control-label']
-        ]);
+        ];
+
+        if ($question->isRequired()) {
+            $options['constraints'] = [
+                new NotBlank([
+                    'message' => $this->translator->trans('error.one.option.required'),
+                    'groups' => ['form_validation_only']
+                ])
+            ];
+        }
+
+        $builder->add($question->getCode(), ChoiceType::class, $options);
     }
 
     /**
