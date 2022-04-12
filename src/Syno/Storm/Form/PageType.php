@@ -136,7 +136,12 @@ class PageType extends AbstractType
         $selectedAnswersIsExclusive = $this->questionService->isSelectedAnswersExclusive($question, $questionAnswerIds);
 
         foreach($question->getAnswers() as $answer){
-            $choices[$answer->getLabel()] = $answer->getCode();
+
+            if(!empty($answer->getLabel())){
+                $choices[$answer->getLabel()] = $answer->getCode();
+            } else {
+                $choices[] = $answer->getCode();
+            }
 
             if ($questionAnswerIds && in_array($answer->getAnswerId(), $questionAnswerIds)) {
                 $data[] = $answer->getCode();
@@ -151,6 +156,9 @@ class PageType extends AbstractType
             'multiple'    => true,
             'data'        => $data,
             'attr'        => ['class' => 'custom-control custom-checkbox custom-checkbox-filled'],
+            'choice_label' => function ($choice, $key) {
+                return is_int($key) ? '' : $key;
+            },
             'choice_attr' => function ($answerId) use ($question, $selectedAnswersIsExclusive, $answerMap) {
                 $attr['row_attr'] = '';
                 $attr             = ['class' => 'custom-control-input form-check-input'];

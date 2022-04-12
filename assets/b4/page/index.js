@@ -16,6 +16,19 @@ class Page {
             });
         });
 
+        this.container.on('keyup', '.free-text-input', function (e) {
+            const checkbox = $(e.currentTarget.closest('.form-check')).find('input[type=checkbox]');
+
+            if(checkbox.length > 0){
+
+                if($(this).val() !== ''){
+                    checkbox.prop("checked", true);
+                } else {
+                    checkbox.prop("checked", false);
+                }
+            }
+        });
+
         // line below rewrites history which is loaded when back button is pressed, so form would show already filled answers
        window.history.replaceState(null,null, window.location);
     }
