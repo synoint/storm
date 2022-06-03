@@ -30,7 +30,7 @@ class SurveySubscriber implements EventSubscriberInterface
      */
     public function setSurvey(RequestEvent $event)
     {
-        if (!$event->isMasterRequest()) {
+        if (!$event->isMainRequest()) {
             return;
         }
 
@@ -85,7 +85,7 @@ class SurveySubscriber implements EventSubscriberInterface
      */
     public function logVisit(RequestEvent $event)
     {
-        if (!$event->isMasterRequest()) {
+        if (!$event->isMainRequest()) {
             return;
         }
 

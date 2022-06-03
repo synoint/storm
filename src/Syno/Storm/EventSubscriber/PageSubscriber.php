@@ -25,7 +25,7 @@ class PageSubscriber implements EventSubscriberInterface
 
     public function setPage(RequestEvent $event)
     {
-        if (!$event->isMasterRequest()) {
+        if (!$event->isMainRequest()) {
             return;
         }
 

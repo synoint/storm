@@ -4,9 +4,9 @@
         "bootstrap": "^4.4.1",
         "core-js": "^3.0.0",
         "jquery": "^3.4.1",
-        "node-sass": "^4.14.0",
         "popper.js": "^1.16.0",
         "regenerator-runtime": "^0.13.2",
+        "sass": "^1.52.2",
         "sass-loader": "^7.0.1",
         "webpack-notifier": "^1.6.0"
     },
@@ -19,6 +19,6 @@
         "build": "encore production --progress"
     },
     "dependencies": {
-        "plyr": "^3.5.10"
+        "plyr": "^3.7.2"
     }
 }

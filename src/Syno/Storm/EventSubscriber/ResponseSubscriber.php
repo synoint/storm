@@ -4,6 +4,7 @@ namespace Syno\Storm\EventSubscriber;
 
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
+use Symfony\Component\HttpKernel\Event\ResponseEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\Routing\RouterInterface;
 use Syno\Storm\RequestHandler;
@@ -11,6 +12,8 @@ use Syno\Storm\Services\ResponseSession;
 use Syno\Storm\Services\ResponseSessionManager;
 use Syno\Storm\Traits\RouteAware;
 use Psr\Log\LoggerInterface;
+
+
 
 
 class ResponseSubscriber implements EventSubscriberInterface
@@ -46,7 +49,7 @@ class ResponseSubscriber implements EventSubscriberInterface
 
     public function setResponse(RequestEvent $event)
     {
-        if (!$event->isMasterRequest()) {
+        if (!$event->isMainRequest()) {
             return;
         }
 
@@ -182,7 +185,7 @@ class ResponseSubscriber implements EventSubscriberInterface
      */
     public function createResponse(RequestEvent $event)
     {
-        if (!$event->isMasterRequest()) {
+        if (!$event->isMainRequest()) {
             return;
         }
 
@@ -208,7 +211,7 @@ class ResponseSubscriber implements EventSubscriberInterface
      */
     public function saveAnswersPassedInUrl(RequestEvent $event)
     {
-        if (!$event->isMasterRequest()) {
+        if (!$event->isMainRequest()) {
             return;
         }
 
@@ -246,6 +249,17 @@ class ResponseSubscriber implements EventSubscriberInterface
         $this->responseHandler->addUserAgent($this->responseHandler->getResponse());
     }
 
+    public function onKernelResponse(ResponseEvent $event)
+    {
+        if (!$event->isMainRequest()) {
+            return;
+        }
+
+        $response = $event->getResponse();
+        $response->headers->set('Cache-Control', 'no-cache, no-store, no-transform, private, proxy-revalidate');
+        $response->headers->set('Pragma', 'no-cache');
+    }
+
     public static function getSubscribedEvents(): array
     {
         return [
@@ -258,7 +272,8 @@ class ResponseSubscriber implements EventSubscriberInterface
                 ['createResponse', 2],
                 ['saveAnswersPassedInUrl', 1],
                 ['logUserAgent'],
-            ]
+            ],
+            KernelEvents::RESPONSE => 'onKernelResponse'
         ];
     }
 
