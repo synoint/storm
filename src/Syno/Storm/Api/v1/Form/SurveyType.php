@@ -46,6 +46,11 @@ class SurveyType extends AbstractType
                 'entry_type' => SurveyTranslationType::class,
                 'by_reference'  => false,
                 'allow_add'     => true
+            ])
+            ->add('randomizationBlocks', CollectionType::class, [
+                'entry_type' => RandomizationBlockType::class,
+                'by_reference'  => false,
+                'allow_add'     => true
             ]);
     }
 

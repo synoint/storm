@@ -105,30 +105,39 @@ class Survey implements JsonSerializable
      */
     protected $translations;
 
+    /**
+     * @var Collection
+     *
+     * @ODM\EmbedMany(targetDocument=RandomizationBlock::class)
+     */
+    private $randomizationBlocks;
+
     public function __construct()
     {
-        $this->pages        = new ArrayCollection();
-        $this->parameters   = new ArrayCollection();
-        $this->urls         = new ArrayCollection();
-        $this->languages    = new ArrayCollection();
-        $this->css          = new ArrayCollection();
-        $this->translations = new ArrayCollection();
+        $this->pages               = new ArrayCollection();
+        $this->parameters          = new ArrayCollection();
+        $this->urls                = new ArrayCollection();
+        $this->languages           = new ArrayCollection();
+        $this->css                 = new ArrayCollection();
+        $this->translations        = new ArrayCollection();
+        $this->randomizationBlocks = new ArrayCollection();
     }
 
     public function jsonSerialize(): array
     {
         return [
-            'id'           => $this->id,
-            'surveyId'     => $this->surveyId,
-            'version'      => $this->version,
-            'languages'    => $this->languages,
-            'translations' => $this->translations,
-            'published'    => $this->published,
-            'config'       => $this->config,
-            'parameters'   => $this->parameters,
-            'urls'         => $this->urls,
-            'pages'        => $this->pages,
-            'css'          => $this->css,
+            'id'                  => $this->id,
+            'surveyId'            => $this->surveyId,
+            'version'             => $this->version,
+            'languages'           => $this->languages,
+            'translations'        => $this->translations,
+            'published'           => $this->published,
+            'config'              => $this->config,
+            'parameters'          => $this->parameters,
+            'urls'                => $this->urls,
+            'pages'               => $this->pages,
+            'css'                 => $this->css,
+            'randomizationBlocks' => $this->randomizationBlocks,
         ];
     }
 
@@ -190,7 +199,7 @@ class Survey implements JsonSerializable
 
     public function getFirstPage(): Page
     {
-        return $this->pages->filter(function(Page $page){
+        return $this->pages->filter(function (Page $page) {
             return $page->getQuestions()->count() == 0 || $page->getVisibleQuestions()->count() > 0;
         })->first();
     }
@@ -202,7 +211,7 @@ class Survey implements JsonSerializable
         return $this;
     }
 
-    public function getPage(int $pageId):? Page
+    public function getPage(int $pageId): ?Page
     {
         $result = null;
         foreach ($this->pages as $page) {
@@ -215,7 +224,7 @@ class Survey implements JsonSerializable
         return $result;
     }
 
-    public function getPageByQuestion(int $questionId):? Page
+    public function getPageByQuestion(int $questionId): ?Page
     {
         $result = null;
         foreach ($this->pages as $page) {
@@ -245,7 +254,7 @@ class Survey implements JsonSerializable
         return $questions;
     }
 
-    public function getNextPage(int $pageId):? Page
+    public function getNextPage(int $pageId): ?Page
     {
         $result = null;
         $pick   = false;
@@ -301,7 +310,7 @@ class Survey implements JsonSerializable
         return $this->urls;
     }
 
-    public function getCompleteUrl(?int $source):? string
+    public function getCompleteUrl(?int $source): ?string
     {
         foreach ($this->getUrls() as $url) {
             /**@var SurveyUrl $url */
@@ -313,7 +322,7 @@ class Survey implements JsonSerializable
         return null;
     }
 
-    public function getScreenoutUrl(?int $source):? string
+    public function getScreenoutUrl(?int $source): ?string
     {
         foreach ($this->getUrls() as $url) {
             /**@var SurveyUrl $url */
@@ -325,7 +334,7 @@ class Survey implements JsonSerializable
         return null;
     }
 
-    public function getQualityScreenoutUrl(?int $source):? string
+    public function getQualityScreenoutUrl(?int $source): ?string
     {
         foreach ($this->getUrls() as $url) {
             /**@var SurveyUrl $url */
@@ -371,7 +380,7 @@ class Survey implements JsonSerializable
         return null;
     }
 
-    public function getPublicTitle():? string
+    public function getPublicTitle(): ?string
     {
         /** @var SurveyTranslation $translation */
         $translation = $this->getTranslation();
@@ -397,6 +406,18 @@ class Survey implements JsonSerializable
     public function setCss(Collection $css): self
     {
         $this->css = $css;
+
+        return $this;
+    }
+
+    public function getRandomizationBlocks()
+    {
+        return $this->randomizationBlocks;
+    }
+
+    public function setRandomizationBlocks($randomizationBlocks): self
+    {
+        $this->randomizationBlocks = $randomizationBlocks;
 
         return $this;
     }
