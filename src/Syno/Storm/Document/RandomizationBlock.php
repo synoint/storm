@@ -23,20 +23,6 @@ class RandomizationBlock implements JsonSerializable
     private $type;
 
     /**
-     * @var int
-     *
-     * @ODM\Field(type="int")
-     */
-    private $position;
-
-    /**
-     * @var int
-     *
-     * @ODM\Field(type="int")
-     */
-    private $weight;
-
-    /**
      * @var array
      *
      * @ODM\EmbedMany(targetDocument=BlockWeight::class)
@@ -46,11 +32,9 @@ class RandomizationBlock implements JsonSerializable
     public function jsonSerialize(): array
     {
         return [
-            'id'       => $this->id,
-            'type'     => $this->type,
-            'position' => $this->position,
-            'weight' => $this->weight,
-            'items'    => $this->items,
+            'id'    => $this->id,
+            'type'  => $this->type,
+            'items' => $this->items,
         ];
     }
 
@@ -74,30 +58,6 @@ class RandomizationBlock implements JsonSerializable
     public function setType($type): self
     {
         $this->type = $type;
-
-        return $this;
-    }
-
-    public function getPosition(): int
-    {
-        return $this->position;
-    }
-
-    public function setPosition(int $position): self
-    {
-        $this->position = $position;
-
-        return $this;
-    }
-
-    public function getWeight(): int
-    {
-        return $this->weight;
-    }
-
-    public function setWeight(int $weight): self
-    {
-        $this->weight = $weight;
 
         return $this;
     }

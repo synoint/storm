@@ -17,8 +17,6 @@ class RandomizationBlockType extends AbstractType
         $builder
             ->add('id', IntegerType::class)
             ->add('type', TextType::class)
-            ->add('position', IntegerType::class)
-            ->add('weight', IntegerType::class)
             ->add('items', CollectionType::class, [
                 'entry_type' => BlockWeightType::class,
                 'by_reference'  => false,

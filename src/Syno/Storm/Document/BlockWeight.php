@@ -47,11 +47,6 @@ class BlockWeight implements JsonSerializable
     private $answer;
 
     /**
-     * @ODM\Field(type="string")
-     */
-    private $name;
-
-    /**
      * @var int
      *
      * @ODM\Field(type="int")
@@ -73,7 +68,6 @@ class BlockWeight implements JsonSerializable
             'page'     => $this->page,
             'question' => $this->question,
             'answer'   => $this->answer,
-            'name'     => $this->name,
             'position' => $this->position,
             'weight'   => $this->weight
         ];
@@ -135,18 +129,6 @@ class BlockWeight implements JsonSerializable
     public function setAnswer(int $answer): self
     {
         $this->answer = $answer;
-
-        return $this;
-    }
-
-    public function getName()
-    {
-        return $this->name;
-    }
-
-    public function setName($name): self
-    {
-        $this->name = $name;
 
         return $this;
     }
