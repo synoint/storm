@@ -18,11 +18,10 @@ class RandomizationBlockType extends AbstractType
             ->add('id', IntegerType::class)
             ->add('type', TextType::class)
             ->add('items', CollectionType::class, [
-                'entry_type' => BlockWeightType::class,
-                'by_reference'  => false,
-                'allow_add'     => true
+                'entry_type'   => BlockItemType::class,
+                'by_reference' => false,
+                'allow_add'    => true
             ]);
-        ;
     }
 
     public function configureOptions(OptionsResolver $resolver)

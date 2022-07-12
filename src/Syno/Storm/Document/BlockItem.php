@@ -2,14 +2,13 @@
 
 namespace Syno\Storm\Document;
 
-use Doctrine\Common\Collections\Collection;
 use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
 use JsonSerializable;
 
 /**
  * @ODM\EmbeddedDocument
  */
-class BlockWeight implements JsonSerializable
+class BlockItem implements JsonSerializable
 {
     /**
      * @var int
@@ -49,9 +48,9 @@ class BlockWeight implements JsonSerializable
     /**
      * @var int
      *
-     * @ODM\Field(type="int")
+     * @ODM\Field(type="bool")
      */
-    private $position;
+    private $randomize;
 
     /**
      * @var int
@@ -63,13 +62,13 @@ class BlockWeight implements JsonSerializable
     public function jsonSerialize(): array
     {
         return [
-            'id'       => $this->id,
-            'block'    => $this->block,
-            'page'     => $this->page,
-            'question' => $this->question,
-            'answer'   => $this->answer,
-            'position' => $this->position,
-            'weight'   => $this->weight
+            'id'        => $this->id,
+            'block'     => $this->block,
+            'page'      => $this->page,
+            'question'  => $this->question,
+            'answer'    => $this->answer,
+            'randomize' => $this->randomize,
+            'weight'    => $this->weight
         ];
     }
 
@@ -133,14 +132,14 @@ class BlockWeight implements JsonSerializable
         return $this;
     }
 
-    public function getPosition(): int
+    public function getRandomize(): bool
     {
-        return $this->position;
+        return $this->randomize;
     }
 
-    public function setPosition(int $position): self
+    public function setRandomize(bool $randomize): self
     {
-        $this->position = $position;
+        $this->randomize = $randomize;
 
         return $this;
     }

@@ -8,7 +8,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Syno\Storm\Document;
 
-class BlockWeightType extends AbstractType
+class BlockItemType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
@@ -18,7 +18,7 @@ class BlockWeightType extends AbstractType
             ->add('page', IntegerType::class)
             ->add('question', IntegerType::class)
             ->add('answer', IntegerType::class)
-            ->add('position', IntegerType::class)
+            ->add('randomize', IntegerType::class)
             ->add('weight', IntegerType::class);
     }
 
@@ -26,7 +26,7 @@ class BlockWeightType extends AbstractType
     {
         $resolver->setDefaults(
             [
-                'data_class'      => Document\BlockWeight::class,
+                'data_class'      => Document\BlockItem::class,
                 'csrf_protection' => false,
             ]
         );
