@@ -5,6 +5,7 @@ namespace Syno\Storm\Services;
 use Doctrine\Common\Collections\Collection;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Syno\Storm\Document;
 use Syno\Storm\RequestHandler;
 use Syno\Storm\Traits\RouteAware;
@@ -17,20 +18,23 @@ class ResponseSession
     private ResponseEventLogger     $responseEventLogger;
     private ResponseRedirector      $responseRedirector;
     private SurveyEventLogger       $surveyEventLogger;
+    private RequestStack            $requestStack;
 
     public function __construct(
+        RequestStack $requestStack,
         RequestHandler\Response $responseHandler,
-        ResponseEventLogger     $responseEventLogger,
-        ResponseRedirector      $responseRedirector,
-        SurveyEventLogger       $surveyEventLogger
+        ResponseEventLogger $responseEventLogger,
+        ResponseRedirector $responseRedirector,
+        SurveyEventLogger $surveyEventLogger
     ) {
         $this->responseHandler     = $responseHandler;
         $this->responseEventLogger = $responseEventLogger;
         $this->responseRedirector  = $responseRedirector;
         $this->surveyEventLogger   = $surveyEventLogger;
+        $this->requestStack        = $requestStack;
     }
 
-    public function isFinishedButLost(Document\Survey $survey, Request $request):? RedirectResponse
+    public function isFinishedButLost(Document\Survey $survey, Request $request): ?RedirectResponse
     {
         $response = $this->responseHandler->getResponse();
 
@@ -75,7 +79,7 @@ class ResponseSession
         );
     }
 
-    public function redirectOnModeChange(Request $request):? RedirectResponse
+    public function redirectOnModeChange(Request $request): ?RedirectResponse
     {
         $redirect = null;
         $response = $this->responseHandler->getResponse();
@@ -91,7 +95,7 @@ class ResponseSession
         return $redirect;
     }
 
-    public function resumeSurvey(Document\Survey $survey):? RedirectResponse
+    public function resumeSurvey(Document\Survey $survey): ?RedirectResponse
     {
         $response = $this->responseHandler->getResponse();
         if ($response->getPageId() && null !== $survey->getPage($response->getPageId())) {
@@ -105,9 +109,13 @@ class ResponseSession
         return null;
     }
 
-    public function createResponse(Document\Survey $survey)
+    public function createResponse(Document\Survey $survey, ?Document\SurveyPath $surveyPath = null)
     {
         $response = $this->responseHandler->getNew($survey);
+        if ($surveyPath) {
+            $response->setSurveyPath($surveyPath->getPages());
+            $response->setSurveyPathId($surveyPath->getSurveyPathId());
+        }
 
         $response->setParameters(
             $this->responseHandler->extractParameters(
@@ -219,5 +227,4 @@ class ResponseSession
     {
         return $this->responseRedirector->sessionCookieCheck($surveyId);
     }
-
 }

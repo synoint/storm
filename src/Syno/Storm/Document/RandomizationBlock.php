@@ -3,6 +3,7 @@
 namespace Syno\Storm\Document;
 
 use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
+use Doctrine\Common\Collections\Collection;
 use JsonSerializable;
 
 /**
@@ -23,9 +24,9 @@ class RandomizationBlock implements JsonSerializable
     private $type;
 
     /**
-     * @var array
+     * @var Collection
      *
-     * @ODM\EmbedMany(targetDocument=BlockWeight::class)
+     * @ODM\EmbedMany(targetDocument=BlockItem::class)
      */
     private $items;
 
@@ -62,7 +63,7 @@ class RandomizationBlock implements JsonSerializable
         return $this;
     }
 
-    public function getItems(): array
+    public function getItems(): ?Collection
     {
         return $this->items;
     }

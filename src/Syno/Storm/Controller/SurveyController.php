@@ -10,6 +10,7 @@ use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Syno\Storm\Document;
 use Syno\Storm\Form\PrivacyConsentType;
+use Syno\Storm\RequestHandler;
 
 class SurveyController extends AbstractController
 {
@@ -23,9 +24,17 @@ class SurveyController extends AbstractController
      */
     public function index(Document\Survey $survey, Request $request): RedirectResponse
     {
+        /** @var Document\Response $response */
+        $response = $request->attributes->get(RequestHandler\Response::ATTR);
+
+        $firstPage = $survey->getFirstPage();
+        if ($response->getSurveyPathId()) {
+            $firstPage = $response->getSurveyPath()->first();
+        }
+
         $attr = [
             'surveyId' => $survey->getSurveyId(),
-            'pageId'   => $survey->getFirstPage()->getPageId()
+            'pageId'   => $firstPage->getPageId(),
         ];
 
         if ($request->query->has($request->getSession()->getName())) {
@@ -81,7 +90,7 @@ class SurveyController extends AbstractController
 
         return $this->redirectToRoute('page.index', [
             'surveyId' => $survey->getSurveyId(),
-            'pageId' => $survey->getPages()->first()->getPageId()
+            'pageId'   => $survey->getPages()->first()->getPageId()
         ]);
     }
 
@@ -102,7 +111,7 @@ class SurveyController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             return $this->redirectToRoute('page.index', [
                 'surveyId' => $survey->getSurveyId(),
-                'pageId' => $survey->getPages()->first()->getPageId()
+                'pageId'   => $survey->getPages()->first()->getPageId()
             ]);
         }
 

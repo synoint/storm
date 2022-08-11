@@ -15,7 +15,7 @@ class ResponseId
         $this->requestStack = $requestStack;
     }
 
-    public function get(int $surveyId):? string
+    public function get(int $surveyId): ?string
     {
         $result = $this->requestStack->getCurrentRequest()->query->get('id');
         if (!$result) {

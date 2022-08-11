@@ -2,6 +2,7 @@
 
 namespace Syno\Storm\Api\v1\Controller;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -10,11 +11,13 @@ use Syno\Storm\Api\Controller\TokenAuthenticatedController;
 use Syno\Storm\Api\v1\Form;
 use Syno\Storm\Api\v1\Http\ApiResponse;
 use Syno\Storm\Document;
+use Syno\Storm\Services\Randomization;
 use Syno\Storm\Services\Response;
 use Syno\Storm\Services\ResponseEvent;
 use Syno\Storm\Services\Survey;
-use Syno\Storm\Services\SurveyEventLogger;
 use Syno\Storm\Services\SurveyEvent;
+use Syno\Storm\Services\SurveyEventLogger;
+use Syno\Storm\Services\SurveyPath;
 use Syno\Storm\Traits\FormAware;
 use Syno\Storm\Traits\JsonRequestAware;
 
@@ -31,19 +34,25 @@ class SurveyController extends AbstractController implements TokenAuthenticatedC
     private Survey            $surveyService;
     private SurveyEvent       $surveyEventService;
     private SurveyEventLogger $surveyEventLoggerService;
+    private SurveyPath        $surveyPathService;
+    private Randomization     $randomizationService;
 
     public function __construct(
         Response $responseService,
         ResponseEvent $responseEventService,
         Survey $surveyService,
         SurveyEvent $surveyEventService,
-        SurveyEventLogger $surveyEventLoggerService
+        SurveyEventLogger $surveyEventLoggerService,
+        SurveyPath $surveyPathService,
+        Randomization $randomizationService
     ) {
         $this->responseService          = $responseService;
         $this->responseEventService     = $responseEventService;
         $this->surveyService            = $surveyService;
         $this->surveyEventService       = $surveyEventService;
         $this->surveyEventLoggerService = $surveyEventLoggerService;
+        $this->surveyPathService        = $surveyPathService;
+        $this->randomizationService     = $randomizationService;
     }
 
     /**
@@ -71,6 +80,30 @@ class SurveyController extends AbstractController implements TokenAuthenticatedC
         if ($form->isValid()) {
             $this->surveyService->save($survey);
             $this->surveyEventLoggerService->log(SurveyEventLogger::SURVEY_CREATED, $survey);
+
+            $randomizedPaths = $this->randomizationService->getRandomizedPaths($survey);
+
+            foreach ($randomizedPaths as $combination) {
+                $surveyPath = $this->surveyPathService->getNew();
+                $surveyPath->setSurveyId($survey->getSurveyId());
+                $surveyPath->setVersion($survey->getVersion());
+
+                $surveyPathPages  = new ArrayCollection();
+                $pagePathCodeList = [];
+                foreach ($combination as $pageId) {
+                    foreach ($survey->getPages() as $page) {
+                        if ($page->getPageId() === $pageId) {
+                            $surveyPathPages->add($page);
+                            $pagePathCodeList[] = $page->getCode();
+                        }
+                    }
+                }
+
+                $surveyPath->setPages($surveyPathPages);
+                $surveyPath->setDebugPath(implode(',', $pagePathCodeList));
+
+                $this->surveyPathService->save($surveyPath);
+            }
 
             return $this->json($survey->getId(), 201);
         }
@@ -257,21 +290,21 @@ class SurveyController extends AbstractController implements TokenAuthenticatedC
         $result = [];
         foreach ($this->surveyEventService->getAvailableVersions($surveyId) as $version) {
             $result[] = [
-                'version' => $version,
-                'total' => $this->surveyEventService->count($surveyId, $version),
-                'visits' => $this->surveyEventService->count($surveyId, $version, SurveyEventLogger::VISIT),
-                'debug_responses' => $this->surveyEventService->count($surveyId, $version,
+                'version'            => $version,
+                'total'              => $this->surveyEventService->count($surveyId, $version),
+                'visits'             => $this->surveyEventService->count($surveyId, $version, SurveyEventLogger::VISIT),
+                'debug_responses'    => $this->surveyEventService->count($surveyId, $version,
                     SurveyEventLogger::DEBUG_RESPONSE),
-                'test_responses' => $this->surveyEventService->count($surveyId, $version,
+                'test_responses'     => $this->surveyEventService->count($surveyId, $version,
                     SurveyEventLogger::TEST_RESPONSE),
-                'live_responses' => $this->surveyEventService->count($surveyId, $version,
+                'live_responses'     => $this->surveyEventService->count($surveyId, $version,
                     SurveyEventLogger::LIVE_RESPONSE),
-                'screenouts' => $this->surveyEventService->count($surveyId, $version, SurveyEventLogger::SCREENOUT),
+                'screenouts'         => $this->surveyEventService->count($surveyId, $version, SurveyEventLogger::SCREENOUT),
                 'quality_screenouts' => $this->surveyEventService->count($surveyId, $version,
                     SurveyEventLogger::QUALITY_SCREENOUT),
-                'test_completes' => $this->surveyEventService->count($surveyId, $version,
+                'test_completes'     => $this->surveyEventService->count($surveyId, $version,
                     SurveyEventLogger::TEST_COMPLETE),
-                'live_completes' => $this->surveyEventService->count($surveyId, $version,
+                'live_completes'     => $this->surveyEventService->count($surveyId, $version,
                     SurveyEventLogger::LIVE_COMPLETE)
             ];
         }

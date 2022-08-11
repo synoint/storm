@@ -5,7 +5,6 @@ namespace Syno\Storm\Document;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
-
 use JsonSerializable;
 
 /**
@@ -14,9 +13,9 @@ use JsonSerializable;
  */
 class Response implements JsonSerializable
 {
-    const MODE_LIVE    = 'live';
-    const MODE_TEST    = 'test';
-    const MODE_DEBUG   = 'debug';
+    const MODE_LIVE = 'live';
+    const MODE_TEST = 'test';
+    const MODE_DEBUG = 'debug';
     const PARAM_SOURCE = 'SOURCE';
 
     /** @ODM\Id */
@@ -144,6 +143,20 @@ class Response implements JsonSerializable
      */
     private $events;
 
+    /**
+     * @var string
+     *
+     * @ODM\Field(type="string")
+     */
+    private $surveyPathId;
+
+    /**
+     * @var Collection
+     *
+     * @ODM\EmbedMany(targetDocument=Page::class)
+     */
+    private $surveyPath;
+
     public function __construct(string $responseId)
     {
         $this->responseId = $responseId;
@@ -152,6 +165,7 @@ class Response implements JsonSerializable
         $this->answers    = new ArrayCollection();
         $this->createdAt  = new \DateTime();
         $this->events     = [];
+        $this->surveyPath = new ArrayCollection();
     }
 
     public function jsonSerialize(): array
@@ -175,11 +189,13 @@ class Response implements JsonSerializable
             'userAgents'         => $this->userAgents,
             'parameters'         => $this->parameters,
             'answers'            => $this->getAnswers(),
-            'events'             => $this->events
+            'events'             => $this->events,
+            'surveyPathId'       => $this->surveyPathId,
+            'surveyPath'         => $this->surveyPath,
         ];
     }
 
-    public function getId():? string
+    public function getId(): ?string
     {
         return $this->id;
     }
@@ -338,7 +354,7 @@ class Response implements JsonSerializable
         return $this;
     }
 
-    public function getScreenoutId():? int
+    public function getScreenoutId(): ?int
     {
         return $this->screenoutId;
     }
@@ -500,22 +516,41 @@ class Response implements JsonSerializable
         return $result;
     }
 
-    /**
-     * @return array
-     */
     public function getEvents(): array
     {
         return $this->events;
     }
 
-    /**
-     * @param array $events
-     *
-     * @return Response
-     */
     public function setEvents(array $events): Response
     {
         $this->events = $events;
+
+        return $this;
+    }
+
+    public function getSurveyPathId(): ?string
+    {
+        return $this->surveyPathId;
+    }
+
+    public function setSurveyPathId(string $surveyPathId): self
+    {
+        $this->surveyPathId = $surveyPathId;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Page[]
+     */
+    public function getSurveyPath(): ?Collection
+    {
+        return $this->surveyPath;
+    }
+
+    public function setSurveyPath($surveyPath): self
+    {
+        $this->surveyPath = $surveyPath;
 
         return $this;
     }

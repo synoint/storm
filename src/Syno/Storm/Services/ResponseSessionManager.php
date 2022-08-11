@@ -2,9 +2,8 @@
 
 namespace Syno\Storm\Services;
 
-use Symfony\Component\HttpFoundation\RedirectResponse;
-
 use Doctrine\Common\Collections\Collection;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Syno\Storm\Document;
 use Syno\Storm\RequestHandler;
 
@@ -16,8 +15,7 @@ class ResponseSessionManager
     private RequestHandler\Response $responseHandler;
     private RequestHandler\Survey   $surveyHandler;
     private ResponseSession         $responseSession;
-
-    private ?Collection $questions = null;
+    private ?Collection             $questions = null;
 
     public function __construct(
         Condition $conditionService,
@@ -131,6 +129,7 @@ class ResponseSessionManager
     public function advance(): RedirectResponse
     {
         $nextPage = $this->getNextPage($this->pageHandler->getId());
+
         if (!$nextPage) {
             return $this->responseSession->complete($this->surveyHandler->getSurvey());
         }
@@ -148,9 +147,62 @@ class ResponseSessionManager
         $this->responseSession->saveProgress($this->pageHandler->getPage());
     }
 
+    public function isLastPage(): bool
+    {
+        $questionCount = 0;
+        $pages         = $this->surveyHandler->getSurvey()->getPages();
+
+        /** @var Document\Page $page */
+        foreach ($pages as $page) {
+            $questionCount += $page->getQuestions()->count();
+        }
+
+        $responseAnswers = $this->responseHandler->getResponse()->getAnswers()->count();
+
+        if ($responseAnswers === --$questionCount) {
+            return true;
+        }
+
+        return false;
+    }
+
+    public function isFirstPage(int $pageId): bool
+    {
+        $response = $this->responseHandler->getResponse();
+
+        $pages = $this->surveyHandler->getSurvey()->getPages();
+        if ($response->getSurveyPathId()) {
+            $pages = $response->getSurveyPath();
+        }
+
+        if ($pages->first()->getPageId() === $pageId) {
+            return true;
+        }
+
+        return false;
+    }
+
     private function getNextPage(int $pageId): ?Document\Page
     {
-        $nextPage = $this->surveyHandler->getSurvey()->getNextPage($pageId);
+        $response = $this->responseHandler->getResponse();
+
+        $pages = $this->surveyHandler->getSurvey()->getPages();
+        if ($response->getSurveyPathId()) {
+            $pages = $response->getSurveyPath();
+        }
+
+        $nextPage = null;
+        $pick     = false;
+        foreach ($pages as $page) {
+            if ($pick) {
+                $nextPage = $page;
+                break;
+            }
+            if ($pageId === $page->getPageId()) {
+                $pick = true;
+            }
+        }
+
         if ($nextPage && !$nextPage->getQuestions()->isEmpty()) {
             if (
                 $this->conditionService->filterQuestionsByShowCondition(
@@ -163,6 +215,4 @@ class ResponseSessionManager
 
         return $nextPage;
     }
-
-
 }

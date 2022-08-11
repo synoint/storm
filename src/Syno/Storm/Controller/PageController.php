@@ -55,6 +55,7 @@ class PageController extends AbstractController
                     return $redirect;
                 }
 
+                // get next page or what...
                 return $this->responseSessionManager->advance();
             }
 
@@ -70,8 +71,8 @@ class PageController extends AbstractController
             'questions'          => $filteredQuestions,
             'response'           => $this->responseSessionManager->getResponse(),
             'form'               => $form->createView(),
-            'backButtonDisabled' => $survey->isFirstPage($page->getPageId()),
-            'isLastPage'         => $survey->isLastPage($page->getPageId())
+            'backButtonDisabled' => $this->responseSessionManager->isFirstPage($page->getPageId()),
+            'isLastPage'         => $this->responseSessionManager->isLastPage(),
         ]);
     }
 
@@ -82,5 +83,4 @@ class PageController extends AbstractController
     {
         return $this->render(Document\Config::DEFAULT_THEME . '/page/unavailable.twig');
     }
-
 }

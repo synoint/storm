@@ -132,5 +132,4 @@ class ResponseRedirector
 
         return $url;
     }
-
 }

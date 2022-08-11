@@ -50,7 +50,7 @@ class BlockItem implements JsonSerializable
      *
      * @ODM\Field(type="bool")
      */
-    private $randomize;
+    private $randomize = false;
 
     /**
      * @var int
@@ -134,10 +134,14 @@ class BlockItem implements JsonSerializable
 
     public function getRandomize(): bool
     {
+        if (null === $this->randomize) {
+            return false;
+        }
+
         return $this->randomize;
     }
 
-    public function setRandomize(bool $randomize): self
+    public function setRandomize(?bool $randomize): self
     {
         $this->randomize = $randomize;
 

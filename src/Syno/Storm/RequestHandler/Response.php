@@ -6,24 +6,22 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Syno\Storm\Document;
-use Syno\Storm\Document\Question;
 use Syno\Storm\Services;
 
 
 class Response
 {
-    CONST ATTR = 'response';
+    const ATTR = 'response';
 
     private RequestStack      $requestStack;
     private ResponseId        $responseId;
     private Services\Response $responseService;
 
     public function __construct(
-        RequestStack      $requestStack,
-        ResponseId        $responseId,
+        RequestStack $requestStack,
+        ResponseId $responseId,
         Services\Response $responseService
-    )
-    {
+    ) {
         $this->requestStack    = $requestStack;
         $this->responseId      = $responseId;
         $this->responseService = $responseService;
@@ -32,6 +30,7 @@ class Response
     public function getResponse(): Document\Response
     {
         $response = $this->requestStack->getCurrentRequest()->attributes->get(self::ATTR);
+
         if (!$response instanceof Document\Response) {
             throw new \UnexpectedValueException('Response attribute is invalid');
         }
@@ -65,7 +64,7 @@ class Response
         }
     }
 
-    public function getSaved(int $surveyId):? Document\Response
+    public function getSaved(int $surveyId): ?Document\Response
     {
         $responseId = $this->responseId->get($surveyId);
 
@@ -75,7 +74,7 @@ class Response
     public function getNew(Document\Survey $survey): Document\Response
     {
         $responseId = $this->responseId->get($survey->getSurveyId());
-        $result = $this->responseService->getNew($responseId);
+        $result     = $this->responseService->getNew($responseId);
         $result
             ->setSurveyId($survey->getSurveyId())
             ->setSurveyVersion($survey->getVersion())
@@ -96,7 +95,7 @@ class Response
         foreach ($surveyParameters as $surveyParameter) {
             if ($this->requestStack->getCurrentRequest()->query->has($surveyParameter->getUrlParam())) {
 
-                if(!is_array($this->requestStack->getCurrentRequest()->query->get($surveyParameter->getUrlParam()))) {
+                if (!is_array($this->requestStack->getCurrentRequest()->query->get($surveyParameter->getUrlParam()))) {
                     $value = clone $surveyParameter;
                     $value->setValue($this->requestStack->getCurrentRequest()->query->get($value->getUrlParam()));
                     $result[] = $value;
@@ -106,7 +105,6 @@ class Response
 
         return $result;
     }
-
 
     public function addUserAgent(Document\Response $response)
     {
@@ -120,7 +118,7 @@ class Response
     public function hasModeChanged(string $surveyMode): bool
     {
         return $surveyMode !== $this->responseService->getModeByRoute(
-            $this->requestStack->getCurrentRequest()->attributes->get('_route')
-        );
+                $this->requestStack->getCurrentRequest()->attributes->get('_route')
+            );
     }
 }

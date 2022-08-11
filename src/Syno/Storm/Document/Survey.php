@@ -197,6 +197,18 @@ class Survey implements JsonSerializable
         return $this->pages;
     }
 
+    public function getPlainPages(): array
+    {
+        $list = [];
+
+        foreach ($this->pages as $page) {
+            $list[] = (int)$page->getPageId();
+        }
+
+        return $list;
+    }
+
+
     public function getFirstPage(): Page
     {
         return $this->pages->filter(function (Page $page) {
@@ -252,33 +264,6 @@ class Survey implements JsonSerializable
         }
 
         return $questions;
-    }
-
-    public function getNextPage(int $pageId): ?Page
-    {
-        $result = null;
-        $pick   = false;
-        foreach ($this->pages as $page) {
-            if ($pick) {
-                $result = $page;
-                break;
-            }
-            if ($pageId === $page->getPageId()) {
-                $pick = true;
-            }
-        }
-
-        return $result;
-    }
-
-    public function isFirstPage(int $pageId): bool
-    {
-        return $pageId === $this->pages->first()->getPageId();
-    }
-
-    public function isLastPage(int $pageId): bool
-    {
-        return $pageId === $this->pages->last()->getPageId();
     }
 
     public function getConfig(): ?Config
@@ -420,5 +405,10 @@ class Survey implements JsonSerializable
         $this->randomizationBlocks = $randomizationBlocks;
 
         return $this;
+    }
+
+    public function isRandomizationOn(): bool
+    {
+        return $this->randomizationBlocks->count();
     }
 }
