@@ -411,4 +411,9 @@ class Survey implements JsonSerializable
     {
         return $this->randomizationBlocks->count();
     }
+
+    public function isFirstPage(int $pageId): bool
+    {
+        return $pageId === $this->pages->first()->getPageId();
+    }
 }

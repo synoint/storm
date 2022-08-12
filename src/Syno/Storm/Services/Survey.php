@@ -4,14 +4,22 @@ namespace Syno\Storm\Services;
 
 use Doctrine\ODM\MongoDB\DocumentManager;
 use Syno\Storm\Document;
+use Syno\Storm\RequestHandler;
 
 class Survey
 {
     private DocumentManager $dm;
+//    private RequestHandler\Survey   $surveyHandler;
+    private RequestHandler\Response $responseHandler;
 
-    public function __construct(DocumentManager $documentManager)
-    {
+    public function __construct(
+        DocumentManager $documentManager,
+//        RequestHandler\Survey $surveyHandler,
+        RequestHandler\Response $responseHandler
+    ) {
         $this->dm = $documentManager;
+//        $this->surveyHandler   = $surveyHandler;
+        $this->responseHandler = $responseHandler;
     }
 
     public function getNew(): Document\Survey
@@ -28,7 +36,7 @@ class Survey
         $this->dm->flush();
     }
 
-    public function find(int $surveyId):? array
+    public function find(int $surveyId): ?array
     {
         return $this->dm->getRepository(Document\Survey::class)->findBy(
             [
@@ -43,12 +51,12 @@ class Survey
     /**
      * @return null|Document\Survey
      */
-    public function findBySurveyIdAndVersion(int $surveyId, int $version):? object
+    public function findBySurveyIdAndVersion(int $surveyId, int $version): ?object
     {
         return $this->dm->getRepository(Document\Survey::class)->findOneBy(
             [
                 'surveyId' => $surveyId,
-                'version' => $version,
+                'version'  => $version,
             ]
         );
     }
@@ -58,9 +66,9 @@ class Survey
         $this->dm->detach($survey);
     }
 
-    public function findLatestVersion(int $surveyId):? int
+    public function findLatestVersion(int $surveyId): ?int
     {
-        $result = null;
+        $result  = null;
         $surveys = $this->dm->getRepository(Document\Survey::class)->findBy(
             ['surveyId' => $surveyId],
             ['version' => 'DESC'],
@@ -70,7 +78,7 @@ class Survey
         if ($surveys) {
             /** @var Document\Survey $lastSurvey */
             $latestSurvey = $surveys[0];
-            $result = $latestSurvey->getVersion();
+            $result       = $latestSurvey->getVersion();
         }
 
         return $result;
@@ -79,11 +87,11 @@ class Survey
     /**
      * @return null|Document\Survey
      */
-    public function getPublished(int $surveyId):? object
+    public function getPublished(int $surveyId): ?object
     {
         return $this->dm->getRepository(Document\Survey::class)->findOneBy(
             [
-                'surveyId' => $surveyId,
+                'surveyId'  => $surveyId,
                 'published' => true
             ]
         );
@@ -113,7 +121,7 @@ class Survey
 
     public function enableDebugMode(Document\Survey $survey): string
     {
-        $token = bin2hex(random_bytes(rand(16,20)));
+        $token = bin2hex(random_bytes(rand(16, 20)));
         $survey->getConfig()->setDebugMode(true);
         $survey->getConfig()->setDebugToken($token);
         $this->dm->flush();
@@ -130,10 +138,23 @@ class Survey
 
     public function getProgress(Document\Survey $survey, Document\Page $currentPage): int
     {
-        $pages            = $survey->getPages();
-        $pageCount        = $pages->count();
-        $currentPageIndex = $pages->indexOf($currentPage);
+        $questionCount = 0;
+        $pages         = $survey->getPages();
 
-        return round($currentPageIndex / $pageCount * 100);
+        /** @var Document\Page $page */
+        foreach ($pages as $page) {
+            $questionCount += $page->getQuestions()->count();
+        }
+
+        $completedQuestionCount = $this->responseHandler->getResponse()->getAnswers()->count();
+
+        if (0 === $completedQuestionCount) {
+            return 0;
+        }
+
+//        $pageCount        = $pages->count();
+//        $currentPageIndex = $pages->indexOf($currentPage);
+
+        return round(($completedQuestionCount / $questionCount) * 100);
     }
 }
