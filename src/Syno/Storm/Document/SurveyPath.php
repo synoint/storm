@@ -55,11 +55,11 @@ class SurveyPath implements JsonSerializable
     private $debugPath;
 
     /**
-     * @var int
+     * @var float
      *
-     * @ODM\Field(type="int")
+     * @ODM\Field(type="float")
      */
-    private $weight = 1;
+    private $weight = 0;
 
     public function __construct()
     {
@@ -200,12 +200,12 @@ class SurveyPath implements JsonSerializable
         return $pageId === $this->pages->last()->getPageId();
     }
 
-    public function getWeight(): int
+    public function getWeight(): float
     {
         return $this->weight;
     }
 
-    public function setWeight(int $weight): void
+    public function setWeight(float $weight): void
     {
         $this->weight = $weight;
     }

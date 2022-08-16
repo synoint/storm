@@ -7,30 +7,33 @@ use Syno\Storm\Document;
 
 class Randomization
 {
-    private Permutation $permutationService;
+    private Permutation         $permutationService;
+    private RandomizationWeight $randomizationWeightService;
 
-    public function __construct(Permutation $permutationService)
+    public function __construct(Permutation $permutationService, RandomizationWeight $randomizationWeightService)
     {
-        $this->permutationService = $permutationService;
+        $this->permutationService         = $permutationService;
+        $this->randomizationWeightService = $randomizationWeightService;
     }
 
     public function getRandomizedPaths(Document\Survey $survey): array
     {
-        $permutatedPages      = $this->getPermutatedPages($survey);
-        $permutatedBlockPages = $this->getPermutatedBlockPages($survey);
+        $weights['blocks'] = $this->randomizationWeightService->getBlockWeights($survey);
+        $weights['pages']  = $this->randomizationWeightService->getPageWeights($survey);
 
-        $permutatedItems['blocks'] = $permutatedBlockPages;
-        $permutatedItems['pages']  = $permutatedPages;
+        $permutatedItems['blocks'] = $this->getPermutatedBlockPages($survey, $weights);
+        $permutatedItems['pages']  = $this->getPermutatedPages($survey, $weights);
 
         return $this->createSurveyPathCombinations($survey, $permutatedItems);
     }
 
-    private function getPermutatedBlockPages(Document\Survey $survey): array
+    private function getPermutatedBlockPages(Document\Survey $survey, array $weights): array
     {
         $pages                                  = $survey->getPlainPages();
         $positionMap                            = [];
         $blockPagesCombinations['position_map'] = [];
         $blockPagesCombinations['combinations'] = [];
+        $blockPagesCombinations['item_weights'] = [];
 
         $permutatedItems = $this->permutationService->permute($this->findRandomizedBlocks($survey))->getResult();
 
@@ -38,6 +41,7 @@ class Randomization
             foreach ($items as $item) {
                 foreach ($survey->getRandomizationBlocks()->toArray() as $randomizationBlock) {
                     if ($item === $randomizationBlock->getId() && 'page' === $randomizationBlock->getType()) {
+                        /** @var Document\BlockItem $randomizedItem */
                         foreach ($randomizationBlock->getItems() as $randomizedItem) {
                             $blockPagesCombinations['combinations'][$index][] = $randomizedItem->getPage();
 
@@ -51,15 +55,24 @@ class Randomization
             asort($positionMap);
 
             $blockPagesCombinations['position_map'] = $positionMap;
+
+            // find block weights
+            $firstBlockId          = $items[0];
+            $weight                = $weights['blocks'][$firstBlockId];
+            $blockCombinationCount = $this->randomizationWeightService->countBlockCombinations($permutatedItems,
+                $firstBlockId);
+
+            $blockPagesCombinations['item_weights'][$index] = round($weight / $blockCombinationCount, 2);
         }
 
         return $blockPagesCombinations;
     }
 
-    private function getPermutatedPages(Document\Survey $survey): array
+    private function getPermutatedPages(Document\Survey $survey, array $weights): array
     {
-        $pages                = $survey->getPlainPages();
-        $positionMap          = [];
+        $pages       = $survey->getPlainPages();
+        $positionMap = [];
+
         $permutatedItemGroups = [];
         $pagesCombinations    = [];
 
@@ -72,6 +85,15 @@ class Randomization
                 foreach ($items as $item) {
                     $positionMap[array_search($item, $pages)] = array_search($item, $pages);
                 }
+
+                // find page weights
+                $firstPageId          = $items[0];
+                $weight               = $weights['pages'][$firstPageId];
+                $pageCombinationCount = $this->randomizationWeightService->countPageCombinations($permutatedItems,
+                    $firstPageId);
+
+                $pagesCombinations[$group]['item_weights'][] = round($weight / $pageCombinationCount, 2);
+
             }
             asort($positionMap);
 
@@ -139,12 +161,15 @@ class Randomization
         if (count($permutatedItems['blocks']) && count($permutatedItems['pages'])) {
             $c = -1;
 
-            foreach ($permutatedItems['blocks']['combinations'] as $blockItems) {
+            foreach ($permutatedItems['blocks']['combinations'] as $blockItemsIndex => $blockItems) {
                 $blockItemCount      = 0;
                 $randomizedPathsTemp = [];
+                $blockItemWeight     = 0;
 
                 foreach ($blockItems as $item) {
-                    $key = $this->getPositionMapIndexOf($permutatedItems['blocks']['position_map'], $blockItemCount);
+                    $key             = $this->getPositionMapIndexOf($permutatedItems['blocks']['position_map'],
+                        $blockItemCount);
+                    $blockItemWeight = $permutatedItems['blocks']['item_weights'][$blockItemsIndex];
 
                     $randomizedPathsTemp[$key] = $item;
                     $blockItemCount++;
@@ -153,7 +178,7 @@ class Randomization
                 foreach ($permutatedItems['pages'] as $permutatedPageItems) {
                     $randomizedPathsTemp2 = $randomizedPathsTemp;
 
-                    foreach ($permutatedPageItems['combinations'] as $pageItems) {
+                    foreach ($permutatedPageItems['combinations'] as $pageItemIndex => $pageItems) {
                         $pageItemCount = 0;
                         foreach ($pageItems as $item) {
                             $key = $this->getPositionMapIndexOf($permutatedPageItems['position_map'], $pageItemCount);
@@ -161,7 +186,9 @@ class Randomization
                             $randomizedPathsTemp2[$key] = $item;
                             $pageItemCount++;
                         }
-                        $randomizedPaths[$c++] = $randomizedPathsTemp2;
+                        $counter                              = ++$c;
+                        $randomizedPaths['paths'][$counter]   = $randomizedPathsTemp2;
+                        $randomizedPaths['weights'][$counter] = $blockItemWeight + $permutatedPageItems['item_weights'][$pageItemIndex];
                     }
                 }
             }
@@ -175,7 +202,8 @@ class Randomization
                 foreach ($items as $item) {
                     $key = $this->getPositionMapIndexOf($permutatedItems['blocks']['position_map'], $itemCount);
 
-                    $randomizedPaths[$permutationIndex][$key] = $item;
+                    $randomizedPaths['paths'][$permutationIndex][$key] = $item;
+                    $randomizedPaths['weights'][$permutationIndex]     = $permutatedItems['blocks']['item_weights'][$permutationIndex];
                     $itemCount++;
                 }
             }
@@ -189,7 +217,8 @@ class Randomization
                     foreach ($items as $item) {
                         $key = $this->getPositionMapIndexOf($permutatedPageItems['position_map'], $itemCount);
 
-                        $randomizedPaths[$permutationIndex][$key] = $item;
+                        $randomizedPaths['paths'][$permutationIndex][$key] = $item;
+                        $randomizedPaths['weights'][$permutationIndex]     = $permutatedItems['pages']['item_weights'][$permutationIndex];
                         $itemCount++;
                     }
                 }
@@ -197,7 +226,7 @@ class Randomization
         }
 
         $paths = [];
-        foreach ($randomizedPaths as $path) {
+        foreach ($randomizedPaths['paths'] as $path) {
             foreach ($pages as $index => $page) {
                 if (!in_array($page, $path)) {
                     $path[$index] = $page;
@@ -209,7 +238,7 @@ class Randomization
             $paths[] = $path;
         }
 
-        return $paths;
+        return ['paths' => $paths, 'weights' => $randomizedPaths['weights']];
     }
 
     private function getPositionMapIndexOf($map, $position): int

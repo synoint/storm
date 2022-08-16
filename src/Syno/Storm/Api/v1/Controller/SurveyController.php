@@ -81,9 +81,9 @@ class SurveyController extends AbstractController implements TokenAuthenticatedC
             $this->surveyService->save($survey);
             $this->surveyEventLoggerService->log(SurveyEventLogger::SURVEY_CREATED, $survey);
 
-            $randomizedPaths = $this->randomizationService->getRandomizedPaths($survey);
+            $randomizedCombinations = $this->randomizationService->getRandomizedPaths($survey);
 
-            foreach ($randomizedPaths as $combination) {
+            foreach ($randomizedCombinations['paths'] as $index => $combination) {
                 $surveyPath = $this->surveyPathService->getNew();
                 $surveyPath->setSurveyId($survey->getSurveyId());
                 $surveyPath->setVersion($survey->getVersion());
@@ -99,6 +99,7 @@ class SurveyController extends AbstractController implements TokenAuthenticatedC
                     }
                 }
 
+                $surveyPath->setWeight($randomizedCombinations['weights'][$index]);
                 $surveyPath->setPages($surveyPathPages);
                 $surveyPath->setDebugPath(implode(',', $pagePathCodeList));
 

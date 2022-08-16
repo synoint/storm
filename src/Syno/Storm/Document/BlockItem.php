@@ -57,7 +57,7 @@ class BlockItem implements JsonSerializable
      *
      * @ODM\Field(type="int")
      */
-    private $weight;
+    private $weight = 0;
 
     public function jsonSerialize(): array
     {
@@ -150,10 +150,10 @@ class BlockItem implements JsonSerializable
 
     public function getWeight(): int
     {
-        return $this->weight;
+        return ($this->weight) ?: 0;
     }
 
-    public function setWeight(int $weight): self
+    public function setWeight(?int $weight): self
     {
         $this->weight = $weight;
 
