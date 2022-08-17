@@ -147,19 +147,16 @@ class ResponseSessionManager
         $this->responseSession->saveProgress($this->pageHandler->getPage());
     }
 
-    public function isLastPage(): bool
+    public function isLastPage(int $pageId): bool
     {
-        $questionCount = 0;
-        $pages         = $this->surveyHandler->getSurvey()->getPages();
+        $response = $this->responseHandler->getResponse();
 
-        /** @var Document\Page $page */
-        foreach ($pages as $page) {
-            $questionCount += $page->getQuestions()->count();
+        $pages = $this->surveyHandler->getSurvey()->getPages();
+        if ($response->getSurveyPathId()) {
+            $pages = $response->getSurveyPath();
         }
 
-        $responseAnswers = $this->responseHandler->getResponse()->getAnswers()->count();
-
-        if ($responseAnswers === --$questionCount) {
+        if ($pages->last()->getPageId() === $pageId) {
             return true;
         }
 
