@@ -47,8 +47,8 @@ class SurveyType extends AbstractType
                 'by_reference'  => false,
                 'allow_add'     => true
             ])
-            ->add('randomizationBlocks', CollectionType::class, [
-                'entry_type' => RandomizationBlockType::class,
+            ->add('randomization', CollectionType::class, [
+                'entry_type' => RandomizationType::class,
                 'by_reference'  => false,
                 'allow_add'     => true
             ]);

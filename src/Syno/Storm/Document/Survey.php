@@ -108,35 +108,35 @@ class Survey implements JsonSerializable
     /**
      * @var Collection
      *
-     * @ODM\EmbedMany(targetDocument=RandomizationBlock::class)
+     * @ODM\EmbedMany(targetDocument=Randomization::class)
      */
-    private $randomizationBlocks;
+    private $randomization;
 
     public function __construct()
     {
-        $this->pages               = new ArrayCollection();
-        $this->parameters          = new ArrayCollection();
-        $this->urls                = new ArrayCollection();
-        $this->languages           = new ArrayCollection();
-        $this->css                 = new ArrayCollection();
-        $this->translations        = new ArrayCollection();
-        $this->randomizationBlocks = new ArrayCollection();
+        $this->pages         = new ArrayCollection();
+        $this->parameters    = new ArrayCollection();
+        $this->urls          = new ArrayCollection();
+        $this->languages     = new ArrayCollection();
+        $this->css           = new ArrayCollection();
+        $this->translations  = new ArrayCollection();
+        $this->randomization = new ArrayCollection();
     }
 
     public function jsonSerialize(): array
     {
         return [
-            'id'                  => $this->id,
-            'surveyId'            => $this->surveyId,
-            'version'             => $this->version,
-            'languages'           => $this->languages,
-            'translations'        => $this->translations,
-            'published'           => $this->published,
-            'config'              => $this->config,
-            'parameters'          => $this->parameters,
-            'urls'                => $this->urls,
-            'pages'               => $this->pages,
-            'css'                 => $this->css,
+            'id'           => $this->id,
+            'surveyId'     => $this->surveyId,
+            'version'      => $this->version,
+            'languages'    => $this->languages,
+            'translations' => $this->translations,
+            'published'    => $this->published,
+            'config'       => $this->config,
+            'parameters'   => $this->parameters,
+            'urls'         => $this->urls,
+            'pages'        => $this->pages,
+            'css'          => $this->css,
         ];
     }
 
@@ -201,7 +201,7 @@ class Survey implements JsonSerializable
         $list = [];
 
         foreach ($this->pages as $page) {
-            $list[] = (int)$page->getPageId();
+            $list[] = (int) $page->getPageId();
         }
 
         return $list;
@@ -394,21 +394,24 @@ class Survey implements JsonSerializable
         return $this;
     }
 
-    public function getRandomizationBlocks(): Collection
+    /**
+     * @return Collection|Randomization[]
+     */
+    public function getRandomization(): Collection
     {
-        return $this->randomizationBlocks;
+        return $this->randomization;
     }
 
-    public function setRandomizationBlocks($randomizationBlocks): self
+    public function setRandomization($randomization): self
     {
-        $this->randomizationBlocks = $randomizationBlocks;
+        $this->randomization = $randomization;
 
         return $this;
     }
 
     public function isRandomizationOn(): bool
     {
-        return $this->randomizationBlocks->count();
+        return $this->randomization->count();
     }
 
     public function isFirstPage(int $pageId): bool

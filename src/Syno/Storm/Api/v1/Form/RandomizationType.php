@@ -10,7 +10,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Syno\Storm\Document;
 
-class RandomizationBlockType extends AbstractType
+class RandomizationType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
@@ -21,14 +21,15 @@ class RandomizationBlockType extends AbstractType
                 'entry_type'   => BlockItemType::class,
                 'by_reference' => false,
                 'allow_add'    => true
-            ]);
+            ])
+            ->add('is_randomized', IntegerType::class);
     }
 
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(
             [
-                'data_class'      => Document\RandomizationBlock::class,
+                'data_class'      => Document\Randomization::class,
                 'csrf_protection' => false,
             ]
         );

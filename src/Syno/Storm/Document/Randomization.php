@@ -9,7 +9,7 @@ use JsonSerializable;
 /**
  * @ODM\EmbeddedDocument
  */
-class RandomizationBlock implements JsonSerializable
+class Randomization implements JsonSerializable
 {
     /**
      * @var int
@@ -30,12 +30,20 @@ class RandomizationBlock implements JsonSerializable
      */
     private $items;
 
+    /**
+     * @var bool
+     *
+     * @ODM\Field(type="bool")
+     */
+    private $isRandomized;
+
     public function jsonSerialize(): array
     {
         return [
             'id'    => $this->id,
             'type'  => $this->type,
             'items' => $this->items,
+            'isRandomized' => $this->isRandomized
         ];
     }
 
@@ -71,6 +79,18 @@ class RandomizationBlock implements JsonSerializable
     public function setItems(array $items): self
     {
         $this->items = $items;
+
+        return $this;
+    }
+
+    public function isRandomized(): bool
+    {
+        return $this->isRandomized ?: false;
+    }
+
+    public function setIsRandomized(?bool $isRandomized): self
+    {
+        $this->isRandomized = $isRandomized;
 
         return $this;
     }

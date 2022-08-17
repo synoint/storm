@@ -39,7 +39,7 @@ class Randomization
 
         foreach ($permutatedItems as $index => $items) {
             foreach ($items as $item) {
-                foreach ($survey->getRandomizationBlocks()->toArray() as $randomizationBlock) {
+                foreach ($survey->getRandomization()->toArray() as $randomizationBlock) {
                     if ($item === $randomizationBlock->getId() && 'page' === $randomizationBlock->getType()) {
                         /** @var Document\BlockItem $randomizedItem */
                         foreach ($randomizationBlock->getItems() as $randomizedItem) {
@@ -109,13 +109,11 @@ class Randomization
         $items = [];
         $i     = 0;
 
-        /** @var Document\RandomizationBlock $randomizationBlock */
-        foreach ($survey->getRandomizationBlocks()->toArray() as $randomizationBlock) {
+        /** @var Document\Randomization $randomizationBlock */
+        foreach ($survey->getRandomization()->toArray() as $randomizationBlock) {
             $increment = false;
-            /** *************************************************************** */
-            /** TODO manager will send a flag if block has randomization or not */
-            /** *************************************************************** */
-            if ('page' === $randomizationBlock->getType()) {
+
+            if ('page' === $randomizationBlock->getType() && $randomizationBlock->isRandomized()) {
                 /** @var Document\BlockItem $randomizedItem */
                 foreach ($randomizationBlock->getItems() as $randomizedItem) {
                     if ($randomizedItem->getRandomize()) {
@@ -137,12 +135,9 @@ class Randomization
     {
         $items = [];
 
-        /** @var Document\RandomizationBlock $randomizationBlock */
-        foreach ($survey->getRandomizationBlocks()->toArray() as $randomizationBlock) {
-            /** *************************************************************** */
-            /** TODO manager will send a flag if block has randomization or not */
-            /** *************************************************************** */
-            if ('block' === $randomizationBlock->getType()) {
+        /** @var Document\Randomization $randomizationBlock */
+        foreach ($survey->getRandomization()->toArray() as $randomizationBlock) {
+            if ('block' === $randomizationBlock->getType() && $randomizationBlock->isRandomized()) {
                 /** @var Document\BlockItem $randomizedItem */
                 foreach ($randomizationBlock->getItems() as $randomizedItem) {
                     $items[] = $randomizedItem->getBlock();
@@ -255,25 +250,5 @@ class Randomization
         }
 
         return $indexOf;
-    }
-
-    public function getRandomWeightedElement(array $paths): ?Document\SurveyPath
-    {
-        $weightedValues = [];
-        /** @var Document\SurveyPath $path */
-        foreach ($paths as $index => $path) {
-            $weightedValues[$index] = $path->getWeight();
-        }
-
-        $rand = mt_rand(1, (int) array_sum($weightedValues));
-
-        foreach ($weightedValues as $key => $value) {
-            $rand -= $value;
-            if ($rand <= 0) {
-                return $paths[$key];
-            }
-        }
-
-        return null;
     }
 }
