@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Syno\Storm\Services;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ODM\MongoDB\DocumentManager;
 use Syno\Storm\Document;
 
@@ -23,9 +24,31 @@ class SurveyPath
         return $surveyPath;
     }
 
-    public function save(Document\SurveyPath $surveyPath)
+    public function save(Document\Survey $survey, array $randomizedCombinations)
     {
-        $this->dm->persist($surveyPath);
+        foreach ($randomizedCombinations['paths'] as $index => $combination) {
+            $surveyPath = $this->getNew();
+            $surveyPath->setSurveyId($survey->getSurveyId());
+            $surveyPath->setVersion($survey->getVersion());
+
+            $surveyPathPages  = new ArrayCollection();
+            $pagePathCodeList = [];
+            foreach ($combination as $pageId) {
+                foreach ($survey->getPages() as $page) {
+                    if ($page->getPageId() === $pageId) {
+                        $surveyPathPages->add($page);
+                        $pagePathCodeList[] = $page->getCode();
+                    }
+                }
+            }
+
+            $surveyPath->setWeight($randomizedCombinations['weights'][$index]);
+            $surveyPath->setPages($surveyPathPages);
+            $surveyPath->setDebugPath(implode(',', $pagePathCodeList));
+
+            $this->dm->persist($surveyPath);
+        }
+
         $this->dm->flush();
     }
 

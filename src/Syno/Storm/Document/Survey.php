@@ -137,7 +137,6 @@ class Survey implements JsonSerializable
             'urls'                => $this->urls,
             'pages'               => $this->pages,
             'css'                 => $this->css,
-            'randomizationBlocks' => $this->randomizationBlocks,
         ];
     }
 
@@ -395,7 +394,7 @@ class Survey implements JsonSerializable
         return $this;
     }
 
-    public function getRandomizationBlocks()
+    public function getRandomizationBlocks(): Collection
     {
         return $this->randomizationBlocks;
     }
