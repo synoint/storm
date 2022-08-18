@@ -32,6 +32,21 @@ class RandomizationWeight
         return $this->convertToPercents($weights);
     }
 
+    public function findWeightByPageId(array $permutatedItems, int $pageId): float
+    {
+        foreach ($permutatedItems as $permutatedItem) {
+            $weights = $permutatedItem['item_weights'];
+
+            foreach ($permutatedItem['combinations'] as $position => $combinationItems) {
+                if ($combinationItems[0] === $pageId) {
+                    return $weights[$position];
+                }
+            }
+        }
+
+        return 1;
+    }
+
     public function getPageWeights(Document\Survey $survey): array
     {
         $weights = [];

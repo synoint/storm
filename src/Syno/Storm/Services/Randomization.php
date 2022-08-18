@@ -78,7 +78,6 @@ class Randomization
     private function getPermutatedPages(Document\Survey $survey, array $weights): array
     {
         $pages = $survey->getPlainPages();
-//        $positionMap = [];
 
         $permutatedItemGroups = [];
         $pagesCombinations    = [];
@@ -89,13 +88,9 @@ class Randomization
 
         foreach ($permutatedItemGroups as $group => $permutatedItems) {
             $positionMap = [];
+
             foreach ($permutatedItems as $items) {
                 foreach ($items as $item) {
-//                    if ($group > 0) {
-//                        dump($item);
-//                        dump(array_search($item, $pages));
-//                    }
-
                     $positionMap[array_search($item, $pages)] = array_search($item, $pages);
                 }
 
@@ -110,11 +105,23 @@ class Randomization
             }
             asort($positionMap);
 
+            // assign correct position
+            $permutatedItemsWithOriginalPosition = [];
+            foreach ($permutatedItems as $permutatedItemsIndex => $items) {
+                $itemCount = 0;
+                foreach ($items as $item) {
+                    $key = $this->getPositionMapIndexOf($positionMap, $itemCount);
+
+                    $permutatedItemsWithOriginalPosition[$permutatedItemsIndex][$key] = $item;
+                    $itemCount++;
+                }
+            }
+
             $pagesCombinations[$group]['position_map'] = $positionMap;
-            $pagesCombinations[$group]['combinations'] = $permutatedItems;
+//            $pagesCombinations[$group]['combinations'] = $permutatedItems;
+            $pagesCombinations[$group]['combinations'] = $permutatedItemsWithOriginalPosition;
         }
-//dump('-----');
-//dd($pagesCombinations[1]);
+
         return $pagesCombinations;
     }
 
@@ -201,7 +208,6 @@ class Randomization
                     }
                 }
             }
-
         }
 
         if (count($permutatedItems['blocks']) && !count($permutatedItems['pages'])) {
@@ -217,24 +223,20 @@ class Randomization
                 }
             }
         }
-//dump($permutatedItems['pages'][1]);
+
         if (!count($permutatedItems['blocks']) && count($permutatedItems['pages'])) {
+            $allCombinations = [];
             foreach ($permutatedItems['pages'] as $permutatedPageItems) {
-                foreach ($permutatedPageItems['combinations'] as $permutationIndex => $items) {
-                    $itemCount = 0;
+                $allCombinations[] = $permutatedPageItems['combinations'];
+            }
 
-                    foreach ($items as $itemIndex => $item) {
-                        $key = $this->getPositionMapIndexOf($permutatedPageItems['position_map'], $itemCount);
+            $randomizedPaths['paths'] = $this->mergeCombinations($allCombinations);
 
-                        $randomizedPaths['paths'][$permutationIndex][$key] = $item;
-                        $randomizedPaths['weights'][$permutationIndex]     = $permutatedPageItems['item_weights'][$itemIndex];
-                        $itemCount++;
-                    }
-                }
+            foreach ($randomizedPaths['paths'] as $path) {
+                $randomizedPaths['weights'][] = $this->randomizationWeightService->findWeightByPageId($permutatedItems['pages'], $path[0]);
             }
         }
 
-//        dd($randomizedPaths);
         $paths = [];
         foreach ($randomizedPaths['paths'] as $path) {
             foreach ($pages as $index => $page) {
@@ -251,16 +253,34 @@ class Randomization
         return ['paths' => $paths, 'weights' => $randomizedPaths['weights']];
     }
 
-    private function doSomething($combinations, $result = [])
+    private function mergeCombinations(array &$combinations, array &$result = [])
     {
         for ($i = 0; $i < count($combinations); $i++) {
-            if (empty($result)) {
-                $result = $combinations[$i];
+            $c = 0;
+            if (0 === count($result)) {
+                $result = $combinations[0];
+            } else {
+                $tempResult = $result;
+                for ($n = 0; $n < count($combinations[$i]); $n++) {
+                    for ($m = 0; $m < count($tempResult); $m++) {
+                        $mergedItems = [];
+                        foreach ($tempResult[$m] as $index => $value) {
+                            $mergedItems[$index] = $value;
+                        }
+
+                        foreach ($combinations[$i][$n] as $index => $value) {
+                            $mergedItems[$index] = $value;
+                        }
+
+                        $result[$c] = $mergedItems;
+                        $c++;
+                    }
+                }
             }
 
-            unset($combinations[$i]);
+            $combinations = array_slice($combinations, 1);
 
-            $this->doSomething($combinations, $result);
+            $this->mergeCombinations($combinations, $result);
         }
 
         return $result;
