@@ -5,6 +5,8 @@ namespace Syno\Storm\Services;
 
 class Permutation
 {
+    private const LIMIT = 1000;
+
     private array $result;
 
     public function getResult(): array
@@ -16,6 +18,10 @@ class Permutation
     {
         if (empty($permutated)) {
             $this->result = [];
+        }
+
+        if (self::LIMIT === count($this->result)) {
+            return $this;
         }
 
         if (empty($source)) {

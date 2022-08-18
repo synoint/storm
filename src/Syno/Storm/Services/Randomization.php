@@ -34,9 +34,16 @@ class Randomization
         $blockPagesCombinations['position_map'] = [];
         $blockPagesCombinations['combinations'] = [];
         $blockPagesCombinations['item_weights'] = [];
+//dd($this->findRandomizedBlocks($survey));
 
-        $permutatedItems = $this->permutationService->permute($this->findRandomizedBlocks($survey))->getResult();
+        $randomizedBlocks = $this->findRandomizedBlocks($survey);
+        if (!count($randomizedBlocks)) {
+            return [];
+        }
 
+        $permutatedItems = $this->permutationService->permute($randomizedBlocks)->getResult();
+//dump('----');
+//dd($permutatedItems);
         foreach ($permutatedItems as $index => $items) {
             foreach ($items as $item) {
                 foreach ($survey->getRandomization()->toArray() as $randomizationBlock) {
@@ -55,7 +62,7 @@ class Randomization
             asort($positionMap);
 
             $blockPagesCombinations['position_map'] = $positionMap;
-
+//dd($items);
             // find block weights
             $firstBlockId          = $items[0];
             $weight                = $weights['blocks'][$firstBlockId];
@@ -70,8 +77,8 @@ class Randomization
 
     private function getPermutatedPages(Document\Survey $survey, array $weights): array
     {
-        $pages       = $survey->getPlainPages();
-        $positionMap = [];
+        $pages = $survey->getPlainPages();
+//        $positionMap = [];
 
         $permutatedItemGroups = [];
         $pagesCombinations    = [];
@@ -81,8 +88,14 @@ class Randomization
         }
 
         foreach ($permutatedItemGroups as $group => $permutatedItems) {
+            $positionMap = [];
             foreach ($permutatedItems as $items) {
                 foreach ($items as $item) {
+//                    if ($group > 0) {
+//                        dump($item);
+//                        dump(array_search($item, $pages));
+//                    }
+
                     $positionMap[array_search($item, $pages)] = array_search($item, $pages);
                 }
 
@@ -100,7 +113,8 @@ class Randomization
             $pagesCombinations[$group]['position_map'] = $positionMap;
             $pagesCombinations[$group]['combinations'] = $permutatedItems;
         }
-
+//dump('-----');
+//dd($pagesCombinations[1]);
         return $pagesCombinations;
     }
 
@@ -203,23 +217,24 @@ class Randomization
                 }
             }
         }
-
+//dump($permutatedItems['pages'][1]);
         if (!count($permutatedItems['blocks']) && count($permutatedItems['pages'])) {
             foreach ($permutatedItems['pages'] as $permutatedPageItems) {
                 foreach ($permutatedPageItems['combinations'] as $permutationIndex => $items) {
                     $itemCount = 0;
 
-                    foreach ($items as $item) {
+                    foreach ($items as $itemIndex => $item) {
                         $key = $this->getPositionMapIndexOf($permutatedPageItems['position_map'], $itemCount);
 
                         $randomizedPaths['paths'][$permutationIndex][$key] = $item;
-                        $randomizedPaths['weights'][$permutationIndex]     = $permutatedItems['pages']['item_weights'][$permutationIndex];
+                        $randomizedPaths['weights'][$permutationIndex]     = $permutatedPageItems['item_weights'][$itemIndex];
                         $itemCount++;
                     }
                 }
             }
         }
 
+//        dd($randomizedPaths);
         $paths = [];
         foreach ($randomizedPaths['paths'] as $path) {
             foreach ($pages as $index => $page) {
@@ -234,6 +249,21 @@ class Randomization
         }
 
         return ['paths' => $paths, 'weights' => $randomizedPaths['weights']];
+    }
+
+    private function doSomething($combinations, $result = [])
+    {
+        for ($i = 0; $i < count($combinations); $i++) {
+            if (empty($result)) {
+                $result = $combinations[$i];
+            }
+
+            unset($combinations[$i]);
+
+            $this->doSomething($combinations, $result);
+        }
+
+        return $result;
     }
 
     private function getPositionMapIndexOf($map, $position): int
