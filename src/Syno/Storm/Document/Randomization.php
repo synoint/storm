@@ -24,7 +24,7 @@ class Randomization implements JsonSerializable
     private $type;
 
     /**
-     * @var Collection
+     * @var array
      *
      * @ODM\EmbedMany(targetDocument=BlockItem::class)
      */
@@ -71,7 +71,7 @@ class Randomization implements JsonSerializable
         return $this;
     }
 
-    public function getItems(): ?Collection
+    public function getItems(): array
     {
         return $this->items;
     }

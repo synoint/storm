@@ -2,17 +2,21 @@
 
 namespace App\Tests\Unit\Syno\Storm\Document;
 
+use App\Tests\Traits\DocumentMockTrait;
 use App\Tests\Unit\TestCase;
-use Syno\Storm\Document\Survey;
+use Doctrine\Common\Collections;
+use Doctrine\Common\Collections\ArrayCollection;
+use Syno\Storm\Document;
 
 class SurveyTest extends TestCase
 {
-    /** @var Survey */
-    private $document;
+    use DocumentMockTrait;
+
+    private Document\Survey $document;
 
     public function setUp(): void
     {
-        $this->document = new Survey();
+        $this->document = new Document\Survey();
         $this->setHiddenProperty($this->document, 'id', 123);
     }
 
@@ -31,5 +35,12 @@ class SurveyTest extends TestCase
     {
         $this->document->setVersion(2);
         $this->assertEquals(2, $this->document->getVersion());
+    }
+
+    public function testRandomizationIsArray()
+    {
+        $this->document->setRandomization(new ArrayCollection([$this->mockRandomization()]));
+
+        $this->assertObjectEquals(Collections\ArrayCollection::class, $this->document->getRandomization());
     }
 }

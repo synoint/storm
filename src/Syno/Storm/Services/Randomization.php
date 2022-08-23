@@ -27,6 +27,18 @@ class Randomization
         return $this->createSurveyPathCombinations($survey, $permutatedItems);
     }
 
+    public function simpleMethod(): array
+    {
+        $elements1 = ['P1', 'P2', 'P3', 'P4','P5', 'P6'];
+
+        return $this->permutationService->permute($elements1)->getResult();
+    }
+
+    public function simpleMethod2(int $n): int
+    {
+        return $n;
+    }
+
     private function getPermutatedBlockPages(Document\Survey $survey, array $weights): array
     {
         $pages                                  = $survey->getPlainPages();
@@ -34,7 +46,7 @@ class Randomization
         $blockPagesCombinations['position_map'] = [];
         $blockPagesCombinations['combinations'] = [];
         $blockPagesCombinations['item_weights'] = [];
-//dd($this->findRandomizedBlocks($survey));
+
 
         $randomizedBlocks = $this->findRandomizedBlocks($survey);
         if (!count($randomizedBlocks)) {
@@ -42,8 +54,7 @@ class Randomization
         }
 
         $permutatedItems = $this->permutationService->permute($randomizedBlocks)->getResult();
-//dump('----');
-//dd($permutatedItems);
+
         foreach ($permutatedItems as $index => $items) {
             foreach ($items as $item) {
                 foreach ($survey->getRandomization()->toArray() as $randomizationBlock) {
@@ -62,7 +73,7 @@ class Randomization
             asort($positionMap);
 
             $blockPagesCombinations['position_map'] = $positionMap;
-//dd($items);
+
             // find block weights
             $firstBlockId          = $items[0];
             $weight                = $weights['blocks'][$firstBlockId];
@@ -233,7 +244,8 @@ class Randomization
             $randomizedPaths['paths'] = $this->mergeCombinations($allCombinations);
 
             foreach ($randomizedPaths['paths'] as $path) {
-                $randomizedPaths['weights'][] = $this->randomizationWeightService->findWeightByPageId($permutatedItems['pages'], $path[0]);
+                $randomizedPaths['weights'][] = $this->randomizationWeightService->findWeightByPageId($permutatedItems['pages'],
+                    $path[0]);
             }
         }
 

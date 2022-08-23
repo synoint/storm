@@ -402,7 +402,7 @@ class Survey implements JsonSerializable
         return $this->randomization;
     }
 
-    public function setRandomization($randomization): self
+    public function setRandomization(Collection $randomization): self
     {
         $this->randomization = $randomization;
 
