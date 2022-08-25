@@ -13,7 +13,7 @@ class RandomizationWeight
         $i       = 0;
 
         /** @var Document\Randomization $randomizationBlock */
-        foreach ($survey->getRandomization()->toArray() as $randomizationBlock) {
+        foreach ($survey->getRandomization() as $randomizationBlock) {
             $increment = false;
             if ('block' === $randomizationBlock->getType()) {
                 /** @var Document\BlockItem $randomizedItem */
@@ -53,7 +53,7 @@ class RandomizationWeight
         $i       = 0;
 
         /** @var Document\Randomization $randomizationBlock */
-        foreach ($survey->getRandomization()->toArray() as $randomizationBlock) {
+        foreach ($survey->getRandomization() as $randomizationBlock) {
             $increment = false;
             if ('page' === $randomizationBlock->getType()) {
                 /** @var Document\BlockItem $randomizedItem */

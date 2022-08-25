@@ -7,10 +7,10 @@ use Syno\Storm\Document;
 
 trait DocumentMockTrait
 {
-    public int $pageId     = 9339;
-    public int $questionId = 789;
-    public int $answerId   = 4567;
-    public int $blockId    = 41;
+    public int $blockId    = 10;
+    public int $pageId     = 101;
+    public int $questionId = 1001;
+    public int $answerId   = 10001;
 
     public function mockSurvey(): Document\Survey
     {
@@ -41,7 +41,6 @@ trait DocumentMockTrait
         $page->setCode($code);
         $page->setSortOrder(1);
         $page->setContent('lorem ipsum');
-//        $page->setQuestions(new ArrayCollection([$this->mockQuestion()]));
 
         return $page;
     }
@@ -67,7 +66,6 @@ trait DocumentMockTrait
         $question->setRequired(true);
         $question->setText('Question 1');
         $question->setQuestionTypeId(2);
-//        $question->setAnswers(new ArrayCollection([$this->mockAnswer()]));
 
         return $question;
     }
@@ -115,7 +113,6 @@ trait DocumentMockTrait
         $randomization->setId($id);
         $randomization->setIsRandomized($isRandomized);
         $randomization->setType($type);
-//        $randomization->setItems([$this->mockBlockItem()]);
 
         return $randomization;
     }

@@ -26,7 +26,7 @@ final class RandomizationWeightTest extends TestCase
 
         $block1 = $this->mockRandomization(['id' => 1, 'type' => 'page']);
         $block2 = $this->mockRandomization(['id' => 2, 'type' => 'page']);
-        $block3 = $this->mockRandomization(['id' => 3, 'type' => 'page']);
+        $block3 = $this->mockRandomization(['id' => 3, 'type' => 'page', 'isRandomized' => true]);
         $block4 = $this->mockRandomization(['id' => 4, 'type' => 'block', 'isRandomized' => true]);
 
         $blockItem1 = $this->mockBlockItem(['id' => 101, 'pageId' => 1001]);
@@ -35,17 +35,17 @@ final class RandomizationWeightTest extends TestCase
         $blockItem3 = $this->mockBlockItem(['id' => 103, 'pageId' => 1003]);
         $blockItem4 = $this->mockBlockItem(['id' => 104, 'pageId' => 1004]);
 
-        $blockItem5 = $this->mockBlockItem(['id' => 105, 'pageId' => 1003, 'isRandomized' => true, 'weight' => 1]);
-        $blockItem6 = $this->mockBlockItem(['id' => 106, 'pageId' => 1004, 'isRandomized' => true, 'weight' => 2]);
+        $blockItem5 = $this->mockBlockItem(['id' => 105, 'pageId' => 1005, 'isRandomized' => true, 'weight' => 1]);
+        $blockItem6 = $this->mockBlockItem(['id' => 106, 'pageId' => 1006, 'isRandomized' => true, 'weight' => 2]);
 
         $blockItem7 = $this->mockBlockItem(['id' => 107, 'blockId' => 1, 'isRandomized' => true, 'weight' => 1]);
         $blockItem8 = $this->mockBlockItem(['id' => 108, 'blockId' => 2, 'isRandomized' => true, 'weight' => 1]);
         $blockItem9 = $this->mockBlockItem(['id' => 109, 'blockId' => 3, 'isRandomized' => true, 'weight' => 5]);
 
-        $block1->setItems([$blockItem1, $blockItem2]);
-        $block2->setItems([$blockItem3, $blockItem4]);
-        $block3->setItems([$blockItem5, $blockItem6]);
-        $block4->setItems([$blockItem7, $blockItem8, $blockItem9]);
+        $block1->setItems(new ArrayCollection([$blockItem1, $blockItem2]));
+        $block2->setItems(new ArrayCollection([$blockItem3, $blockItem4]));
+        $block3->setItems(new ArrayCollection([$blockItem5, $blockItem6]));
+        $block4->setItems(new ArrayCollection([$blockItem7, $blockItem8, $blockItem9]));
 
         $this->survey->setRandomization(new ArrayCollection([$block1, $block2, $block3, $block4]));
     }
@@ -73,7 +73,7 @@ final class RandomizationWeightTest extends TestCase
         $weights = $this->randomizationWeightService->getPageWeights($this->survey);
 
         // key is page id
-        $this->assertEquals(33.33, $weights['1003'], 'Error. Incorrectly returned weight');
-        $this->assertEquals(66.66, $weights['1004'], 'Error. Incorrectly returned weight');
+        $this->assertEquals(33.33, $weights['1005'], 'Error. Incorrectly returned weight');
+        $this->assertEquals(66.66, $weights['1006'], 'Error. Incorrectly returned weight');
     }
 }

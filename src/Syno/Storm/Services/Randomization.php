@@ -27,18 +27,6 @@ class Randomization
         return $this->createSurveyPathCombinations($survey, $permutatedItems);
     }
 
-    public function simpleMethod(): array
-    {
-        $elements1 = ['P1', 'P2', 'P3', 'P4','P5', 'P6'];
-
-        return $this->permutationService->permute($elements1)->getResult();
-    }
-
-    public function simpleMethod2(int $n): int
-    {
-        return $n;
-    }
-
     private function getPermutatedBlockPages(Document\Survey $survey, array $weights): array
     {
         $pages                                  = $survey->getPlainPages();
@@ -46,7 +34,6 @@ class Randomization
         $blockPagesCombinations['position_map'] = [];
         $blockPagesCombinations['combinations'] = [];
         $blockPagesCombinations['item_weights'] = [];
-
 
         $randomizedBlocks = $this->findRandomizedBlocks($survey);
         if (!count($randomizedBlocks)) {
@@ -57,7 +44,7 @@ class Randomization
 
         foreach ($permutatedItems as $index => $items) {
             foreach ($items as $item) {
-                foreach ($survey->getRandomization()->toArray() as $randomizationBlock) {
+                foreach ($survey->getRandomization() as $randomizationBlock) {
                     if ($item === $randomizationBlock->getId() && 'page' === $randomizationBlock->getType()) {
                         /** @var Document\BlockItem $randomizedItem */
                         foreach ($randomizationBlock->getItems() as $randomizedItem) {
@@ -129,7 +116,6 @@ class Randomization
             }
 
             $pagesCombinations[$group]['position_map'] = $positionMap;
-//            $pagesCombinations[$group]['combinations'] = $permutatedItems;
             $pagesCombinations[$group]['combinations'] = $permutatedItemsWithOriginalPosition;
         }
 
@@ -142,7 +128,7 @@ class Randomization
         $i     = 0;
 
         /** @var Document\Randomization $randomizationBlock */
-        foreach ($survey->getRandomization()->toArray() as $randomizationBlock) {
+        foreach ($survey->getRandomization() as $randomizationBlock) {
             $increment = false;
 
             if ('page' === $randomizationBlock->getType() && $randomizationBlock->isRandomized()) {
@@ -168,7 +154,7 @@ class Randomization
         $items = [];
 
         /** @var Document\Randomization $randomizationBlock */
-        foreach ($survey->getRandomization()->toArray() as $randomizationBlock) {
+        foreach ($survey->getRandomization() as $randomizationBlock) {
             if ('block' === $randomizationBlock->getType() && $randomizationBlock->isRandomized()) {
                 /** @var Document\BlockItem $randomizedItem */
                 foreach ($randomizationBlock->getItems() as $randomizedItem) {
@@ -208,11 +194,16 @@ class Randomization
                     foreach ($permutatedPageItems['combinations'] as $pageItemIndex => $pageItems) {
                         $pageItemCount = 0;
                         foreach ($pageItems as $item) {
-                            $key = $this->getPositionMapIndexOf($permutatedPageItems['position_map'], $pageItemCount);
+                            if (in_array($item, $randomizedPathsTemp)) {
+                                $randomizedPathsTemp2 = $this->replaceElement($randomizedPathsTemp2, $item, $pageItems);
+                            } else {
+                                $key = $this->getPositionMapIndexOf($permutatedPageItems['position_map'], $pageItemCount);
 
-                            $randomizedPathsTemp2[$key] = $item;
-                            $pageItemCount++;
+                                $randomizedPathsTemp2[$key] = $item;
+                                $pageItemCount++;
+                            }
                         }
+
                         $counter                              = ++$c;
                         $randomizedPaths['paths'][$counter]   = $randomizedPathsTemp2;
                         $randomizedPaths['weights'][$counter] = $blockItemWeight + $permutatedPageItems['item_weights'][$pageItemIndex];
@@ -263,6 +254,21 @@ class Randomization
         }
 
         return ['paths' => $paths, 'weights' => $randomizedPaths['weights']];
+    }
+
+    private function replaceElement($randomizedPath, $newItem, $newCombination): array
+    {
+        $result = $randomizedPath;
+
+        $continue = true;
+        foreach ($randomizedPath as $key => $item) {
+            if ($continue && in_array($item, $newCombination) && $item !== $newItem) {
+                $result[$key] = $newItem;
+                $continue = false;
+            }
+        }
+
+        return $result;
     }
 
     private function mergeCombinations(array &$combinations, array &$result = [])

@@ -12,6 +12,7 @@ final class PermutationTest extends TestCase
 
     private array $elements1 = ['P1', 'P2', 'P3', 'P4','P5', 'P6'];
 
+    // this has 5040 combinations
     private array $elements2 = ['P1', 'P2', 'P3', 'P4','P5', 'P6', 'P7'];
 
     public function setUp(): void
@@ -44,7 +45,7 @@ final class PermutationTest extends TestCase
     public function testCombinationLimit(): void{
         $createdCombinations = $this->permutationService->permute($this->elements2)->getResult();
 
-        $this->assertEquals(count($createdCombinations), 1000, 'Error. Limit is bigger than 1000');
+        $this->assertCount(1000, $createdCombinations, 'Error. Limit is bigger than 1000');
     }
 
     private function calculatePossibleCombinationsCount(int $elementCount): int
