@@ -79,7 +79,8 @@ class SurveyPath
             $weightedValues[$index] = $path->getWeight();
         }
 
-        $rand = mt_rand(1, (int) array_sum($weightedValues));
+        $rand = mt_rand(0, (int) (array_sum($weightedValues) * 10000)) / 10000;
+        $randLog = $rand;
 
         foreach ($weightedValues as $key => $value) {
             $rand -= $value;
@@ -88,6 +89,6 @@ class SurveyPath
             }
         }
 
-        return null;
+        throw new \Exception('Exception. Could not find path with random weight of ' . $randLog);
     }
 }

@@ -7,29 +7,37 @@ use Syno\Storm\Document;
 
 class RandomizationWeight
 {
-    public function getBlockWeights(Document\Survey $survey): array
+    public function getWeights(Document\Survey $survey, string $type): array
     {
         $weights = [];
         $i       = 0;
 
         /** @var Document\Randomization $randomizationBlock */
         foreach ($survey->getRandomization() as $randomizationBlock) {
-            $increment = false;
-            if ('block' === $randomizationBlock->getType()) {
+            // page type
+            if ('page' === $type && 'page' === $randomizationBlock->getType() && $randomizationBlock->isRandomized()) {
                 /** @var Document\BlockItem $randomizedItem */
                 foreach ($randomizationBlock->getItems() as $randomizedItem) {
-                    $weights[$i][$randomizedItem->getBlock()] = $randomizedItem->getWeight();
-
-                    $increment = true;
+                    if ($randomizedItem->getRandomize()) {
+                        $weights[$randomizedItem->getPage()] = $randomizedItem->getWeight();//[$i]
+                    }
                 }
+
+                $i++;
             }
 
-            if ($increment) {
+            // block type
+            if ('block' === $type && 'block' === $randomizationBlock->getType() && $randomizationBlock->isRandomized()) {
+                /** @var Document\BlockItem $randomizedItem */
+                foreach ($randomizationBlock->getItems() as $randomizedItem) {
+                    $weights[$randomizedItem->getBlock()] = $randomizedItem->getWeight();//[$i]
+                }
+
                 $i++;
             }
         }
 
-        return $this->convertToPercents($weights);
+        return $weights;
     }
 
     public function findWeightByPageId(array $permutatedItems, int $pageId): float
@@ -45,32 +53,6 @@ class RandomizationWeight
         }
 
         return 1;
-    }
-
-    public function getPageWeights(Document\Survey $survey): array
-    {
-        $weights = [];
-        $i       = 0;
-
-        /** @var Document\Randomization $randomizationBlock */
-        foreach ($survey->getRandomization() as $randomizationBlock) {
-            $increment = false;
-            if ('page' === $randomizationBlock->getType()) {
-                /** @var Document\BlockItem $randomizedItem */
-                foreach ($randomizationBlock->getItems() as $randomizedItem) {
-                    if ($randomizedItem->getRandomize()) {
-                        $increment                               = true;
-                        $weights[$i][$randomizedItem->getPage()] = $randomizedItem->getWeight();
-                    }
-                }
-
-                if ($increment) {
-                    $i++;
-                }
-            }
-        }
-
-        return $this->convertToPercents($weights);
     }
 
     public function countBlockCombinations(array $combinations, int $blockId): int
@@ -99,6 +81,7 @@ class RandomizationWeight
         return $count;
     }
 
+    /** Currently not in use */
     private function convertToPercents(array $weights): array
     {
         $result = [];

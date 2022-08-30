@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace App\Tests\Traits;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Syno\Storm\Document;
 
 trait DocumentMockTrait
@@ -161,5 +162,25 @@ trait DocumentMockTrait
         $blockItem->setWeight($weight);
 
         return $blockItem;
+    }
+
+    /** array|SurveyPath[] */
+    public function mockSurveyPaths(array $randomizedItems): array
+    {
+        $surveyPaths = [];
+
+        foreach ($randomizedItems['paths'] as $index => $path) {
+            $surveyPath = new Document\SurveyPath();
+            $surveyPath->setSurveyId(12345);
+            $surveyPath->setVersion(1);
+
+            $surveyPath->setWeight($randomizedItems['weights'][$index]);
+            $surveyPath->setPages(new ArrayCollection([]));
+            $surveyPath->setDebugPath(implode(',', $path));
+
+            $surveyPaths[] = $surveyPath;
+        }
+
+        return $surveyPaths;
     }
 }

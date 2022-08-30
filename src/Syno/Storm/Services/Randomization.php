@@ -18,8 +18,8 @@ class Randomization
 
     public function getRandomizedPaths(Document\Survey $survey): array
     {
-        $weights['blocks'] = $this->randomizationWeightService->getBlockWeights($survey);
-        $weights['pages']  = $this->randomizationWeightService->getPageWeights($survey);
+        $weights['blocks'] = $this->randomizationWeightService->getWeights($survey, 'block');
+        $weights['pages']  = $this->randomizationWeightService->getWeights($survey, 'page');
 
         $permutatedItems['blocks'] = $this->getPermutatedBlockPages($survey, $weights);
         $permutatedItems['pages']  = $this->getPermutatedPages($survey, $weights);
@@ -36,6 +36,7 @@ class Randomization
         $blockPagesCombinations['item_weights'] = [];
 
         $randomizedBlocks = $this->findRandomizedBlocks($survey);
+
         if (!count($randomizedBlocks)) {
             return [];
         }
@@ -67,7 +68,7 @@ class Randomization
             $blockCombinationCount = $this->randomizationWeightService->countBlockCombinations($permutatedItems,
                 $firstBlockId);
 
-            $blockPagesCombinations['item_weights'][$index] = round($weight / $blockCombinationCount, 2);
+            $blockPagesCombinations['item_weights'][$index] = round($weight / $blockCombinationCount, 2, PHP_ROUND_HALF_DOWN);
         }
 
         return $blockPagesCombinations;
