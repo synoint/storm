@@ -99,7 +99,7 @@ class Randomization
                 $pageCombinationCount = $this->randomizationWeightService->countPageCombinations($permutatedItems,
                     $firstPageId);
 
-                $pagesCombinations[$group]['item_weights'][] = round($weight / $pageCombinationCount, 2);
+                $pagesCombinations[$group]['item_weights'][] = round($weight / $pageCombinationCount, 2, PHP_ROUND_HALF_DOWN);
 
             }
             asort($positionMap);
@@ -130,20 +130,15 @@ class Randomization
 
         /** @var Document\Randomization $randomizationBlock */
         foreach ($survey->getRandomization() as $randomizationBlock) {
-            $increment = false;
-
             if ('page' === $randomizationBlock->getType() && $randomizationBlock->isRandomized()) {
                 /** @var Document\BlockItem $randomizedItem */
                 foreach ($randomizationBlock->getItems() as $randomizedItem) {
                     if ($randomizedItem->getRandomize()) {
                         $items[$i][] = $randomizedItem->getPage();
-                        $increment   = true;
                     }
                 }
 
-                if ($increment) {
-                    $i++;
-                }
+                $i++;
             }
         }
 
