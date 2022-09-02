@@ -152,9 +152,6 @@ class Survey
             return 0;
         }
 
-//        $pageCount        = $pages->count();
-//        $currentPageIndex = $pages->indexOf($currentPage);
-
         return round(($completedQuestionCount / $questionCount) * 100);
     }
 }
