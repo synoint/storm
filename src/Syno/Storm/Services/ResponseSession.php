@@ -19,19 +19,23 @@ class ResponseSession
     private ResponseRedirector      $responseRedirector;
     private SurveyEventLogger       $surveyEventLogger;
     private RequestStack            $requestStack;
+    private Condition               $conditionService;
 
     public function __construct(
-        RequestStack $requestStack,
+        RequestStack            $requestStack,
         RequestHandler\Response $responseHandler,
-        ResponseEventLogger $responseEventLogger,
-        ResponseRedirector $responseRedirector,
-        SurveyEventLogger $surveyEventLogger
-    ) {
+        ResponseEventLogger     $responseEventLogger,
+        ResponseRedirector      $responseRedirector,
+        SurveyEventLogger       $surveyEventLogger,
+        Condition               $conditionService
+    )
+    {
         $this->responseHandler     = $responseHandler;
         $this->responseEventLogger = $responseEventLogger;
         $this->responseRedirector  = $responseRedirector;
         $this->surveyEventLogger   = $surveyEventLogger;
         $this->requestStack        = $requestStack;
+        $this->conditionService    = $conditionService;
     }
 
     public function isFinishedButLost(Document\Survey $survey, Request $request): ?RedirectResponse
@@ -155,6 +159,17 @@ class ResponseSession
 
     public function complete(Document\Survey $survey): RedirectResponse
     {
+         if($survey->getSurveyEndCondition()){
+             $surveyIsCompletable = $this->conditionService->applySurveyConditionRule(
+                 $this->responseHandler->getResponse(),
+                 $survey->getSurveyEndCondition()
+             );
+
+             if(!$surveyIsCompletable) {
+                return $this->screenOut($survey);
+             }
+         }
+
         $response = $this->responseHandler->getResponse();
         $response->setCompleted(true);
         $this->responseHandler->saveResponse($response);

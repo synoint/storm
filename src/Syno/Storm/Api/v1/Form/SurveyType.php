@@ -51,6 +51,11 @@ class SurveyType extends AbstractType
                 'entry_type' => RandomizationType::class,
                 'by_reference'  => false,
                 'allow_add'     => true
+            ])
+            ->add('surveyConditions', CollectionType::class, [
+                'entry_type' => SurveyConditionType::class,
+                'by_reference'  => false,
+                'allow_add'     => true
             ]);
     }
 
