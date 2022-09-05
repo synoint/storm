@@ -113,11 +113,11 @@ class Survey implements JsonSerializable
     private $randomization;
 
     /**
-     * @var Collection
+     * @var SurveyCompleteCondition
      *
-     * @ODM\EmbedMany(targetDocument=SurveyCondition::class)
+     * @ODM\EmbedOne(targetDocument=SurveyCompleteCondition::class)
      */
-    private $surveyConditions;
+    private $surveyCompleteCondition;
 
     public function __construct()
     {
@@ -128,24 +128,23 @@ class Survey implements JsonSerializable
         $this->css               = new ArrayCollection();
         $this->translations      = new ArrayCollection();
         $this->randomization     = new ArrayCollection();
-        $this->surveyConditions  = new ArrayCollection();
     }
 
     public function jsonSerialize(): array
     {
         return [
-            'id'               => $this->id,
-            'surveyId'         => $this->surveyId,
-            'version'          => $this->version,
-            'languages'        => $this->languages,
-            'translations'     => $this->translations,
-            'surveyConditions' => $this->surveyConditions,
-            'published'        => $this->published,
-            'config'           => $this->config,
-            'parameters'       => $this->parameters,
-            'urls'             => $this->urls,
-            'pages'            => $this->pages,
-            'css'              => $this->css,
+            'id'                      => $this->id,
+            'surveyId'                => $this->surveyId,
+            'version'                 => $this->version,
+            'languages'               => $this->languages,
+            'translations'            => $this->translations,
+            'surveyCompleteCondition' => $this->surveyCompleteCondition,
+            'published'               => $this->published,
+            'config'                  => $this->config,
+            'parameters'              => $this->parameters,
+            'urls'                    => $this->urls,
+            'pages'                   => $this->pages,
+            'css'                     => $this->css,
         ];
     }
 
@@ -428,40 +427,14 @@ class Survey implements JsonSerializable
         return $pageId === $this->pages->first()->getPageId();
     }
 
-    public function getSurveyConditions(): Collection
+    public function getSurveyCompleteCondition(): ?SurveyCompleteCondition
     {
-        return $this->surveyConditions;
+        return $this->surveyCompleteCondition;
     }
 
-    public function getSurveyEndCondition(): ?SurveyCondition
+    public function setSurveyCompleteCondition(SurveyCompleteCondition $surveyCompleteCondition): self
     {
-        $surveyEndConditions =  $this->surveyConditions->filter(function(SurveyCondition $surveyCondition){
-            return $surveyCondition->getType() == SurveyCondition::TYPE_END_CONDITION;
-        });
-
-        if($surveyEndConditions->count() > 0){
-            return $surveyEndConditions->first();
-        }
-
-        return null;
-    }
-
-    public function getSurveyStartCondition(): ?SurveyCondition
-    {
-        $surveyEndConditions =  $this->surveyConditions->filter(function(SurveyCondition $surveyCondition){
-            return $surveyCondition->getType() == SurveyCondition::TYPE_START_CONDITION;
-        });
-
-        if($surveyEndConditions->count() > 0){
-            return $surveyEndConditions->first();
-        }
-
-        return null;
-    }
-
-    public function setSurveyConditions($surveyConditions): self
-    {
-        $this->surveyConditions = $surveyConditions;
+        $this->surveyCompleteCondition = $surveyCompleteCondition;
 
         return $this;
     }

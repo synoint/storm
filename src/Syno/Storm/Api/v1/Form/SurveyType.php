@@ -52,11 +52,7 @@ class SurveyType extends AbstractType
                 'by_reference'  => false,
                 'allow_add'     => true
             ])
-            ->add('surveyConditions', CollectionType::class, [
-                'entry_type' => SurveyConditionType::class,
-                'by_reference'  => false,
-                'allow_add'     => true
-            ]);
+            ->add('surveyCompleteCondition', SurveyCompleteConditionType::class);
     }
 
     public function configureOptions(OptionsResolver $resolver)

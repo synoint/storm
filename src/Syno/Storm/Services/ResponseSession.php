@@ -159,18 +159,21 @@ class ResponseSession
 
     public function complete(Document\Survey $survey): RedirectResponse
     {
-         if($survey->getSurveyEndCondition()){
+        $response = $this->responseHandler->getResponse();
+
+         if($survey->getSurveyCompleteCondition()){
              $surveyIsCompletable = $this->conditionService->applySurveyConditionRule(
                  $this->responseHandler->getResponse(),
-                 $survey->getSurveyEndCondition()
+                 $survey->getSurveyCompleteCondition()
              );
 
              if(!$surveyIsCompletable) {
+                 $this->responseEventLogger->log(ResponseEventLogger::SURVEY_SCREENOUTED_ON_COMPLETE_CONDITION, $response);
                 return $this->screenOut($survey);
              }
          }
 
-        $response = $this->responseHandler->getResponse();
+
         $response->setCompleted(true);
         $this->responseHandler->saveResponse($response);
 
