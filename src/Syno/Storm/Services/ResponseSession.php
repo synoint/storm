@@ -161,7 +161,7 @@ class ResponseSession
     {
         $response = $this->responseHandler->getResponse();
 
-         if($survey->getSurveyCompleteCondition()){
+         if($survey->getSurveyCompleteCondition() && $survey->getSurveyCompleteCondition()->getRule()){
              $surveyIsCompletable = $this->conditionService->applySurveyConditionRule(
                  $this->responseHandler->getResponse(),
                  $survey->getSurveyCompleteCondition()
