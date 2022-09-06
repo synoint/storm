@@ -22,7 +22,7 @@ class ResponseEventLogger
 
     const SURVEY_MODE_CHANGED = 'survey mode changed';
 
-    const SURVEY_SCREENOUTED_ON_COMPLETE_CONDITION = 'survey screenouted on complete condition';
+    const SURVEY_SCREENOUTED_ON_COMPLETE_CONDITION = 'response screenout on survey complete condition';
 
     const SURVEY_SCREENOUTED         = 'survey screenouted';
     const SURVEY_QUALITY_SCREENOUTED = 'survey quality screenouted';

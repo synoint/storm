@@ -8,17 +8,15 @@ use Syno\Storm\RequestHandler;
 
 class Survey
 {
-    private DocumentManager $dm;
-//    private RequestHandler\Survey   $surveyHandler;
+    private DocumentManager         $dm;
     private RequestHandler\Response $responseHandler;
 
     public function __construct(
-        DocumentManager $documentManager,
-//        RequestHandler\Survey $surveyHandler,
+        DocumentManager         $documentManager,
         RequestHandler\Response $responseHandler
-    ) {
-        $this->dm = $documentManager;
-//        $this->surveyHandler   = $surveyHandler;
+    )
+    {
+        $this->dm              = $documentManager;
         $this->responseHandler = $responseHandler;
     }
 
