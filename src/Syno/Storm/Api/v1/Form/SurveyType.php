@@ -51,7 +51,8 @@ class SurveyType extends AbstractType
                 'entry_type' => RandomizationType::class,
                 'by_reference'  => false,
                 'allow_add'     => true
-            ]);
+            ])
+            ->add('surveyCompleteCondition', SurveyCompleteConditionType::class);
     }
 
     public function configureOptions(OptionsResolver $resolver)

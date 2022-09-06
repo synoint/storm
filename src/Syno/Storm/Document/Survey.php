@@ -112,31 +112,39 @@ class Survey implements JsonSerializable
      */
     private $randomization;
 
+    /**
+     * @var SurveyCompleteCondition
+     *
+     * @ODM\EmbedOne(targetDocument=SurveyCompleteCondition::class)
+     */
+    private $surveyCompleteCondition;
+
     public function __construct()
     {
-        $this->pages         = new ArrayCollection();
-        $this->parameters    = new ArrayCollection();
-        $this->urls          = new ArrayCollection();
-        $this->languages     = new ArrayCollection();
-        $this->css           = new ArrayCollection();
-        $this->translations  = new ArrayCollection();
-        $this->randomization = new ArrayCollection();
+        $this->pages             = new ArrayCollection();
+        $this->parameters        = new ArrayCollection();
+        $this->urls              = new ArrayCollection();
+        $this->languages         = new ArrayCollection();
+        $this->css               = new ArrayCollection();
+        $this->translations      = new ArrayCollection();
+        $this->randomization     = new ArrayCollection();
     }
 
     public function jsonSerialize(): array
     {
         return [
-            'id'           => $this->id,
-            'surveyId'     => $this->surveyId,
-            'version'      => $this->version,
-            'languages'    => $this->languages,
-            'translations' => $this->translations,
-            'published'    => $this->published,
-            'config'       => $this->config,
-            'parameters'   => $this->parameters,
-            'urls'         => $this->urls,
-            'pages'        => $this->pages,
-            'css'          => $this->css,
+            'id'                      => $this->id,
+            'surveyId'                => $this->surveyId,
+            'version'                 => $this->version,
+            'languages'               => $this->languages,
+            'translations'            => $this->translations,
+            'surveyCompleteCondition' => $this->surveyCompleteCondition,
+            'published'               => $this->published,
+            'config'                  => $this->config,
+            'parameters'              => $this->parameters,
+            'urls'                    => $this->urls,
+            'pages'                   => $this->pages,
+            'css'                     => $this->css,
         ];
     }
 
@@ -417,5 +425,17 @@ class Survey implements JsonSerializable
     public function isFirstPage(int $pageId): bool
     {
         return $pageId === $this->pages->first()->getPageId();
+    }
+
+    public function getSurveyCompleteCondition(): ?SurveyCompleteCondition
+    {
+        return $this->surveyCompleteCondition;
+    }
+
+    public function setSurveyCompleteCondition(SurveyCompleteCondition $surveyCompleteCondition): self
+    {
+        $this->surveyCompleteCondition = $surveyCompleteCondition;
+
+        return $this;
     }
 }

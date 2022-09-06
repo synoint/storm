@@ -19,19 +19,23 @@ class ResponseSession
     private ResponseRedirector      $responseRedirector;
     private SurveyEventLogger       $surveyEventLogger;
     private RequestStack            $requestStack;
+    private Condition               $conditionService;
 
     public function __construct(
-        RequestStack $requestStack,
+        RequestStack            $requestStack,
         RequestHandler\Response $responseHandler,
-        ResponseEventLogger $responseEventLogger,
-        ResponseRedirector $responseRedirector,
-        SurveyEventLogger $surveyEventLogger
-    ) {
+        ResponseEventLogger     $responseEventLogger,
+        ResponseRedirector      $responseRedirector,
+        SurveyEventLogger       $surveyEventLogger,
+        Condition               $conditionService
+    )
+    {
         $this->responseHandler     = $responseHandler;
         $this->responseEventLogger = $responseEventLogger;
         $this->responseRedirector  = $responseRedirector;
         $this->surveyEventLogger   = $surveyEventLogger;
         $this->requestStack        = $requestStack;
+        $this->conditionService    = $conditionService;
     }
 
     public function isFinishedButLost(Document\Survey $survey, Request $request): ?RedirectResponse
@@ -156,6 +160,20 @@ class ResponseSession
     public function complete(Document\Survey $survey): RedirectResponse
     {
         $response = $this->responseHandler->getResponse();
+
+         if($survey->getSurveyCompleteCondition()){
+             $surveyIsCompletable = $this->conditionService->applySurveyConditionRule(
+                 $this->responseHandler->getResponse(),
+                 $survey->getSurveyCompleteCondition()
+             );
+
+             if(!$surveyIsCompletable) {
+                 $this->responseEventLogger->log(ResponseEventLogger::SURVEY_SCREENOUTED_ON_COMPLETE_CONDITION, $response);
+                return $this->screenOut($survey);
+             }
+         }
+
+
         $response->setCompleted(true);
         $this->responseHandler->saveResponse($response);
 
