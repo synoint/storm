@@ -17,9 +17,15 @@
 {% block body %}
     
     <div class="container page-content">
+        {% if file_exists(survey.getLogoPath) and '' != survey.getLogoPath %}
+            <div class="row container-sm justify-content-md-center">
+                <div id="surveyLogoContainer">
+                    <img id="surveyLogoImage" src="{{ survey.getLogoPath }}" />
+                </div>
+            </div>
+        {% endif %}
         
         <div class="row container-sm justify-content-md-center ml-0 my-5">
-            
             <div class="questions">
                 {% if '' != page.content %}
                     <div class="col-12">

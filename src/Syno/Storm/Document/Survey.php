@@ -34,6 +34,13 @@ class Survey implements JsonSerializable
     private $surveyId;
 
     /**
+     * @var string
+     *
+     * @ODM\Field(type="string")
+     */
+    private $logoPath;
+
+    /**
      * @var int
      *
      * @ODM\Field(type="int")
@@ -121,13 +128,13 @@ class Survey implements JsonSerializable
 
     public function __construct()
     {
-        $this->pages             = new ArrayCollection();
-        $this->parameters        = new ArrayCollection();
-        $this->urls              = new ArrayCollection();
-        $this->languages         = new ArrayCollection();
-        $this->css               = new ArrayCollection();
-        $this->translations      = new ArrayCollection();
-        $this->randomization     = new ArrayCollection();
+        $this->pages         = new ArrayCollection();
+        $this->parameters    = new ArrayCollection();
+        $this->urls          = new ArrayCollection();
+        $this->languages     = new ArrayCollection();
+        $this->css           = new ArrayCollection();
+        $this->translations  = new ArrayCollection();
+        $this->randomization = new ArrayCollection();
     }
 
     public function jsonSerialize(): array
@@ -135,6 +142,7 @@ class Survey implements JsonSerializable
         return [
             'id'                      => $this->id,
             'surveyId'                => $this->surveyId,
+            'surveyLogo'              => $this->surveyLogo,
             'version'                 => $this->version,
             'languages'               => $this->languages,
             'translations'            => $this->translations,
@@ -168,6 +176,18 @@ class Survey implements JsonSerializable
     public function setSurveyId(int $surveyId): self
     {
         $this->surveyId = $surveyId;
+
+        return $this;
+    }
+
+    public function getLogoPath(): ?string
+    {
+        return $this->logoPath;
+    }
+
+    public function setLogoPath(string $logoPath): self
+    {
+        $this->logoPath = $logoPath;
 
         return $this;
     }
