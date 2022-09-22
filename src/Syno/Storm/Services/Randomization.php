@@ -232,7 +232,7 @@ class Randomization
 
             foreach ($randomizedPaths['paths'] as $path) {
                 $randomizedPaths['weights'][] = $this->randomizationWeightService->findWeightByPageId($permutatedItems['pages'],
-                    $path[0]);
+                    $path[array_key_first($path)]);
             }
         }
 

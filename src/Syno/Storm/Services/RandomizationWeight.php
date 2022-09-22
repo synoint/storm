@@ -46,7 +46,8 @@ class RandomizationWeight
             $weights = $permutatedItem['item_weights'];
 
             foreach ($permutatedItem['combinations'] as $position => $combinationItems) {
-                if ($combinationItems[0] === $pageId) {
+
+                if ($combinationItems[array_key_first($combinationItems)] === $pageId) {
                     return $weights[$position];
                 }
             }
