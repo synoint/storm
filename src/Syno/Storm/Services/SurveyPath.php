@@ -47,9 +47,8 @@ class SurveyPath
             $surveyPath->setDebugPath(implode(',', $pagePathCodeList));
 
             $this->dm->persist($surveyPath);
+            $this->dm->flush();
         }
-
-        $this->dm->flush();
     }
 
     public function find(Document\Survey $survey): ?array

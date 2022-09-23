@@ -37,7 +37,7 @@ final class SurveyPathTest extends TestCase
 
         $surveyPaths = $this->mockSurveyPaths($randomizedItems);
 
-        $pickedRandomizedPaths = $this->generateRandomizedPaths(6000, $surveyPaths);
+        $pickedRandomizedPaths = $this->generateRandomizedPaths(7000, $surveyPaths);
 
         $this->assertCount(720, array_unique($pickedRandomizedPaths));
     }
@@ -59,7 +59,7 @@ final class SurveyPathTest extends TestCase
 
         $surveyPaths = $this->mockSurveyPaths($randomizedItems);
 
-        $pickedRandomizedPaths = $this->generateRandomizedPaths(30, $surveyPaths);
+        $pickedRandomizedPaths = $this->generateRandomizedPaths(50, $surveyPaths);
 
         $this->assertCount(6, array_unique($pickedRandomizedPaths));
     }
