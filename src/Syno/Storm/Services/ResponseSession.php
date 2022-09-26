@@ -2,6 +2,7 @@
 
 namespace Syno\Storm\Services;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -116,8 +117,21 @@ class ResponseSession
     public function createResponse(Document\Survey $survey, ?Document\SurveyPath $surveyPath = null)
     {
         $response = $this->responseHandler->getNew($survey);
+
         if ($surveyPath) {
-            $response->setSurveyPath($surveyPath->getPages());
+            $surveyPages = $survey->getPages();
+            $surveyPathPages = $surveyPath->getPages();
+            $path = new ArrayCollection();
+
+            foreach ($surveyPathPages as $surveyPathPage) {
+                foreach ($surveyPages as $surveyPage) {
+                    if ($surveyPathPage->getPageId() === $surveyPage->getPageId()) {
+                        $path->add($surveyPage);
+                    }
+                }
+            }
+
+            $response->setSurveyPath($path);
             $response->setSurveyPathId($surveyPath->getSurveyPathId());
         }
 
