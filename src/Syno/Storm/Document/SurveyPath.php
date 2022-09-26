@@ -43,7 +43,7 @@ class SurveyPath implements JsonSerializable
     /**
      * @var Collection
      *
-     * @ODM\EmbedMany(targetDocument=Page::class)
+     * @ODM\EmbedMany(targetDocument=SurveyPathPage::class)
      */
     private $pages;
 

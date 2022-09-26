@@ -34,9 +34,12 @@ class SurveyPath
             $surveyPathPages  = new ArrayCollection();
             $pagePathCodeList = [];
             foreach ($combination as $pageId) {
+                $surveyPathPage = new Document\SurveyPathPage();
+                $surveyPathPage->setPageId($pageId);
+                $surveyPathPages->add($surveyPathPage);
+
                 foreach ($survey->getPages() as $page) {
                     if ($page->getPageId() === $pageId) {
-                        $surveyPathPages->add($page);
                         $pagePathCodeList[] = $page->getCode();
                     }
                 }
