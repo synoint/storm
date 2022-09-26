@@ -472,7 +472,7 @@ class Question
         $result = [];
         /** @var Answer $answer */
         foreach ($this->answers as $answer) {
-            if (!empty($answer->getRowCode())) {
+            if ('' !== $answer->getRowCode()) {
                 $result[$answer->getRowCode()] = $answer->getRowLabel();
             }
         }
@@ -485,7 +485,7 @@ class Question
         $result = [];
         /** @var Answer $answer */
         foreach ($this->answers as $answer) {
-            if (!empty($answer->getColumnCode())) {
+            if ('' !== $answer->getColumnCode()) {
                 $result[$answer->getColumnCode()] = $answer->getColumnLabel();
             }
         }
