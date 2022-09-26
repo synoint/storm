@@ -142,7 +142,7 @@ class Survey implements JsonSerializable
         return [
             'id'                      => $this->id,
             'surveyId'                => $this->surveyId,
-            'surveyLogo'              => $this->surveyLogo,
+            'logoPath'                => $this->logoPath,
             'version'                 => $this->version,
             'languages'               => $this->languages,
             'translations'            => $this->translations,
