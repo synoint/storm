@@ -172,7 +172,17 @@ class ResponseSessionManager
             $pages = $response->getSurveyPath();
         }
 
-        if ($pages->first()->getPageId() === $pageId) {
+        $firstPageWithVisibleQuestions = null;
+
+        /** @var Document\Page $page */
+        foreach ($pages as $page) {
+            if ($page->getVisibleQuestions()->count()) {
+                $firstPageWithVisibleQuestions = $page;
+                break;
+            }
+        }
+
+        if ($firstPageWithVisibleQuestions && $firstPageWithVisibleQuestions->getPageId() === $pageId) {
             return true;
         }
 

@@ -177,10 +177,7 @@ class Page
         return $this;
     }
 
-    /**
-     * @return bool
-     */
-    public function hasMedia()
+    public function hasMedia(): bool
     {
         return strpos($this->getContent(), self::VIDEO_TAG) !== false || strpos($this->getContent(), self::AUDIO_TAG) !== false;
     }
@@ -203,13 +200,6 @@ class Page
         });
     }
 
-
-
-    /**
-     * @param $questions
-     *
-     * @return self
-     */
     public function setQuestions($questions): self
     {
         $this->questions = $questions;

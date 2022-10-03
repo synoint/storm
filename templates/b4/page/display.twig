@@ -20,7 +20,7 @@
         {% if '' != survey.getLogoPath %}
             <div class="row container-sm justify-content-md-center">
                 <div id="surveyLogoContainer">
-                    <img id="surveyLogoImage" src="{{ survey.getLogoPath }}" />
+                    <img id="surveyLogoImage" src="{{ survey.getLogoPath }}"/>
                 </div>
             </div>
         {% endif %}
@@ -86,7 +86,8 @@
                     
                     <div class="row pb-5">
                         <div class="col text-center">
-                            {% if (false == backButtonDisabled and true == survey.getConfig.backButtonEnabled) or response.isTest or response.isDebug %}
+                            {% if (false == backButtonDisabled and true == survey.getConfig.backButtonEnabled)
+                                or response.isTest or response.isDebug %}
                                 <button type="button" class="btn btn-outline-primary px-5 ml-2 mr-2"
                                         onclick="window.history.go(-1); return false;">
                                     {{ 'page.button.back'|trans }}
