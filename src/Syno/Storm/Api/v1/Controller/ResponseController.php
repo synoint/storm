@@ -27,15 +27,16 @@ class ResponseController extends AbstractController implements TokenAuthenticate
     private ResponseEventLogger $responseEventLogger;
 
     /**
-     * @param Response            $responseService
-     * @param ResponseEvent       $responseEventService
+     * @param Response $responseService
+     * @param ResponseEvent $responseEventService
      * @param ResponseEventLogger $responseEventLogger
      */
     public function __construct(
-        Response $responseService,
-        ResponseEvent $responseEventService,
+        Response            $responseService,
+        ResponseEvent       $responseEventService,
         ResponseEventLogger $responseEventLogger
-    ) {
+    )
+    {
         $this->responseService      = $responseService;
         $this->responseEventService = $responseEventService;
         $this->responseEventLogger  = $responseEventLogger;
@@ -83,34 +84,184 @@ class ResponseController extends AbstractController implements TokenAuthenticate
         return $this->json(
             [
                 'responses' => $responses,
-                'limit' => $limit,
-                'total' => $total
+                'limit'     => $limit,
+                'total'     => $total
             ]
         );
     }
 
     /**
      * @Route(
-     *     "/{surveyId}/response/{responseId}/quality-status/{status}",
-     *     name="storm_api.v1.response.quality_status",
-     *     requirements={"surveyId"="\d+", "responseId"=".+", "sttus"="\d+"},
+     *     "/{surveyId}/response/complete",
+     *     name="storm_api.v1.response.complete",
+     *     requirements={"surveyId"="\d+"},
      *     methods={"POST"}
      * )
      */
-    public function qualityStatus(int $surveyId, string $responseId, int $status): JsonResponse
+    public function complete(int $surveyId, Request $request): JsonResponse
     {
-        $response = $this->responseService->findBySurveyIdAndResponseId($surveyId, $responseId);
+        $responseIds = json_decode($request->getContent());
 
-        if ($response) {
-            if ($response->isCompleted()) {
-                $response->setQualityScreenedOut($status);
-                $this->responseService->save($response);
+        if ($responseIds) {
+            foreach ($responseIds as $responseId) {
+                $response = $this->responseService->findBySurveyIdAndResponseId($surveyId, $responseId);
 
-                $event = ($status) ? ResponseEventLogger::QUALITY_SCREENOUT : ResponseEventLogger::QUALITY_SCREENOUT_CLEARED;
-                $this->responseEventLogger->log($event, $response);
+                if ($response) {
+                    $response->setQualityScreenedOut(false);
+                    $response->setQuotaFull(false);
+                    $response->setScreenedOut(false);
+
+                    $response->setCompleted(true);
+
+                    $this->responseService->save($response);
+
+                    $this->responseEventLogger->log(ResponseEventLogger::RESPONSE_COMPLETE, $response);
+                }
             }
 
-            return $this->json($response);
+            return $this->json(['message' => 'Updated!']);
+        }
+
+        return $this->json(['message' => 'Response data is not found']);
+    }
+
+    /**
+     * @Route(
+     *     "/{surveyId}/response/screenout",
+     *     name="storm_api.v1.response.screenout",
+     *     requirements={"surveyId"="\d+"},
+     *     methods={"POST"}
+     * )
+     */
+    public function screenout(int $surveyId, Request $request): JsonResponse
+    {
+        $responseIds = json_decode($request->getContent());
+
+        if ($responseIds) {
+            foreach ($responseIds as $responseId) {
+                $response = $this->responseService->findBySurveyIdAndResponseId($surveyId, $responseId);
+
+                if ($response) {
+
+                    $response->setQualityScreenedOut(false);
+                    $response->setQuotaFull(false);
+                    $response->setCompleted(false);
+
+                    $response->setScreenedOut(true);
+
+                    $this->responseService->save($response);
+
+                    $this->responseEventLogger->log(ResponseEventLogger::RESPONSE_SCREENOUT, $response);
+                }
+            }
+
+            return $this->json(['message' => 'Updated!']);
+        }
+
+        return $this->json(['message' => 'Response data is not found']);
+    }
+
+    /**
+     * @Route(
+     *     "/{surveyId}/response/quality-screenout",
+     *     name="storm_api.v1.response.quality_screenout",
+     *     requirements={"surveyId"="\d+"},
+     *     methods={"POST"}
+     * )
+     */
+    public function qualityScreenout(int $surveyId, Request $request): JsonResponse
+    {
+        $responseIds = json_decode($request->getContent());
+
+        if ($responseIds) {
+            foreach ($responseIds as $responseId) {
+                $response = $this->responseService->findBySurveyIdAndResponseId($surveyId, $responseId);
+
+                if ($response) {
+
+                    $response->setCompleted(false);
+                    $response->setQuotaFull(false);
+                    $response->setScreenedOut(false);
+
+                    $response->setQualityScreenedOut(true);
+
+                    $this->responseService->save($response);
+
+                    $this->responseEventLogger->log(ResponseEventLogger::RESPONSE_QUALITY_SCREENOUT, $response);
+                }
+            }
+
+            return $this->json(['message' => 'Updated!']);
+        }
+
+        return $this->json(['message' => 'Response data is not found']);
+    }
+
+    /**
+     * @Route(
+     *     "/{surveyId}/response/quota-full",
+     *     name="storm_api.v1.response.quota_full",
+     *     requirements={"surveyId"="\d+"},
+     *     methods={"POST"}
+     * )
+     */
+    public function quotaFull(int $surveyId, Request $request): JsonResponse
+    {
+        $responseIds = json_decode($request->getContent());
+
+        if ($responseIds) {
+            foreach ($responseIds as $responseId) {
+
+                $response = $this->responseService->findBySurveyIdAndResponseId($surveyId, $responseId);
+
+                if ($response) {
+
+                    $response->setQualityScreenedOut(false);
+                    $response->setCompleted(false);
+                    $response->setScreenedOut(false);
+
+                    $response->setQuotaFull(true);
+
+                    $this->responseService->save($response);
+
+                    $this->responseEventLogger->log(ResponseEventLogger::RESPONSE_QUOTA_FULL, $response);
+                }
+            }
+
+            return $this->json(['message' => 'Updated!']);
+        }
+
+        return $this->json(['message' => 'Response data is not found']);
+    }
+
+    /**
+     * @Route(
+     *     "/{surveyId}/response/remove",
+     *     name="storm_api.v1.response.remove",
+     *     requirements={"surveyId"="\d+"},
+     *     methods={"POST"}
+     * )
+     */
+    public function remove(int $surveyId, Request $request): JsonResponse
+    {
+        $responseIds = json_decode($request->getContent());
+
+        if ($responseIds) {
+            foreach ($responseIds as $responseId) {
+
+                $response = $this->responseService->findBySurveyIdAndResponseId($surveyId, $responseId);
+
+                if ($response) {
+
+                    $response->setDeletedAt(new \DateTime());
+
+                    $this->responseService->save($response);
+
+                    $this->responseEventLogger->log(ResponseEventLogger::RESPONSE_REMOVE, $response);
+                }
+            }
+
+            return $this->json(['message' => 'Removed!']);
         }
 
         return $this->json(['message' => 'Response data is not found']);

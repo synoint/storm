@@ -157,6 +157,11 @@ class Response implements JsonSerializable
      */
     private $surveyPath;
 
+    /**
+     * @ODM\Field(type="date")
+     */
+    private $deletedAt;
+
     public function __construct(string $responseId)
     {
         $this->responseId = $responseId;
@@ -186,6 +191,7 @@ class Response implements JsonSerializable
             'screenoutId'        => $this->screenoutId,
             'createdAt'          => $this->createdAt->getTimestamp(),
             'completedAt'        => $this->completedAt,
+            'deletedAt'          => $this->deletedAt,
             'userAgents'         => $this->userAgents,
             'parameters'         => $this->parameters,
             'answers'            => $this->getAnswers(),
@@ -555,5 +561,17 @@ class Response implements JsonSerializable
         $this->surveyPath = $surveyPath;
 
         return $this;
+    }
+
+    public function setDeletedAt(\DateTime $deletedAt): self
+    {
+        $this->deletedAt = $deletedAt;
+
+        return $this;
+    }
+
+    public function getDeletedAt(): ?\DateTime
+    {
+        return $this->deletedAt;
     }
 }

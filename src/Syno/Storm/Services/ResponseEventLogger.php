@@ -17,8 +17,11 @@ class ResponseEventLogger
     const SURVEY_COMPLETED           = 'survey completed';
     const SURVEY_VERSION_UNAVAILABLE = 'survey version unavailable';
 
-    const QUALITY_SCREENOUT         = 'quality screenout';
-    const QUALITY_SCREENOUT_CLEARED = 'quality screenout cleared';
+    const RESPONSE_REMOVE            = 'removed';
+    const RESPONSE_COMPLETE          = 'updated to complete';
+    const RESPONSE_SCREENOUT         = 'updated to screenout';
+    const RESPONSE_QUALITY_SCREENOUT = 'updated to quality screenout';
+    const RESPONSE_QUOTA_FULL        = 'updated to quota full';
 
     const SURVEY_MODE_CHANGED = 'survey mode changed';
 
@@ -51,8 +54,6 @@ class ResponseEventLogger
         switch ($event) {
             case self::RESPONSE_CREATED:
             case self::RESPONSE_CLEARED:
-            case self::QUALITY_SCREENOUT:
-            case self::QUALITY_SCREENOUT_CLEARED:
             case self::SURVEY_ENTERED:
             case self::SURVEY_COMPLETED:
             case self::SURVEY_SCREENOUTED_ON_COMPLETE_CONDITION:
@@ -61,6 +62,11 @@ class ResponseEventLogger
             case self::SURVEY_VERSION_UNAVAILABLE:
             case self::SURVEY_MODE_CHANGED:
             case self::JUMPED_TO_END_OF_SURVEY:
+            case self::RESPONSE_REMOVE:
+            case self::RESPONSE_COMPLETE:
+            case self::RESPONSE_SCREENOUT:
+            case self::RESPONSE_QUALITY_SCREENOUT:
+            case self::RESPONSE_QUOTA_FULL:
                 $document = new ResponseEvent($event, $response->getResponseId(), $response->getSurveyId());
                 break;
             case self::SURVEY_RESUMED:
