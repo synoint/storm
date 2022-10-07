@@ -105,6 +105,7 @@ class ResponseSession
         $response = $this->responseHandler->getResponse();
         if ($response->getPageId() && null !== $survey->getPage($response->getPageId())) {
             $this->responseEventLogger->log(ResponseEventLogger::SURVEY_RESUMED, $response);
+            $this->responseHandler->saveResponse($response, true);
 
             return $this->responseRedirector->page($response->getSurveyId(), $response->getPageId());
         }
