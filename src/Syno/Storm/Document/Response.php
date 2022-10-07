@@ -468,20 +468,22 @@ class Response implements JsonSerializable
 
     public function saveAnswers(Collection $answers)
     {
+        $questionIds = [];
         /** @var ResponseAnswer $newAnswer */
         foreach ($answers as $newAnswer) {
-            $replaced = false;
-            /** @var ResponseAnswer $existingAnswer */
-            foreach ($this->answers as $existingAnswer) {
-                if ($existingAnswer->getQuestionId() == $newAnswer->getQuestionId()) {
-                    $existingAnswer->setAnswers($newAnswer->getAnswers());
-                    $replaced = true;
-                    break;
-                }
+            $questionIds[] = $newAnswer->getQuestionId();
+        }
+
+        /** @var ResponseAnswer $existingAnswer */
+        foreach ($this->answers as $existingAnswer) {
+            if (in_array($existingAnswer->getQuestionId(), $questionIds)) {
+                $this->answers->removeElement($existingAnswer);
             }
-            if (!$replaced) {
-                $this->answers[] = $newAnswer;
-            }
+        }
+
+        /** @var ResponseAnswer $newAnswer */
+        foreach ($answers as $newAnswer) {
+            $this->answers[] = $newAnswer;
         }
     }
 
