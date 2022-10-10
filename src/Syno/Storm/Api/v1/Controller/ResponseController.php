@@ -122,7 +122,7 @@ class ResponseController extends AbstractController implements TokenAuthenticate
             return $this->json(['message' => 'Updated!']);
         }
 
-        return $this->json(['message' => 'Response data is not found']);
+        return $this->json(['message' => 'Response ids is missing.'], 400);
     }
 
     /**
@@ -158,7 +158,7 @@ class ResponseController extends AbstractController implements TokenAuthenticate
             return $this->json(['message' => 'Updated!']);
         }
 
-        return $this->json(['message' => 'Response data is not found']);
+        return $this->json(['message' => 'Response ids is missing.'], 400);
     }
 
     /**
@@ -194,7 +194,7 @@ class ResponseController extends AbstractController implements TokenAuthenticate
             return $this->json(['message' => 'Updated!']);
         }
 
-        return $this->json(['message' => 'Response data is not found']);
+        return $this->json(['message' => 'Response ids is missing.'], 400);
     }
 
     /**
@@ -231,7 +231,7 @@ class ResponseController extends AbstractController implements TokenAuthenticate
             return $this->json(['message' => 'Updated!']);
         }
 
-        return $this->json(['message' => 'Response data is not found']);
+        return $this->json(['message' => 'Response ids is missing.'], 400);
     }
 
     /**
@@ -264,7 +264,7 @@ class ResponseController extends AbstractController implements TokenAuthenticate
             return $this->json(['message' => 'Removed!']);
         }
 
-        return $this->json(['message' => 'Response data is not found']);
+        return $this->json(['message' => 'Response ids is missing.'], 400);
     }
 
     /**
