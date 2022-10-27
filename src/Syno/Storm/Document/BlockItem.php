@@ -84,7 +84,7 @@ class BlockItem implements JsonSerializable
         return $this;
     }
 
-    public function getBlock(): int
+    public function getBlock(): ?int
     {
         return $this->block;
     }

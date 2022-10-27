@@ -46,7 +46,21 @@ class RandomizationWeight
             $weights = $permutatedItem['item_weights'];
 
             foreach ($permutatedItem['combinations'] as $position => $combinationItems) {
+                if ($combinationItems[array_key_first($combinationItems)] === $pageId) {
+                    return $weights[$position];
+                }
+            }
+        }
 
+        return 1;
+    }
+
+    public function findWeightByBlockPageId(array $permutatedItems, int $pageId): float
+    {
+        foreach ($permutatedItems as $permutatedItem) {
+            $weights = $permutatedItem['item_weights'];
+
+            foreach ($permutatedItem['combinations'] as $position => $combinationItems) {
                 if ($combinationItems[array_key_first($combinationItems)] === $pageId) {
                     return $weights[$position];
                 }

@@ -90,8 +90,34 @@ final class RandomizationTest extends TestCase
 
         $flattenCombinations = $this->flattenCombinations($randomizedItems['paths']);
 
-        $this->assertCount(18, array_unique($flattenCombinations),
+        $this->assertCount(24, array_unique($flattenCombinations),
             'Error. Combinations got duplicates for sample 6');
+    }
+
+    public function testGetRandomizedPathsWithSample7(): void
+    {
+        $randomizedItems = $this->randomizationService->getRandomizedPaths($this->sample7());
+
+        $this->assertCount(4, $randomizedItems['paths'], 'Error. Incorrect amount of combinations for sample 7');
+        $this->assertCount(4, $randomizedItems['weights'], 'Error. Incorrect amount of weights for sample 7');
+
+        $flattenCombinations = $this->flattenCombinations($randomizedItems['paths']);
+
+        $this->assertCount(4, array_unique($flattenCombinations),
+            'Error. Combinations got duplicates for sample 7');
+    }
+
+    public function testGetRandomizedPathsWithSample8(): void
+    {
+        $randomizedItems = $this->randomizationService->getRandomizedPaths($this->sample8());
+
+        $this->assertCount(24, $randomizedItems['paths'], 'Error. Incorrect amount of combinations for sample 8');
+        $this->assertCount(24, $randomizedItems['weights'], 'Error. Incorrect amount of weights for sample 8');
+
+        $flattenCombinations = $this->flattenCombinations($randomizedItems['paths']);
+
+        $this->assertCount(24, array_unique($flattenCombinations),
+            'Error. Combinations got duplicates for sample 8');
     }
 
     private function flattenCombinations(array $combinations): array

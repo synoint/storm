@@ -24,6 +24,19 @@ class SurveyPath
         return $surveyPath;
     }
 
+    public function find(Document\Survey $survey): ?array
+    {
+        return $this->dm->getRepository(Document\SurveyPath::class)->findBy(
+            [
+                'surveyId' => $survey->getSurveyId(),
+                'version'  => $survey->getVersion()
+            ],
+            [
+                'version' => 'DESC'
+            ]
+        );
+    }
+
     public function save(Document\Survey $survey, array $randomizedCombinations)
     {
         foreach ($randomizedCombinations['paths'] as $index => $combination) {
@@ -55,19 +68,6 @@ class SurveyPath
         $this->dm->flush();
     }
 
-    public function find(Document\Survey $survey): ?array
-    {
-        return $this->dm->getRepository(Document\SurveyPath::class)->findBy(
-            [
-                'surveyId' => $survey->getSurveyId(),
-                'version'  => $survey->getVersion()
-            ],
-            [
-                'version' => 'DESC'
-            ]
-        );
-    }
-
     public function delete(Document\SurveyPath $surveyPath)
     {
         $this->dm->remove($surveyPath);
@@ -77,6 +77,7 @@ class SurveyPath
     public function getRandomWeightedElement(array $paths): ?Document\SurveyPath
     {
         $weightedValues = [];
+
         /** @var Document\SurveyPath $path */
         foreach ($paths as $index => $path) {
             $weightedValues[$index] = $path->getWeight();
