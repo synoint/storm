@@ -51,6 +51,11 @@ class Page
     private $content;
 
     /**
+     * @ODM\Field(type="string")
+     */
+    private $javascript;
+
+    /**
      * @var Collection
      *
      * @ODM\EmbedMany(targetDocument=Question::class)
@@ -173,6 +178,18 @@ class Page
     public function setContent($content)
     {
         $this->content = $content;
+
+        return $this;
+    }
+
+    public function getJavascript()
+    {
+        return $this->javascript;
+    }
+
+    public function setJavascript(string $javascript): self
+    {
+        $this->javascript = $javascript;
 
         return $this;
     }

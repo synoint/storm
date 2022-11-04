@@ -32,6 +32,12 @@
 {% block body %}{% endblock %}
 
 {% block javascripts %}
+    {% if '' != page.javascript %}
+        <script>
+            {{ page.javascript|raw }}
+        </script>
+    {% endif %}
+    
     {% if survey is defined %}
         {{ encore_entry_script_tags(survey.config.theme ~ '.' ~ survey.config.colorTheme) }}
     {% else %}

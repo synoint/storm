@@ -19,6 +19,7 @@ class PageType extends AbstractType
             ->add('code', TextType::class)
             ->add('sortOrder', IntegerType::class)
             ->add('content', TextType::class, ['required' => false])
+            ->add('javascript', TextType::class, ['required' => false])
             ->add('translations', CollectionType::class, [
                 'entry_type' => PageTranslationType::class,
                 'by_reference'  => false,
