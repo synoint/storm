@@ -25,16 +25,12 @@ Encore
 	 */
 	// .addEntry('materialize.common', './assets/materialize/common/index.js')
 	.addEntry("b4.default", "./assets/b4/default/index.js")
-	.addEntry("b4.pastel", "./assets/b4/pastel/index.js")
-	.addEntry("b4.classic", "./assets/b4/classic/index.js")
-	.addEntry("b4.mediametrie", "./assets/b4/mediametrie/index.js")
-	.addEntry("b4.ocean", "./assets/b4/ocean/index.js")
 	.addEntry("b4.page", "./assets/b4/page/index.js")
 	.addEntry("b4.page.debug", "./assets/b4/page/debug.js")
 	.addEntry("media.player", "./assets/media_player/script.js")
 
 	// When enabled, Webpack "splits" your files into smaller pieces for greater optimization.
-	//.splitEntryChunks()
+	// .splitEntryChunks()
 
 	// will require an extra script tag for runtime.js
 	// but, you probably want this, unless you're building a single-page app
@@ -70,16 +66,15 @@ Encore
 //.enableIntegrityHashes(Encore.isProduction())
 
 // uncomment if you're having problems with a jQuery plugin
-//.autoProvidejQuery()
+// .autoProvidejQuery();
 
 // uncomment if you use API Platform Admin (composer req api-admin)
 //.enableReactPreset()
 //.addEntry('admin', './assets/js/admin.js')
 
 if (Encore.isProduction()) {
-	Encore.setPublicPath(
-		"https://survey.synointcdn.com/build"
-	).setManifestKeyPrefix("build/");
+	Encore.setPublicPath("https://survey.synointcdn.com/build")
+		  .setManifestKeyPrefix("build/");
 }
 
 module.exports = Encore.getWebpackConfig();

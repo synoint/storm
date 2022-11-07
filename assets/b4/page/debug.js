@@ -1,4 +1,3 @@
-const $ = require('jquery');
 class Debug {
 
     constructor() {

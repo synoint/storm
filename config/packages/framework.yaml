@@ -14,3 +14,10 @@ framework:
     #fragments: true
     php_errors:
         log: true
+
+    assets:
+        packages:
+            vendors:
+                base_urls:
+                    - '%env(resolve:APP_CDN_URL)%'
+                version: ~

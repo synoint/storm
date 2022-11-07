@@ -1,6 +1,4 @@
-const $ = require('jquery');
 class Page {
-
     constructor() {
         this.container = $("body");
     }
@@ -35,9 +33,7 @@ class Page {
 }
 
 (function () {
-
     let handler = new Page();
 
     handler.bindEvents();
-
 })();

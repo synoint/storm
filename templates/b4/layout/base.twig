@@ -5,6 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <meta http-equiv="X-UA-Compatible" content="ie=edge"/>
     <title>{% block title %}{% endblock %}</title>
+{#    <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>#}
+{#    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.min.js" integrity="sha384-+sLIOodYLS7CIrQpBjl+C7nPvqq+FbNUBDunl/OZv93DB7Ln/533i8e/mZXLi/P+" crossorigin="anonymous"></script>#}
+    
+    <script src="{{ asset('/jquery/jquery-3.6.1.min.js', 'vendors') }}"></script>
+    <script src="{{ asset('/bootstrap/bootstrap4.6.2.bundle.min.js', 'vendors') }}"></script>
     
     {% block stylesheets %}
         {{ encore_entry_link_tags('b4.default') }}
@@ -32,16 +37,16 @@
 {% block body %}{% endblock %}
 
 {% block javascripts %}
-    {% if '' != page.javascript %}
-        <script>
-            {{ page.javascript|raw }}
-        </script>
-    {% endif %}
-    
     {% if survey is defined %}
         {{ encore_entry_script_tags(survey.config.theme ~ '.' ~ survey.config.colorTheme) }}
     {% else %}
         {{ encore_entry_script_tags('b4.default') }}
+    {% endif %}
+    
+    {% if '' != page.javascript %}
+        <script>
+            {{ page.javascript|raw }}
+        </script>
     {% endif %}
 {% endblock %}
 </body>
