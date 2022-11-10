@@ -35,7 +35,7 @@
                 {% for child in attribute(form, (question.getInputName(rowCode))) %}
                     <td class="d-block d-md-table-cell p-md-0 ">
                     <div class="custom-control {{ (question.questionTypeId == constant('Syno\\Storm\\Document\\Question::TYPE_SINGLE_CHOICE_MATRIX'))  ? 'custom-radio custom-radio-filled custom-radio-filled-md-center' : 'custom-checkbox custom-checkbox-filled custom-checkbox-filled-md-center' }}">
-                        {{ form_widget(child, {'label_attr': {'class': 'custom-control-label'}}) }}
+                        {{ form_widget(child, {'label_attr': {'id': child.vars.id ~ '_label', 'class': 'custom-control-label'}}) }}
                     </div>
                     </td>
                 {% endfor %}
