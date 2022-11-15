@@ -41,7 +41,7 @@
         {{ encore_entry_script_tags('b4.default') }}
     {% endif %}
     
-    {% if '' != page.javascript %}
+    {% if page is defined and '' != page.javascript %}
         <script>
             {{ page.javascript|raw }}
         </script>
