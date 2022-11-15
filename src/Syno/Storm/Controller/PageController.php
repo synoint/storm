@@ -8,15 +8,18 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Syno\Storm\Document;
 use Syno\Storm\Form\PageType;
+use Syno\Storm\Services\JavascriptResponse;
 use Syno\Storm\Services\ResponseSessionManager;
 
 class PageController extends AbstractController
 {
     private ResponseSessionManager $responseSessionManager;
+    private JavascriptResponse     $javascriptResponse;
 
-    public function __construct(ResponseSessionManager $responseSessionManager)
+    public function __construct(ResponseSessionManager $responseSessionManager, JavascriptResponse $javascriptResponse)
     {
         $this->responseSessionManager = $responseSessionManager;
+        $this->javascriptResponse     = $javascriptResponse;
     }
 
     /**
@@ -64,7 +67,8 @@ class PageController extends AbstractController
         } else {
             $this->responseSessionManager->saveProgress();
         }
-
+//dd($this->javascriptResponse->response());
+//        dd($this->responseSessionManager->getResponse());
         return $this->render($survey->getConfig()->getTheme() . '/page/display.twig', [
             'survey'             => $survey,
             'page'               => $page,
