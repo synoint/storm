@@ -67,8 +67,7 @@ class PageController extends AbstractController
         } else {
             $this->responseSessionManager->saveProgress();
         }
-//dd($this->javascriptResponse->response());
-//        dd($this->responseSessionManager->getResponse());
+
         return $this->render($survey->getConfig()->getTheme() . '/page/display.twig', [
             'survey'             => $survey,
             'page'               => $page,
@@ -77,6 +76,7 @@ class PageController extends AbstractController
             'form'               => $form->createView(),
             'backButtonDisabled' => $this->responseSessionManager->isFirstPage($page->getPageId()),
             'isLastPage'         => $this->responseSessionManager->isLastPage($page->getPageId()),
+            'responseDataLayer'  => $this->javascriptResponse->responseResults(),
         ]);
     }
 

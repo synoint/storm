@@ -16,34 +16,31 @@ class JavascriptResponse
         $this->surveyService          = $surveyService;
     }
 
-    public function response()
+    public function responseResults(): array
     {
-        $result = [];
-
         $response = $this->responseSessionManager->getResponse();
-//        dump($response->getSurveyId());
-//        dump($response->getSurveyVersion());
+        $responseSurvey = $this->surveyService->findBySurveyIdAndVersion($response->getSurveyId(), $response->getSurveyVersion());
 
-        $responseSurvey = $this->surveyService->findBySurveyIdAndVersion($response->getSurveyId(),
-            $response->getSurveyVersion());
-//        dd($responseSurvey->getPages());
+        $result['version'] = $response->getSurveyVersion();
+        $result['locale'] = $response->getLocale();
+        $result['mode'] = $response->getMode();
+        $result['createdAt'] = $response->getCreatedAt()->getTimestamp();
+        $result['answers'] = [];
+
         /** @var Document\ResponseAnswer $responseAnswer */
         foreach ($response->getAnswers() as $responseAnswer) {
-//            dump($responseAnswer->getQuestionId());
-//            dump($this->getQuestionCode($responseSurvey->getPages()->toArray(), $responseAnswer->getQuestionId()));
-
-
-//            $questionCode = $this->getQuestionCode($responseSurvey->getPages()->toArray(), $responseAnswer->getQuestionId());
-
             /** @var Document\ResponseAnswerValue $responseAnswerValue */
-            foreach ($responseAnswer->getAnswers() as $responseAnswerValue) {
-//                dd($responseAnswerValue);
+            foreach ($responseAnswer->getAnswers() as $index => $responseAnswerValue) {
                 $answerKeyCode = $this->getAnswerKey($responseSurvey->getPages()->toArray(), $responseAnswerValue->getAnswerId());
-                dd($answerKeyCode);
+
+                if (!empty($answerKeyCode)) {
+                    $result['answers'][$answerKeyCode] = $responseAnswerValue->getValue();
+                }
             }
 
-//            dd($responseAnswer);
         }
+
+        return $result;
     }
 
     private function getAnswerKey(array $pages, int $answerId): string
@@ -55,6 +52,10 @@ class JavascriptResponse
                 /** @var Document\Answer $answer */
                 foreach ($question->getAnswers() as $answer) {
                     if ($answer->getAnswerId() === $answerId) {
+                        if ($answer->getRowCode() || $answer->getColumnCode()) {
+                            return sprintf('%s_%s_%d_%d', $page->getCode(), $question->getCode(), $answer->getRowCode(), $answer->getColumnCode());
+                        }
+
                         return sprintf('%s_%s_%d', $page->getCode(), $question->getCode(), $answer->getCode());
                     }
                 }

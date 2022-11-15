@@ -41,6 +41,17 @@
         {{ encore_entry_script_tags('b4.default') }}
     {% endif %}
     
+    {% if responseDataLayer is defined %}
+        <script>
+            let data = {};
+            data.version = '{{ responseDataLayer.version }}';
+            data.locale = '{{ responseDataLayer.locale }}';
+            data.mode = '{{ responseDataLayer.mode }}';
+            data.createdAt = '{{ responseDataLayer.createdAt }}';
+            data.answers = {{(responseDataLayer.answers|json_encode|raw)}};
+        </script>
+    {% endif %}
+    
     {% if page is defined and '' != page.javascript %}
         <script>
             {{ page.javascript|raw }}
