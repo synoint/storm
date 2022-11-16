@@ -5,7 +5,7 @@ namespace Syno\Storm\Services;
 
 use Syno\Storm\Document;
 
-class JavascriptResponse
+class ResponseDataLayer
 {
     private ResponseSessionManager $responseSessionManager;
     private Survey                 $surveyService;
@@ -16,52 +16,55 @@ class JavascriptResponse
         $this->surveyService          = $surveyService;
     }
 
-    public function responseResults(): array
+    public function getData(): array
     {
         $response = $this->responseSessionManager->getResponse();
         $responseSurvey = $this->surveyService->findBySurveyIdAndVersion($response->getSurveyId(), $response->getSurveyVersion());
 
-        $result['version'] = $response->getSurveyVersion();
-        $result['locale'] = $response->getLocale();
-        $result['mode'] = $response->getMode();
-        $result['createdAt'] = $response->getCreatedAt()->getTimestamp();
         $result['answers'] = [];
 
         /** @var Document\ResponseAnswer $responseAnswer */
         foreach ($response->getAnswers() as $responseAnswer) {
             /** @var Document\ResponseAnswerValue $responseAnswerValue */
-            foreach ($responseAnswer->getAnswers() as $index => $responseAnswerValue) {
-                $answerKeyCode = $this->getAnswerKey($responseSurvey->getPages()->toArray(), $responseAnswerValue->getAnswerId());
+            foreach ($responseAnswer->getAnswers() as $responseAnswerValue) {
+                $answerResponse = $this->getAnswerResponse($responseSurvey, $responseAnswerValue->getAnswerId(), $response->getLocale());
+                $answerResponse['value'] = ($responseAnswerValue->getValue()) ?: '';
 
-                if (!empty($answerKeyCode)) {
-                    $result['answers'][$answerKeyCode] = $responseAnswerValue->getValue();
-                }
+                $result['answers'][] = $answerResponse;
             }
-
         }
 
         return $result;
     }
 
-    private function getAnswerKey(array $pages, int $answerId): string
+    private function getAnswerResponse(Document\Survey $survey, int $answerId, string $locale): array
     {
+        $result = [];
+
         /** @var Document\Page $page */
-        foreach ($pages as $page) {
+        foreach ($survey->getPages() as $page) {
             /** @var Document\Question $question */
             foreach ($page->getQuestions() as $question) {
                 /** @var Document\Answer $answer */
                 foreach ($question->getAnswers() as $answer) {
                     if ($answer->getAnswerId() === $answerId) {
-                        if ($answer->getRowCode() || $answer->getColumnCode()) {
-                            return sprintf('%s_%s_%d_%d', $page->getCode(), $question->getCode(), $answer->getRowCode(), $answer->getColumnCode());
-                        }
+                        $result['pageCode'] = $page->getCode();
+                        $result['questionCode'] = $question->getCode();
 
-                        return sprintf('%s_%s_%d', $page->getCode(), $question->getCode(), $answer->getCode());
+                        if ($answer->getRowCode() || $answer->getColumnCode()) {
+                            $result['rowCode'] = $answer->getRowCode();
+                            $result['rowLabel'] = $answer->getRowLabel();
+                            $result['columnCode'] = $answer->getColumnCode();
+                            $result['columnLabel'] = $answer->getColumnLabel();
+                        } else {
+                            $result['code'] = $answer->getCode();
+                            $result['label'] = $answer->getLabel();
+                        }
                     }
                 }
             }
         }
 
-        return '';
+        return $result;
     }
 }

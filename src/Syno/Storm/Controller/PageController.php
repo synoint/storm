@@ -8,18 +8,18 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Syno\Storm\Document;
 use Syno\Storm\Form\PageType;
-use Syno\Storm\Services\JavascriptResponse;
+use Syno\Storm\Services\ResponseDataLayer;
 use Syno\Storm\Services\ResponseSessionManager;
 
 class PageController extends AbstractController
 {
     private ResponseSessionManager $responseSessionManager;
-    private JavascriptResponse     $javascriptResponse;
+    private ResponseDataLayer      $responseDataLayer;
 
-    public function __construct(ResponseSessionManager $responseSessionManager, JavascriptResponse $javascriptResponse)
+    public function __construct(ResponseSessionManager $responseSessionManager, ResponseDataLayer $responseDataLayer)
     {
         $this->responseSessionManager = $responseSessionManager;
-        $this->javascriptResponse     = $javascriptResponse;
+        $this->responseDataLayer      = $responseDataLayer;
     }
 
     /**
@@ -76,7 +76,7 @@ class PageController extends AbstractController
             'form'               => $form->createView(),
             'backButtonDisabled' => $this->responseSessionManager->isFirstPage($page->getPageId()),
             'isLastPage'         => $this->responseSessionManager->isLastPage($page->getPageId()),
-            'responseDataLayer'  => $this->javascriptResponse->responseResults(),
+            'responseDataLayer'  => json_encode($this->responseDataLayer->getData()),
         ]);
     }
 

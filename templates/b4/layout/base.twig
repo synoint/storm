@@ -43,12 +43,7 @@
     
     {% if responseDataLayer is defined %}
         <script>
-            let data = {};
-            data.version = '{{ responseDataLayer.version }}';
-            data.locale = '{{ responseDataLayer.locale }}';
-            data.mode = '{{ responseDataLayer.mode }}';
-            data.createdAt = '{{ responseDataLayer.createdAt }}';
-            data.answers = {{(responseDataLayer.answers|json_encode|raw)}};
+            let response = {{(responseDataLayer|raw)}};
         </script>
     {% endif %}
     
