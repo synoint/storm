@@ -43,7 +43,7 @@
     
     {% if responseDataLayer is defined %}
         <script>
-            let response = {{(responseDataLayer|raw)}};
+            let response = {{(responseDataLayer|json_encode(constant('JSON_PRETTY_PRINT'))|raw)}};
         </script>
     {% endif %}
     

@@ -76,7 +76,7 @@ class PageController extends AbstractController
             'form'               => $form->createView(),
             'backButtonDisabled' => $this->responseSessionManager->isFirstPage($page->getPageId()),
             'isLastPage'         => $this->responseSessionManager->isLastPage($page->getPageId()),
-            'responseDataLayer'  => json_encode($this->responseDataLayer->getData()),
+            'responseDataLayer'  => $this->responseDataLayer->getData(),
         ]);
     }
 
