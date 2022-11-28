@@ -26,7 +26,7 @@ class MediaPlayer {
 
 	const containers = document.getElementsByClassName('media-player');
 
-	containers.forEach(function(el, index, array){
+	Array.prototype.forEach.call(containers, function(el, index, array) {
 		const required = el.getAttribute("data-required");
 		const autoplay = el.getAttribute("data-autoplay");
 		const mediaPlayer = new MediaPlayer(el, required);
