@@ -124,8 +124,8 @@
 {% endblock %}
 
 {% block javascripts %}
-    {{ parent() }}
     {{ encore_entry_script_tags('b4.page') }}
+    {{ parent() }}
     
     {% if page.hasMedia %}
         {{ encore_entry_script_tags('media.player') }}
