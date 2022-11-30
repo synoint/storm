@@ -52,21 +52,23 @@ class Randomization
 
                     $items = $this->getBlockContents($blocks, $combinationBlockId);
 
-                    foreach ($items['page'] as $randomizedItems) {
-                        foreach ($randomizedItems as $randomizedItem) {
-                            //array_search($randomizedItem->getPage(), $pages)
-                            $blockPagesCombinations[$group]['combinations'][$index][] = $randomizedItem->getPage();
+                    if (isset($items['page'])) {
+                        foreach ($items['page'] as $randomizedItems) {
+                            foreach ($randomizedItems as $randomizedItem) {
+                                $blockPagesCombinations[$group]['combinations'][$index][] = $randomizedItem->getPage();
 
-                            $positionMap[array_search($randomizedItem->getPage(),
-                                $pages)] = array_search($randomizedItem->getPage(), $pages);
+                                $positionMap[array_search($randomizedItem->getPage(),
+                                    $pages)] = array_search($randomizedItem->getPage(), $pages);
+                            }
+
+                            $weight                = $weights['blocks'][$combinationBlockId];
+                            $blockCombinationCount = $this->randomizationWeightService->countBlockCombinations($combinations,
+                                $combinationBlockId);
+
+                            $blockPagesCombinations[$group]['item_weights'][$index] = round($weight / $blockCombinationCount,
+                                2,
+                                PHP_ROUND_HALF_DOWN);
                         }
-
-                        $weight                = $weights['blocks'][$combinationBlockId];
-                        $blockCombinationCount = $this->randomizationWeightService->countBlockCombinations($combinations,
-                            $combinationBlockId);
-
-                        $blockPagesCombinations[$group]['item_weights'][$index] = round($weight / $blockCombinationCount, 2,
-                            PHP_ROUND_HALF_DOWN);
                     }
                 }
 
@@ -216,9 +218,10 @@ class Randomization
                     $path[array_key_first($path)]);
             }
 
-            $res = $this->mergeCombinations($randomizedPaths['blocks'], $permutatedItems['pages'], $randomizedPaths['blocks']['item_weights']);
+            $res = $this->mergeCombinations($randomizedPaths['blocks'], $permutatedItems['pages'],
+                $randomizedPaths['blocks']['item_weights']);
 
-            $randomizedPaths['paths'] = $res['paths'];
+            $randomizedPaths['paths']   = $res['paths'];
             $randomizedPaths['weights'] = $res['weights'];
         }
 
@@ -274,7 +277,7 @@ class Randomization
             foreach ($childCombinationItems['combinations'] as $permutatedPageItemIndex => $pageItems) { // pirmi 2 elementai
 
                 foreach ($allCombinations['combinations'] as $blockItemsIndex => $blockItems) {
-                    $blockItemWeight = $weights[$blockItemsIndex];
+                    $blockItemWeight      = $weights[$blockItemsIndex];
                     $randomizedPathsTemp2 = $blockItems;
 
                     foreach ($pageItems as $key => $item) {
@@ -285,16 +288,16 @@ class Randomization
                         }
                     }
 
-                    $index = implode(',', $randomizedPathsTemp2);
-                    $randomizedPaths['combinations'][$index]   = $randomizedPathsTemp2;
-                    $randomizedPaths['weights'][$index] = $blockItemWeight + $childCombinationItems['item_weights'][$permutatedPageItemIndex];
+                    $index                                   = implode(',', $randomizedPathsTemp2);
+                    $randomizedPaths['combinations'][$index] = $randomizedPathsTemp2;
+                    $randomizedPaths['weights'][$index]      = $blockItemWeight + $childCombinationItems['item_weights'][$permutatedPageItemIndex];
                 }
             }
 
             unset($childCombinations[$childCombinationsIndex]);
             if (count($childCombinations)) {
                 $allCombinations = $randomizedPaths;
-                $weights = $randomizedPaths['weights'];
+                $weights         = $randomizedPaths['weights'];
                 $this->mergeCombinations($allCombinations, $childCombinations, $weights);
             }
         }
@@ -302,7 +305,7 @@ class Randomization
         $result = [];
 
         foreach ($randomizedPaths['combinations'] as $key => $val) {
-            $result['paths'][] = $val;
+            $result['paths'][]   = $val;
             $result['weights'][] = $randomizedPaths['weights'][$key];
         }
 
@@ -405,7 +408,7 @@ class Randomization
 
     private function replaceElements($randomizedPath, $newCombination): array
     {
-        $result = $randomizedPath;
+        $result   = $randomizedPath;
         $continue = true;
 
         $i = 0;
@@ -421,7 +424,7 @@ class Randomization
         }
 
         $resultWithPositions = [];
-        $i = 0;
+        $i                   = 0;
 
         foreach ($randomizedPath as $key => $val) {
             $resultWithPositions[$key] = $result[$i];
