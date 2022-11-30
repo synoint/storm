@@ -23,7 +23,7 @@ class Randomization
 
         $permutatedItems['blocks'] = $this->getPermutatedBlockPages($survey, $weights);
         $permutatedItems['pages']  = $this->getPermutatedPages($survey, $weights);
-
+//        dd($permutatedItems);
         return $this->createSurveyPathCombinations($survey, $permutatedItems);
     }
 
@@ -45,30 +45,28 @@ class Randomization
         }
 
         $combinationGroups = $this->mergeBlockCombinations($combinationGroups);
-
+//dd($combinationGroups);
+//dump($combinationGroups);
         foreach ($combinationGroups as $group => $combinations) {
             foreach ($combinations as $index => $combination) {
                 foreach ($combination as $combinationBlockId) {
-
                     $items = $this->getBlockContents($blocks, $combinationBlockId);
 
-                    if (isset($items['page'])) {
-                        foreach ($items['page'] as $randomizedItems) {
-                            foreach ($randomizedItems as $randomizedItem) {
-                                $blockPagesCombinations[$group]['combinations'][$index][] = $randomizedItem->getPage();
+                    foreach ($items['page'] as $randomizedItems) {
+                        foreach ($randomizedItems as $randomizedItem) {
+                            $blockPagesCombinations[$group]['combinations'][$index][] = $randomizedItem->getPage();
 
-                                $positionMap[array_search($randomizedItem->getPage(),
-                                    $pages)] = array_search($randomizedItem->getPage(), $pages);
-                            }
-
-                            $weight                = $weights['blocks'][$combinationBlockId];
-                            $blockCombinationCount = $this->randomizationWeightService->countBlockCombinations($combinations,
-                                $combinationBlockId);
-
-                            $blockPagesCombinations[$group]['item_weights'][$index] = round($weight / $blockCombinationCount,
-                                2,
-                                PHP_ROUND_HALF_DOWN);
+                            $positionMap[array_search($randomizedItem->getPage(),
+                                $pages)] = array_search($randomizedItem->getPage(), $pages);
                         }
+
+                        $weight                = $weights['blocks'][$combinationBlockId];
+                        $blockCombinationCount = $this->randomizationWeightService->countBlockCombinations($combinations,
+                            $combinationBlockId);
+
+                        $blockPagesCombinations[$group]['item_weights'][$index] = round($weight / $blockCombinationCount,
+                            2,
+                            PHP_ROUND_HALF_DOWN);
                     }
                 }
 
@@ -77,7 +75,8 @@ class Randomization
                 $blockPagesCombinations[$group]['position_map'] = $positionMap;
             }
         }
-
+//dump($blockPagesCombinations);
+//dd('');
         return $blockPagesCombinations;
     }
 
@@ -132,6 +131,62 @@ class Randomization
     }
 
     private function getBlockContents(array $blocks, int $blockId): array
+    {
+        $result['page'] = [];
+
+        /** @var Document\Randomization $block */
+        foreach ($blocks as $block) {
+            if ($block->getId() == $blockId) {
+                if ('block' !== $block->getType()) {
+//                    $result[$block->getType()][] = $block->getItems()->toArray();
+                    $result['page'][] = $block->getItems()->toArray();
+                }
+                else {
+                    /** @var Document\BlockItem $blockItem */
+                    foreach ($block->getItems()->toArray() as $blockItem) {
+                        foreach ($this->getBlockChildren($blocks, $blockItem->getBlock()) as $res)  {
+                            $result['page'][] = $res;
+                        }
+
+                    }
+                }
+            }
+        }
+
+        return $result;
+    }
+
+    private function getBlockChildren(array $blocks, int $blockId): array
+    {
+        $result = [];
+
+        /** @var Document\Randomization $block */
+        foreach ($blocks as $block) {
+            if ($block->getId() == $blockId) {
+                if ('block' !== $block->getType()) {
+                    $result[] = $block->getItems()->toArray();
+//                    $result[$block->getType()][] = $block->getItems()->toArray();
+                    return $result;
+                }
+
+                /** @var Document\BlockItem $blockItem */
+                foreach ($block->getItems() as $blockItem) {
+                    /** @var Document\Randomization $block */
+                    foreach ($blocks as $block) {
+                        if ($block->getId() === $blockItem->getBlock()) {
+                            $result[] = $block->getItems()->toArray();
+//                            $result[$block->getType()][] = $block->getItems()->first();
+                        }
+                    }
+                }
+            }
+        }
+
+        return $result;
+    }
+
+//123
+    private function getBlockChildren2(array $blocks, int $blockId): array
     {
         $result = [];
 
@@ -205,7 +260,6 @@ class Randomization
         $pages           = $survey->getPlainPages();
 
         if (count($permutatedItems['blocks']) && count($permutatedItems['pages'])) {
-
             $allCombinations = [];
             foreach ($permutatedItems['blocks'] as $permutatedPageItems) {
                 $allCombinations[] = $permutatedPageItems['combinations'];
@@ -230,9 +284,9 @@ class Randomization
             foreach ($permutatedItems['blocks'] as $permutatedPageItems) {
                 $allCombinations[] = $permutatedPageItems['combinations'];
             }
-
+//dump($allCombinations);
             $randomizedPaths['paths'] = $this->mergePageCombinations($allCombinations);
-
+//dd($randomizedPaths['paths']);
             foreach ($randomizedPaths['paths'] as $path) {
                 $randomizedPaths['weights'][] = $this->randomizationWeightService->findWeightByBlockPageId($permutatedItems['blocks'],
                     $path[array_key_first($path)]);
@@ -349,6 +403,8 @@ class Randomization
 
     private function mergePageCombinations(array &$combinations, array &$result = [])
     {
+//dump('-1-');
+//dump($combinations);
         for ($i = 0; $i < count($combinations); $i++) {
             $c = 0;
             if (0 === count($result)) {
@@ -358,13 +414,26 @@ class Randomization
                 for ($n = 0; $n < count($combinations[$i]); $n++) {
                     for ($m = 0; $m < count($tempResult); $m++) {
                         $mergedItems = [];
-                        foreach ($tempResult[$m] as $index => $value) {
-                            $mergedItems[$index] = $value;
-                        }
-
                         foreach ($combinations[$i][$n] as $index => $value) {
                             $mergedItems[$index] = $value;
                         }
+
+                        foreach ($tempResult[$m] as $index => $value) {
+                            if (in_array($value, $mergedItems)) {
+                                $mergedItems = $this->replaceElements($mergedItems, $tempResult[$m]);
+                            } else {
+                                $mergedItems[$index] = $value;
+                            }
+                        }
+
+//                        $mergedItems = [];
+//                        foreach ($tempResult[$m] as $index => $value) {
+//                            $mergedItems[$index] = $value;
+//                        }
+//
+//                        foreach ($combinations[$i][$n] as $index => $value) {
+//                            $mergedItems[$index] = $value;
+//                        }
 
                         $result[$c] = $mergedItems;
                         $c++;
@@ -373,7 +442,10 @@ class Randomization
             }
 
             $combinations = array_slice($combinations, 1);
-
+//dump('-2-');
+//dump($result);
+//dump('-3-');
+//dd($combinations);
             $this->mergePageCombinations($combinations, $result);
         }
 
