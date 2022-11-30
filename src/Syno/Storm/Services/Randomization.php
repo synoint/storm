@@ -285,6 +285,7 @@ class Randomization
                 $allCombinations[] = $permutatedPageItems['combinations'];
             }
 //dump($allCombinations);
+            array_multisort(array_map('count', $allCombinations), SORT_DESC, $allCombinations);
             $randomizedPaths['paths'] = $this->mergePageCombinations($allCombinations);
 //dd($randomizedPaths['paths']);
             foreach ($randomizedPaths['paths'] as $path) {
@@ -300,6 +301,7 @@ class Randomization
             }
 
             $randomizedPaths['paths'] = $this->mergePageCombinations($allCombinations);
+//            dd($randomizedPaths['paths']);
 
             foreach ($randomizedPaths['paths'] as $path) {
                 $randomizedPaths['weights'][] = $this->randomizationWeightService->findWeightByPageId($permutatedItems['pages'],
