@@ -65,6 +65,15 @@ class ResponseEvent
             ]
         );
 
+        if (!$event) {
+            $event = $this->dm->getRepository(Document\ResponseEvent::class)->findOneBy(
+                [
+                    'responseId' => $responseId,
+                    'message'    => ResponseEventLogger::RESPONSE_COMPLETE,
+                ]
+            );
+        }
+
         return $event ? $event->getTimestamp() : null;
     }
 
