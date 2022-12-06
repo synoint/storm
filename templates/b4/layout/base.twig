@@ -46,11 +46,13 @@
             let response = {{(responseDataLayer|json_encode(constant('JSON_PRETTY_PRINT'))|raw)}};
         </script>
     {% endif %}
-
+    
     {% if page is defined and '' != page.javascript %}
         <script>
             {{ page.javascript|raw }}
         </script>
+    {% else %}
+        {{ encore_entry_script_tags('b4.page') }}
     {% endif %}
 {% endblock %}
 </body>
