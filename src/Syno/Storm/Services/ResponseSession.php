@@ -176,10 +176,22 @@ class ResponseSession
     {
         $response = $this->responseHandler->getResponse();
 
+        if($survey->getSurveyScreenoutCondition() && $survey->getSurveyScreenoutCondition()->getRule()){
+            $surveyIsScreenoutable = $this->conditionService->applySurveyConditionRule(
+                $this->responseHandler->getResponse(),
+                $survey->getSurveyScreenoutCondition()->getRule()
+            );
+
+            if($surveyIsScreenoutable) {
+                $this->responseEventLogger->log(ResponseEventLogger::SURVEY_SCREENOUTED_ON_SCREENOUT_CONDITION, $response);
+                return $this->screenOut($survey);
+            }
+        }
+
          if($survey->getSurveyCompleteCondition() && $survey->getSurveyCompleteCondition()->getRule()){
              $surveyIsCompletable = $this->conditionService->applySurveyConditionRule(
                  $this->responseHandler->getResponse(),
-                 $survey->getSurveyCompleteCondition()
+                 $survey->getSurveyCompleteCondition()->getRule()
              );
 
              if(!$surveyIsCompletable) {

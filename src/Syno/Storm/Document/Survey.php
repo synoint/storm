@@ -126,6 +126,13 @@ class Survey implements JsonSerializable
      */
     private $surveyCompleteCondition;
 
+    /**
+     * @var SurveyScreenoutCondition
+     *
+     * @ODM\EmbedOne(targetDocument=SurveyScreenoutCondition::class)
+     */
+    private $surveyScreenoutCondition;
+
     public function __construct()
     {
         $this->pages         = new ArrayCollection();
@@ -140,19 +147,20 @@ class Survey implements JsonSerializable
     public function jsonSerialize(): array
     {
         return [
-            'id'                      => $this->id,
-            'surveyId'                => $this->surveyId,
-            'logoPath'                => $this->logoPath,
-            'version'                 => $this->version,
-            'languages'               => $this->languages,
-            'translations'            => $this->translations,
-            'surveyCompleteCondition' => $this->surveyCompleteCondition,
-            'published'               => $this->published,
-            'config'                  => $this->config,
-            'parameters'              => $this->parameters,
-            'urls'                    => $this->urls,
-            'pages'                   => $this->pages,
-            'css'                     => $this->css,
+            'id'                       => $this->id,
+            'surveyId'                 => $this->surveyId,
+            'logoPath'                 => $this->logoPath,
+            'version'                  => $this->version,
+            'languages'                => $this->languages,
+            'translations'             => $this->translations,
+            'surveyCompleteCondition'  => $this->surveyCompleteCondition,
+            'surveyScreenoutCondition' => $this->surveyScreenoutCondition,
+            'published'                => $this->published,
+            'config'                   => $this->config,
+            'parameters'               => $this->parameters,
+            'urls'                     => $this->urls,
+            'pages'                    => $this->pages,
+            'css'                      => $this->css,
         ];
     }
 
@@ -455,6 +463,18 @@ class Survey implements JsonSerializable
     public function setSurveyCompleteCondition(SurveyCompleteCondition $surveyCompleteCondition): self
     {
         $this->surveyCompleteCondition = $surveyCompleteCondition;
+
+        return $this;
+    }
+
+    public function getSurveyScreenoutCondition(): ?SurveyScreenoutCondition
+    {
+        return $this->surveyScreenoutCondition;
+    }
+
+    public function setSurveyScreenoutCondition(SurveyScreenoutCondition $surveyScreenoutCondition): self
+    {
+        $this->surveyScreenoutCondition = $surveyScreenoutCondition;
 
         return $this;
     }

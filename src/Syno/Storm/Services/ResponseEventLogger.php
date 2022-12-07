@@ -25,7 +25,8 @@ class ResponseEventLogger
 
     const SURVEY_MODE_CHANGED = 'survey mode changed';
 
-    const SURVEY_SCREENOUTED_ON_COMPLETE_CONDITION = 'response screenout on survey complete condition';
+    const SURVEY_SCREENOUTED_ON_COMPLETE_CONDITION  = 'response screenout on survey complete condition';
+    const SURVEY_SCREENOUTED_ON_SCREENOUT_CONDITION = 'response screenout on survey screenout condition';
 
     const SURVEY_SCREENOUTED         = 'survey screenouted';
     const SURVEY_QUALITY_SCREENOUTED = 'survey quality screenouted';
@@ -57,6 +58,7 @@ class ResponseEventLogger
             case self::SURVEY_ENTERED:
             case self::SURVEY_COMPLETED:
             case self::SURVEY_SCREENOUTED_ON_COMPLETE_CONDITION:
+            case self::SURVEY_SCREENOUTED_ON_SCREENOUT_CONDITION:
             case self::SURVEY_SCREENOUTED:
             case self::SURVEY_QUALITY_SCREENOUTED:
             case self::SURVEY_VERSION_UNAVAILABLE:

@@ -9,9 +9,9 @@ use Syno\Storm\Document;
 
 class Condition
 {
-    public function applySurveyConditionRule(Document\Response $response, Document\SurveyCompleteCondition $surveyCompleteCondition): bool
+    public function applySurveyConditionRule(Document\Response $response, string $rule): bool
     {
-        return JWadhams\JsonLogic::apply(json_decode($surveyCompleteCondition->getRule()), $response->getAnswerIdMap());
+        return JWadhams\JsonLogic::apply(json_decode($rule), $response->getAnswerIdMap());
     }
 
     public function applyScreenoutRule(
