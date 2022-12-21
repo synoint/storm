@@ -5,9 +5,9 @@ class Page {
 
     bindEvents() {
         this.container.on('change', '.exclusive', function (e) {
-            $(e.currentTarget.closest('.custom-control.custom-checkbox')).find('.form-check').each(function() {
+            $(e.currentTarget.closest('.custom-control.custom-checkbox')).find('.form-check').each(function () {
                 const input = $(this).find('input');
-                if(!input.is($(e.currentTarget))) {
+                if (!input.is($(e.currentTarget))) {
                     input.prop("checked", false);
                     input.prop('disabled', !input.prop('disabled'));
                 }
@@ -15,11 +15,10 @@ class Page {
         });
 
         this.container.on('keyup', '.free-text-input', function (e) {
-            const checkbox = $(e.currentTarget.closest('.form-check')).find('input[type=checkbox]');
+            const checkbox = $(e.currentTarget.closest('.form-check')).find('.custom-control-input');
 
-            if(checkbox.length > 0){
-
-                if($(this).val() !== ''){
+            if (checkbox.length > 0) {
+                if ($(this).val() !== '') {
                     checkbox.prop("checked", true);
                 } else {
                     checkbox.prop("checked", false);
@@ -28,7 +27,7 @@ class Page {
         });
 
         // line below rewrites history which is loaded when back button is pressed, so form would show already filled answers
-       window.history.replaceState(null,null, window.location);
+        window.history.replaceState(null, null, window.location);
     }
 }
 
