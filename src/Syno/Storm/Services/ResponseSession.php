@@ -6,8 +6,9 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\Messenger\MessageBusInterface;
 use Syno\Storm\Document;
+use Syno\Storm\Message\ProfilingSurvey;
 use Syno\Storm\RequestHandler;
 use Syno\Storm\Traits\RouteAware;
 
@@ -19,24 +20,24 @@ class ResponseSession
     private ResponseEventLogger     $responseEventLogger;
     private ResponseRedirector      $responseRedirector;
     private SurveyEventLogger       $surveyEventLogger;
-    private RequestStack            $requestStack;
     private Condition               $conditionService;
+    private MessageBusInterface     $bus;
 
     public function __construct(
-        RequestStack            $requestStack,
         RequestHandler\Response $responseHandler,
         ResponseEventLogger     $responseEventLogger,
         ResponseRedirector      $responseRedirector,
         SurveyEventLogger       $surveyEventLogger,
-        Condition               $conditionService
+        Condition               $conditionService,
+        MessageBusInterface     $bus
     )
     {
         $this->responseHandler     = $responseHandler;
         $this->responseEventLogger = $responseEventLogger;
         $this->responseRedirector  = $responseRedirector;
         $this->surveyEventLogger   = $surveyEventLogger;
-        $this->requestStack        = $requestStack;
         $this->conditionService    = $conditionService;
+        $this->bus                 = $bus;
     }
 
     public function isFinishedButLost(Document\Survey $survey, Request $request): ?RedirectResponse
@@ -120,9 +121,9 @@ class ResponseSession
         $response = $this->responseHandler->getNew($survey);
 
         if ($surveyPath) {
-            $surveyPages = $survey->getPages();
+            $surveyPages     = $survey->getPages();
             $surveyPathPages = $surveyPath->getPages();
-            $path = new ArrayCollection();
+            $path            = new ArrayCollection();
 
             foreach ($surveyPathPages as $surveyPathPage) {
                 foreach ($surveyPages as $surveyPage) {
@@ -176,33 +177,44 @@ class ResponseSession
     {
         $response = $this->responseHandler->getResponse();
 
-        if($survey->getSurveyScreenoutCondition() && $survey->getSurveyScreenoutCondition()->getRule()){
+        if ($survey->getSurveyScreenoutCondition() && $survey->getSurveyScreenoutCondition()->getRule()) {
             $surveyIsScreenoutable = $this->conditionService->applySurveyConditionRule(
                 $this->responseHandler->getResponse(),
                 $survey->getSurveyScreenoutCondition()->getRule()
             );
 
-            if($surveyIsScreenoutable) {
+            if ($surveyIsScreenoutable) {
                 $this->responseEventLogger->log(ResponseEventLogger::SURVEY_SCREENOUTED_ON_SCREENOUT_CONDITION, $response);
+
                 return $this->screenOut($survey);
             }
         }
 
-         if($survey->getSurveyCompleteCondition() && $survey->getSurveyCompleteCondition()->getRule()){
-             $surveyIsCompletable = $this->conditionService->applySurveyConditionRule(
-                 $this->responseHandler->getResponse(),
-                 $survey->getSurveyCompleteCondition()->getRule()
-             );
+        if ($survey->getSurveyCompleteCondition() && $survey->getSurveyCompleteCondition()->getRule()) {
+            $surveyIsCompletable = $this->conditionService->applySurveyConditionRule(
+                $this->responseHandler->getResponse(),
+                $survey->getSurveyCompleteCondition()->getRule()
+            );
 
-             if(!$surveyIsCompletable) {
-                 $this->responseEventLogger->log(ResponseEventLogger::SURVEY_SCREENOUTED_ON_COMPLETE_CONDITION, $response);
+            if (!$surveyIsCompletable) {
+                $this->responseEventLogger->log(ResponseEventLogger::SURVEY_SCREENOUTED_ON_COMPLETE_CONDITION, $response);
+
                 return $this->screenOut($survey);
-             }
-         }
-
+            }
+        }
 
         $response->setCompleted(true);
+
         $this->responseHandler->saveResponse($response);
+
+        if ($survey->getConfig()->getProfilingSurveyCallbackUrl()) {
+            $this->bus->dispatch(
+                new ProfilingSurvey(
+                    $survey->getConfig()->getProfilingSurveyCallbackUrl(),
+                    $response->getForProfilingSurveyCallback()
+                )
+            );
+        }
 
         $this->responseEventLogger->log(ResponseEventLogger::SURVEY_COMPLETED, $response);
         $this->surveyEventLogger->logComplete($response, $survey);

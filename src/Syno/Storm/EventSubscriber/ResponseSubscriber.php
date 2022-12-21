@@ -13,7 +13,6 @@ use Syno\Storm\Services\ResponseSession;
 use Syno\Storm\Services\ResponseSessionManager;
 use Syno\Storm\Traits\RouteAware;
 
-
 class ResponseSubscriber implements EventSubscriberInterface
 {
     use RouteAware;
@@ -88,6 +87,7 @@ class ResponseSubscriber implements EventSubscriberInterface
         $this->logger->debug(__FUNCTION__);
 
         $redirect = $this->responseSession->isFinishedButLost($this->surveyHandler->getSurvey(), $event->getRequest());
+
         if ($redirect) {
             $event->setResponse($redirect);
         }
@@ -281,5 +281,4 @@ class ResponseSubscriber implements EventSubscriberInterface
             KernelEvents::RESPONSE => 'onKernelResponse'
         ];
     }
-
 }
