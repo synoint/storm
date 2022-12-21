@@ -56,6 +56,12 @@ class Config implements JsonSerializable
      */
     private $backButtonEnabled = true;
 
+    /**
+     * @var string
+     * @ODM\Field(type="string")
+     */
+    private $profilingSurveyCallbackUrl = null;
+
     public function __construct()
     {
         $this->theme      = self::DEFAULT_THEME;
@@ -65,13 +71,14 @@ class Config implements JsonSerializable
     public function jsonSerialize(): array
     {
         return [
-            'debugMode'             => $this->isDebugMode(),
-            'debugToken'            => $this->getDebugToken(),
-            'privacyConsentEnabled' => $this->isPrivacyConsentEnabled(),
-            'theme'                 => $this->getTheme(),
-            'colorTheme'            => $this->getColorTheme(),
-            'cintDemandApiKey'      => $this->getCintDemandApiKey(),
-            'backButtonEnabled'     => $this->isBackButtonEnabled()
+            'debugMode'                  => $this->isDebugMode(),
+            'debugToken'                 => $this->getDebugToken(),
+            'privacyConsentEnabled'      => $this->isPrivacyConsentEnabled(),
+            'theme'                      => $this->getTheme(),
+            'colorTheme'                 => $this->getColorTheme(),
+            'cintDemandApiKey'           => $this->getCintDemandApiKey(),
+            'backButtonEnabled'          => $this->isBackButtonEnabled(),
+            'profilingSurveyCallbackUrl' => $this->getProfilingSurveyCallbackUrl()
         ];
     }
 
@@ -87,7 +94,7 @@ class Config implements JsonSerializable
         return $this;
     }
 
-    public function getDebugToken():? string
+    public function getDebugToken(): ?string
     {
         return $this->debugToken;
     }
@@ -157,5 +164,15 @@ class Config implements JsonSerializable
         $this->backButtonEnabled = $backButtonEnabled;
 
         return $this;
+    }
+
+    public function getProfilingSurveyCallbackUrl(): ?string
+    {
+        return $this->profilingSurveyCallbackUrl;
+    }
+
+    public function setProfilingSurveyCallbackUrl(?string $profilingSurveyCallbackUrl): void
+    {
+        $this->profilingSurveyCallbackUrl = $profilingSurveyCallbackUrl;
     }
 }

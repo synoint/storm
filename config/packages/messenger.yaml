@@ -1,0 +1,19 @@
+framework:
+    messenger:
+        # reset services after consuming messages
+        reset_on_message: true
+
+        transports:
+            profiling_survey:
+                dsn: "%env(PROFILING_SURVEY_CALLBACK_QUEUE)%"
+                options:
+                    auto_setup: false
+                serializer: messenger.transport.symfony_serializer
+
+        routing:
+            Syno\Storm\Message\ProfilingSurvey: profiling_survey
+
+        serializer:
+            default_serializer: messenger.transport.symfony_serializer
+            symfony_serializer:
+                format: json

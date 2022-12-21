@@ -13,9 +13,9 @@ use JsonSerializable;
  */
 class Response implements JsonSerializable
 {
-    const MODE_LIVE = 'live';
-    const MODE_TEST = 'test';
-    const MODE_DEBUG = 'debug';
+    const MODE_LIVE    = 'live';
+    const MODE_TEST    = 'test';
+    const MODE_DEBUG   = 'debug';
     const PARAM_SOURCE = 'SOURCE';
 
     /** @ODM\Id */
@@ -573,5 +573,20 @@ class Response implements JsonSerializable
     public function getDeletedAt(): ?\DateTime
     {
         return $this->deletedAt;
+    }
+
+    public function getForProfilingSurveyCallback(): array
+    {
+        return [
+            'responseId'  => $this->responseId,
+            'surveyId'    => $this->surveyId,
+            'mode'        => $this->mode,
+            'locale'      => $this->locale,
+            'completed'   => $this->completed,
+            'createdAt'   => $this->createdAt->getTimestamp(),
+            'completedAt' => $this->completedAt,
+            'parameters'  => $this->parameters,
+            'answers'     => $this->getAnswers(),
+        ];
     }
 }
