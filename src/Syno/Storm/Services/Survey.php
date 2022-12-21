@@ -12,10 +12,9 @@ class Survey
     private RequestHandler\Response $responseHandler;
 
     public function __construct(
-        DocumentManager         $documentManager,
+        DocumentManager $documentManager,
         RequestHandler\Response $responseHandler
-    )
-    {
+    ) {
         $this->dm              = $documentManager;
         $this->responseHandler = $responseHandler;
     }
@@ -136,15 +135,18 @@ class Survey
 
     public function getProgress(Document\Survey $survey, Document\Page $currentPage): int
     {
-        $questionCount = 0;
-        $pages         = $survey->getPages();
+        $questionCount          = 0;
+        $completedQuestionCount = 0;
+        $pages                  = $survey->getPages();
 
         /** @var Document\Page $page */
         foreach ($pages as $page) {
+            if ($page->getPageId() === $currentPage->getPageId()) {
+                $completedQuestionCount = $questionCount;
+            }
+
             $questionCount += $page->getQuestions()->count();
         }
-
-        $completedQuestionCount = $this->responseHandler->getResponse()->getAnswers()->count();
 
         if (0 === $completedQuestionCount) {
             return 0;
