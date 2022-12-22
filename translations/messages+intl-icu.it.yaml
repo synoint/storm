@@ -1,7 +1,19 @@
+error_page.oops: 'Ops!'
+error_page.page_title: "C'è stato un errore"
+error_page.page_unavailable: 'Questa pagina non è più disponibile.'
+error_page.survey_unavailable: 'Questa indagine non è più disponibile.'
+error.at.least.one.option.in.each.row.required: "Si prega di selezionare almeno un'opzione in ogni riga."
+error.at.least.one.option.required: "Si prega di selezionare almeno un'opzione."
+error.cant.be.blank: 'Questo spazio non può essere lasciato vuoto'
+error.one.option.in.each.row.required: "Si prega di selezionare un'opzione in ogni riga."
+error.one.option.required: 'Si prega di selezionare almeno un elemento'
 page.button.back: 'Indietro'
 page.button.next: 'Avanti'
 page.button.submit: 'Invia'
-survey.thank_you: 'Grazie!'
 survey_completed.answers_received: 'Grazie per aver completato il questionario.'
-error_page.survey_unavailable: 'Questa indagine non è più disponibile.'
-error.one.option.required: 'Si prega di selezionare almeno un elemento'
+survey_screenouted.message: 'Tuttavia Le ringrazioamo sinceramente per il suo tempo, la sua dedizione e la sua partecipazione continua ai nostri songaggi online.'
+survey_screenouted.thank_you: 'Sfortunatamente, non possiede i requisiti per questo sondaggio.'
+survey.thank_you: 'Grazie!'
+survey.title.complete_progress: '% completato'
+survey.title.default: 'Indagine'
+survey.title.first_question: 'Benvenuto/a - Prima domanda'
