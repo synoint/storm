@@ -55,7 +55,8 @@ class SurveyType extends AbstractType
                 'allow_add'    => true
             ])
             ->add('surveyCompleteCondition', SurveyCompleteConditionType::class)
-            ->add('surveyScreenoutCondition', SurveyScreenoutConditionType::class);
+            ->add('surveyScreenoutCondition', SurveyScreenoutConditionType::class)
+            ->add('completeCallbackUrl', TextType::class);
     }
 
     public function configureOptions(OptionsResolver $resolver)

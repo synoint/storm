@@ -207,11 +207,11 @@ class ResponseSession
 
         $this->responseHandler->saveResponse($response);
 
-        if ($survey->getConfig()->getProfilingSurveyCallbackUrl()) {
+        if ($survey->getCompleteCallbackUrl()) {
             $this->bus->dispatch(
                 new ProfilingSurvey(
-                    $survey->getConfig()->getProfilingSurveyCallbackUrl(),
-                    $response->getForProfilingSurveyCallback()
+                    $survey->getCompleteCallbackUrl(),
+                    $response
                 )
             );
         }

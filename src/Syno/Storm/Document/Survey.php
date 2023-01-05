@@ -133,6 +133,13 @@ class Survey implements JsonSerializable
      */
     private $surveyScreenoutCondition;
 
+    /**
+     * @var ?string
+     *
+     * @ODM\Field(type="string")
+     */
+    private $completeCallbackUrl;
+
     public function __construct()
     {
         $this->pages         = new ArrayCollection();
@@ -477,5 +484,15 @@ class Survey implements JsonSerializable
         $this->surveyScreenoutCondition = $surveyScreenoutCondition;
 
         return $this;
+    }
+
+    public function getCompleteCallbackUrl(): ?string
+    {
+        return $this->completeCallbackUrl;
+    }
+
+    public function setCompleteCallbackUrl(?string $completeCallbackUrl): void
+    {
+        $this->completeCallbackUrl = $completeCallbackUrl;
     }
 }

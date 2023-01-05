@@ -165,14 +165,4 @@ class Config implements JsonSerializable
 
         return $this;
     }
-
-    public function getProfilingSurveyCallbackUrl(): ?string
-    {
-        return $this->profilingSurveyCallbackUrl;
-    }
-
-    public function setProfilingSurveyCallbackUrl(?string $profilingSurveyCallbackUrl): void
-    {
-        $this->profilingSurveyCallbackUrl = $profilingSurveyCallbackUrl;
-    }
 }
