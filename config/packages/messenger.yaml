@@ -4,14 +4,14 @@ framework:
         reset_on_message: true
 
         transports:
-            profiling_survey:
+            complete_callback:
                 dsn: "%env(PROFILING_SURVEY_CALLBACK_QUEUE)%"
                 options:
                     auto_setup: false
                 serializer: messenger.transport.symfony_serializer
 
         routing:
-            Syno\Storm\Message\ProfilingSurvey: profiling_survey
+            Syno\Storm\Message\ProfilingSurvey: complete_callback
 
         serializer:
             default_serializer: messenger.transport.symfony_serializer
