@@ -7,6 +7,7 @@ error.at.least.one.option.required: 'Es necesario seleccionar al menos una opci�
 error.cant.be.blank: 'Este campo no puede quedar en blanco'
 error.one.option.in.each.row.required: 'Debe seleccionarse una opción en cada fila.'
 error.one.option.required: 'Por favor, elija una opción'
+error.answer.required: "Esto debe ser respondido"
 page.button.back: 'Atrás'
 page.button.next: 'Siguiente'
 page.button.submit: 'Enviar'

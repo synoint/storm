@@ -7,6 +7,7 @@ error.at.least.one.option.required: "Si prega di selezionare almeno un'opzione."
 error.cant.be.blank: 'Questo spazio non può essere lasciato vuoto'
 error.one.option.in.each.row.required: "Si prega di selezionare un'opzione in ogni riga."
 error.one.option.required: 'Si prega di selezionare almeno un elemento'
+error.answer.required: "A questo bisogna rispondere"
 page.button.back: 'Indietro'
 page.button.next: 'Avanti'
 page.button.submit: 'Invia'

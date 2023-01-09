@@ -30,6 +30,7 @@ error.at.least.one.option.required: 'Du måste göra minst ett val.'
 error.cant.be.blank: 'Det här fältet kan inte lämnas tomt'
 error.one.option.in.each.row.required: 'Du måste göra ett val på varje rad.'
 error.one.option.required: 'Du måste göra ett val'
+error.answer.required: "Detta måste besvaras"
 page.button.back: 'Tillbaka'
 page.button.next: 'Nästa'
 page.button.submit: 'Skicka'

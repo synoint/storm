@@ -22,6 +22,7 @@ class Question
     const TYPE_TEXT                   = 5;
     const TYPE_LINEAR_SCALE           = 6;
     const TYPE_LINEAR_SCALE_MATRIX    = 7;
+    const TYPE_GABOR_GRANGER          = 8;
 
     /**
      * @ODM\Id

@@ -7,6 +7,7 @@ error.at.least.one.option.required: 'Conajmniej jedna odpwiedź musi zostać zaz
 error.cant.be.blank: 'To pole nie może być puste'
 error.one.option.in.each.row.required: 'Zaznacz jedną odpwiedź w każdym rzędzie.'
 error.one.option.required: 'Zaznacz jedną odpowiedź'
+error.answer.required: "Należy na to odpowiedzieć"
 page.button.back: 'Wróc'
 page.button.next: 'Następne'
 page.button.submit: 'Potwierdź'

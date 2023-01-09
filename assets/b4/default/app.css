@@ -60,6 +60,14 @@ footer .progress {
     color: var(--dark);
 }
 
+.cursor-pointer {
+    cursor: pointer;
+}
+.gabor-gringer__button {
+    background: var(--light);
+}
+
+
 @media (min-width: 768px) {
     .matrix tbody th {
         border-bottom: 1px solid var(--white);

@@ -7,6 +7,7 @@ error.at.least.one.option.required: 'É necessário selecionar pelo menos uma op
 error.cant.be.blank: 'Este campo não pode estar vazio'
 error.one.option.in.each.row.required: 'Uma opção deve ser selecionada em cada linha.'
 error.one.option.required: 'Por favor selecione a resposta'
+error.answer.required: 'Isso deve ser respondido'
 page.button.back: 'Atrás'
 page.button.next: 'Seguinte'
 page.button.submit: 'Submeter'

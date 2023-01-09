@@ -16,15 +16,20 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 use Syno\Storm\Document;
 use Syno\Storm\Form\Type\LinearScale;
 use Syno\Storm\Form\Type\LinearScaleMatrix;
+use Syno\Storm\Form\Type\GaborGranger;
 use Syno\Storm\Services;
 use Syno\Storm\Validator\Constraints\OtherFilled;
+use Symfony\Component\HttpFoundation\Session;
 
 class PageType extends AbstractType
 {
     private TranslatorInterface $translator;
     private Services\Question   $questionService;
 
-    public function __construct(TranslatorInterface $translator, Services\Question $questionService)
+    public function __construct(
+        TranslatorInterface $translator,
+        Services\Question   $questionService
+    )
     {
         $this->translator      = $translator;
         $this->questionService = $questionService;
@@ -40,6 +45,10 @@ class PageType extends AbstractType
             switch ($question->getQuestionTypeId()) {
                 case Document\Question::TYPE_SINGLE_CHOICE:
                     $this->addSingleChoice($builder, $question, $answerMap);
+                    $this->addFreeText($builder, $question, $answerMap);
+                    break;
+                case Document\Question::TYPE_GABOR_GRANGER:
+                    $this->addGaborGranger($builder, $question, $answerMap, $options['session']);
                     $this->addFreeText($builder, $question, $answerMap);
                     break;
                 case Document\Question::TYPE_MULTIPLE_CHOICE:
@@ -69,8 +78,9 @@ class PageType extends AbstractType
     {
         $resolver->setDefaults(
             [
-                'questions' => null,
-                'answers' => null,
+                'questions'         => null,
+                'answers'           => null,
+                'session'           => null,
                 'validation_groups' => ['form_validation_only']
             ]
         );
@@ -116,6 +126,70 @@ class PageType extends AbstractType
         $builder->add($question->getCode(), ChoiceType::class, $options);
     }
 
+    public function addGaborGranger(FormBuilderInterface $builder, Document\Question $question, ?array $answerMap, Session\SessionInterface $session)
+    {
+        $questionAnswerIds = $answerMap ? array_keys($answerMap) : null;
+
+        $choices = [];
+        $data = null;
+
+        foreach($question->getAnswers() as $answer){
+            $choices[$answer->getLabel()] = $answer->getCode();
+
+            if ($questionAnswerIds && in_array($answer->getAnswerId(), $questionAnswerIds)) {
+                $data = $answer->getCode();
+            }
+        }
+
+        $randomFirstAnswers = $session->get('gabor-granger');
+
+        if(!isset($randomFirstAnswers[$question->getQuestionId()])){
+            $answers = $question->getAnswers()->toArray();
+            shuffle($answers);
+            $randomFirstAnswer = reset($answers);
+
+            if($randomFirstAnswers){
+                $randomFirstAnswers[$question->getQuestionId()] = $randomFirstAnswer;
+            } else {
+                $randomFirstAnswers = [$question->getQuestionId() => $randomFirstAnswer];
+            }
+
+            $session->set('gabor-granger', $randomFirstAnswers);
+        } else {
+            $randomFirstAnswer = $randomFirstAnswers[$question->getQuestionId()];
+        }
+
+        $options = [
+            'choices'      => $choices,
+            'required'     => $question->isRequired(),
+            'data'         => $data,
+            'first_answer' => $randomFirstAnswer,
+            'expanded'     => !$question->containsSelectField(),
+            'placeholder'  => null,
+            'attr'         => ['class' => 'custom-control custom-radio custom-radio-filled'],
+            'choice_attr'  => function () {
+                return ['class' => 'custom-control-input'];
+            },
+            'label_attr'  => ['class' => 'custom-control-label']
+        ];
+
+        if ($question->isRequired()) {
+            $options['constraints'] = [
+                new NotBlank([
+                    'message' => $this->translator->trans('error.answer.required'),
+                    'groups' => ['form_validation_only']
+                ])
+            ];
+        }
+
+        $builder->add($question->getCode(), GaborGranger::class, $options);
+    }
+
+    /**
+     * @param FormBuilderInterface $builder
+     * @param Document\Question    $question
+     * @param array|null           $answerMap
+     */
     private function addMultipleChoice(FormBuilderInterface $builder, Document\Question $question, ?array $answerMap)
     {
         $questionAnswerIds = $answerMap ? array_keys($answerMap) : null;

@@ -1,0 +1,74 @@
+{% set questionField = attribute(form, (question.getCode)) %}
+{% set answerFields = attribute(form, (question.getCode)) %}
+{% set randomAnswer = questionField.vars.first_answer %}
+
+{{ form_errors(attribute(form, (question.getCode))) }}
+{% set break = false %}
+{% for child in questionField %}
+    {% if attribute(form, (question.getInputName(child.vars.value))) is defined and not break %}
+        {% set freeTextInput = attribute(form, (question.getInputName(child.vars.value))) %}
+        {{ form_errors(freeTextInput) }}
+        {% set break = true %}
+    {% endif %}
+{% endfor %}
+
+<div class="gabor-granger__holder">
+    <div class="text-center mt-5">
+    <div class="h2 mt-2 displayed-answer" data-val="{{ randomAnswer.code }}">
+        {% if questionField.vars.value %}
+            {% set answer = question.getAnswerByCode(questionField.vars.value) %}
+            {{ answer.label|raw }}
+        {% else %}
+            {{ randomAnswer.label|raw }}
+        {% endif %}
+    </div>
+    </div>
+    <div>
+
+        {% if questionField.vars.value %}
+            {% set freeTextInput = attribute(form, (question.getInputName(questionField.vars.value))) %}
+            <div class="text-center mt-5 answer__result"><div class="btn bg-primary text-white pl-4 pr-4 cursor-pointer " data-agreed="1">{{ freeTextInput.vars.value }}</div></div>
+        {% else %}
+            <div class="text-center mt-5 d-none answer__result"><div class="btn bg-primary text-white pl-4 pr-4 cursor-pointer " data-agreed="1"></div></div>
+            <div class="row mt-5 answer__buttons">
+                <div class="col-6 text-right pr-1">
+                    <div class="btn gabor-gringer__button pl-4 pr-4 cursor-pointer submit-gabor-answer__button" data-agreed="1">Yes</div>
+                </div>
+                <div class="col-6 text-left pl-1">
+                    <div class="btn gabor-gringer__button  pl-4 pr-4 cursor-pointer submit-gabor-answer__button" data-agreed="0">No</div>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+    <div class="price__holder">
+        {% for child in answerFields %}
+
+            {% set shown = 0 %}
+
+            {% if child.vars.value == randomAnswer.code %}
+                {% set shown = 1 %}
+            {% endif %}
+            <input type="radio" id="answer{{ child.vars.value }}" name="{{ child.vars.full_name }}"
+            {% for key, attribute in child.vars.attr %}
+                {{ key }}="{{ attribute }}"
+            {% endfor %}
+            value="{{ child.vars.value }}"
+            data-label="{{ child.vars.label }}"
+            data-shown="{{ shown }}"
+            {% if child.vars.checked %}checked="checked"{% endif %}
+            >
+        {% endfor %}
+    </div>
+
+    <div class="answer__text d-none">
+        {% for child in answerFields %}
+            {% set answer = question.getAnswerByCode(child.vars.value) %}
+            {% set freeTextInput = attribute(form, (question.getInputName(answer.code))) %}
+
+            <input  type="text" id="answer{{ child.vars.value }}text"
+                   name="{{ freeTextInput.vars.full_name }}"
+                   value="{{ freeTextInput.vars.value }}"
+            >
+        {% endfor %}
+    </div>
+</div>

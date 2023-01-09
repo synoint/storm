@@ -7,6 +7,7 @@ error.at.least.one.option.required: 'Du må velge minumum ett alternativ.'
 error.cant.be.blank: 'Dette felt kan ikke stå tomt'
 error.one.option.in.each.row.required: 'Du må velge ett alternativ i hver rad.'
 error.one.option.required: 'Du må velge ett alternativ'
+error.answer.required: "Dette må besvares"
 page.button.back: 'Tilbake'
 page.button.next: 'Neste'
 page.button.submit: 'Send inn'

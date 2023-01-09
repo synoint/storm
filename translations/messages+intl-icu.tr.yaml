@@ -7,6 +7,7 @@ error.at.least.one.option.required: 'En az bir seçenek işaretlenmeli.'
 error.cant.be.blank: 'Bu alan boş bırakılamaz'
 error.one.option.in.each.row.required: 'Her satırda bir seçenek işaretlenmeli.'
 error.one.option.required: 'Bir seçenek işaretlenmeli'
+error.answer.required: "Bu cevaplanmalı"
 page.button.back: 'Önceki'
 page.button.next: 'Sonraki'
 page.button.submit: 'Gönder'

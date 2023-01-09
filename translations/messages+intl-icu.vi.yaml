@@ -7,6 +7,7 @@ error.at.least.one.option.required: 'Ít nhất một tùy chọn phải đượ
 error.cant.be.blank: 'Trường này không được để trống'
 error.one.option.in.each.row.required: 'Một tùy chọn phải được chọn trong mỗi hàng.'
 error.one.option.required: 'Một tùy chọn phải được chọn'
+error.answer.required: "Điều này phải được trả lời"
 page.button.back: 'Mặt sau'
 page.button.next: 'Tiếp theo'
 page.button.submit: 'Kết thúc'

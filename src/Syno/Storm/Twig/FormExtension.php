@@ -3,18 +3,34 @@
 namespace Syno\Storm\Twig;
 
 use Symfony\Component\Form\FormView;
+use Syno\Storm\Document\Answer;
 use Syno\Storm\Document\Question;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFilter;
+use Twig\TwigFunction;
 
 class FormExtension extends AbstractExtension
 {
+    public function getFunctions(): array
+    {
+        return [
+            new TwigFunction('getRandomAnswer', [$this, 'getRandomAnswer']),
+        ];
+    }
     public function getFilters(): array
     {
         return [
             new TwigFilter('shuffle_answers', [$this, 'shuffleAnswers']),
-            new TwigFilter('shuffle_array', [$this, 'shuffleArray'])
+            new TwigFilter('shuffle_array', [$this, 'shuffleArray']),
         ];
+    }
+
+    public function getRandomAnswer(Question $question): Answer
+    {
+        $answersArray = $question->getAnswers()->toArray();
+        shuffle($answersArray);
+
+        return reset($answersArray);
     }
 
     public function shuffleAnswers(FormView $form, Question $question): FormView

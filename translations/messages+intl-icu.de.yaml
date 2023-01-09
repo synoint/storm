@@ -7,6 +7,7 @@ error.at.least.one.option.required: 'Bitte wählen Sie mindestens eine Antwortm�
 error.cant.be.blank: 'Dieses Feld darf nicht leer bleiben'
 error.one.option.in.each.row.required: 'In jeder Zeile muss eine Antwortmöglichkeit ausgewählt.'
 error.one.option.required: 'Bitte wählen Sie mindestens eine Antwortmöglichkeit aus'
+error.answer.required: "Dies muss beantwortet werden"
 page.button.back: 'Zurück'
 page.button.next: 'Weiter'
 page.button.submit: 'Senden'

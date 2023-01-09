@@ -51,6 +51,7 @@ class Answer
         $result = new ArrayCollection();
         switch ($question->getQuestionTypeId()) {
             case Question::TYPE_SINGLE_CHOICE:
+            case Question::TYPE_GABOR_GRANGER:
                 $key = $question->getCode();
 
                 if (isset($formData[$key]) && $question->answerCodeExists($formData[$key])) {
