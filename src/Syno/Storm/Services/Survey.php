@@ -4,19 +4,14 @@ namespace Syno\Storm\Services;
 
 use Doctrine\ODM\MongoDB\DocumentManager;
 use Syno\Storm\Document;
-use Syno\Storm\RequestHandler;
 
 class Survey
 {
-    private DocumentManager         $dm;
-    private RequestHandler\Response $responseHandler;
+    private DocumentManager $dm;
 
-    public function __construct(
-        DocumentManager $documentManager,
-        RequestHandler\Response $responseHandler
-    ) {
-        $this->dm              = $documentManager;
-        $this->responseHandler = $responseHandler;
+    public function __construct(DocumentManager $documentManager)
+    {
+        $this->dm = $documentManager;
     }
 
     public function getNew(): Document\Survey

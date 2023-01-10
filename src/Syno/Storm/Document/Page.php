@@ -219,7 +219,9 @@ class Page
 
     public function setQuestions($questions): self
     {
-        $this->questions = $questions;
+        foreach ($questions as $question) {
+            $this->questions->add($question);
+        }
 
         return $this;
     }

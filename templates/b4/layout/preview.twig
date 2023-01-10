@@ -6,6 +6,8 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge"/>
     <title>{% block title %}{% endblock %}</title>
     
+    <base href="{{ app.request.scheme ~'://' ~ app.request.httpHost }}">
+    
     <script src="{{ asset('/jquery/jquery-3.6.1.min.js', 'vendors') }}"></script>
     <script src="{{ asset('/bootstrap/bootstrap4.6.2.bundle.min.js', 'vendors') }}"></script>
     
@@ -15,9 +17,9 @@
         {% if survey is defined %}
             {% for style in survey.css %}
                 {% if true == style.default %}
-                  <style>
-                    {{ style.css }}
-                  </style>
+                    <style>
+                        {{ style.css }}
+                    </style>
                 {% endif %}
             {% endfor %}
             
@@ -38,15 +40,15 @@
     {{ encore_entry_script_tags('b4.default') }}
     
     {% if responseDataLayer is defined %}
-        <script>
-            let response = {{(responseDataLayer|json_encode(constant('JSON_PRETTY_PRINT'))|raw)}}
-        </script>
+    <script>
+        let response = {{ (responseDataLayer|json_encode(constant('JSON_PRETTY_PRINT'))|raw) }}
+    </script>
     {% endif %}
     
     {% if page is defined and '' != page.javascript %}
-        <script>
-            {{ page.javascript|raw }}
-        </script>
+    <script>
+        {{ page.javascript|raw }}
+    </script>
     {% else %}
         {{ encore_entry_script_tags('b4.page') }}
     {% endif %}

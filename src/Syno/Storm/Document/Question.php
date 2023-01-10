@@ -462,7 +462,10 @@ class Question
 
     public function setAnswers($answers): self
     {
-        $this->answers = $answers;
+//        $this->answers = $answers;
+        foreach ($answers as $answer) {
+            $this->answers->add($answer);
+        }
 
         return $this;
     }

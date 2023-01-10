@@ -1,18 +1,18 @@
-{% extends '/b4/layout/base.twig' %}
+{% extends '/b4/layout/preview.twig' %}
 {% form_theme form 'b4/form_theme/syno.twig' %}
 
-{% block title %}
-    {% if '0' != survey_progress(survey, page) and 100 != survey_progress(survey, page) %}
-        {{ survey_progress(survey, page) }}
-    {% endif %}
-    {{ page_prefix(survey, page)|trans }}
-    
-    {% if survey.getPublicTitle() is not empty %}
-        - {{ survey.getPublicTitle() }}
-    {% else %}
-        - Syno International
-    {% endif %}
-{% endblock %}
+{#{% block title %}#}
+{#    {% if '0' != survey_progress(survey, page) and 100 != survey_progress(survey, page) %}#}
+{#        {{ survey_progress(survey, page) }}#}
+{#    {% endif %}#}
+{#    {{ page_prefix(survey, page)|trans }}#}
+{#    #}
+{#    {% if survey.getPublicTitle() is not empty %}#}
+{#        - {{ survey.getPublicTitle() }}#}
+{#    {% else %}#}
+{#        - Syno International#}
+{#    {% endif %}#}
+{#{% endblock %}#}
 
 {% block body %}
     
@@ -26,15 +26,15 @@
         {% endif %}
         
         <div class="row container-sm justify-content-md-center ml-0 my-5">
-            <div class="questions">
-                {% if '' != page.content %}
+            {% if '' != page.content %}
+                <div class="questions">
                     <div class="col-12">
                         <div class="page__content rounded p-3 bg-white">
                             {{ page.content|raw }}
                         </div>
                     </div>
-                {% endif %}
-            </div>
+                </div>
+            {% endif %}
         </div>
     
         <div class="row container-sm justify-content-md-center ml-0 my-5">
@@ -45,9 +45,6 @@
                     {% for question in questions|sort ((a, b) => a.sortOrder <=> b.sortOrder) %}
                         <div class="question card mb-5 p-5 border-0">
                             <h5 class="text-center m-0 pb-4">
-                                {% if response.isTest or response.isDebug %}
-                                    {{ question.code }}.&nbsp;
-                                {% endif %}
                                 {{ question.getText()|raw }}
                             </h5>
                             
@@ -81,7 +78,7 @@
                                     {{ form_widget(attribute(form, (question.getInputName(answer.code)), {'label': false})) }}
                                 {% endfor %}
                             {% elseif question.questionTypeId == constant('Syno\\Storm\\Document\\Question::TYPE_SINGLE_CHOICE') %}
-                                {% include 'b4/page/_single_or_multiple_choice.twig' with { 'type': 'radio' } %}
+                                {% include 'b4/page/_single_or_multiple_choice.twig' with { 'type': 'radio', 'question': question } %}
                             {% elseif question.questionTypeId == constant('Syno\\Storm\\Document\\Question::TYPE_MULTIPLE_CHOICE') %}
                                 {% include 'b4/page/_single_or_multiple_choice.twig' with { 'type': 'checkbox' } %}
                             {% endif %}
@@ -90,8 +87,7 @@
                     
                     <div class="row pb-5">
                         <div class="col text-center">
-                            {% if (false == backButtonDisabled and true == survey.getConfig.backButtonEnabled)
-                                or response.isTest or response.isDebug %}
+                            {% if (false == backButtonDisabled and true == survey.getConfig.backButtonEnabled) %}
                                 <button type="button" class="btn btn-outline-primary px-5 ml-2 mr-2"
                                         onclick="window.history.go(-1); return false;">
                                     {{ 'page.button.back'|trans }}
@@ -111,33 +107,21 @@
         </div>
     </div>
     
-    {% if (response.isDebug) %}
-        
-        {% include 'b4/page/_debug.twig' %}
-    
-    {% elseif (response.isTest) %}
-        
-        {% include 'b4/page/_test.twig' %}
-    
-    {% else %}
-        
-        {% include 'b4/page/_footer.twig' %}
-    
-    {% endif %}
+    {% include 'b4/page/_preview_footer.twig' %}
 
 {% endblock %}
 
 {% block javascripts %}
     {{ parent() }}
     
-    {% if page.hasMedia %}
+{#    {% if page.hasMedia %}#}
         {{ encore_entry_script_tags('media.player') }}
-    {% endif %}
+{#    {% endif %}#}
 {% endblock %}
 
 {% block stylesheets %}
     {{ parent() }}
-    {% if page.hasMedia %}
+{#    {% if page.hasMedia %}#}
         {{ encore_entry_link_tags('media.player') }}
-    {% endif %}
+{#    {% endif %}#}
 {% endblock %}

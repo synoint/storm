@@ -76,11 +76,6 @@ class PageType extends AbstractType
         );
     }
 
-    /**
-     * @param FormBuilderInterface $builder
-     * @param Document\Question    $question
-     * @param array|null           $answerMap
-     */
     private function addSingleChoice(FormBuilderInterface $builder, Document\Question $question, ?array $answerMap)
     {
         $questionAnswerIds = $answerMap ? array_keys($answerMap) : null;
@@ -121,11 +116,6 @@ class PageType extends AbstractType
         $builder->add($question->getCode(), ChoiceType::class, $options);
     }
 
-    /**
-     * @param FormBuilderInterface $builder
-     * @param Document\Question    $question
-     * @param array|null           $answerMap
-     */
     private function addMultipleChoice(FormBuilderInterface $builder, Document\Question $question, ?array $answerMap)
     {
         $questionAnswerIds = $answerMap ? array_keys($answerMap) : null;
@@ -191,11 +181,6 @@ class PageType extends AbstractType
         $builder->add($question->getCode(), ChoiceType::class, $options);
     }
 
-    /**
-     * @param FormBuilderInterface $builder
-     * @param Document\Question    $question
-     * @param array|null           $answerMap
-     */
     private function addFreeText(FormBuilderInterface $builder, Document\Question $question, ?array $answerMap)
     {
         /** @var Document\Answer $answer */
@@ -218,11 +203,6 @@ class PageType extends AbstractType
         }
     }
 
-    /**
-     * @param FormBuilderInterface $builder
-     * @param Document\Question    $question
-     * @param array|null           $answerMap
-     */
     private function addMatrix(FormBuilderInterface $builder, Document\Question $question, ?array $answerMap)
     {
         $questionAnswerIds = $answerMap ? (array) array_keys($answerMap) : null;
@@ -276,11 +256,6 @@ class PageType extends AbstractType
         }
     }
 
-    /**
-     * @param FormBuilderInterface $builder
-     * @param Document\Question    $question
-     * @param array|null           $answerMap
-     */
     private function addText(FormBuilderInterface $builder, Document\Question $question, ?array $answerMap)
     {
         /** @var Document\Answer $answer */
@@ -324,11 +299,6 @@ class PageType extends AbstractType
         }
     }
 
-    /**
-     * @param FormBuilderInterface $builder
-     * @param Document\Question    $question
-     * @param array|null           $answerMap
-     */
     private function addLinearScale(FormBuilderInterface $builder, Document\Question $question, ?array $answerMap)
     {
         $data = null;
@@ -360,11 +330,6 @@ class PageType extends AbstractType
         $builder->add($question->getInputName(), LinearScale::class, $options);
     }
 
-    /**
-     * @param FormBuilderInterface $builder
-     * @param Document\Question    $question
-     * @param array|null           $answerMap
-     */
     private function addLinearScaleMatrix(FormBuilderInterface $builder, Document\Question $question, ?array $answerMap)
     {
         $questionAnswerIds = $answerMap ? (array) array_keys($answerMap) : null;
@@ -400,10 +365,5 @@ class PageType extends AbstractType
 
             $builder->add($question->getInputName($rowCode), LinearScaleMatrix::class, $options);
         }
-    }
-
-    public function getBlockPrefix(): string
-    {
-        return "p";
     }
 }
