@@ -9,7 +9,7 @@ use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
 /**
  * @ODM\EmbeddedDocument
  */
-class SurveyPreview
+class PagePreview
 {
     /** @ODM\Id */
     private $id;

@@ -4,13 +4,12 @@ namespace Syno\Storm\Api\v1\Form;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
-use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Syno\Storm\Document;
 
-class SurveyPreviewType extends AbstractType
+class PagePreviewType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
@@ -32,7 +31,7 @@ class SurveyPreviewType extends AbstractType
     {
         $resolver->setDefaults(
             [
-                'data_class'      => Document\SurveyPreview::class,
+                'data_class'      => Document\PagePreview::class,
                 'csrf_protection' => false,
             ]
         );

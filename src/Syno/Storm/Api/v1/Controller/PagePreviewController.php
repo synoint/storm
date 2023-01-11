@@ -10,7 +10,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Syno\Storm\Api\Controller\TokenAuthenticatedController;
 use Syno\Storm\Api\v1\Form;
 use Syno\Storm\Api\v1\Http\ApiResponse;
-use Syno\Storm\Document\SurveyPreview;
+use Syno\Storm\Document\PagePreview;
 use Syno\Storm\Form\PageType;
 use Syno\Storm\Services;
 use Syno\Storm\Services\ResponseEvent;
@@ -19,9 +19,9 @@ use Syno\Storm\Traits\FormAware;
 use Syno\Storm\Traits\JsonRequestAware;
 
 /**
- * @Route("/api/v1/survey")
+ * @Route("/api/v1/page")
  */
-class SurveyPagePreviewController extends AbstractController implements TokenAuthenticatedController
+class PagePreviewController extends AbstractController implements TokenAuthenticatedController
 {
     use FormAware;
     use JsonRequestAware;
@@ -44,16 +44,16 @@ class SurveyPagePreviewController extends AbstractController implements TokenAut
 
     /**
      * @Route(
-     *     "/page-preview",
-     *     name="storm_api.v1.survey.page_preview",
+     *     "/preview",
+     *     name="storm_api.v1.page.preview",
      *     methods={"POST"}
      * )
      */
     public function preview(Request $request): JsonResponse
     {
-        $surveyPreview = new SurveyPreview();
+        $surveyPreview = new PagePreview();
 
-        $form = $this->createForm(Form\SurveyPreviewType::class, $surveyPreview);
+        $form = $this->createForm(Form\PagePreviewType::class, $surveyPreview);
         $form->submit($this->getJson($request));
 
         if ($form->isValid()) {
@@ -72,11 +72,7 @@ class SurveyPagePreviewController extends AbstractController implements TokenAut
                 'form'               => $form->createView(),
             ]);
 
-            return $this->json(
-                $html,
-                HttpResponse::HTTP_OK,
-                ['Content-Type' => 'application/json;charset=UTF-8']
-            );
+            return $this->json($html,HttpResponse::HTTP_OK);
         }
 
         return new ApiResponse('Page preview failed!', null, $this->getFormErrors($form), HttpResponse::HTTP_BAD_REQUEST);
