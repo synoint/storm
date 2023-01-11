@@ -4,6 +4,7 @@ namespace Syno\Storm\Api\v1\Form;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
+use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -16,6 +17,10 @@ class SurveyPreviewType extends AbstractType
         $builder
             ->add('logoPath', TextType::class)
             ->add('publicTitle', TextType::class)
+            ->add('progress', IntegerType::class)
+            ->add('isFirstPage', IntegerType::class)
+            ->add('isLastPage', IntegerType::class)
+            ->add('hasBackButton', IntegerType::class)
             ->add('pages', CollectionType::class, [
                 'entry_type'   => PageType::class,
                 'by_reference' => false,
@@ -25,8 +30,7 @@ class SurveyPreviewType extends AbstractType
                 'entry_type'   => CssType::class,
                 'by_reference' => false,
                 'allow_add'    => true
-            ])
-            ->add('config', ConfigType::class);
+            ]);
     }
 
     public function configureOptions(OptionsResolver $resolver)

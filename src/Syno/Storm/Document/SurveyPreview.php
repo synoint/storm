@@ -22,6 +22,34 @@ class SurveyPreview
     private $logoPath;
 
     /**
+     * @var int
+     *
+     * @ODM\Field(type="int")
+     */
+    private $progress;
+
+    /**
+     * @var int
+     *
+     * @ODM\Field(type="int")
+     */
+    private $isFirstPage;
+
+    /**
+     * @var int
+     *
+     * @ODM\Field(type="int")
+     */
+    private $isLastPage;
+
+    /**
+     * @var int
+     *
+     * @ODM\Field(type="int")
+     */
+    private $hasBackButton;
+
+    /**
      * @var string
      *
      * @ODM\Field(type="string")
@@ -34,13 +62,6 @@ class SurveyPreview
      * @ODM\EmbedMany(targetDocument=Page::class)
      */
     private $pages;
-
-    /**
-     * @var Config
-     *
-     * @ODM\EmbedOne(targetDocument=Config::class)
-     */
-    private $config;
 
     /**
      * @var Collection
@@ -75,6 +96,54 @@ class SurveyPreview
     public function setLogoPath(string $logoPath): self
     {
         $this->logoPath = $logoPath;
+
+        return $this;
+    }
+
+    public function getProgress(): int
+    {
+        return $this->progress;
+    }
+
+    public function setProgress(int $progress): self
+    {
+        $this->progress = $progress;
+
+        return $this;
+    }
+
+    public function isFirstPage(): int
+    {
+        return $this->isFirstPage;
+    }
+
+    public function setIsFirstPage(int $isFirstPage): self
+    {
+        $this->isFirstPage = $isFirstPage;
+
+        return $this;
+    }
+
+    public function isLastPage(): int
+    {
+        return $this->isFirstPage;
+    }
+
+    public function setIsLastPage(int $isFirstPage): self
+    {
+        $this->isFirstPage = $isFirstPage;
+
+        return $this;
+    }
+
+    public function hasBackButton(): int
+    {
+        return $this->hasBackButton;
+    }
+
+    public function setHasBackButton(int $hasBackButton): self
+    {
+        $this->hasBackButton = $hasBackButton;
 
         return $this;
     }
@@ -117,18 +186,6 @@ class SurveyPreview
         }
 
         return $questions;
-    }
-
-    public function getConfig(): ?Config
-    {
-        return $this->config;
-    }
-
-    public function setConfig(Config $config): self
-    {
-        $this->config = $config;
-
-        return $this;
     }
 
     public function getPublicTitle(): ?string
