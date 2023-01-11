@@ -16,11 +16,6 @@ class SurveyPreviewType extends AbstractType
     {
         $builder
             ->add('logoPath', TextType::class)
-            ->add('publicTitle', TextType::class)
-            ->add('progress', IntegerType::class)
-            ->add('isFirstPage', IntegerType::class)
-            ->add('isLastPage', IntegerType::class)
-            ->add('hasBackButton', IntegerType::class)
             ->add('pages', CollectionType::class, [
                 'entry_type'   => PageType::class,
                 'by_reference' => false,
