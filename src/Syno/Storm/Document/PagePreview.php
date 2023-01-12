@@ -22,46 +22,11 @@ class PagePreview
     private $logoPath;
 
     /**
-     * @var int
+     * @var Page
      *
-     * @ODM\Field(type="int")
+     * @ODM\EmbedOne(targetDocument=Page::class)
      */
-    private $progress;
-
-    /**
-     * @var int
-     *
-     * @ODM\Field(type="int")
-     */
-    private $isFirstPage;
-
-    /**
-     * @var int
-     *
-     * @ODM\Field(type="int")
-     */
-    private $isLastPage;
-
-    /**
-     * @var int
-     *
-     * @ODM\Field(type="int")
-     */
-    private $hasBackButton;
-
-    /**
-     * @var string
-     *
-     * @ODM\Field(type="string")
-     */
-    private $publicTitle;
-
-    /**
-     * @var Collection
-     *
-     * @ODM\EmbedMany(targetDocument=Page::class)
-     */
-    private $pages;
+    private $page;
 
     /**
      * @var Collection
@@ -72,8 +37,8 @@ class PagePreview
 
     public function __construct()
     {
-        $this->pages = new ArrayCollection();
-        $this->css   = new ArrayCollection();
+        $this->page = new ArrayCollection();
+        $this->css = new ArrayCollection();
     }
 
     public function getId()
@@ -100,77 +65,16 @@ class PagePreview
         return $this;
     }
 
-    public function getProgress(): int
+    public function getPage()
     {
-        return $this->progress;
+        return $this->page;
     }
 
-    public function setProgress(int $progress): self
+    public function setPage(Collection $page): self
     {
-        $this->progress = $progress;
+        $this->page = $page->first();
 
         return $this;
-    }
-
-    public function isFirstPage(): int
-    {
-        return $this->isFirstPage;
-    }
-
-    public function setIsFirstPage(int $isFirstPage): self
-    {
-        $this->isFirstPage = $isFirstPage;
-
-        return $this;
-    }
-
-    public function isLastPage(): int
-    {
-        return $this->isFirstPage;
-    }
-
-    public function setIsLastPage(int $isFirstPage): self
-    {
-        $this->isFirstPage = $isFirstPage;
-
-        return $this;
-    }
-
-    public function hasBackButton(): int
-    {
-        return $this->hasBackButton;
-    }
-
-    public function setHasBackButton(int $hasBackButton): self
-    {
-        $this->hasBackButton = $hasBackButton;
-
-        return $this;
-    }
-
-    public function getPages(): Collection
-    {
-        return $this->pages;
-    }
-
-    public function setPages($pages): self
-    {
-        $this->pages = $pages;
-
-        return $this;
-    }
-
-    public function getPage(int $pageId): ?Page
-    {
-        $result = null;
-        foreach ($this->pages as $page) {
-            if ($pageId === $page->getPageId()) {
-                $result = $page;
-                break;
-            }
-        }
-
-        return $result;
     }
 
     /**
@@ -178,26 +82,7 @@ class PagePreview
      */
     public function getQuestions(): Collection
     {
-        $questions = new ArrayCollection();
-
-        /** @var Page $page */
-        foreach ($this->pages as $page) {
-            $questions = new ArrayCollection(array_merge($questions->toArray(), $page->getQuestions()->toArray()));
-        }
-
-        return $questions;
-    }
-
-    public function getPublicTitle(): ?string
-    {
-        return $this->publicTitle;
-    }
-
-    public function setPublicTitle($publicTitle): self
-    {
-        $this->publicTitle = $publicTitle;
-
-        return $this;
+        return $this->page->getQuestions();
     }
 
     public function getCss(): Collection

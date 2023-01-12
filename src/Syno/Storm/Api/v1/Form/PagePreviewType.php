@@ -15,7 +15,7 @@ class PagePreviewType extends AbstractType
     {
         $builder
             ->add('logoPath', TextType::class)
-            ->add('pages', CollectionType::class, [
+            ->add('page', CollectionType::class, [
                 'entry_type'   => PageType::class,
                 'by_reference' => false,
                 'allow_add'    => true

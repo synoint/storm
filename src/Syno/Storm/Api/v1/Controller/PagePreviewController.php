@@ -51,9 +51,9 @@ class PagePreviewController extends AbstractController implements TokenAuthentic
      */
     public function preview(Request $request): JsonResponse
     {
-        $surveyPreview = new PagePreview();
+        $pagePreview = new PagePreview();
 
-        $form = $this->createForm(Form\PagePreviewType::class, $surveyPreview);
+        $form = $this->createForm(Form\PagePreviewType::class, $pagePreview);
         $form->submit($this->getJson($request));
 
         if ($form->isValid()) {
@@ -61,14 +61,14 @@ class PagePreviewController extends AbstractController implements TokenAuthentic
                 PageType::class,
                 null,
                 [
-                    'questions' => $surveyPreview->getPages()->first()->getQuestions(),
+                    'questions' => $pagePreview->getPage()->getQuestions(),
                 ]
             );
 
             $html = $this->render('b4/page/preview/display.twig', [
-                'survey'             => $surveyPreview,
-                'page'               => $surveyPreview->getPages()->first(),
-                'questions'          => $surveyPreview->getPages()->first()->getQuestions(),
+                'survey'             => $pagePreview,
+                'page'               => $pagePreview->getPage(),
+                'questions'          => $pagePreview->getPage()->getQuestions(),
                 'form'               => $form->createView(),
             ]);
 
