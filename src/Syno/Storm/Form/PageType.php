@@ -366,4 +366,9 @@ class PageType extends AbstractType
             $builder->add($question->getInputName($rowCode), LinearScaleMatrix::class, $options);
         }
     }
+
+    public function getBlockPrefix(): string
+    {
+        return "p";
+    }
 }
