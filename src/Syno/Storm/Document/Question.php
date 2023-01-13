@@ -462,9 +462,16 @@ class Question
 
     public function setAnswers($answers): self
     {
-        foreach ($answers as $answer) {
-            $this->answers->add($answer);
+        if (is_array($answers)) {
+            foreach ($answers as $answer) {
+                $this->answers->add($answer);
+            }
+
+            return $this;
         }
+
+
+        $this->answers = $answers;
 
         return $this;
     }
