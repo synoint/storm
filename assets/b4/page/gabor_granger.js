@@ -7,6 +7,7 @@ class GaborGranger {
         this.displayedAnswerSelector    = ".displayed-answer";
         this.answerResultSelector       = ".answer__result";
         this.answerButtonsSelector      = ".answer__buttons";
+        this.zeroInputClass             = "zero__input";
     }
 
     initialize() {
@@ -21,13 +22,17 @@ class GaborGranger {
     submitAnswer(el) {
 
         const nextAnswer = this.getNextAnswer(el);
-
+        console.log(nextAnswer);
         this.selectAnswer(el, nextAnswer);
 
-        if(nextAnswer && nextAnswer.length > 0){
-            this.loadNextAnswer(nextAnswer);
-        } else {
+        if(nextAnswer && nextAnswer.hasClass(this.zeroInputClass)){
             this.submitForm(el);
+        } else {
+            if(nextAnswer && nextAnswer.length > 0){
+                this.loadNextAnswer(nextAnswer);
+            } else {
+                this.submitForm(el);
+            }
         }
     }
 
@@ -53,8 +58,6 @@ class GaborGranger {
         displayedAnswer.html(lastAnswer.data("label"));
         displayedAnswer.data("val", lastAnswer.attr("value"));
 
-        answerResult.find("div").html(correspondingTextInput.val());
-
         answerButtons.addClass("d-none");
         answerResult.removeClass("d-none");
     }
@@ -75,10 +78,14 @@ class GaborGranger {
 
         correspondingTextInput.val(el.html());
 
-        if(!nextAnswer && !questionHolder.find(this.priceHolderInputsSelector+":checked").length){
+        if(nextAnswer && nextAnswer.hasClass(this.zeroInputClass) && !this.agreed(el)){
             priceHolderInputs.prop("checked", false);
-            correspondingInput.prop("checked", true);
-            correspondingTextInput.val(el.html());
+            questionHolder.find("." + this.zeroInputClass).prop("checked", true);
+        } else {
+            if (!nextAnswer && !questionHolder.find(this.priceHolderInputsSelector + ":checked").length) {
+                priceHolderInputs.prop("checked", false);
+                correspondingInput.prop("checked", true);
+            }
         }
     }
 
@@ -97,8 +104,9 @@ class GaborGranger {
         if(this.agreed(el)){
             nextPriceInput = priceHolderInputs.eq(parseInt(index) + 1);
         } else {
-            const prevIndex = parseInt(index) - 1;
 
+            const prevIndex = parseInt(index) - 1;
+            console.log(index);
             if(0 <= prevIndex) {
                 nextPriceInput = priceHolderInputs.eq(prevIndex);
             }

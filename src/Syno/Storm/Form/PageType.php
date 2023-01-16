@@ -48,8 +48,7 @@ class PageType extends AbstractType
                     $this->addFreeText($builder, $question, $answerMap);
                     break;
                 case Document\Question::TYPE_GABOR_GRANGER:
-                    $this->addGaborGranger($builder, $question, $answerMap, $options['session']);
-                    $this->addFreeText($builder, $question, $answerMap);
+                    $this->addGaborGranger($builder, $question, $answerMap);
                     break;
                 case Document\Question::TYPE_MULTIPLE_CHOICE:
                     $this->addMultipleChoice($builder, $question, $answerMap);
@@ -80,7 +79,6 @@ class PageType extends AbstractType
             [
                 'questions'         => null,
                 'answers'           => null,
-                'session'           => null,
                 'validation_groups' => ['form_validation_only']
             ]
         );
@@ -91,9 +89,9 @@ class PageType extends AbstractType
         $questionAnswerIds = $answerMap ? array_keys($answerMap) : null;
 
         $choices = [];
-        $data = null;
+        $data    = null;
 
-        foreach($question->getAnswers() as $answer){
+        foreach ($question->getAnswers() as $answer) {
             $choices[$answer->getLabel()] = $answer->getCode();
 
             if ($questionAnswerIds && in_array($answer->getAnswerId(), $questionAnswerIds)) {
@@ -102,72 +100,13 @@ class PageType extends AbstractType
         }
 
         $options = [
-            'choices' => $choices,
-            'required' => $question->isRequired(),
-            'data' => $data,
-            'expanded' => !$question->containsSelectField(),
+            'choices'     => $choices,
+            'required'    => $question->isRequired(),
+            'data'        => $data,
+            'expanded'    => !$question->containsSelectField(),
             'placeholder' => null,
-            'attr' => ['class' => 'custom-control custom-radio custom-radio-filled'],
+            'attr'        => ['class' => 'custom-control custom-radio custom-radio-filled'],
             'choice_attr' => function () {
-                return ['class' => 'custom-control-input'];
-            },
-            'label_attr' => ['class' => 'custom-control-label']
-        ];
-
-        if ($question->isRequired()) {
-            $options['constraints'] = [
-                new NotBlank([
-                    'message' => $this->translator->trans('error.one.option.required'),
-                    'groups' => ['form_validation_only']
-                ])
-            ];
-        }
-
-        $builder->add($question->getCode(), ChoiceType::class, $options);
-    }
-
-    public function addGaborGranger(FormBuilderInterface $builder, Document\Question $question, ?array $answerMap, Session\SessionInterface $session)
-    {
-        $questionAnswerIds = $answerMap ? array_keys($answerMap) : null;
-
-        $choices = [];
-        $data = null;
-
-        foreach($question->getAnswers() as $answer){
-            $choices[$answer->getLabel()] = $answer->getCode();
-
-            if ($questionAnswerIds && in_array($answer->getAnswerId(), $questionAnswerIds)) {
-                $data = $answer->getCode();
-            }
-        }
-
-        $randomFirstAnswers = $session->get('gabor-granger');
-
-        if(!isset($randomFirstAnswers[$question->getQuestionId()])){
-            $answers = $question->getAnswers()->toArray();
-            shuffle($answers);
-            $randomFirstAnswer = reset($answers);
-
-            if($randomFirstAnswers){
-                $randomFirstAnswers[$question->getQuestionId()] = $randomFirstAnswer;
-            } else {
-                $randomFirstAnswers = [$question->getQuestionId() => $randomFirstAnswer];
-            }
-
-            $session->set('gabor-granger', $randomFirstAnswers);
-        } else {
-            $randomFirstAnswer = $randomFirstAnswers[$question->getQuestionId()];
-        }
-
-        $options = [
-            'choices'      => $choices,
-            'required'     => $question->isRequired(),
-            'data'         => $data,
-            'first_answer' => $randomFirstAnswer,
-            'expanded'     => !$question->containsSelectField(),
-            'placeholder'  => null,
-            'attr'         => ['class' => 'custom-control custom-radio custom-radio-filled'],
-            'choice_attr'  => function () {
                 return ['class' => 'custom-control-input'];
             },
             'label_attr'  => ['class' => 'custom-control-label']
@@ -176,8 +115,55 @@ class PageType extends AbstractType
         if ($question->isRequired()) {
             $options['constraints'] = [
                 new NotBlank([
+                    'message' => $this->translator->trans('error.one.option.required'),
+                    'groups'  => ['form_validation_only']
+                ])
+            ];
+        }
+
+        $builder->add($question->getCode(), ChoiceType::class, $options);
+    }
+
+    public function addGaborGranger(FormBuilderInterface $builder, Document\Question $question, ?array $answerMap)
+    {
+        $questionAnswerIds = $answerMap ? array_keys($answerMap) : null;
+
+        $choices       = [];
+        $choiceAnswers = [];
+        $data          = null;
+
+        foreach ($question->getAnswers() as $key => $answer) {
+
+            $answer->first                     = $key == 0;
+            $choices[$answer->getLabel()]      = $answer->getCode();
+            $choiceAnswers[$answer->getCode()] = $answer;
+
+            if ($questionAnswerIds && in_array($answer->getAnswerId(), $questionAnswerIds)) {
+                $data = $answer->getCode();
+            }
+        }
+
+        $options = [
+            'choices'     => $choices,
+            'question'    => $question,
+            'required'    => $question->isRequired(),
+            'data'        => $data,
+            'expanded'    => !$question->containsSelectField(),
+            'choice_attr' => function ($choice) use ($choiceAnswers) {
+                return
+                    [
+                        'data-label' => $choiceAnswers[$choice]->getLabel(),
+                        'class'      => $choiceAnswers[$choice]->first ? 'zero__input' : ''
+                    ];
+            },
+            'label_attr'  => ['class' => 'custom-control-label']
+        ];
+
+        if ($question->isRequired()) {
+            $options['constraints'] = [
+                new NotBlank([
                     'message' => $this->translator->trans('error.answer.required'),
-                    'groups' => ['form_validation_only']
+                    'groups'  => ['form_validation_only']
                 ])
             ];
         }
@@ -187,8 +173,8 @@ class PageType extends AbstractType
 
     /**
      * @param FormBuilderInterface $builder
-     * @param Document\Question    $question
-     * @param array|null           $answerMap
+     * @param Document\Question $question
+     * @param array|null $answerMap
      */
     private function addMultipleChoice(FormBuilderInterface $builder, Document\Question $question, ?array $answerMap)
     {
@@ -199,9 +185,9 @@ class PageType extends AbstractType
 
         $selectedAnswersIsExclusive = $this->questionService->isSelectedAnswersExclusive($question, $questionAnswerIds);
 
-        foreach($question->getAnswers() as $answer){
+        foreach ($question->getAnswers() as $answer) {
 
-            if(!empty($answer->getLabel())){
+            if (!empty($answer->getLabel())) {
                 $choices[$answer->getLabel()] = $answer->getCode();
             } else {
                 $choices[] = $answer->getCode();
@@ -213,17 +199,17 @@ class PageType extends AbstractType
         }
 
         $options = [
-            'choices'     => $choices,
-            'required'    => $question->isRequired(),
-            'placeholder' => null,
-            'expanded'    => true,
-            'multiple'    => true,
-            'data'        => $data,
-            'attr'        => ['class' => 'custom-control custom-checkbox custom-checkbox-filled'],
+            'choices'      => $choices,
+            'required'     => $question->isRequired(),
+            'placeholder'  => null,
+            'expanded'     => true,
+            'multiple'     => true,
+            'data'         => $data,
+            'attr'         => ['class' => 'custom-control custom-checkbox custom-checkbox-filled'],
             'choice_label' => function ($choice, $key) {
                 return is_int($key) ? '' : $key;
             },
-            'choice_attr' => function ($answerId) use ($question, $selectedAnswersIsExclusive, $answerMap) {
+            'choice_attr'  => function ($answerId) use ($question, $selectedAnswersIsExclusive, $answerMap) {
                 $attr['row_attr'] = '';
                 $attr             = ['class' => 'custom-control-input form-check-input'];
 
@@ -239,7 +225,7 @@ class PageType extends AbstractType
 
                 return $attr;
             },
-            'label_attr'  => ['class' => 'custom-control-label']
+            'label_attr'   => ['class' => 'custom-control-label']
         ];
 
         if ($question->isRequired()) {
@@ -261,8 +247,8 @@ class PageType extends AbstractType
         foreach ($question->getAnswers() as $answer) {
             if ($answer->getIsFreeText()) {
                 $builder->add($question->getInputName($answer->getCode()), TextType::class, [
-                        'attr' => ['class' => 'is-free-text-input'],
-                        'required' => false,
+                        'attr'        => ['class' => 'is-free-text-input'],
+                        'required'    => false,
                         'constraints' => [
                             new OtherFilled([
                                 'answer'            => $answer,
@@ -270,7 +256,7 @@ class PageType extends AbstractType
                                 'groups'            => ['form_validation_only']
                             ])
                         ],
-                        'data' => $answerMap[$answer->getAnswerId()] ?? null,
+                        'data'        => $answerMap[$answer->getAnswerId()] ?? null,
                     ]
                 );
             }
@@ -279,7 +265,7 @@ class PageType extends AbstractType
 
     private function addMatrix(FormBuilderInterface $builder, Document\Question $question, ?array $answerMap)
     {
-        $questionAnswerIds = $answerMap ? (array) array_keys($answerMap) : null;
+        $questionAnswerIds = $answerMap ? (array)array_keys($answerMap) : null;
 
         foreach (array_keys($question->getRows()) as $key => $rowCode) {
             $data    = [];
@@ -298,25 +284,25 @@ class PageType extends AbstractType
 
             if ($multiple) {
                 $constraint = new Count([
-                    'min' => 1,
+                    'min'        => 1,
                     'minMessage' => $this->translator->trans('error.at.least.one.option.in.each.row.required'),
-                    'groups' => ['form_validation_only']
+                    'groups'     => ['form_validation_only']
                 ]);
             } else {
                 $data       = reset($data);
                 $constraint = new NotBlank([
                     'message' => $this->translator->trans('error.one.option.in.each.row.required'),
-                    'groups' => ['form_validation_only']
+                    'groups'  => ['form_validation_only']
                 ]);
             }
 
             $options = [
-                'choices' => $choices,
-                'multiple' => $multiple,
-                'expanded' => true,
-                'data' => $data,
+                'choices'     => $choices,
+                'multiple'    => $multiple,
+                'expanded'    => true,
+                'data'        => $data,
                 'placeholder' => null,
-                'required' => $question->isRequired(),
+                'required'    => $question->isRequired(),
                 'choice_attr' => function () {
                     return ['class' => 'custom-control-input'];
                 },
@@ -336,16 +322,16 @@ class PageType extends AbstractType
         foreach ($question->getAnswers() as $answer) {
             if ($answer->getAnswerFieldTypeId() === Document\Answer::FIELD_TYPE_TEXT) {
                 $options = [
-                    'attr' => ['class' => 'custom-control custom-text'],
+                    'attr'     => ['class' => 'custom-control custom-text'],
                     'required' => $question->isRequired(),
-                    'data' => $answerMap[$answer->getAnswerId()] ?? ''
+                    'data'     => $answerMap[$answer->getAnswerId()] ?? ''
                 ];
 
                 if ($question->isRequired()) {
                     $options['constraints'] = new NotBlank(
                         [
                             'message' => $this->translator->trans('error.cant.be.blank'),
-                            'groups' => ['form_validation_only']
+                            'groups'  => ['form_validation_only']
                         ]
                     );
                 }
@@ -354,16 +340,16 @@ class PageType extends AbstractType
             } elseif ($answer->getAnswerFieldTypeId() === Document\Answer::FIELD_TYPE_TEXTAREA) {
 
                 $options = [
-                    'attr' => ['class' => 'custom-control custom-textarea'],
+                    'attr'     => ['class' => 'custom-control custom-textarea'],
                     'required' => $question->isRequired(),
-                    'data' => $answerMap[$answer->getAnswerId()] ?? '',
+                    'data'     => $answerMap[$answer->getAnswerId()] ?? '',
                 ];
 
                 if ($question->isRequired()) {
                     $options['constraints'] = new NotBlank(
                         [
                             'message' => $this->translator->trans('error.cant.be.blank'),
-                            'groups' => ['form_validation_only']
+                            'groups'  => ['form_validation_only']
                         ]
                     );
                 }
@@ -375,7 +361,7 @@ class PageType extends AbstractType
 
     private function addLinearScale(FormBuilderInterface $builder, Document\Question $question, ?array $answerMap)
     {
-        $data = null;
+        $data              = null;
         $questionAnswerIds = !empty($answerMap) ? array_keys($answerMap) : null;
 
         foreach ($question->getAnswers() as $answer) {
@@ -386,10 +372,10 @@ class PageType extends AbstractType
         }
 
         $options = [
-            'choices'     => $question->getAnswers(),
-            'required'    => $question->isRequired(),
-            'data'        => $data,
-            'label'       => $question->getText()
+            'choices'  => $question->getAnswers(),
+            'required' => $question->isRequired(),
+            'data'     => $data,
+            'label'    => $question->getText()
         ];
 
         if ($question->isRequired()) {
@@ -406,7 +392,7 @@ class PageType extends AbstractType
 
     private function addLinearScaleMatrix(FormBuilderInterface $builder, Document\Question $question, ?array $answerMap)
     {
-        $questionAnswerIds = $answerMap ? (array) array_keys($answerMap) : null;
+        $questionAnswerIds = $answerMap ? (array)array_keys($answerMap) : null;
 
         foreach ($question->getRows() as $rowCode => $row) {
             $data  = null;
@@ -422,17 +408,17 @@ class PageType extends AbstractType
             }
 
             $options = [
-                'choices' => $array,
-                'data' => $data,
+                'choices'  => $array,
+                'data'     => $data,
                 'required' => $question->isRequired(),
-                'label' => $row
+                'label'    => $row
             ];
 
             if ($question->isRequired()) {
                 $options['constraints'] = [
                     new NotBlank([
                         'message' => $this->translator->trans('error.one.option.in.each.row.required'),
-                        'groups' => ['form_validation_only']
+                        'groups'  => ['form_validation_only']
                     ])
                 ];
             }
