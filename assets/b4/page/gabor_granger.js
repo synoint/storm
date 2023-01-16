@@ -22,7 +22,6 @@ class GaborGranger {
     submitAnswer(el) {
 
         const nextAnswer = this.getNextAnswer(el);
-        console.log(nextAnswer);
         this.selectAnswer(el, nextAnswer);
 
         if(nextAnswer && nextAnswer.hasClass(this.zeroInputClass)){
@@ -106,7 +105,6 @@ class GaborGranger {
         } else {
 
             const prevIndex = parseInt(index) - 1;
-            console.log(index);
             if(0 <= prevIndex) {
                 nextPriceInput = priceHolderInputs.eq(prevIndex);
             }

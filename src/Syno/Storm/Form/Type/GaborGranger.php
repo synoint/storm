@@ -25,8 +25,7 @@ class GaborGranger extends AbstractType
         $resolver->setDefaults(
             [
                 'first_answer' => '',
-                'question'     => null,
-                'answerMap'    => null
+                'question'     => null
             ]
         );
     }
