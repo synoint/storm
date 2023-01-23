@@ -8,6 +8,8 @@ class GaborGranger {
         this.answerResultSelector       = ".answer__result";
         this.answerButtonsSelector      = ".answer__buttons";
         this.zeroInputClass             = "zero__input";
+        this.biggestAgreedSelector      = ".biggest-agreed";
+        this.biggestDeclinedSelector    = ".biggest-declined";
     }
 
     initialize() {
@@ -22,7 +24,6 @@ class GaborGranger {
     submitAnswer(el) {
 
         const nextAnswer = this.getNextAnswer(el);
-        this.selectAnswer(el, nextAnswer);
 
         if(nextAnswer && nextAnswer.hasClass(this.zeroInputClass)){
             this.submitForm(el);
@@ -46,54 +47,51 @@ class GaborGranger {
 
     submitForm(el) {
 
-        const questionHolder  = el.closest(this.gaborGrangerSelector);
+        const questionHolder    = el.closest(this.gaborGrangerSelector);
+        const priceHolderInputs = questionHolder.find(this.priceHolderInputsSelector);
 
-        const lastAnswer             = questionHolder.find(this.priceHolderInputsSelector+":checked");
+        const selectedAnswerId = questionHolder.find(this.biggestAgreedSelector).data("answer");
+        let selectedAnswer;
+
+        if(!selectedAnswerId){
+            // get won't buy answer as answer
+            selectedAnswer = questionHolder.find("."+this.zeroInputClass);
+        } else {
+            selectedAnswer = questionHolder.find(selectedAnswerId);
+        }
+
+        priceHolderInputs.prop("checked", false);
+        selectedAnswer.prop("checked", true);
+
         const answerResult           = questionHolder.find(this.answerResultSelector);
         const answerButtons          = questionHolder.find(this.answerButtonsSelector);
         const displayedAnswer        = questionHolder.find(this.displayedAnswerSelector);
-        const correspondingTextInput = questionHolder.find("#answer"+lastAnswer.attr("value") + "text");
 
-        displayedAnswer.html(lastAnswer.data("label"));
-        displayedAnswer.data("val", lastAnswer.attr("value"));
+        displayedAnswer.html(selectedAnswer.data("label"));
+        displayedAnswer.data("val", selectedAnswer.attr("value"));
+
 
         answerButtons.addClass("d-none");
         answerResult.removeClass("d-none");
+
+        // submit page
+        this.submitPageIfLastInPage(el);
+
     }
 
-    selectAnswer(el, nextAnswer) {
+    submitPageIfLastInPage(el) {
+        const currentQuestionIndex = el.closest(".question").index();
+        const totalQuestions       = el.closest(".questions").find(".question").length;
 
-        const questionHolder         = el.closest(this.gaborGrangerSelector);
-
-        const answerId               = questionHolder.find(this.displayedAnswerSelector).data("val");
-        const priceHolderInputs      = questionHolder.find(this.priceHolderInputsSelector);
-        const correspondingInput     = questionHolder.find("#answer"+answerId);
-        const correspondingTextInput = questionHolder.find("#answer"+answerId + "text");
-
-        if(this.agreed(el)){
-            priceHolderInputs.prop("checked", false);
-            correspondingInput.prop("checked", true);
-        }
-
-        correspondingTextInput.val(el.html());
-
-        if(nextAnswer && nextAnswer.hasClass(this.zeroInputClass) && !this.agreed(el)){
-            priceHolderInputs.prop("checked", false);
-            questionHolder.find("." + this.zeroInputClass).prop("checked", true);
-        } else {
-            if (!nextAnswer && !questionHolder.find(this.priceHolderInputsSelector + ":checked").length) {
-                priceHolderInputs.prop("checked", false);
-                correspondingInput.prop("checked", true);
-            }
+        if(currentQuestionIndex === (totalQuestions-1)){
+            $("#p_next").trigger("click");
         }
     }
 
     getNextAnswer(el) {
 
         const questionHolder     = el.closest(this.gaborGrangerSelector);
-
         const answerId           = questionHolder.find(this.displayedAnswerSelector).data("val");
-        const priceHolderInputs  = questionHolder.find(this.priceHolderInputsSelector);
         const correspondingInput = questionHolder.find("#answer"+answerId);
         const index              = correspondingInput.index();
         let nextPriceInput;
@@ -101,20 +99,85 @@ class GaborGranger {
         correspondingInput.data("shown", 1);
 
         if(this.agreed(el)){
-            nextPriceInput = priceHolderInputs.eq(parseInt(index) + 1);
+
+            questionHolder.find(this.biggestAgreedSelector).val(correspondingInput.val());
+            questionHolder.find(this.biggestAgreedSelector).data("answer", correspondingInput);
+
+            nextPriceInput = this.getNextRandomBigger(el, index);
         } else {
 
-            const prevIndex = parseInt(index) - 1;
-            if(0 <= prevIndex) {
-                nextPriceInput = priceHolderInputs.eq(prevIndex);
-            }
-        }
+            nextPriceInput = this.getNextRandomSmaller(el, index);
 
-        if(nextPriceInput && nextPriceInput.data("shown")){
-            nextPriceInput = null;
+            questionHolder.find(this.biggestDeclinedSelector).val(correspondingInput.val());
+            questionHolder.find(this.biggestDeclinedSelector).data("answer", correspondingInput);
         }
 
         return nextPriceInput;
+    }
+
+    getNextRandomBigger(el, index) {
+
+        const questionHolder     = el.closest(this.gaborGrangerSelector);
+        const priceHolderInputs  = questionHolder.find(this.priceHolderInputsSelector);
+        const biggestValue       = questionHolder.find(this.biggestAgreedSelector).val();
+        const biggestDeclinedValue       = questionHolder.find(this.biggestDeclinedSelector).val();
+        let nextAnswers          = [];
+        let nextAnswer;
+
+        priceHolderInputs.each(function(){
+
+            if($(this).index() > index && !$(this).data("shown") && biggestValue < $(this).val() && (!biggestDeclinedValue || biggestDeclinedValue > $(this).val()) && !$(this).hasClass(this.zeroInputClass)){
+                nextAnswers.push($(this));
+            }
+        });
+
+        if(nextAnswers.length > 0){
+            nextAnswers = this.shuffle(nextAnswers);
+            nextAnswer  = nextAnswers[0];
+        }
+
+        return nextAnswer;
+    }
+
+    getNextRandomSmaller(el, index) {
+
+        const questionHolder     = el.closest(this.gaborGrangerSelector);
+        const priceHolderInputs  = questionHolder.find(this.priceHolderInputsSelector);
+        const biggestValue       = questionHolder.find(this.biggestAgreedSelector).val();
+        const biggestDeclinedValue       = questionHolder.find(this.biggestDeclinedSelector).val();
+        let nextAnswers          = [];
+        let nextAnswer;
+
+        priceHolderInputs.each(function(){
+            if($(this).index() < index && !$(this).data("shown") && biggestValue < $(this).val() && (!biggestDeclinedValue || biggestDeclinedValue > $(this).val()) && !$(this).hasClass(this.zeroInputClass)) {
+                nextAnswers.push($(this));
+            }
+        });
+
+        if(nextAnswers.length > 0){
+            nextAnswers = this.shuffle(nextAnswers);
+            nextAnswer  = nextAnswers[0];
+        }
+
+        return nextAnswer;
+    }
+
+    shuffle(array) {
+        let currentIndex = array.length,  randomIndex;
+
+        // While there remain elements to shuffle.
+        while (currentIndex !== 0) {
+
+            // Pick a remaining element.
+            randomIndex = Math.floor(Math.random() * currentIndex);
+            currentIndex--;
+
+            // And swap it with the current element.
+            [array[currentIndex], array[randomIndex]] = [
+                array[randomIndex], array[currentIndex]];
+        }
+
+        return array;
     }
 
     agreed(el) {

@@ -5,6 +5,8 @@
 {{ form_errors(attribute(form, (question.getCode))) }}
 
 <div class="gabor-granger__holder">
+    <input class="biggest-agreed" type="hidden" value="" />
+    <input class="biggest-declined" type="hidden" value="" />
     <div class="text-center mt-5">
         <div class="h2 mt-2 displayed-answer" data-val="{{ randomAnswer.code }}">
             {% if questionField.vars.value %}
