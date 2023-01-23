@@ -117,16 +117,20 @@ class GaborGranger {
 
     getNextRandomBigger(el, index) {
 
-        const questionHolder     = el.closest(this.gaborGrangerSelector);
-        const priceHolderInputs  = questionHolder.find(this.priceHolderInputsSelector);
-        const biggestValue       = questionHolder.find(this.biggestAgreedSelector).val();
-        const biggestDeclinedValue       = questionHolder.find(this.biggestDeclinedSelector).val();
-        let nextAnswers          = [];
+        const self = this;
+        const questionHolder       = el.closest(this.gaborGrangerSelector);
+        const priceHolderInputs    = questionHolder.find(this.priceHolderInputsSelector);
+        const biggestValue         = questionHolder.find(this.biggestAgreedSelector).val();
+        const biggestDeclinedValue = questionHolder.find(this.biggestDeclinedSelector).val();
+        let nextAnswers            = [];
         let nextAnswer;
 
         priceHolderInputs.each(function(){
 
-            if($(this).index() > index && !$(this).data("shown") && biggestValue < $(this).val() && (!biggestDeclinedValue || biggestDeclinedValue > $(this).val()) && !$(this).hasClass(this.zeroInputClass)){
+            if($(this).index() > index && !$(this).data("shown") &&
+                biggestValue < $(this).val() &&
+                (!biggestDeclinedValue || biggestDeclinedValue > $(this).val()) &&
+                !$(this).hasClass(self.zeroInputClass)){
                 nextAnswers.push($(this));
             }
         });
@@ -141,15 +145,19 @@ class GaborGranger {
 
     getNextRandomSmaller(el, index) {
 
-        const questionHolder     = el.closest(this.gaborGrangerSelector);
-        const priceHolderInputs  = questionHolder.find(this.priceHolderInputsSelector);
-        const biggestValue       = questionHolder.find(this.biggestAgreedSelector).val();
-        const biggestDeclinedValue       = questionHolder.find(this.biggestDeclinedSelector).val();
-        let nextAnswers          = [];
+        const self = this;
+        const questionHolder       = el.closest(this.gaborGrangerSelector);
+        const priceHolderInputs    = questionHolder.find(this.priceHolderInputsSelector);
+        const biggestValue         = questionHolder.find(this.biggestAgreedSelector).val();
+        const biggestDeclinedValue = questionHolder.find(this.biggestDeclinedSelector).val();
+        let nextAnswers            = [];
         let nextAnswer;
 
         priceHolderInputs.each(function(){
-            if($(this).index() < index && !$(this).data("shown") && biggestValue < $(this).val() && (!biggestDeclinedValue || biggestDeclinedValue > $(this).val()) && !$(this).hasClass(this.zeroInputClass)) {
+            if($(this).index() < index && !$(this).data("shown") &&
+                biggestValue < $(this).val() &&
+                (!biggestDeclinedValue || biggestDeclinedValue > $(this).val()) &&
+                !$(this).hasClass(self.zeroInputClass)) {
                 nextAnswers.push($(this));
             }
         });
