@@ -42,3 +42,5 @@ error.answer.required: "This must be answered"
 error.at.least.one.option.required: "At least one option must be selected."
 error.at.least.one.option.in.each.row.required: 'At least one option in each row must be selected.'
 error.one.option.in.each.row.required: 'One option must be selected in each row.'
+question.button.label.yes: 'Yes'
+question.button.label.no: 'No'
