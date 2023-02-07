@@ -8,6 +8,8 @@ use Syno\Storm\Document\Response;
 
 class ResponseId
 {
+    public const ROUTER_RESPONDENT_COOKIE = 'respondent';
+
     private RequestStack $requestStack;
 
     public function __construct(RequestStack $requestStack)
@@ -20,6 +22,9 @@ class ResponseId
         $result = $this->requestStack->getCurrentRequest()->query->get('id');
         if (!$result) {
             $result = $this->requestStack->getCurrentRequest()->getSession()->get('id' . $surveyId);
+        }
+        if (!$result) {
+            $result = $this->requestStack->getCurrentRequest()->cookies->get(self::ROUTER_RESPONDENT_COOKIE);
         }
 
         if (null !== $result) {
