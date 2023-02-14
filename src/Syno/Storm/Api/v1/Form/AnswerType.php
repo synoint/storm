@@ -18,6 +18,7 @@ class AnswerType extends AbstractType
         $builder
             ->add('answerId', IntegerType::class)
             ->add('code', TextType::class, ['required' => false])
+            ->add('value', TextType::class, ['required' => false])
             ->add('rowCode', TextType::class, ['required' => false])
             ->add('columnCode', TextType::class, ['required' => false])
             ->add('sortOrder', IntegerType::class)
