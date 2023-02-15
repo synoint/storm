@@ -8,20 +8,29 @@ use Syno\Storm\Document\SurveyEvent;
 
 class SurveyEventLogger
 {
-    const VISIT             = 'visit';
-    const DEBUG_RESPONSE    = 'debug_response';
-    const TEST_RESPONSE     = 'test_response';
-    const LIVE_RESPONSE     = 'live_response';
-    const DEBUG_COMPLETE    = 'debug_complete';
-    const LIVE_COMPLETE     = 'live_complete';
-    const TEST_COMPLETE     = 'test_complete';
-    const SCREENOUT         = 'screenout';
-    const QUALITY_SCREENOUT = 'quality_screenout';
+    public const LIVE_VISIT = 'live_visit';
+    public const TEST_VISIT = 'test_visit';
 
-    const SURVEY_CREATED     = 'created';
-    const SURVEY_PUBLISHED   = 'published';
-    const SURVEY_UNPUBLISHED = 'unpublished';
-    const SURVEY_DELETED     = 'deleted';
+    public const LIVE_RESPONSE  = 'live_response';
+    public const TEST_RESPONSE  = 'test_response';
+    public const DEBUG_RESPONSE = 'debug_response';
+
+    public const LIVE_COMPLETE  = 'live_complete';
+    public const TEST_COMPLETE  = 'test_complete';
+    public const DEBUG_COMPLETE = 'debug_complete';
+
+    public const LIVE_SCREENOUT  = 'live_screenout';
+    public const TEST_SCREENOUT  = 'test_screenout';
+    public const DEBUG_SCREENOUT = 'debug_screenout';
+
+    public const LIVE_QUALITY_SCREENOUT  = 'live_quality_screenout';
+    public const TEST_QUALITY_SCREENOUT  = 'test_quality_screenout';
+    public const DEBUG_QUALITY_SCREENOUT = 'debug_quality_screenout';
+
+    public const SURVEY_CREATED     = 'created';
+    public const SURVEY_PUBLISHED   = 'published';
+    public const SURVEY_UNPUBLISHED = 'unpublished';
+    public const SURVEY_DELETED     = 'deleted';
 
     private DocumentManager $dm;
 
@@ -64,6 +73,36 @@ class SurveyEventLogger
                 break;
             case Document\Response::MODE_DEBUG:
                 $this->log(SurveyEventLogger::DEBUG_COMPLETE, $survey);
+                break;
+        }
+    }
+
+    public function logScreenout(Document\Response $response, Document\Survey $survey)
+    {
+        switch ($response->getMode()) {
+            case Document\Response::MODE_LIVE:
+                $this->log(SurveyEventLogger::LIVE_SCREENOUT, $survey);
+                break;
+            case Document\Response::MODE_TEST:
+                $this->log(SurveyEventLogger::TEST_SCREENOUT, $survey);
+                break;
+            case Document\Response::MODE_DEBUG:
+                $this->log(SurveyEventLogger::DEBUG_SCREENOUT, $survey);
+                break;
+        }
+    }
+
+    public function logQualityScreenout(Document\Response $response, Document\Survey $survey)
+    {
+        switch ($response->getMode()) {
+            case Document\Response::MODE_LIVE:
+                $this->log(SurveyEventLogger::LIVE_QUALITY_SCREENOUT, $survey);
+                break;
+            case Document\Response::MODE_TEST:
+                $this->log(SurveyEventLogger::TEST_QUALITY_SCREENOUT, $survey);
+                break;
+            case Document\Response::MODE_DEBUG:
+                $this->log(SurveyEventLogger::DEBUG_QUALITY_SCREENOUT, $survey);
                 break;
         }
     }

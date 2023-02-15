@@ -229,7 +229,7 @@ class ResponseSession
         $this->responseHandler->saveResponse($response);
 
         $this->responseEventLogger->log(ResponseEventLogger::SURVEY_QUALITY_SCREENOUTED, $response);
-        $this->surveyEventLogger->log(SurveyEventLogger::QUALITY_SCREENOUT, $survey);
+        $this->surveyEventLogger->logQualityScreenout($response, $survey);
 
         return $this->responseRedirector->qualityScreenOut($survey, $response);
     }
@@ -242,7 +242,7 @@ class ResponseSession
         $this->responseHandler->saveResponse($response);
 
         $this->responseEventLogger->log(ResponseEventLogger::SURVEY_SCREENOUTED, $response);
-        $this->surveyEventLogger->log(SurveyEventLogger::SCREENOUT, $survey);
+        $this->surveyEventLogger->logScreenout($response, $survey);
 
         return $this->responseRedirector->screenOut($survey, $response);
     }
@@ -260,6 +260,7 @@ class ResponseSession
         if (Document\JumpToCondition::DESTINATION_TYPE_QUESTION == $jump->getDestinationType()) {
             $this->responseEventLogger->log(ResponseEventLogger::JUMPED_TO_PAGE, $response);
             $jumpToPage = $survey->getPageByQuestion($jump->getDestination());
+
             if ($jumpToPage) {
                 return $this->responseRedirector->page($survey->getSurveyId(), $jumpToPage->getPageId());
             }

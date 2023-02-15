@@ -79,6 +79,7 @@ class SurveySubscriber implements EventSubscriberInterface
 
         $survey = $this->surveyHandler->getSurvey();
         $survey->setCurrentLocale($event->getRequest()->getLocale());
+
         if (null !== $survey->getPrimaryLanguageLocale()) {
             $survey->setFallbackLocale($survey->getPrimaryLanguageLocale());
         }
@@ -105,10 +106,19 @@ class SurveySubscriber implements EventSubscriberInterface
             return;
         }
 
-        $this->surveyEventLogger->log(
-            SurveyEventLogger::VISIT,
-            $this->surveyHandler->getSurvey()
-        );
+        if ($this->surveyHandler->isLiveRoute($event->getRequest())) {
+            $this->surveyEventLogger->log(
+                SurveyEventLogger::LIVE_VISIT,
+                $this->surveyHandler->getSurvey()
+            );
+        }
+
+        if ($this->surveyHandler->isTestRoute($event->getRequest())) {
+            $this->surveyEventLogger->log(
+                SurveyEventLogger::TEST_VISIT,
+                $this->surveyHandler->getSurvey()
+            );
+        }
     }
 
     public static function getSubscribedEvents(): array
