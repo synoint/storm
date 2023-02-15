@@ -112,13 +112,6 @@ class SurveySubscriber implements EventSubscriberInterface
                 $this->surveyHandler->getSurvey()
             );
         }
-
-        if ($this->surveyHandler->isTestRoute($event->getRequest())) {
-            $this->surveyEventLogger->log(
-                SurveyEventLogger::TEST_VISIT,
-                $this->surveyHandler->getSurvey()
-            );
-        }
     }
 
     public static function getSubscribedEvents(): array

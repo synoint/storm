@@ -9,7 +9,6 @@ use Syno\Storm\Document\SurveyEvent;
 class SurveyEventLogger
 {
     public const LIVE_VISIT = 'live_visit';
-    public const TEST_VISIT = 'test_visit';
 
     public const LIVE_RESPONSE  = 'live_response';
     public const TEST_RESPONSE  = 'test_response';

@@ -261,41 +261,6 @@ class SurveyController extends AbstractController implements TokenAuthenticatedC
 
     /**
      * @Route(
-     *     "/{surveyId}/events/summary",
-     *     name="storm_api.v1.survey.event_count",
-     *     requirements={"id"="\d+"},
-     *     methods={"GET"}
-     * )
-     */
-    public function eventSummary(int $surveyId): JsonResponse
-    {
-        $result = [];
-        foreach ($this->surveyEventService->getAvailableVersions($surveyId) as $version) {
-            $result[] = [
-                'version'            => $version,
-                'total'              => $this->surveyEventService->count($surveyId, $version),
-                'visits'             => $this->surveyEventService->count($surveyId, $version, SurveyEventLogger::LIVE_VISIT),
-                'debug_responses'    => $this->surveyEventService->count($surveyId, $version,
-                    SurveyEventLogger::DEBUG_RESPONSE),
-                'test_responses'     => $this->surveyEventService->count($surveyId, $version,
-                    SurveyEventLogger::TEST_RESPONSE),
-                'live_responses'     => $this->surveyEventService->count($surveyId, $version,
-                    SurveyEventLogger::LIVE_RESPONSE),
-                'screenouts'         => $this->surveyEventService->count($surveyId, $version, SurveyEventLogger::LIVE_SCREENOUT),
-                'quality_screenouts' => $this->surveyEventService->count($surveyId, $version,
-                    SurveyEventLogger::LIVE_QUALITY_SCREENOUT),
-                'test_completes'     => $this->surveyEventService->count($surveyId, $version,
-                    SurveyEventLogger::TEST_COMPLETE),
-                'live_completes'     => $this->surveyEventService->count($surveyId, $version,
-                    SurveyEventLogger::LIVE_COMPLETE)
-            ];
-        }
-
-        return $this->json($result);
-    }
-
-    /**
-     * @Route(
      *     "/{surveyId}/events/last/date",
      *     name="storm_api.v1.survey.event.last.date",
      *     requirements={"id"="\d+"},
