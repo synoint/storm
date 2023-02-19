@@ -302,6 +302,7 @@ class PageType extends AbstractType
                 'expanded'    => true,
                 'data'        => $data,
                 'placeholder' => null,
+                'label_html'  => true,
                 'required'    => $question->isRequired(),
                 'choice_attr' => function () {
                     return ['class' => 'custom-control-input'];
