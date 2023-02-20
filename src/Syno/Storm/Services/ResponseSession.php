@@ -75,9 +75,6 @@ class ResponseSession
 
         $this->responseEventLogger->log(ResponseEventLogger::ANSWERS_CLEARED, $response);
 
-        // we need to log this response again, because previous version is gone
-        $this->surveyEventLogger->logResponse($response, $survey);
-
         return $this->responseRedirector->surveyEntrance(
             $response->getSurveyId(),
             $response->getMode(),
@@ -147,8 +144,6 @@ class ResponseSession
 
         $this->responseEventLogger->log(ResponseEventLogger::RESPONSE_CREATED, $response);
         $this->responseEventLogger->log(ResponseEventLogger::SURVEY_ENTERED, $response);
-
-        $this->surveyEventLogger->logResponse($response, $survey);
     }
 
     public function saveAnswers(Document\Response $response, Collection $answers): Document\Response
@@ -217,7 +212,6 @@ class ResponseSession
         }
 
         $this->responseEventLogger->log(ResponseEventLogger::SURVEY_COMPLETED, $response);
-        $this->surveyEventLogger->logComplete($response, $survey);
 
         return $this->responseRedirector->complete($survey, $response);
     }
@@ -229,7 +223,6 @@ class ResponseSession
         $this->responseHandler->saveResponse($response);
 
         $this->responseEventLogger->log(ResponseEventLogger::SURVEY_QUALITY_SCREENOUTED, $response);
-        $this->surveyEventLogger->logQualityScreenout($response, $survey);
 
         return $this->responseRedirector->qualityScreenOut($survey, $response);
     }
@@ -242,7 +235,6 @@ class ResponseSession
         $this->responseHandler->saveResponse($response);
 
         $this->responseEventLogger->log(ResponseEventLogger::SURVEY_SCREENOUTED, $response);
-        $this->surveyEventLogger->logScreenout($response, $survey);
 
         return $this->responseRedirector->screenOut($survey, $response);
     }

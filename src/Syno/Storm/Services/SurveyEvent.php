@@ -54,16 +54,6 @@ class SurveyEvent
         return $qb->count()->getQuery()->execute();
     }
 
-    public function getAvailableVersions(int $surveyId): array
-    {
-        return $this->dm->createQueryBuilder(Document\SurveyEvent::class)
-            ->select('version')
-            ->distinct('version')
-            ->field('surveyId')->equals($surveyId)
-            ->getQuery()
-            ->execute();
-    }
-
     public function deleteEvents(int $surveyId, int $version)
     {
         $this->dm->createQueryBuilder(Document\SurveyEvent::class)
