@@ -102,3 +102,11 @@ footer .progress {
         text-indent: -9999px;
     }
 }
+
+@media screen and (max-width: 1510px) {
+    .question img {
+        object-fit: contain;
+        max-width: 100%;
+        height: auto;
+    }
+}
