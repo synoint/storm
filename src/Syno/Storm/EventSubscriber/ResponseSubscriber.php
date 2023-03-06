@@ -230,7 +230,7 @@ class ResponseSubscriber implements EventSubscriberInterface
 
         $this->logger->debug(__FUNCTION__);
 
-        $data = $event->getRequest()->query->get("p");
+        $data = $event->getRequest()->query->get("q");
         if (!is_array($data)) {
             return;
         }
