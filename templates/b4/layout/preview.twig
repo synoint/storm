@@ -7,7 +7,7 @@
     
     <base href="{{ app.request.scheme ~'://' ~ app.request.httpHost }}">
 
-    <link rel="stylesheet" href="{{ asset('/toast/css/jquery.toast.min.css') }}" type="text/css"/>
+    <link rel="stylesheet" href="{{ asset('/toast/css/jquery.toast.min.css', 'vendors') }}" type="text/css"/>
 
     <script src="{{ asset('/jquery/jquery-3.6.1.min.js', 'vendors') }}"></script>
     <script src="{{ asset('/bootstrap/bootstrap4.6.2.bundle.min.js', 'vendors') }}"></script>
