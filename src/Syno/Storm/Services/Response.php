@@ -21,34 +21,35 @@ class Response
      */
     public function findBySurveyIdAndResponseId(int $surveyId, string $responseId): ?object
     {
-        return $this->dm->getRepository(Document\Response::class)->findOneBy(
-            [
-                'surveyId' => $surveyId,
-                'responseId' => $responseId
-            ]
-        );
+        return $this->dm
+            ->createQueryBuilder(Document\Response::class)
+            ->field('surveyId')->equals($surveyId)
+            ->field('responseId')->equals($responseId)
+            ->field('userAgents')->notEqual(null)
+            ->getQuery()
+            ->getSingleResult();
     }
 
-    public function getAllBySurveyId(int $surveyId, int $limit = 1000, int $offset = 0, array $params = []): array
+    public function getAllBySurveyId(int $surveyId, int $limit = 1000, int $offset = 0, array $params = []):array
     {
-        $criteria['surveyId'] = $surveyId;
+        $qb = $this->dm
+            ->createQueryBuilder(Document\Response::class)
+            ->field('surveyId')->equals($surveyId);
 
         if (isset($params['mode'])) {
-          $criteria['mode'] = $params['mode'];
+            $qb->field('mode')->equals($params['mode']);
         }
 
         if (isset($params['completed'])) {
-            $criteria['completed'] = $params['completed'];
+            $qb->field('completed')->equals($params['completed']);
         }
 
-        return $this->dm->getRepository(Document\Response::class)->findBy(
-            $criteria,
-            [
-                'id' => 'DESC'
-            ],
-            $limit,
-            $offset
-        );
+        return $qb->sort('id', 'DESC')
+            ->limit($limit)
+            ->skip($offset)
+            ->getQuery()
+            ->execute()
+            ->toArray();
     }
 
     /**
@@ -56,27 +57,35 @@ class Response
      */
     public function getAllBySurveyIdAndVersion(int $surveyId, int $version): array
     {
-        return $this->dm->getRepository(Document\Response::class)->findBy(
-            [
-                'surveyId' => $surveyId,
-                'surveyVersion' => $version,
-            ]
-        );
+        return $this->dm
+            ->createQueryBuilder(Document\Response::class)
+            ->field('surveyId')->equals($surveyId)
+            ->field('surveyVersion')->equals($version)
+            ->field('userAgents')->notEqual(null)
+            ->getQuery()
+            ->execute()
+            ->toArray();
     }
 
     public function getAllByQuestionId(int $questionId, array $params = []): array
     {
-        $criteria['answers.questionId'] = $questionId;
+        $qb = $this->dm
+            ->createQueryBuilder(Document\Response::class)
+            ->field('answers.questionId')->equals($questionId);
 
         if (isset($params['mode'])) {
-            $criteria['mode'] = $params['mode'];
+            $qb->field('mode')->equals($params['mode']);
         }
 
         if (isset($params['completed'])) {
-            $criteria['completed'] = $params['completed'];
+            $qb->field('completed')->equals($params['completed']);
         }
 
-        return $this->dm->getRepository(Document\Response::class)->findBy($criteria);
+        return $qb
+            ->field('userAgents')->notEqual(null)
+            ->getQuery()
+            ->execute()
+            ->toArray();
     }
 
     public function count(int $surveyId): int
