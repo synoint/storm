@@ -45,6 +45,7 @@ class Response
         }
 
         return $qb->sort('id', 'DESC')
+            ->field('userAgents')->notEqual(null)
             ->limit($limit)
             ->skip($offset)
             ->getQuery()
