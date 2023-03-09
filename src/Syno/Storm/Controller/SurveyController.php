@@ -57,11 +57,19 @@ class SurveyController extends AbstractController
      *     methods={"GET"}
      * )
      */
-    public function test(Document\Survey $survey): RedirectResponse
+    public function test(Document\Survey $survey, Request $request): RedirectResponse
     {
+        /** @var Document\Response $response */
+        $response = $request->attributes->get(RequestHandler\Response::ATTR);
+
+        $firstPage = $survey->getFirstPage();
+        if ($response->getSurveyPathId()) {
+            $firstPage = $response->getSurveyPath()->first();
+        }
+
         return $this->redirectToRoute('page.index', [
             'surveyId' => $survey->getSurveyId(),
-            'pageId'   => $survey->getFirstPage()->getPageId()
+            'pageId'   => $firstPage->getPageId()
         ]);
     }
 
