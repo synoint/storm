@@ -28,15 +28,15 @@ class Page {
 
         this.container.on('change', '.custom-control-input', function (e) {
             const currentTarget = $(e.currentTarget);
-            const formCheck     = currentTarget.closest('.form-check');
+            const formCheck = currentTarget.closest('.form-check');
 
-            if(!formCheck.find('.free-text-input').get(0)) {
-                currentTarget.closest('.custom-radio-filled').find('.form-check').each(function () {
+            formCheck.closest('.custom-radio-filled').find('.form-check').each(function () {
+                if (formCheck !== $(this)) {
                     $(this).find('.free-text-input').val('');
-                });
-            }
+                }
+            });
 
-            if(currentTarget.closest('.custom-checkbox-filled').get(0)) {
+            if (currentTarget.closest('.custom-checkbox-filled').get(0)) {
                 formCheck.find('.free-text-input').val('');
             }
         });
