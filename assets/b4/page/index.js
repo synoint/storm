@@ -26,6 +26,21 @@ class Page {
             }
         });
 
+        this.container.on('change', '.custom-control-input', function (e) {
+            const currentTarget = $(e.currentTarget);
+            const formCheck     = currentTarget.closest('.form-check');
+
+            if(!formCheck.find('.free-text-input').get(0)) {
+                currentTarget.closest('.custom-radio-filled').find('.form-check').each(function () {
+                    $(this).find('.free-text-input').val('');
+                });
+            }
+
+            if(currentTarget.closest('.custom-checkbox-filled').get(0)) {
+                formCheck.find('.free-text-input').val('');
+            }
+        });
+
         // line below rewrites history which is loaded when back button is pressed, so form would show already filled answers
         window.history.replaceState(null, null, window.location);
     }
