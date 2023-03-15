@@ -4,6 +4,7 @@ class Page {
     }
 
     bindEvents() {
+        const self = this;
         this.container.on('change', '.exclusive', function (e) {
             $(e.currentTarget.closest('.custom-control.custom-checkbox')).find('.form-check').each(function () {
                 const input = $(this).find('input');
@@ -23,26 +24,33 @@ class Page {
                 } else {
                     checkbox.prop("checked", false);
                 }
+
+                self.clearSingleOtherOptionFreeText(checkbox);
             }
         });
 
         this.container.on('change', '.custom-control-input', function (e) {
             const currentTarget = $(e.currentTarget);
-            const formCheck = currentTarget.closest('.form-check');
 
-            formCheck.closest('.custom-radio-filled').find('.form-check').each(function () {
-                if (formCheck !== $(this)) {
-                    $(this).find('.free-text-input').val('');
-                }
-            });
+            self.clearSingleOtherOptionFreeText(currentTarget);
 
             if (currentTarget.closest('.custom-checkbox-filled').get(0)) {
-                formCheck.find('.free-text-input').val('');
+                currentTarget.closest('.form-check').find('.free-text-input').val('');
             }
         });
 
         // line below rewrites history which is loaded when back button is pressed, so form would show already filled answers
         window.history.replaceState(null, null, window.location);
+    }
+
+    clearSingleOtherOptionFreeText(input) {
+        const formCheck = input.closest('.form-check');
+
+        formCheck.closest('.custom-radio-filled').find('.form-check').each(function () {
+            if (formCheck.get(0) !== $(this).get(0)) {
+                $(this).find('.free-text-input').val('');
+            }
+        });
     }
 }
 
