@@ -5,9 +5,11 @@ class Page {
 
     bindEvents() {
         const self = this;
+
         this.container.on('change', '.exclusive', function (e) {
             $(e.currentTarget.closest('.custom-control.custom-checkbox')).find('.form-check').each(function () {
                 const input = $(this).find('input');
+
                 if (!input.is($(e.currentTarget))) {
                     input.prop("checked", false);
                     input.prop('disabled', !input.prop('disabled'));
@@ -30,12 +32,12 @@ class Page {
         });
 
         this.container.on('change', '.custom-control-input', function (e) {
-            const currentTarget = $(e.currentTarget);
+            const inputTarget = $(e.currentTarget);
 
-            self.clearSingleOtherOptionFreeText(currentTarget);
+            self.clearSingleOtherOptionFreeText(inputTarget);
 
-            if (currentTarget.closest('.custom-checkbox-filled').get(0)) {
-                currentTarget.closest('.form-check').find('.free-text-input').val('');
+            if (inputTarget.closest('.custom-checkbox-filled').get(0)) {
+                inputTarget.closest('.form-check').find('.free-text-input').val('');
             }
         });
 
