@@ -98,7 +98,7 @@ class Page
     /**
      * @return int
      */
-    public function getPageId():? int
+    public function getPageId(): ?int
     {
         return $this->pageId;
     }
@@ -138,7 +138,7 @@ class Page
     /**
      * @return int
      */
-    public function getSortOrder():? int
+    public function getSortOrder(): ?int
     {
         return $this->sortOrder;
     }
@@ -196,7 +196,18 @@ class Page
 
     public function hasMedia(): bool
     {
-        return strpos($this->getContent(), self::VIDEO_TAG) !== false || strpos($this->getContent(), self::AUDIO_TAG) !== false;
+        if (strpos($this->getContent(), self::VIDEO_TAG) !== false ||
+            strpos($this->getContent(), self::AUDIO_TAG) !== false) {
+            return true;
+        }
+
+        foreach ($this->getQuestions() as $question) {
+            if($question->hasMedia()) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**
@@ -212,7 +223,7 @@ class Page
      */
     public function getVisibleQuestions(): Collection
     {
-        return $this->questions->filter(function(Question $question){
+        return $this->questions->filter(function (Question $question) {
             return !$question->isHidden();
         });
     }

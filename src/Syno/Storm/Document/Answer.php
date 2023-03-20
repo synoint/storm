@@ -315,4 +315,15 @@ class Answer
     {
         return $this->showConditions;
     }
+
+    public function hasMedia(): bool
+    {
+        return
+            strpos($this->getLabel(), Page::VIDEO_TAG) !== false ||
+            strpos($this->getLabel(), Page::AUDIO_TAG) !== false ||
+            strpos($this->getRowLabel(), Page::VIDEO_TAG) !== false ||
+            strpos($this->getRowLabel(), Page::AUDIO_TAG) !== false ||
+            strpos($this->getColumnLabel(), Page::VIDEO_TAG) !== false ||
+            strpos($this->getColumnLabel(), Page::AUDIO_TAG) !== false;
+    }
 }

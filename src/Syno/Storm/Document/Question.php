@@ -531,4 +531,19 @@ class Question
         return false;
     }
 
+    public function hasMedia(): bool
+    {
+        if (strpos($this->getText(), Page::VIDEO_TAG) !== false ||
+            strpos($this->getText(), Page::AUDIO_TAG) !== false) {
+            return true;
+        }
+
+        foreach ($this->answers as $answer) {
+            if($answer->hasMedia()) {
+                return true;
+            }
+        }
+
+        return false;
+    }
 }
