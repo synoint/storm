@@ -197,6 +197,13 @@ footer {
   background-image: inherit;
 }
 
+.matrix thead tr {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background-color: var(--white);
+}
+
 @media (min-width: 768px) {
   .matrix thead th {
     font-size: 14px;
