@@ -5,6 +5,7 @@ namespace Syno\Storm\Services;
 use Doctrine\Common\Collections\Collection;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\Routing\RouterInterface;
+use Syno\Storm\Document\Parameter;
 use Syno\Storm\Traits\RouteAware;
 use Syno\Storm\Document\Response;
 use Syno\Storm\Document\Survey;
@@ -30,7 +31,7 @@ class ResponseRedirector
         if ($response) {
             $url = $survey->getCompleteUrl($response->getSource());
             if ($url) {
-                return new RedirectResponse($this->populateParameters($url, $response->getParameters()));
+                return new RedirectResponse($this->populateRedirectParameters($url, $response));
             }
         }
 
@@ -44,7 +45,7 @@ class ResponseRedirector
         if ($response) {
             $url = $survey->getScreenoutUrl($response->getSource());
             if ($url) {
-                return new RedirectResponse($this->populateParameters($url, $response->getParameters()));
+                return new RedirectResponse($this->populateRedirectParameters($url, $response));
             }
         }
 
@@ -58,7 +59,7 @@ class ResponseRedirector
         if ($response) {
             $url = $survey->getQualityScreenoutUrl($response->getSource());
             if ($url) {
-                return new RedirectResponse($this->populateParameters($url, $response->getParameters()));
+                return new RedirectResponse($this->populateRedirectParameters($url, $response));
             }
         }
 
@@ -124,10 +125,10 @@ class ResponseRedirector
         );
     }
 
-    private function populateParameters(string $url, Collection $params): string
+    private function populateRedirectParameters(string $url, Response $response): string
     {
-        foreach ($params as $param) {
-            $url = str_replace('{' . $param->getCode() . '}', $param->getValue(), $url);
+        if (preg_match('{' . Parameter::PARAM_RESPONSE_ID . '}', $url)) {
+            $url = str_replace('{' . Parameter::PARAM_RESPONSE_ID . '}', $response->getResponseId(), $url);
         }
 
         return $url;

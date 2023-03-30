@@ -8,7 +8,6 @@ use Symfony\Component\HttpFoundation\RequestStack;
 use Syno\Storm\Document;
 use Syno\Storm\Services;
 
-
 class Response
 {
     const ATTR = 'response';

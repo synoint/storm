@@ -16,7 +16,6 @@ class Response implements JsonSerializable
     const MODE_LIVE    = 'live';
     const MODE_TEST    = 'test';
     const MODE_DEBUG   = 'debug';
-    const PARAM_SOURCE = 'SOURCE';
 
     /** @ODM\Id */
     private $id;
@@ -442,7 +441,7 @@ class Response implements JsonSerializable
     public function getSource(): ?int
     {
         foreach ($this->parameters as $parameter) {
-            if ($parameter->getCode() == self::PARAM_SOURCE) {
+            if ($parameter->getCode() == Parameter::PARAM_SOURCE) {
                 return $parameter->getValue();
             }
         }
