@@ -127,8 +127,8 @@ class ResponseRedirector
 
     private function populateRedirectParameters(string $url, Response $response): string
     {
-        if (preg_match('{' . Parameter::PARAM_RESPONSE_ID . '}', $url)) {
-            $url = str_replace('{' . Parameter::PARAM_RESPONSE_ID . '}', $response->getResponseId(), $url);
+        if (preg_match('[' . Parameter::PARAM_RESPONSE_ID . ']', $url)) {
+            $url = str_replace('[' . Parameter::PARAM_RESPONSE_ID . ']', $response->getResponseId(), $url);
         }
 
         return $url;
