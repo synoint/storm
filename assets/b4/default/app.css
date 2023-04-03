@@ -110,3 +110,8 @@ footer .progress {
         height: auto;
     }
 }
+@media (max-width: 768px) {
+    .questions {
+        width: 100%;
+    }
+}

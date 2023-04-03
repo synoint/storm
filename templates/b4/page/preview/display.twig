@@ -24,7 +24,7 @@
         </div>
     
         <div class="row container-sm justify-content-md-center ml-0 my-5">
-            <div class="questions">
+            <div class="questions w-100">
                 <div class="col-12">
                     {{ form_start(form, {'attr': {'novalidate':'novalidate', 'autocomplete': 'off'}}) }}
                     
@@ -65,6 +65,8 @@
                                 {% endfor %}
                             {% elseif question.questionTypeId == constant('Syno\\Storm\\Document\\Question::TYPE_SINGLE_CHOICE') %}
                                 {% include '/b4/page/_single_or_multiple_choice.twig' with { 'type': 'radio', 'question': question } %}
+                            {% elseif question.questionTypeId == constant('Syno\\Storm\\Document\\Question::TYPE_GABOR_GRANGER') %}
+                                {% include 'b4/page/_gabor_granger.twig' %}
                             {% elseif question.questionTypeId == constant('Syno\\Storm\\Document\\Question::TYPE_MULTIPLE_CHOICE') %}
                                 {% include '/b4/page/_single_or_multiple_choice.twig' with { 'type': 'checkbox' } %}
                             {% endif %}
@@ -78,7 +80,7 @@
 
 {% block javascripts %}
     {{ parent() }}
-    
+    {{ encore_entry_script_tags('b4.page.gabor_granger') }}
     {% if page.hasMedia %}
         {{ encore_entry_script_tags('media.player') }}
     {% endif %}
