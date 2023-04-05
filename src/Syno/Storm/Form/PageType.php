@@ -171,27 +171,19 @@ class PageType extends AbstractType
         $builder->add($question->getCode(), GaborGranger::class, $options);
     }
 
-    /**
-     * @param FormBuilderInterface $builder
-     * @param Document\Question $question
-     * @param array|null $answerMap
-     */
     private function addMultipleChoice(FormBuilderInterface $builder, Document\Question $question, ?array $answerMap)
     {
         $questionAnswerIds = $answerMap ? array_keys($answerMap) : null;
 
-        $choices = [];
-        $data    = [];
+        $labels = [];
+        $codes  = [];
+        $data   = [];
 
         $selectedAnswersIsExclusive = $this->questionService->isSelectedAnswersExclusive($question, $questionAnswerIds);
 
         foreach ($question->getAnswers() as $answer) {
-
-            if (!empty($answer->getLabel())) {
-                $choices[$answer->getLabel()] = $answer->getCode();
-            } else {
-                $choices[] = $answer->getCode();
-            }
+            $labels[$answer->getId()] = $answer->getLabel();
+            $codes[$answer->getId()]  = $answer->getCode();
 
             if ($questionAnswerIds && in_array($answer->getAnswerId(), $questionAnswerIds)) {
                 $data[] = $answer->getCode();
@@ -199,15 +191,15 @@ class PageType extends AbstractType
         }
 
         $options = [
-            'choices'      => $choices,
+            'choices'      => $codes,
             'required'     => $question->isRequired(),
             'placeholder'  => null,
             'expanded'     => true,
             'multiple'     => true,
             'data'         => $data,
             'attr'         => ['class' => 'custom-control custom-checkbox custom-checkbox-filled'],
-            'choice_label' => function ($choice, $key) {
-                return is_int($key) ? '' : $key;
+            'choice_label' => function ($choice, $id) use ($labels) {
+                return $labels[$id];
             },
             'choice_attr'  => function ($answerId) use ($question, $selectedAnswersIsExclusive, $answerMap) {
                 $attr['row_attr'] = '';
@@ -231,10 +223,10 @@ class PageType extends AbstractType
         if ($question->isRequired()) {
             $options['constraints'] = [
                 new Count([
-                    'min'        => 1,
-                    'minMessage' => $this->translator->trans('error.at.least.one.option.required'),
-                    'groups'     => ['form_validation_only']
-                ])
+                              'min'        => 1,
+                              'minMessage' => $this->translator->trans('error.at.least.one.option.required'),
+                              'groups'     => ['form_validation_only']
+                          ])
             ];
         }
 
