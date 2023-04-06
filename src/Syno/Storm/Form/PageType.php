@@ -182,8 +182,8 @@ class PageType extends AbstractType
         $selectedAnswersIsExclusive = $this->questionService->isSelectedAnswersExclusive($question, $questionAnswerIds);
 
         foreach ($question->getAnswers() as $answer) {
-            $labels[$answer->getId()] = $answer->getLabel();
-            $codes[$answer->getId()]  = $answer->getCode();
+            $labels[$answer->getAnswerId()] = $answer->getLabel();
+            $codes[$answer->getAnswerId()]  = $answer->getCode();
 
             if ($questionAnswerIds && in_array($answer->getAnswerId(), $questionAnswerIds)) {
                 $data[] = $answer->getCode();
