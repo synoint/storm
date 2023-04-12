@@ -11,6 +11,10 @@ class Condition
 {
     public function applySurveyConditionRule(Document\Response $response, string $rule): bool
     {
+        if (empty(json_decode($rule))) {
+            return false;
+        }
+
         return JWadhams\JsonLogic::apply(json_decode($rule), $response->getAnswerIdMap());
     }
 
