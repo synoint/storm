@@ -108,6 +108,14 @@ class Answer
     private $columnLabel;
 
     /**
+     * @var bool
+     *
+     * @ODM\Field(type="bool")
+     * @Assert\NotNull
+     */
+    private $hidden;
+
+    /**
      * @var Collection
      *
      * @ODM\EmbedMany(targetDocument=AnswerTranslation::class)
@@ -302,6 +310,16 @@ class Answer
         $this->columnLabel = $columnLabel;
 
         return $this;
+    }
+
+    public function isHidden(): bool
+    {
+        return $this->hidden;
+    }
+
+    public function setHidden(bool $hidden): void
+    {
+        $this->hidden = $hidden;
     }
 
     public function setShowConditions($showConditions): self

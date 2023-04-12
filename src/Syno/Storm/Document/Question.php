@@ -392,7 +392,9 @@ class Question
      */
     public function getAnswers(): Collection
     {
-        return $this->answers;
+        return $this->answers->filter(function (Answer $answer) {
+            return !$answer->isHidden();
+        });
     }
 
     public function getChoices(): array
@@ -479,10 +481,12 @@ class Question
 
     public function getRows(): array
     {
-        $result = [];
+        $visibles = $this->getVisibleRows();
+        $result   = [];
+
         /** @var Answer $answer */
         foreach ($this->answers as $answer) {
-            if ('' !== $answer->getRowCode()) {
+            if ('' !== $answer->getRowCode() && $visibles[$answer->getRowCode()]) {
                 $result[$answer->getRowCode()] = $answer->getRowLabel();
             }
         }
@@ -492,10 +496,12 @@ class Question
 
     public function getColumns(): array
     {
-        $result = [];
+        $visibles = $this->getVisibleColumns();
+        $result   = [];
+
         /** @var Answer $answer */
         foreach ($this->answers as $answer) {
-            if ('' !== $answer->getColumnCode()) {
+            if ('' !== $answer->getColumnCode() && $visibles[$answer->getColumnCode()]) {
                 $result[$answer->getColumnCode()] = $answer->getColumnLabel();
             }
         }
@@ -545,5 +551,43 @@ class Question
         }
 
         return false;
+    }
+
+    private function getVisibleRows(): array
+    {
+        $visibles = [];
+
+        /** @var Answer $answer */
+        foreach ($this->answers as $answer) {
+            if ($answer->getRowCode() != null) {
+                if(!isset($visibles[$answer->getRowCode()])) {
+                    $visibles[$answer->getRowCode()] = !$answer->isHidden();
+                }
+                if($visibles[$answer->getRowCode()] != !$answer->isHidden()) {
+                    $visibles[$answer->getRowCode()] = true;
+                }
+            }
+        }
+
+        return $visibles;
+    }
+
+    private function getVisibleColumns(): array
+    {
+        $visibles = [];
+
+        /** @var Answer $answer */
+        foreach ($this->answers as $answer) {
+            if ($answer->getColumnCode() != null) {
+                if(!isset($visibles[$answer->getColumnCode()])) {
+                    $visibles[$answer->getColumnCode()] = !$answer->isHidden();
+                }
+                if($visibles[$answer->getColumnCode()] != !$answer->isHidden()) {
+                    $visibles[$answer->getColumnCode()] = true;
+                }
+            }
+        }
+
+        return $visibles;
     }
 }

@@ -28,6 +28,7 @@ class AnswerType extends AbstractType
             ->add('label', TextType::class, ['required' => false])
             ->add('rowLabel', TextType::class, ['required' => false])
             ->add('columnLabel', TextType::class, ['required' => false])
+            ->add('hidden', CheckboxType::class, ['required' => false])
             ->add(
                 'translations', CollectionType::class, [
                 'entry_type'   => AnswerTranslationType::class,
