@@ -116,6 +116,22 @@ class Answer
     private $hidden;
 
     /**
+     * @var bool
+     *
+     * @ODM\Field(type="bool")
+     * @Assert\NotNull
+     */
+    private $rowHidden;
+
+    /**
+     * @var bool
+     *
+     * @ODM\Field(type="bool")
+     * @Assert\NotNull
+     */
+    private $columnHidden;
+
+    /**
      * @var Collection
      *
      * @ODM\EmbedMany(targetDocument=AnswerTranslation::class)
@@ -320,6 +336,26 @@ class Answer
     public function setHidden(bool $hidden): void
     {
         $this->hidden = $hidden;
+    }
+
+    public function isRowHidden(): bool
+    {
+        return $this->rowHidden;
+    }
+
+    public function setRowHidden(bool $rowHidden): void
+    {
+        $this->rowHidden = $rowHidden;
+    }
+
+    public function isColumnHidden(): bool
+    {
+        return $this->columnHidden;
+    }
+
+    public function setColumnHidden(bool $columnHidden): void
+    {
+        $this->columnHidden = $columnHidden;
     }
 
     public function setShowConditions($showConditions): self
