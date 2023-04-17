@@ -56,6 +56,11 @@ class SurveyType extends AbstractType
             ])
             ->add('surveyCompleteCondition', SurveyCompleteConditionType::class)
             ->add('surveyScreenoutCondition', SurveyScreenoutConditionType::class)
+            ->add('endPages', CollectionType::class, [
+                'entry_type'   => EndPageType::class,
+                'by_reference' => false,
+                'allow_add'    => true
+            ])
             ->add('completeCallbackUrl', TextType::class);
     }
 

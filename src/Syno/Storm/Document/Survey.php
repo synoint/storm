@@ -134,6 +134,13 @@ class Survey implements JsonSerializable
     private $surveyScreenoutCondition;
 
     /**
+     * @var Collection
+     *
+     * @ODM\EmbedMany(targetDocument=EndPage::class)
+     */
+    private $endPages;
+
+    /**
      * @var ?string
      *
      * @ODM\Field(type="string")
@@ -149,6 +156,7 @@ class Survey implements JsonSerializable
         $this->css           = new ArrayCollection();
         $this->translations  = new ArrayCollection();
         $this->randomization = new ArrayCollection();
+        $this->endPages      = new ArrayCollection();
     }
 
     public function jsonSerialize(): array
@@ -484,6 +492,16 @@ class Survey implements JsonSerializable
         $this->surveyScreenoutCondition = $surveyScreenoutCondition;
 
         return $this;
+    }
+
+    public function getEndPages()
+    {
+        return $this->endPages;
+    }
+
+    public function setEndPages($endPages): void
+    {
+        $this->endPages = $endPages;
     }
 
     public function getCompleteCallbackUrl(): ?string

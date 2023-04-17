@@ -11,9 +11,17 @@ use Symfony\Component\Routing\Annotation\Route;
 use Syno\Storm\Document;
 use Syno\Storm\Form\PrivacyConsentType;
 use Syno\Storm\RequestHandler;
+use Syno\Storm\Services\EndPage;
 
 class SurveyController extends AbstractController
 {
+    private EndPage $endPageService;
+
+    public function __construct(EndPage $endPageService)
+    {
+        $this->endPageService = $endPageService;
+    }
+
     /**
      * @Route(
      *     "%app.route_prefix%/s/{surveyId}",
@@ -43,6 +51,7 @@ class SurveyController extends AbstractController
 
         if ($survey->getConfig()->isPrivacyConsentEnabled()) {
             unset($attr['pageId']);
+
             return $this->redirectToRoute('survey.privacy_consent', $attr);
         }
 
@@ -136,10 +145,14 @@ class SurveyController extends AbstractController
      *     methods={"GET"}
      * )
      */
-    public function complete(Document\Survey $survey): Response
+    public function complete(Request $request, Document\Survey $survey): Response
     {
         return $this->render($survey->getConfig()->getTheme() . '/survey/complete.twig', [
-            'survey' => $survey
+            'survey'        => $survey,
+            'customContent' => $this->endPageService->getEndPageContentByLocale(
+                $survey,
+                $request->getLocale(), Document\EndPage::TYPE_COMPLETE
+            )
         ]);
     }
 
@@ -151,10 +164,14 @@ class SurveyController extends AbstractController
      *     methods={"GET"}
      * )
      */
-    public function screenOut(Document\Survey $survey): Response
+    public function screenOut(Request $request, Document\Survey $survey): Response
     {
         return $this->render($survey->getConfig()->getTheme() . '/survey/screenout.twig', [
-            'survey' => $survey
+            'survey'        => $survey,
+            'customContent' => $this->endPageService->getEndPageContentByLocale(
+                $survey,
+                $request->getLocale(), Document\EndPage::TYPE_SCREENOUT
+            )
         ]);
     }
 
@@ -166,10 +183,14 @@ class SurveyController extends AbstractController
      *     methods={"GET"}
      * )
      */
-    public function qualityScreenOut(Document\Survey $survey): Response
+    public function qualityScreenOut(Request $request, Document\Survey $survey): Response
     {
         return $this->render($survey->getConfig()->getTheme() . '/survey/quality_screenout.twig', [
-            'survey' => $survey
+            'survey'        => $survey,
+            'customContent' => $this->endPageService->getEndPageContentByLocale(
+                $survey,
+                $request->getLocale(), Document\EndPage::TYPE_QUALITY_SCREENOUT
+            )
         ]);
     }
 
@@ -181,10 +202,14 @@ class SurveyController extends AbstractController
      *     methods={"GET"}
      * )
      */
-    public function quotaFull(Document\Survey $survey): Response
+    public function quotaFull(Request $request, Document\Survey $survey): Response
     {
         return $this->render($survey->getConfig()->getTheme() . '/survey/screenout.twig', [
-            'survey' => $survey
+            'survey'        => $survey,
+            'customContent' => $this->endPageService->getEndPageContentByLocale(
+                $survey,
+                $request->getLocale(), Document\EndPage::TYPE_QUOTA_FULL
+            )
         ]);
     }
 }
