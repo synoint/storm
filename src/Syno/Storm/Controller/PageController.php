@@ -54,6 +54,7 @@ class PageController extends AbstractController
                 if (!$redirect) {
                     $redirect = $this->responseSessionManager->redirectOnJump();
                 }
+
                 if ($redirect) {
                     return $redirect;
                 }

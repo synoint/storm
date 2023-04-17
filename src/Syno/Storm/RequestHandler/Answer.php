@@ -35,6 +35,7 @@ class Answer
         $result = new ArrayCollection();
         foreach ($questions as $question) {
             $answers = $this->extractAnswers($question, $formData);
+
             if (!$answers->isEmpty()) {
                 $result[] = new ResponseAnswer($question->getQuestionId(), $answers);
             }
@@ -108,8 +109,7 @@ class Answer
                 foreach (array_keys($question->getRows()) as $rowCode) {
                     $key = $question->getInputName($rowCode);
 
-                    if (isset($formData[$key]) &&
-                        is_array($formData[$key])) {
+                    if (isset($formData[$key]) && is_array($formData[$key])) {
                         foreach ($formData[$key] as $column) {
 
                             $answer = $question->getAnswerByRowAndColumn($this->extractAnswerCode($key), $column);
@@ -127,7 +127,7 @@ class Answer
                 foreach ($question->getAnswers() as $answer) {
                     $key = $question->getInputName($answer->getCode());
 
-                    if (!empty($formData[$key]) && is_string($formData[$key])) {
+                    if ('' != trim($formData[$key]) && is_string($formData[$key])) {
                         $value    = trim($formData[$key]);
                         $value    = filter_var($value, FILTER_SANITIZE_STRING);
                         $value    = mb_substr($value, 0, 10000, 'UTF-8');

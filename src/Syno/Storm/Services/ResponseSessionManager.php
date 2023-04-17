@@ -74,6 +74,7 @@ class ResponseSessionManager
     public function saveAnswers(array $formData, Collection $questions)
     {
         $answers = $this->answerHandler->getAnswers($questions, $formData);
+
         if (!$answers->isEmpty()) {
             $this->responseSession->saveAnswers($this->responseHandler->getResponse(), $answers);
         }
