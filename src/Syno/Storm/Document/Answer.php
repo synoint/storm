@@ -113,7 +113,7 @@ class Answer
      * @ODM\Field(type="bool")
      * @Assert\NotNull
      */
-    private $hidden;
+    private $hidden = false;
 
     /**
      * @var bool
@@ -121,7 +121,7 @@ class Answer
      * @ODM\Field(type="bool")
      * @Assert\NotNull
      */
-    private $rowHidden;
+    private $rowHidden = false;
 
     /**
      * @var bool
@@ -129,7 +129,7 @@ class Answer
      * @ODM\Field(type="bool")
      * @Assert\NotNull
      */
-    private $columnHidden;
+    private $columnHidden = false;
 
     /**
      * @var Collection
