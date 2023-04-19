@@ -15,14 +15,15 @@ class Question
 {
     use TranslatableTrait;
 
-    const TYPE_SINGLE_CHOICE          = 1;
-    const TYPE_MULTIPLE_CHOICE        = 2;
-    const TYPE_SINGLE_CHOICE_MATRIX   = 3;
+    const TYPE_SINGLE_CHOICE = 1;
+    const TYPE_MULTIPLE_CHOICE = 2;
+    const TYPE_SINGLE_CHOICE_MATRIX = 3;
     const TYPE_MULTIPLE_CHOICE_MATRIX = 4;
-    const TYPE_TEXT                   = 5;
-    const TYPE_LINEAR_SCALE           = 6;
-    const TYPE_LINEAR_SCALE_MATRIX    = 7;
-    const TYPE_GABOR_GRANGER          = 8;
+    const TYPE_TEXT = 5;
+    const TYPE_LINEAR_SCALE = 6;
+    const TYPE_LINEAR_SCALE_MATRIX = 7;
+    const TYPE_GABOR_GRANGER = 8;
+    const TYPE_MULTI_TEXT = 9;
 
     /**
      * @ODM\Id
@@ -168,7 +169,7 @@ class Question
         $this->translations        = new ArrayCollection();
     }
 
-    public function getId():? string
+    public function getId(): ?string
     {
         return $this->id;
     }
@@ -180,7 +181,7 @@ class Question
         return $this;
     }
 
-    public function getQuestionId():? int
+    public function getQuestionId(): ?int
     {
         return $this->questionId;
     }
@@ -192,7 +193,7 @@ class Question
         return $this;
     }
 
-    public function getCode():? string
+    public function getCode(): ?string
     {
         return $this->code;
     }
@@ -204,7 +205,7 @@ class Question
         return $this;
     }
 
-    public function getSortOrder():? int
+    public function getSortOrder(): ?int
     {
         return $this->sortOrder;
     }
@@ -240,7 +241,7 @@ class Question
         return $this;
     }
 
-    public function getText():? string
+    public function getText(): ?string
     {
         /** @var QuestionTranslation $translation */
         $translation = $this->getTranslation();
@@ -295,7 +296,7 @@ class Question
         return $this;
     }
 
-    public function getQuestionTypeId():? int
+    public function getQuestionTypeId(): ?int
     {
         return $this->questionTypeId;
     }
@@ -307,7 +308,7 @@ class Question
         return $this;
     }
 
-    public function getScoreModuleId():? int
+    public function getScoreModuleId(): ?int
     {
         return $this->scoreModuleId;
     }
@@ -319,7 +320,7 @@ class Question
         return $this;
     }
 
-    public function getScoreModuleParentId():? int
+    public function getScoreModuleParentId(): ?int
     {
         return $this->scoreModuleParentId;
     }
@@ -339,6 +340,11 @@ class Question
     public function isText(): bool
     {
         return self::TYPE_TEXT === $this->questionTypeId;
+    }
+
+    public function isMultiText(): bool
+    {
+        return self::TYPE_MULTI_TEXT === $this->questionTypeId;
     }
 
     public function isLinearScale(): bool
@@ -452,7 +458,7 @@ class Question
         return null;
     }
 
-    public function getAnswerByRowAndColumn( $row,  $column): ?Answer
+    public function getAnswerByRowAndColumn($row, $column): ?Answer
     {
         foreach ($this->getAnswers() as $answer) {
             if ($answer->getRowCode() == $row && $answer->getColumnCode() == $column) {
@@ -543,7 +549,7 @@ class Question
         }
 
         foreach ($this->answers as $answer) {
-            if($answer->hasMedia()) {
+            if ($answer->hasMedia()) {
                 return true;
             }
         }

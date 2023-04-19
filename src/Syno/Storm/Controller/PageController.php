@@ -42,6 +42,7 @@ class PageController extends AbstractController
                 'answers'   => $this->responseSessionManager->getAnswerMap($request->request->get('p'))
             ]
         );
+
         $form->handleRequest($request);
 
         if ($form->isSubmitted()) {

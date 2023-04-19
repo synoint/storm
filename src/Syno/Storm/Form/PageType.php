@@ -6,12 +6,15 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\Extension\Core\Type\TelType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\Count;
+use Symfony\Component\Validator\Constraints\Email;
 use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Validator\Constraints\Regex;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Syno\Storm\Document;
 use Syno\Storm\Form\Type\LinearScale;
@@ -28,9 +31,8 @@ class PageType extends AbstractType
 
     public function __construct(
         TranslatorInterface $translator,
-        Services\Question   $questionService
-    )
-    {
+        Services\Question $questionService
+    ) {
         $this->translator      = $translator;
         $this->questionService = $questionService;
     }
@@ -60,6 +62,9 @@ class PageType extends AbstractType
                     break;
                 case Document\Question::TYPE_TEXT:
                     $this->addText($builder, $question, $answerMap);
+                    break;
+                case Document\Question::TYPE_MULTI_TEXT:
+                    $this->addMultiText($builder, $question, $answerMap);
                     break;
                 case Document\Question::TYPE_LINEAR_SCALE:
                     $this->addLinearScale($builder, $question, $answerMap);
@@ -223,10 +228,10 @@ class PageType extends AbstractType
         if ($question->isRequired()) {
             $options['constraints'] = [
                 new Count([
-                              'min'        => 1,
-                              'minMessage' => $this->translator->trans('error.at.least.one.option.required'),
-                              'groups'     => ['form_validation_only']
-                          ])
+                    'min'        => 1,
+                    'minMessage' => $this->translator->trans('error.at.least.one.option.required'),
+                    'groups'     => ['form_validation_only']
+                ])
             ];
         }
 
@@ -257,7 +262,7 @@ class PageType extends AbstractType
 
     private function addMatrix(FormBuilderInterface $builder, Document\Question $question, ?array $answerMap)
     {
-        $questionAnswerIds = $answerMap ? (array)array_keys($answerMap) : null;
+        $questionAnswerIds = $answerMap ? (array) array_keys($answerMap) : null;
 
         foreach (array_keys($question->getRows()) as $key => $rowCode) {
             $data    = [];
@@ -312,42 +317,110 @@ class PageType extends AbstractType
     private function addText(FormBuilderInterface $builder, Document\Question $question, ?array $answerMap)
     {
         /** @var Document\Answer $answer */
-        foreach ($question->getAnswers() as $answer) {
-            if ($answer->getAnswerFieldTypeId() === Document\Answer::FIELD_TYPE_TEXT) {
-                $options = [
-                    'attr'     => ['class' => 'custom-control custom-text'],
-                    'required' => $question->isRequired(),
-                    'data'     => $answerMap[$answer->getAnswerId()] ?? ''
-                ];
+        $answer = $question->getAnswers()->first();
 
-                if ($question->isRequired()) {
-                    $options['constraints'] = new NotBlank(
-                        [
-                            'message' => $this->translator->trans('error.cant.be.blank'),
-                            'groups'  => ['form_validation_only']
-                        ]
-                    );
-                }
-                $builder->add($question->getInputName($answer->getCode()), TextType::class, $options);
+        $options['required'] = $question->isRequired();
+        $options['data']     = $answerMap[$answer->getAnswerId()] ?? '';
 
-            } elseif ($answer->getAnswerFieldTypeId() === Document\Answer::FIELD_TYPE_TEXTAREA) {
+        if ($question->isRequired()) {
+            $options['constraints'][] = new NotBlank(
+                [
+                    'message' => $this->translator->trans('error.cant.be.blank'),
+                    'groups'  => ['form_validation_only']
+                ]
+            );
+        }
 
-                $options = [
-                    'attr'     => ['class' => 'custom-control custom-textarea'],
-                    'required' => $question->isRequired(),
-                    'data'     => $answerMap[$answer->getAnswerId()] ?? '',
-                ];
-
-                if ($question->isRequired()) {
-                    $options['constraints'] = new NotBlank(
-                        [
-                            'message' => $this->translator->trans('error.cant.be.blank'),
-                            'groups'  => ['form_validation_only']
-                        ]
-                    );
-                }
+        switch ($answer->getAnswerFieldTypeId()) {
+            case Document\Answer::FIELD_TYPE_TEXTAREA:
+                $options['attr'] = ['class' => 'custom-control custom-textarea'];
 
                 $builder->add($question->getInputName($answer->getCode()), TextareaType::class, $options);
+                break;
+
+            case Document\Answer::FIELD_TYPE_PHONE:
+                $options['attr'] = ['class' => 'custom-control custom-text'];
+
+                $options['constraints'][] = new Regex(
+                    [
+                        'pattern' => '/^\+?[0-9][0-9]{7,14}$/',
+                        'groups' => ['form_validation_only']
+                    ]
+                );
+
+                $builder->add($question->getInputName($answer->getCode()), TelType::class, $options);
+                break;
+
+            case Document\Answer::FIELD_TYPE_EMAIL:
+                $options['attr']          = ['class' => 'custom-control custom-text'];
+                $options['constraints'][] = new Email(['groups' => ['form_validation_only']]);
+
+                $builder->add($question->getInputName($answer->getCode()), TextType::class, $options);
+                break;
+            case Document\Answer::FIELD_TYPE_TEXT:
+            case Document\Answer::FIELD_TYPE_FIRST_LAST_NAME:
+                $options['attr'] = ['class' => 'custom-control custom-text'];
+
+                $builder->add($question->getInputName($answer->getCode()), TextType::class, $options);
+                break;
+            default:
+                throw new \InvalidArgumentException(sprintf('Unknown answer field type id: %d',
+                    $answer->getAnswerFieldTypeId()));
+        }
+    }
+
+    private function addMultiText(FormBuilderInterface $builder, Document\Question $question, ?array $answerMap)
+    {
+        /** @var Document\Answer $answer */
+        foreach ($question->getAnswers() as $answer) {
+            $options = [];
+            $options['required'] = $question->isRequired();
+            $options['data']     = $answerMap[$answer->getAnswerId()] ?? '';
+
+            if ($question->isRequired()) {
+                $options['constraints'][] = new NotBlank(
+                    [
+                        'message' => $this->translator->trans('error.cant.be.blank'),
+                        'groups'  => ['form_validation_only']
+                    ]
+                );
+            }
+
+            switch ($answer->getAnswerFieldTypeId()) {
+                case Document\Answer::FIELD_TYPE_TEXTAREA:
+                    $options['attr'] = ['class' => 'custom-control custom-textarea'];
+
+                    $builder->add($question->getInputName($answer->getCode()), TextareaType::class, $options);
+                    break;
+
+                case Document\Answer::FIELD_TYPE_PHONE:
+                    $options['attr'] = ['class' => 'custom-control custom-text'];
+
+                    $options['constraints'][] = new Regex(
+                        [
+                            'pattern' => '/^\+?[0-9][0-9]{7,14}$/',
+                            'groups' => ['form_validation_only']
+                        ]
+                    );
+
+                    $builder->add($question->getInputName($answer->getCode()), TelType::class, $options);
+                    break;
+
+                case Document\Answer::FIELD_TYPE_EMAIL:
+                    $options['attr']          = ['class' => 'custom-control custom-text'];
+                    $options['constraints'][] = new Email(['groups' => ['form_validation_only']]);
+
+                    $builder->add($question->getInputName($answer->getCode()), TextType::class, $options);
+                    break;
+                case Document\Answer::FIELD_TYPE_TEXT:
+                case Document\Answer::FIELD_TYPE_FIRST_LAST_NAME:
+                    $options['attr'] = ['class' => 'custom-control custom-text'];
+
+                    $builder->add($question->getInputName($answer->getCode()), TextType::class, $options);
+                    break;
+                default:
+                    throw new \InvalidArgumentException(sprintf('Unknown answer field type id: %d',
+                        $answer->getAnswerFieldTypeId()));
             }
         }
     }
@@ -385,7 +458,7 @@ class PageType extends AbstractType
 
     private function addLinearScaleMatrix(FormBuilderInterface $builder, Document\Question $question, ?array $answerMap)
     {
-        $questionAnswerIds = $answerMap ? (array)array_keys($answerMap) : null;
+        $questionAnswerIds = $answerMap ? (array) array_keys($answerMap) : null;
 
         foreach ($question->getRows() as $rowCode => $row) {
             $data  = null;
