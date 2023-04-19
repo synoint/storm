@@ -136,7 +136,7 @@ class Survey implements JsonSerializable
     /**
      * @var Collection
      *
-     * @ODM\EmbedMany(targetDocument=EndPage::class)
+     * @ODM\EmbedMany(targetDocument=SurveyEndPage::class)
      */
     private $endPages;
 

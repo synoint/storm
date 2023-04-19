@@ -8,7 +8,7 @@ use JsonSerializable;
 /**
  * @ODM\EmbeddedDocument
  */
-class EndPage implements JsonSerializable
+class SurveyEndPage implements JsonSerializable
 {
     public const TYPE_SCREENOUT         = 'screenout';
     public const TYPE_QUALITY_SCREENOUT = 'quality_screenout';

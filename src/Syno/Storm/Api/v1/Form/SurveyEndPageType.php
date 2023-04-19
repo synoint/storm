@@ -8,7 +8,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Syno\Storm\Document;
 
-class EndPageType extends AbstractType
+class SurveyEndPageType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
@@ -22,7 +22,7 @@ class EndPageType extends AbstractType
     {
         $resolver->setDefaults(
             [
-                'data_class'      => Document\EndPage::class,
+                'data_class'      => Document\SurveyEndPage::class,
                 'csrf_protection' => false
             ]
         );

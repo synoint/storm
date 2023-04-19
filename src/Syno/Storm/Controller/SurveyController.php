@@ -11,15 +11,15 @@ use Symfony\Component\Routing\Annotation\Route;
 use Syno\Storm\Document;
 use Syno\Storm\Form\PrivacyConsentType;
 use Syno\Storm\RequestHandler;
-use Syno\Storm\Services\EndPage;
+use Syno\Storm\Services\SurveyEndPage;
 
 class SurveyController extends AbstractController
 {
-    private EndPage $endPageService;
+    private SurveyEndPage $surveyEndPageService;
 
-    public function __construct(EndPage $endPageService)
+    public function __construct(SurveyEndPage $surveyEndPageService)
     {
-        $this->endPageService = $endPageService;
+        $this->surveyEndPageService = $surveyEndPageService;
     }
 
     /**
@@ -149,9 +149,9 @@ class SurveyController extends AbstractController
     {
         return $this->render($survey->getConfig()->getTheme() . '/survey/complete.twig', [
             'survey'        => $survey,
-            'customContent' => $this->endPageService->getEndPageContentByLocale(
+            'customContent' => $this->surveyEndPageService->getEndPageContentByLocale(
                 $survey,
-                $request->getLocale(), Document\EndPage::TYPE_COMPLETE
+                $request->getLocale(), Document\SurveyEndPage::TYPE_COMPLETE
             )
         ]);
     }
@@ -168,9 +168,9 @@ class SurveyController extends AbstractController
     {
         return $this->render($survey->getConfig()->getTheme() . '/survey/screenout.twig', [
             'survey'        => $survey,
-            'customContent' => $this->endPageService->getEndPageContentByLocale(
+            'customContent' => $this->surveyEndPageService->getEndPageContentByLocale(
                 $survey,
-                $request->getLocale(), Document\EndPage::TYPE_SCREENOUT
+                $request->getLocale(), Document\SurveyEndPage::TYPE_SCREENOUT
             )
         ]);
     }
@@ -187,9 +187,9 @@ class SurveyController extends AbstractController
     {
         return $this->render($survey->getConfig()->getTheme() . '/survey/quality_screenout.twig', [
             'survey'        => $survey,
-            'customContent' => $this->endPageService->getEndPageContentByLocale(
+            'customContent' => $this->surveyEndPageService->getEndPageContentByLocale(
                 $survey,
-                $request->getLocale(), Document\EndPage::TYPE_QUALITY_SCREENOUT
+                $request->getLocale(), Document\SurveyEndPage::TYPE_QUALITY_SCREENOUT
             )
         ]);
     }
@@ -206,9 +206,9 @@ class SurveyController extends AbstractController
     {
         return $this->render($survey->getConfig()->getTheme() . '/survey/screenout.twig', [
             'survey'        => $survey,
-            'customContent' => $this->endPageService->getEndPageContentByLocale(
+            'customContent' => $this->surveyEndPageService->getEndPageContentByLocale(
                 $survey,
-                $request->getLocale(), Document\EndPage::TYPE_QUOTA_FULL
+                $request->getLocale(), Document\SurveyEndPage::TYPE_QUOTA_FULL
             )
         ]);
     }
