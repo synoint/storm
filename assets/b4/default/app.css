@@ -104,14 +104,14 @@ footer .progress {
 }
 
 @media screen and (max-width: 1510px) {
-    .question img {
+    .question img, #surveyLogoImage {
         object-fit: contain;
         max-width: 100%;
         height: auto;
     }
 }
 @media (max-width: 768px) {
-    .questions {
+    .questions, #surveyLogoImage {
         width: 100%;
     }
 }
