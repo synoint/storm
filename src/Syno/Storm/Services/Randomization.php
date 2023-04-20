@@ -23,7 +23,7 @@ class Randomization
 
         $permutatedItems['blocks'] = $this->getPermutatedBlockPages($survey, $weights);
         $permutatedItems['pages']  = $this->getPermutatedPages($survey, $weights);
-
+//dd($permutatedItems['pages']);
         return $this->createSurveyPathCombinations($survey, $permutatedItems);
     }
 
@@ -277,12 +277,13 @@ class Randomization
 
         $paths = [];
         foreach ($randomizedPaths['paths'] as $path) {
-            foreach ($pages as $val) {
+            foreach ($pages as $position => $val) {
                 if (!in_array($val, $path)) {
-                    array_splice($path, array_search($val, $pages), 0, $val);
+                    $path[$position] = $val;
                 }
             }
 
+            ksort($path);
             $paths[] = $path;
         }
 
