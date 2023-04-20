@@ -123,6 +123,7 @@ class Answer
 
                 break;
             case Question::TYPE_TEXT:
+            case Question::TYPE_MULTI_TEXT:
                 /** @var AnswerDocument $answer */
                 foreach ($question->getAnswers() as $answer) {
                     $key = $question->getInputName($answer->getCode());
