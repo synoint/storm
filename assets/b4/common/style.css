@@ -142,11 +142,6 @@ footer {
   display: block;
 }
 
-.custom-textarea,
-.custom-text {
-  margin-top: 15px;
-}
-
 .custom-radio-filled .custom-control-label,
 .custom-checkbox-filled .custom-control-label {
   display: block;

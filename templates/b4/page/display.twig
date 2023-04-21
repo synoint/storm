@@ -36,7 +36,7 @@
                 {% endif %}
             </div>
         </div>
-    
+        
         <div class="row container-sm justify-content-md-center ml-0 my-5">
             <div class="questions">
                 <div class="col-12">
@@ -72,21 +72,19 @@
                                 {% for key,row in rows %}
                                     {{ form_row(attribute(form, (question.getInputName(key)))) }}
                                 {% endfor %}
-                            {% elseif question.isText %}
+                            {% elseif question.isText or question.isMultiText %}
                                 {% for answer in question.answers %}
                                     {% if '' != answer.label %}
-                                        <label>{{ answer.label }}</label>
+                                        <div class="form-row">
+                                            <div class="col-12">{{ answer.label }}</div>
+                                        </div>
                                     {% endif %}
-                                    {{ form_errors(attribute(form, (question.getInputName(answer.code)))) }}
-                                    {{ form_widget(attribute(form, (question.getInputName(answer.code)), {'label': false})) }}
-                                {% endfor %}
-                            {% elseif question.isMultiText %}
-                                {% for answer in question.answers %}
-                                    {% if '' != answer.label %}
-                                        <label>{{ answer.label }}</label>
-                                    {% endif %}
-                                    {{ form_errors(attribute(form, (question.getInputName(answer.code)))) }}
-                                    {{ form_widget(attribute(form, (question.getInputName(answer.code)), {'label': false})) }}
+                                    <div class="form-row">
+                                        <div class="col-12 mb-2">
+                                            {{ form_errors(attribute(form, (question.getInputName(answer.code)))) }}
+                                            {{ form_widget(attribute(form, (question.getInputName(answer.code)), {'label': false})) }}
+                                        </div>
+                                    </div>
                                 {% endfor %}
                             {% elseif question.questionTypeId == constant('Syno\\Storm\\Document\\Question::TYPE_SINGLE_CHOICE') %}
                                 {% include 'b4/page/_single_or_multiple_choice.twig' with { 'type': 'radio' } %}
@@ -112,7 +110,7 @@
                             {% if true == isLastPage %}
                                 {% set buttonTitleTranslationKey = 'page.button.submit' %}
                             {% endif %}
-
+                            
                             {{ form_widget( form.next, { 'attr': {'class': 'btn btn-primary px-5 ml-2 mr-2'}, 'label': buttonTitleTranslationKey|trans } ) }}
                         </div>
                     </div>

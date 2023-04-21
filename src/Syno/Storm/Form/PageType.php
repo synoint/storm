@@ -376,6 +376,7 @@ class PageType extends AbstractType
             $options = [];
             $options['required'] = $question->isRequired();
             $options['data']     = $answerMap[$answer->getAnswerId()] ?? '';
+            $options['attr'] = ['class' => 'custom-control'];
 
             if ($question->isRequired()) {
                 $options['constraints'][] = new NotBlank(
@@ -388,14 +389,10 @@ class PageType extends AbstractType
 
             switch ($answer->getAnswerFieldTypeId()) {
                 case Document\Answer::FIELD_TYPE_TEXTAREA:
-                    $options['attr'] = ['class' => 'custom-control custom-textarea'];
-
                     $builder->add($question->getInputName($answer->getCode()), TextareaType::class, $options);
                     break;
 
                 case Document\Answer::FIELD_TYPE_PHONE:
-                    $options['attr'] = ['class' => 'custom-control custom-text'];
-
                     $options['constraints'][] = new Regex(
                         [
                             'pattern' => '/^\+?[0-9][0-9]{7,14}$/',
@@ -407,15 +404,12 @@ class PageType extends AbstractType
                     break;
 
                 case Document\Answer::FIELD_TYPE_EMAIL:
-                    $options['attr']          = ['class' => 'custom-control custom-text'];
                     $options['constraints'][] = new Email(['groups' => ['form_validation_only']]);
 
                     $builder->add($question->getInputName($answer->getCode()), TextType::class, $options);
                     break;
                 case Document\Answer::FIELD_TYPE_TEXT:
                 case Document\Answer::FIELD_TYPE_FIRST_LAST_NAME:
-                    $options['attr'] = ['class' => 'custom-control custom-text'];
-
                     $builder->add($question->getInputName($answer->getCode()), TextType::class, $options);
                     break;
                 default:
