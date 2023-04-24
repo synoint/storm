@@ -343,7 +343,7 @@ class PageType extends AbstractType
 
                 $options['constraints'][] = new Regex(
                     [
-                        'pattern' => '/^\+?[0-9][0-9]{7,14}$/',
+                        'pattern' => '/^\+?[0-9][0-9]{7,18}$/',
                         'groups' => ['form_validation_only']
                     ]
                 );

@@ -15,14 +15,14 @@ class Answer
 {
     use TranslatableTrait;
 
-    public const FIELD_TYPE_TEXT = 1;
-    public const FIELD_TYPE_TEXTAREA = 2;
-    public const FIELD_TYPE_RADIO = 3;
-    public const FIELD_TYPE_CHECKBOX = 4;
-    public const FIELD_TYPE_SELECT = 5;
-    public const FIELD_TYPE_CUSTOM = 6;
-    public const FIELD_TYPE_EMAIL = 7;
-    public const FIELD_TYPE_PHONE = 8;
+    public const FIELD_TYPE_TEXT            = 1;
+    public const FIELD_TYPE_TEXTAREA        = 2;
+    public const FIELD_TYPE_RADIO           = 3;
+    public const FIELD_TYPE_CHECKBOX        = 4;
+    public const FIELD_TYPE_SELECT          = 5;
+    public const FIELD_TYPE_CUSTOM          = 6;
+    public const FIELD_TYPE_EMAIL           = 7;
+    public const FIELD_TYPE_PHONE           = 8;
     public const FIELD_TYPE_FIRST_LAST_NAME = 9;
 
     /**
@@ -191,7 +191,7 @@ class Answer
         return $this;
     }
 
-    public function getValue():? string
+    public function getValue(): ?string
     {
         return $this->value;
     }

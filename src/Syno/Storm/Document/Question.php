@@ -15,15 +15,15 @@ class Question
 {
     use TranslatableTrait;
 
-    const TYPE_SINGLE_CHOICE = 1;
-    const TYPE_MULTIPLE_CHOICE = 2;
-    const TYPE_SINGLE_CHOICE_MATRIX = 3;
+    const TYPE_SINGLE_CHOICE          = 1;
+    const TYPE_MULTIPLE_CHOICE        = 2;
+    const TYPE_SINGLE_CHOICE_MATRIX   = 3;
     const TYPE_MULTIPLE_CHOICE_MATRIX = 4;
-    const TYPE_TEXT = 5;
-    const TYPE_LINEAR_SCALE = 6;
-    const TYPE_LINEAR_SCALE_MATRIX = 7;
-    const TYPE_GABOR_GRANGER = 8;
-    const TYPE_MULTI_TEXT = 9;
+    const TYPE_TEXT                   = 5;
+    const TYPE_LINEAR_SCALE           = 6;
+    const TYPE_LINEAR_SCALE_MATRIX    = 7;
+    const TYPE_GABOR_GRANGER          = 8;
+    const TYPE_MULTI_TEXT             = 9;
 
     /**
      * @ODM\Id
@@ -487,7 +487,7 @@ class Question
 
     public function getRows(): array
     {
-        $result   = [];
+        $result = [];
 
         /** @var Answer $answer */
         foreach ($this->answers as $answer) {
@@ -501,7 +501,7 @@ class Question
 
     public function getColumns(): array
     {
-        $result   = [];
+        $result = [];
 
         /** @var Answer $answer */
         foreach ($this->answers as $answer) {
