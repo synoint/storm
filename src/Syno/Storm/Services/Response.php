@@ -130,6 +130,27 @@ class Response
         $this->dm->flush();
     }
 
+    public function toArrayWithAnswerLabels(Document\Response $response, array $answers, array $events): array
+    {
+        return [
+            'id'                 => $response->getId(),
+            'responseId'         => $response->getResponseId(),
+            'surveyId'           => $response->getSurveyId(),
+            'surveyVersion'      => $response->getSurveyVersion(),
+            'mode'               => $response->getMode(),
+            'locale'             => $response->getLocale(),
+            'completed'          => $response->isCompleted(),
+            'screenedOut'        => $response->isScreenedOut(),
+            'qualityScreenedOut' => $response->isQualityScreenedOut(),
+            'quotaFull'          => $response->isQuotaFull(),
+            'screenoutId'        => $response->getScreenoutId(),
+            'createdAt'          => $response->getCreatedAt()->getTimestamp(),
+            'userAgents'         => $response->getUserAgents(),
+            'answers'            => $answers,
+            'events'             => $events,
+        ];
+    }
+
     private function generateResponseId(): string
     {
         return uniqid($this->responseIdPrefix);

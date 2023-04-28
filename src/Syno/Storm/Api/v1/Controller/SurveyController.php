@@ -2,7 +2,6 @@
 
 namespace Syno\Storm\Api\v1\Controller;
 
-use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -15,6 +14,7 @@ use Syno\Storm\Services\Randomization;
 use Syno\Storm\Services\Response;
 use Syno\Storm\Services\ResponseEvent;
 use Syno\Storm\Services\Survey;
+use Syno\Storm\Services\SurveyConfig;
 use Syno\Storm\Services\SurveyEvent;
 use Syno\Storm\Services\SurveyEventLogger;
 use Syno\Storm\Services\SurveyPath;
@@ -36,15 +36,17 @@ class SurveyController extends AbstractController implements TokenAuthenticatedC
     private SurveyEventLogger $surveyEventLoggerService;
     private SurveyPath        $surveyPathService;
     private Randomization     $randomizationService;
+    private SurveyConfig      $surveyConfigService;
 
     public function __construct(
-        Response $responseService,
-        ResponseEvent $responseEventService,
-        Survey $surveyService,
-        SurveyEvent $surveyEventService,
+        Response          $responseService,
+        ResponseEvent     $responseEventService,
+        Survey            $surveyService,
+        SurveyEvent       $surveyEventService,
         SurveyEventLogger $surveyEventLoggerService,
-        SurveyPath $surveyPathService,
-        Randomization $randomizationService
+        SurveyPath        $surveyPathService,
+        Randomization     $randomizationService,
+        SurveyConfig      $surveyConfigService
     ) {
         $this->responseService          = $responseService;
         $this->responseEventService     = $responseEventService;
@@ -53,6 +55,7 @@ class SurveyController extends AbstractController implements TokenAuthenticatedC
         $this->surveyEventLoggerService = $surveyEventLoggerService;
         $this->surveyPathService        = $surveyPathService;
         $this->randomizationService     = $randomizationService;
+        $this->surveyConfigService      = $surveyConfigService;
     }
 
     /**
@@ -81,7 +84,7 @@ class SurveyController extends AbstractController implements TokenAuthenticatedC
             $this->surveyService->save($survey);
             $this->surveyEventLoggerService->log(SurveyEventLogger::SURVEY_CREATED, $survey);
 
-            if($survey->isRandomizationOn()) {
+            if ($survey->isRandomizationOn()) {
                 $randomizedCombinations = $this->randomizationService->getRandomizedPaths($survey);
 
                 $this->surveyPathService->save($survey, $randomizedCombinations);
@@ -270,6 +273,60 @@ class SurveyController extends AbstractController implements TokenAuthenticatedC
     public function eventLastDate(int $surveyId): JsonResponse
     {
         return $this->json($this->responseEventService->getLastDate($surveyId));
+    }
+
+    /**
+     * @Route(
+     *     "/{surveyId}/config",
+     *     name="storm_api.v1.survey.save_config",
+     *     requirements={"id"="\d+"},
+     *     methods={"POST"}
+     * )
+     */
+    public function saveConfig(Request $request, int $surveyId): JsonResponse
+    {
+        $data = json_decode($request->getContent(), true);
+
+        if ($data) {
+            foreach ($data as $key => $value) {
+                $surveyConfig = $this->surveyConfigService->findBySurveyIdAndKey($surveyId, $key);
+
+                if (!$surveyConfig) {
+                    $surveyConfig = new Document\SurveyConfig();
+                    $surveyConfig->setSurveyId($surveyId);
+                    $surveyConfig->setKey($key);
+                    $surveyConfig->setValue($value);
+                }
+
+                $this->surveyConfigService->save($surveyConfig);
+            }
+        }
+
+        return $this->json('ok');
+    }
+
+    /**
+     * @Route(
+     *     "/{surveyId}/config",
+     *     name="storm_api.v1.survey.delete_config",
+     *     requirements={"id"="\d+"},
+     *     methods={"DELETE"}
+     * )
+     */
+    public function deleteConfig(Request $request, int $surveyId): JsonResponse
+    {
+        $data = json_decode($request->getContent(), true);
+        if ($data) {
+            foreach ($data as $key) {
+                $surveyConfig = $this->surveyConfigService->findBySurveyIdAndKey($surveyId, $key);
+
+                if ($surveyConfig) {
+                  $this->surveyConfigService->delete($surveyConfig);
+                }
+            }
+        }
+
+        return $this->json('ok');
     }
 
     protected function deleteSurvey(Document\Survey $survey)

@@ -4,10 +4,12 @@ namespace Syno\Storm\Services;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Messenger\MessageBusInterface;
 use Syno\Storm\Document;
+use Syno\Storm\Event\NotificationComplete;
 use Syno\Storm\Message\ProfilingSurvey;
 use Syno\Storm\RequestHandler;
 use Syno\Storm\Traits\RouteAware;
@@ -16,27 +18,29 @@ class ResponseSession
 {
     use RouteAware;
 
-    private RequestHandler\Response $responseHandler;
-    private ResponseEventLogger     $responseEventLogger;
-    private ResponseRedirector      $responseRedirector;
-    private SurveyEventLogger       $surveyEventLogger;
-    private Condition               $conditionService;
-    private MessageBusInterface     $bus;
+    private RequestHandler\Response  $responseHandler;
+    private ResponseEventLogger      $responseEventLogger;
+    private ResponseRedirector       $responseRedirector;
+    private SurveyEventLogger        $surveyEventLogger;
+    private Condition                $conditionService;
+    private MessageBusInterface      $bus;
+    private EventDispatcherInterface $dispatcher;
 
     public function __construct(
-        RequestHandler\Response $responseHandler,
-        ResponseEventLogger     $responseEventLogger,
-        ResponseRedirector      $responseRedirector,
-        SurveyEventLogger       $surveyEventLogger,
-        Condition               $conditionService,
-        MessageBusInterface     $bus
-    )
-    {
+        RequestHandler\Response  $responseHandler,
+        ResponseEventLogger      $responseEventLogger,
+        ResponseRedirector       $responseRedirector,
+        SurveyEventLogger        $surveyEventLogger,
+        Condition                $conditionService,
+        EventDispatcherInterface $dispatcher,
+        MessageBusInterface      $bus
+    ) {
         $this->responseHandler     = $responseHandler;
         $this->responseEventLogger = $responseEventLogger;
         $this->responseRedirector  = $responseRedirector;
         $this->surveyEventLogger   = $surveyEventLogger;
         $this->conditionService    = $conditionService;
+        $this->dispatcher          = $dispatcher;
         $this->bus                 = $bus;
     }
 
@@ -87,7 +91,6 @@ class ResponseSession
         $redirect = null;
         $response = $this->responseHandler->getResponse();
         if ($this->responseHandler->hasModeChanged($response->getMode())) {
-
             $this->responseEventLogger->log(ResponseEventLogger::SURVEY_MODE_CHANGED, $response);
             $this->responseHandler->clearResponse();
             $this->responseEventLogger->log(ResponseEventLogger::RESPONSE_CLEARED, $response);
@@ -202,7 +205,9 @@ class ResponseSession
 
         $this->responseHandler->saveResponse($response);
 
-        if ($survey->getCompleteCallbackUrl()) {
+        $this->responseEventLogger->log(ResponseEventLogger::SURVEY_COMPLETED, $response);
+
+        if ($survey->getCompleteCallbackUrl()) { // Todo refactor in notification queue
             $this->bus->dispatch(
                 new ProfilingSurvey(
                     $survey->getCompleteCallbackUrl(),
@@ -211,7 +216,7 @@ class ResponseSession
             );
         }
 
-        $this->responseEventLogger->log(ResponseEventLogger::SURVEY_COMPLETED, $response);
+        $this->dispatcher->dispatch(new NotificationComplete($survey, $response));
 
         return $this->responseRedirector->complete($survey, $response);
     }

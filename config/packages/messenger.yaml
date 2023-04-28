@@ -9,11 +9,10 @@ framework:
                 options:
                     auto_setup: false
                 serializer: messenger.transport.symfony_serializer
-
+            survey_notification:
+                dsn: "%env(SURVEY_NOTIFICATION_QUEUE)%"
+                options:
+                    auto_setup: false
         routing:
             Syno\Storm\Message\ProfilingSurvey: complete_callback
-
-        serializer:
-            default_serializer: messenger.transport.symfony_serializer
-            symfony_serializer:
-                format: json
+            Syno\Storm\Message\SurveyNotification: survey_notification
