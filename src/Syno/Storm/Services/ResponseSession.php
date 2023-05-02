@@ -7,10 +7,8 @@ use Doctrine\Common\Collections\Collection;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Messenger\MessageBusInterface;
 use Syno\Storm\Document;
-use Syno\Storm\Event\NotificationComplete;
-use Syno\Storm\Message\ProfilingSurvey;
+use Syno\Storm\Event\ResponseComplete;
 use Syno\Storm\RequestHandler;
 use Syno\Storm\Traits\RouteAware;
 
@@ -23,7 +21,6 @@ class ResponseSession
     private ResponseRedirector       $responseRedirector;
     private SurveyEventLogger        $surveyEventLogger;
     private Condition                $conditionService;
-    private MessageBusInterface      $bus;
     private EventDispatcherInterface $dispatcher;
 
     public function __construct(
@@ -32,8 +29,7 @@ class ResponseSession
         ResponseRedirector       $responseRedirector,
         SurveyEventLogger        $surveyEventLogger,
         Condition                $conditionService,
-        EventDispatcherInterface $dispatcher,
-        MessageBusInterface      $bus
+        EventDispatcherInterface $dispatcher
     ) {
         $this->responseHandler     = $responseHandler;
         $this->responseEventLogger = $responseEventLogger;
@@ -41,7 +37,6 @@ class ResponseSession
         $this->surveyEventLogger   = $surveyEventLogger;
         $this->conditionService    = $conditionService;
         $this->dispatcher          = $dispatcher;
-        $this->bus                 = $bus;
     }
 
     public function isFinishedButLost(Document\Survey $survey, Request $request): ?RedirectResponse
@@ -207,16 +202,7 @@ class ResponseSession
 
         $this->responseEventLogger->log(ResponseEventLogger::SURVEY_COMPLETED, $response);
 
-        if ($survey->getCompleteCallbackUrl()) { // Todo refactor in notification queue
-            $this->bus->dispatch(
-                new ProfilingSurvey(
-                    $survey->getCompleteCallbackUrl(),
-                    $response
-                )
-            );
-        }
-
-        $this->dispatcher->dispatch(new NotificationComplete($survey, $response));
+        $this->dispatcher->dispatch(new ResponseComplete($survey, $response));
 
         return $this->responseRedirector->complete($survey, $response);
     }

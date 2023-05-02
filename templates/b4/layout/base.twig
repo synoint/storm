@@ -40,13 +40,13 @@
 {% block javascripts %}
     {{ encore_entry_script_tags('b4.default') }}
     
+    {% if page is defined and '' != page.javascript %}
+    
     {% if responseDataLayer is defined %}
         <script>
             let response = {{(responseDataLayer|json_encode(constant('JSON_PRETTY_PRINT'))|raw)}}
         </script>
     {% endif %}
-    
-    {% if page is defined and '' != page.javascript %}
         <script>
             {{ page.javascript|raw }}
         </script>

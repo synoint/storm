@@ -295,8 +295,9 @@ class SurveyController extends AbstractController implements TokenAuthenticatedC
                     $surveyConfig = new Document\SurveyConfig();
                     $surveyConfig->setSurveyId($surveyId);
                     $surveyConfig->setKey($key);
-                    $surveyConfig->setValue($value);
                 }
+
+                $surveyConfig->setValue($value);
 
                 $this->surveyConfigService->save($surveyConfig);
             }

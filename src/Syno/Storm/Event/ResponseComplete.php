@@ -6,7 +6,7 @@ use Symfony\Contracts\EventDispatcher\Event;
 use Syno\Storm\Document\Response;
 use Syno\Storm\Document\Survey;
 
-class NotificationComplete extends Event
+class ResponseComplete extends Event
 {
     private Survey   $survey;
     private Response $response;

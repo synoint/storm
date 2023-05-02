@@ -5,12 +5,13 @@ namespace Syno\Storm\EventSubscriber;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Serializer\SerializerInterface;
-use Syno\Storm\Event\NotificationComplete;
+use Syno\Storm\Event\ResponseComplete;
+use Syno\Storm\Message\ProfilingSurvey;
 use Syno\Storm\Message\SurveyNotification;
 use Syno\Storm\Services;
 use Syno\Storm\Document;
 
-class NotificationSubscriber implements EventSubscriberInterface
+class ResponseCompleteSubscriber implements EventSubscriberInterface
 {
     private Services\ResponseDataLayer $responseDataLayerService;
     private Services\SurveyConfig      $surveyConfigService;
@@ -35,7 +36,7 @@ class NotificationSubscriber implements EventSubscriberInterface
         $this->bus                      = $bus;
     }
 
-    public function onResponseComplete(NotificationComplete $event)
+    public function onResponseComplete(ResponseComplete $event)
     {
         $survey   = $event->getSurvey();
         $response = $event->getResponse();
@@ -60,12 +61,21 @@ class NotificationSubscriber implements EventSubscriberInterface
                 )
             );
         }
+
+        if ($survey->getCompleteCallbackUrl()) { // Todo refactor in notification queue
+            $this->bus->dispatch(
+                new ProfilingSurvey(
+                    $survey->getCompleteCallbackUrl(),
+                    $response
+                )
+            );
+        }
     }
 
     public static function getSubscribedEvents(): array
     {
         return [
-            NotificationComplete::class => 'onResponseComplete',
+            ResponseComplete::class => 'onResponseComplete',
         ];
     }
 }
