@@ -10,9 +10,8 @@ use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
 class SurveyConfig
 {
     public const EMAIL_NOTIFICATION = 'emailNotification';
-    /**
-     * @ODM\Id(strategy="NONE")
-     */
+
+    /** @ODM\Id */
     private $id;
 
     /**

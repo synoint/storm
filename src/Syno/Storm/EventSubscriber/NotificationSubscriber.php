@@ -44,6 +44,8 @@ class NotificationSubscriber implements EventSubscriberInterface
         if ($this->surveyConfigService->findBySurveyIdAndKey(
             $survey->getSurveyId(),
             Document\SurveyConfig::EMAIL_NOTIFICATION)) {
+            $response->setCompletedAt($this->responseEventService->getResponseCompletionTime($response->getResponseId()));
+
             $data = $this->responseService->toArrayWithAnswerLabels(
                 $response,
                 $answers['answers'],

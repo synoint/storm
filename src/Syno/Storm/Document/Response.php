@@ -574,6 +574,11 @@ class Response implements JsonSerializable
         return $this->deletedAt;
     }
 
+    public function getCompletedAt(): int
+    {
+        return $this->completedAt;
+    }
+
     public function getForProfilingSurveyCallback(): array
     {
         return [

@@ -23,8 +23,8 @@ class Response
     {
         return $this->dm->getRepository(Document\Response::class)->findOneBy(
             [
-                'surveyId' => $surveyId,
-                'responseId' => $responseId
+                'surveyId'   => $surveyId,
+                'responseId' => $responseId,
             ]
         );
     }
@@ -34,7 +34,7 @@ class Response
         $criteria['surveyId'] = $surveyId;
 
         if (isset($params['mode'])) {
-          $criteria['mode'] = $params['mode'];
+            $criteria['mode'] = $params['mode'];
         }
 
         if (isset($params['completed'])) {
@@ -44,7 +44,7 @@ class Response
         return $this->dm->getRepository(Document\Response::class)->findBy(
             $criteria,
             [
-                'id' => 'DESC'
+                'id' => 'DESC',
             ],
             $limit,
             $offset
@@ -58,7 +58,7 @@ class Response
     {
         return $this->dm->getRepository(Document\Response::class)->findBy(
             [
-                'surveyId' => $surveyId,
+                'surveyId'      => $surveyId,
                 'surveyVersion' => $version,
             ]
         );
@@ -140,6 +140,7 @@ class Response
             'mode'               => $response->getMode(),
             'locale'             => $response->getLocale(),
             'completed'          => $response->isCompleted(),
+            'completedAt'        => date("Y-m-d H:i:s", $response->getCompletedAt()),
             'screenedOut'        => $response->isScreenedOut(),
             'qualityScreenedOut' => $response->isQualityScreenedOut(),
             'quotaFull'          => $response->isQuotaFull(),
