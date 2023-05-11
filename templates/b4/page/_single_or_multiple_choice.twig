@@ -25,7 +25,7 @@
             <label id="{{ child.vars.id }}_label" class="form-check-label custom-control-label{% if child.vars.attr['row_attr'] is defined %} {{ child.vars.attr['row_attr'] }}{% endif %}"
                    for="{{ child.vars.id }}">
                 <div class="d-flex flex-row w-100">
-                    <div class="d-flex align-items-center"> {{ child.vars.label | raw }}</div>
+                    <div class="align-items-center"> {{ child.vars.label | raw }}</div>
                 </div>
 
                 {% set answer = question.getAnswerByCode(child.vars.value) %}
