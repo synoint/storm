@@ -51,6 +51,7 @@ class ResponseDataLayer
                         $result['pageCode'] = $page->getCode();
                         $result['questionCode'] = $question->getCode();
                         $result['questionText'] = $question->getText();
+                        $result['questionType'] = $question->getQuestionTypeId();
 
                         if ($answer->getRowCode() || $answer->getColumnCode()) {
                             $result['rowCode'] = $answer->getRowCode();
