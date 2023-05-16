@@ -206,17 +206,15 @@ class PageType extends AbstractType
             'choice_label' => function ($choice, $id) use ($labels) {
                 return $labels[$id];
             },
-            'choice_attr'  => function ($answerId) use ($question, $selectedAnswersIsExclusive, $answerMap) {
+            'choice_attr'  => function ($answerCode, $answerId) use ($question, $selectedAnswersIsExclusive, $answerMap) {
                 $attr['row_attr'] = '';
                 $attr             = ['class' => 'custom-control-input form-check-input'];
 
-
-                if ($question->getAnswerByCode($answerId)->getIsExclusive()) {
+                if ($question->getAnswerByCode($answerCode)->getIsExclusive()) {
                     $attr['class']    .= ' exclusive';
                     $attr['row_attr'] = 'exclusive';
                 }
-
-                if ($selectedAnswersIsExclusive && !in_array($answerId, $answerMap)) {
+                if ($selectedAnswersIsExclusive && !key_exists($answerId, $answerMap)) {
                     $attr['disabled'] = 'disabled';
                 }
 
