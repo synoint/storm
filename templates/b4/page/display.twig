@@ -48,7 +48,7 @@
                                 {% if response.isTest or response.isDebug %}
                                     {{ question.code }}.&nbsp;
                                 {% endif %}
-                                {{ title_string(responseDataLayer, question.getText())|raw }}
+                                {{ question.getText() ? title_string(responseDataLayer, question.getText())|raw : '' }}
                             </h5>
                             
                             {% if question.isMatrix %}
