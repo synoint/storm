@@ -125,6 +125,7 @@ class SurveyController extends AbstractController
     {
         $form = $this->createForm(PrivacyConsentType::class);
         $form->handleRequest($request);
+
         if ($form->isSubmitted() && $form->isValid()) {
             return $this->redirectToRoute('page.index', [
                 'surveyId' => $survey->getSurveyId(),

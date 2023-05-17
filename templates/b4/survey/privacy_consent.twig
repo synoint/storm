@@ -3,12 +3,12 @@
 {% block title %}{{ 'privacy_consent.page_title'|trans }}{% endblock %}
 
 {% block body %}
-
+    
     <div class="container privacy-consent-container">
         <div class="my-3">
-            <img src="{{ asset('build/images/syno_logo.png') }}" alt="Syno International Logo" class="syno-logo" />
+            <img src="{{ asset('build/images/syno_logo.png') }}" alt="Syno International Logo" class="syno-logo"/>
         </div>
-
+        
         <h1 class="pt-3 text-center">{{ 'privacy_consent.title'|trans }}</h1>
         <div class="row pt-4 text-justify pb-5">
             <div class="col-sm-12 col-lg-6">
@@ -23,83 +23,47 @@
                     {{ 'privacy_consent.p3'|trans }}
                 </p>
                 <p>
-                    {{ 'privacy_consent.p4'|trans }}
+                    {{ 'privacy_consent.p4'|trans({
+                        'privacy': '<a target="_blank" href="https://www.synoint.com/privacy-policy">' ~ 'privacy_consent.privacy_policy'|trans  ~'</a>',
+                        'terms': '<a target="_blank" href="https://www.synoint.com/terms-and-conditions-for-panellists">' ~ 'privacy_consent.terms_and_conditions'|trans ~'</a>'
+                    })|raw }}
                 </p>
             </div>
-
+            
             <div class="col-sm-12 col-lg-6">
                 <h4 class="my-3">{{ 'privacy_consent.your_consent_and_permission'|trans }}</h4>
                 <p>
                     {{ 'privacy_consent.p5'|trans }}
                 </p>
-
-                <ul class="list-unstyled ml-3">
-                    <li>
-                        <a href="https://www.synoint.com/privacy-policy/" target="_blank">
-                            {{ 'privacy_consent.privacy_policy'|trans }}
-                        </a>
-                    </li>
-                    <li>
-                        <a href="https://www.synoint.com/security-policy/" target="_blank">
-                            {{ 'privacy_consent.security_policy'|trans }}
-                        </a>
-                    </li>
-                    <li>
-                        <a href="https://www.synoint.com/cookies-policy/" target="_blank">
-                            {{ 'privacy_consent.cookies_policy'|trans }}
-                        </a>
-                    </li>
-                    <li>
-                        <a href="https://www.synoint.com/dpo/" target="_blank">
-                            {{ 'privacy_consent.data_protection_officers'|trans }}
-                        </a>
-                    </li>
-                    <li>
-                        <a href="https://www.synoint.com/terms-of-use/" target="_blank">
-                            {{ 'privacy_consent.terms_of_use'|trans }}
-                        </a>
-                    </li>
-                    <li>
-                        <a href="https://www.synoint.com/quality-documentation/" target="_blank">
-                            {{ 'privacy_consent.quality_documentation'|trans }}
-                        </a>
-                    </li>
-                </ul>
                 <p>
-                    {{ 'privacy_consent.p6'|trans }}
+                    {{ 'privacy_consent.p6'|trans({
+                        'privacy': '<a target="_blank" href="https://www.synoint.com/privacy-policy">' ~ 'privacy_consent.privacy_policy'|trans  ~'</a>',
+                        'terms': '<a target="_blank" href="https://www.synoint.com/terms-and-conditions-for-panellists">' ~ 'privacy_consent.terms_and_conditions'|trans ~'</a>'
+                    })|raw }}
                 </p>
-
-                <ul class="ml-3 list-unstyled">
-                    <li>
-                        <a href="mailto:data.protection@synoint.com" target="_blank">
-                            data.protection@synoint.com
-                        </a>
-                        ({{ 'privacy_consent.email_comment_data_protection'|trans }})
-                    </li>
-                    <li>
-                        <a href="mailto:info@synoint.com" target="_blank">
-                            info@synoint.com
-                        </a>
-                        ({{ 'privacy_consent.email_comment_info'|trans }}).
-                    </li>
-                </ul>
+                <p>
+                    {{ 'privacy_consent.p7'|trans }}
+                </p>
+                <p>
+                    {{ 'privacy_consent.p8'|trans({
+                        'email': '<a href="mailto:data.protection@synoint.com">data.protection@synoint.com</a>',
+                    })|raw }}
+                </p>
+                
                 <div class="mt-5 text-center">
                     {{ form_start(form) }}
-                    {{
-                        form_row(
-                            form.accept,
-                            {
-                                'attr': {'class': 'btn btn-lg btn-outline-primary'},
-                                'label': 'privacy_consent.button.accept'|trans
-                            }
-                        )
-                    }}
+                    {{ form_row(
+                        form.accept,
+                        {
+                            'attr': {'class': 'btn btn-lg btn-outline-primary'},
+                            'label': 'privacy_consent.button.accept'|trans
+                        }
+                    ) }}
                     {{ form_end(form) }}
                 </div>
             </div>
         </div>
-
-
+    
     </div>
 
 {% endblock %}
