@@ -128,7 +128,7 @@ class Answer
                 foreach ($question->getAnswers() as $answer) {
                     $key = $question->getInputName($answer->getCode());
 
-                    if ('' != trim($formData[$key]) && is_string($formData[$key])) {
+                    if (isset($formData[$key]) && '' != trim($formData[$key]) && is_string($formData[$key])) {
                         $value    = trim($formData[$key]);
                         $value    = filter_var($value, FILTER_SANITIZE_STRING);
                         $value    = mb_substr($value, 0, 10000, 'UTF-8');
