@@ -87,7 +87,11 @@
                                     </div>
                                 {% endfor %}
                             {% elseif question.questionTypeId == constant('Syno\\Storm\\Document\\Question::TYPE_SINGLE_CHOICE') %}
-                                {% include 'b4/page/_single_or_multiple_choice.twig' with { 'type': 'radio' } %}
+                                {% if question.containsSelectField %}
+                                    {{ form_widget(attribute(form, (question.getInputName)), {"attr": {"class": "select2"}}) }}
+                                {% else %}
+                                    {% include 'b4/page/_single_or_multiple_choice.twig' with { 'type': 'radio' } %}
+                                {% endif %}
                             {% elseif question.questionTypeId == constant('Syno\\Storm\\Document\\Question::TYPE_GABOR_GRANGER') %}
                                 {% include 'b4/page/_gabor_granger.twig' %}
                             {% elseif question.questionTypeId == constant('Syno\\Storm\\Document\\Question::TYPE_MULTIPLE_CHOICE') %}

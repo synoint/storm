@@ -3,6 +3,7 @@ require("../common/b4.css");
 require("../common/style.css");
 // application overrides
 require("./app.css");
+require("../../select2/style.css");
 
 // this "modifies" the jquery module: adding behavior to it
 // the bootstrap module doesn't export/return anything

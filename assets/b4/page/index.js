@@ -1,6 +1,17 @@
+const $ = require('jquery');
+require('select2');
 class Page {
     constructor() {
         this.container = $("body");
+    }
+
+    initSelect2() {
+
+        const select = $(".select2");
+
+        if(select.length > 0){
+            select.select2();
+        }
     }
 
     bindEvents() {
@@ -59,5 +70,6 @@ class Page {
 (function () {
     let handler = new Page();
 
+    handler.initSelect2();
     handler.bindEvents();
 })();

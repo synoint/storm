@@ -10,6 +10,7 @@
 
 footer {
     background-color: var(--primary);
+    z-index: 9999;
 }
 
 footer .progress-bar {
