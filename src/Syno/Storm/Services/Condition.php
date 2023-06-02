@@ -15,7 +15,7 @@ class Condition
             return false;
         }
 
-        return JWadhams\JsonLogic::apply(json_decode($rule), $response->getAnswerIdMap());
+        return JWadhams\JsonLogic::apply(json_decode($rule), $response->getAnswerIdMap()) ?? false;
     }
 
     public function applyScreenoutRule(
