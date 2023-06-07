@@ -5,23 +5,19 @@
 {% block body %}
     
     <div class="container privacy-consent-container">
-        <div class="my-3">
-            <img src="{{ asset('build/images/syno_logo.png') }}" alt="Syno International Logo" class="syno-logo"/>
+        <div class="row justify-content-center">
+            <div class="col-sm-6 col-lg-6 my-3">
+                <img class="syno-logo" src="{{ asset('build/images/syno_logo_bigger.png') }}" alt="Syno International"/>
+            </div>
         </div>
         
-        <h1 class="pt-3 text-center">{{ 'privacy_consent.title'|trans }}</h1>
-        <div class="row pt-4 text-justify pb-5">
-            <div class="col-sm-12 col-lg-6">
-                <h4 class="my-3">{{ 'privacy_consent.about_us'|trans }}</h4>
-                <p>
-                    {{ 'privacy_consent.p1'|trans }}
-                </p>
-                <p>
-                    {{ 'privacy_consent.p2'|trans }}
-                </p>
-                <p>
-                    {{ 'privacy_consent.p3'|trans }}
-                </p>
+        <div class="row justify-content-center">
+            <div class="col-sm-6 col-lg-6">
+                <h1 class="pt-3 pb-1">{{ 'privacy_consent.title'|trans }}</h1>
+                <h2 class="mt-3 mb-2">{{ 'privacy_consent.about_us'|trans }}</h2>
+                <p>{{ 'privacy_consent.p1'|trans }}</p>
+                <p>{{ 'privacy_consent.p2'|trans }}</p>
+                <p>{{ 'privacy_consent.p3'|trans }}</p>
                 <p>
                     {{ 'privacy_consent.p4'|trans({
                         'privacy': '<a target="_blank" href="https://www.synoint.com/privacy-policy">' ~ 'privacy_consent.privacy_policy'|trans  ~'</a>',
@@ -29,33 +25,31 @@
                     })|raw }}
                 </p>
             </div>
-            
-            <div class="col-sm-12 col-lg-6">
-                <h4 class="my-3">{{ 'privacy_consent.your_consent_and_permission'|trans }}</h4>
-                <p>
-                    {{ 'privacy_consent.p5'|trans }}
-                </p>
+        </div>
+        
+        <div class="row justify-content-center">
+            <div class="col-sm-6 col-lg-6">
+                <h2 class="mt-3 mb-2">{{ 'privacy_consent.your_consent_and_permission'|trans }}</h2>
+                <p>{{ 'privacy_consent.p5'|trans }}</p>
                 <p>
                     {{ 'privacy_consent.p6'|trans({
                         'privacy': '<a target="_blank" href="https://www.synoint.com/privacy-policy">' ~ 'privacy_consent.privacy_policy'|trans  ~'</a>',
                         'terms': '<a target="_blank" href="https://www.synoint.com/terms-and-conditions-for-panellists">' ~ 'privacy_consent.terms_and_conditions'|trans ~'</a>'
                     })|raw }}
                 </p>
-                <p>
-                    {{ 'privacy_consent.p7'|trans }}
-                </p>
+                <p>{{ 'privacy_consent.p7'|trans }}</p>
                 <p>
                     {{ 'privacy_consent.p8'|trans({
                         'email': '<a href="mailto:data.protection@synoint.com">data.protection@synoint.com</a>',
                     })|raw }}
                 </p>
                 
-                <div class="mt-5 text-center">
+                <div class="mt-3">
                     {{ form_start(form) }}
                     {{ form_row(
                         form.accept,
                         {
-                            'attr': {'class': 'btn btn-lg btn-outline-primary'},
+                            'attr': {'class': 'btn btn-primary'},
                             'label': 'privacy_consent.button.accept'|trans
                         }
                     ) }}

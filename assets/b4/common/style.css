@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400&display=swap');
+
 footer {
   position: fixed;
   bottom: 0;
@@ -14,7 +16,7 @@ footer {
 }
 
 .syno-logo {
-  height: 2.5rem
+  height: 5rem
 }
 
 .form-check-label.exclusive {
@@ -45,13 +47,39 @@ footer {
 }
 
 .privacy-consent-container {
-  font-size: 80%;
   height: -moz-available;
   height: -webkit-fill-available;
+  font-family: 'Montserrat';
+}
+
+.privacy-consent-container .btn {
+  border-radius: 0 !important;
 }
 
 .privacy-consent-container p {
+  font-weight: 400;
+  font-size: 14px;
+  color: #000000;
+}
+
+.privacy-consent-container a {
   line-height: 200%;
+  font-weight: 400;
+  font-size: 14px;
+  color: #000000;
+  text-decoration: underline;
+}
+
+.privacy-consent-container h1 {
+  font-size: 18px;
+  font-weight: 600;
+  color: #00186F;
+}
+
+.privacy-consent-container h2 {
+  font-size: 18px;
+  font-weight: 500;
+  color: #00186F;
 }
 
 .linear-scale__button {
