@@ -35,3 +35,8 @@ services:
     Syno\Storm\Services\Response:
         arguments:
             $responseIdPrefix: '%env(APP_REGION)%'
+
+    Syno\Storm\Services\Publishing:
+      arguments:
+        $mongoDbUrl: '%env(MONGODB_URL)%'
+        $mongoDb: '%env(MONGODB_DB)%'

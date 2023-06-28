@@ -2,6 +2,7 @@
 
 namespace Syno\Storm\Api\v1\Controller;
 
+use MongoDB\Driver;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -10,6 +11,7 @@ use Syno\Storm\Api\Controller\TokenAuthenticatedController;
 use Syno\Storm\Api\v1\Form;
 use Syno\Storm\Api\v1\Http\ApiResponse;
 use Syno\Storm\Document;
+use Syno\Storm\Services\Publishing;
 use Syno\Storm\Services\Randomization;
 use Syno\Storm\Services\Response;
 use Syno\Storm\Services\ResponseEvent;
@@ -37,16 +39,18 @@ class SurveyController extends AbstractController implements TokenAuthenticatedC
     private SurveyPath        $surveyPathService;
     private Randomization     $randomizationService;
     private SurveyConfig      $surveyConfigService;
+    private Publishing        $publishingService;
 
     public function __construct(
-        Response          $responseService,
-        ResponseEvent     $responseEventService,
-        Survey            $surveyService,
-        SurveyEvent       $surveyEventService,
+        Response $responseService,
+        ResponseEvent $responseEventService,
+        Survey $surveyService,
+        SurveyEvent $surveyEventService,
         SurveyEventLogger $surveyEventLoggerService,
-        SurveyPath        $surveyPathService,
-        Randomization     $randomizationService,
-        SurveyConfig      $surveyConfigService
+        SurveyPath $surveyPathService,
+        Randomization $randomizationService,
+        SurveyConfig $surveyConfigService,
+        Publishing $publishingService
     ) {
         $this->responseService          = $responseService;
         $this->responseEventService     = $responseEventService;
@@ -56,6 +60,7 @@ class SurveyController extends AbstractController implements TokenAuthenticatedC
         $this->surveyPathService        = $surveyPathService;
         $this->randomizationService     = $randomizationService;
         $this->surveyConfigService      = $surveyConfigService;
+        $this->publishingService        = $publishingService;
     }
 
     /**
@@ -74,14 +79,10 @@ class SurveyController extends AbstractController implements TokenAuthenticatedC
             if ($survey) {
                 $this->deleteSurvey($survey);
             }
-        }
 
-        $survey = $this->surveyService->getNew();
+            $this->publishingService->insert('survey', $data);
 
-        $form = $this->createForm(Form\SurveyType::class, $survey);
-        $form->submit($data);
-        if ($form->isValid()) {
-            $this->surveyService->save($survey);
+            $survey = $this->surveyService->findBySurveyIdAndVersion($data['surveyId'], $data['version']);
             $this->surveyEventLoggerService->log(SurveyEventLogger::SURVEY_CREATED, $survey);
 
             if ($survey->isRandomizationOn()) {
@@ -93,7 +94,34 @@ class SurveyController extends AbstractController implements TokenAuthenticatedC
             return $this->json($survey->getId(), 201);
         }
 
-        return new ApiResponse('Survey creation failed!', null, $this->getFormErrors($form), 400);
+        return new ApiResponse('Survey creation failed!', null, null, 400);
+
+//        if (!empty($data['surveyId']) && !empty($data['version'])) {
+//            $survey = $this->surveyService->findBySurveyIdAndVersion($data['surveyId'], $data['version']);
+//            if ($survey) {
+//                $this->deleteSurvey($survey);
+//            }
+//        }
+//
+//        $survey = $this->surveyService->getNew();
+//
+//        $form = $this->createForm(Form\SurveyType::class, $survey);
+//        $form->submit($data);
+//
+//        if ($form->isValid()) {
+//            $this->surveyService->save($survey);
+//            $this->surveyEventLoggerService->log(SurveyEventLogger::SURVEY_CREATED, $survey);
+//
+//            if ($survey->isRandomizationOn()) {
+//                $randomizedCombinations = $this->randomizationService->getRandomizedPaths($survey);
+//
+//                $this->surveyPathService->save($survey, $randomizedCombinations);
+//            }
+//
+//            return $this->json($survey->getId(), 201);
+//        }
+//
+//        return new ApiResponse('Survey creation failed!', null, $this->getFormErrors($form), 400);
     }
 
     /**
@@ -322,7 +350,7 @@ class SurveyController extends AbstractController implements TokenAuthenticatedC
                 $surveyConfig = $this->surveyConfigService->findBySurveyIdAndKey($surveyId, $key);
 
                 if ($surveyConfig) {
-                  $this->surveyConfigService->delete($surveyConfig);
+                    $this->surveyConfigService->delete($surveyConfig);
                 }
             }
         }
