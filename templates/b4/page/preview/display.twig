@@ -4,26 +4,26 @@
 {% block body %}
     <div class="container page-content">
         {% if '' != survey.getLogoPath %}
-            <div class="row container-sm justify-content-md-center">
+            <div class="row container-sm justify-content-md-center mb-2 mt-1">
                 <div id="surveyLogoContainer">
                     <img id="surveyLogoImage" src="{{ survey.getLogoPath }}"/>
                 </div>
             </div>
         {% endif %}
         
-        <div class="row container-sm justify-content-md-center ml-0 my-5">
-            {% if '' != page.content %}
+        {% if '' != page.content %}
+            <div class="row container-sm justify-content-md-center ml-0">
                 <div class="questions">
                     <div class="col-12">
-                        <div class="page__content rounded p-3 bg-white">
+                        <div class="page__content rounded bg-white">
                             {{ page.content|raw }}
                         </div>
                     </div>
                 </div>
-            {% endif %}
-        </div>
-    
-        <div class="row container-sm justify-content-md-center ml-0 my-5">
+            </div>
+        {% endif %}
+        
+        <div class="row container-sm justify-content-md-center ml-0 my-3">
             <div class="questions">
                 <div class="col-12">
                     {{ form_start(form, {'attr': {'novalidate':'novalidate', 'autocomplete': 'off'}}) }}
