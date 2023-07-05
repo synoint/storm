@@ -56,7 +56,9 @@ class Survey
     {
         $survey = $this->surveyService->getPublished($surveyId);
 
-        $this->surveyService->detachSurvey($survey);
+        if ($survey) {
+            $this->surveyService->detachSurvey($survey);
+        }
 
         return $survey;
     }
