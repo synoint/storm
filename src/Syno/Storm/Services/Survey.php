@@ -28,16 +28,30 @@ class Survey
         $this->dm->flush();
     }
 
-    public function find(int $surveyId): ?array
+    public function find(int $surveyId):? array
     {
-        return $this->dm->getRepository(Document\Survey::class)->findBy(
-            [
-                'surveyId' => $surveyId
-            ],
-            [
-                'version' => 'DESC'
-            ]
-        );
+        $fields = ['surveyId', 'version', 'published'];
+        $versions = $this->dm->createQueryBuilder(Document\Survey::class)
+            ->select(...$fields)
+            ->field('surveyId')->equals($surveyId)
+            ->sort('version', -1)
+            ->readOnly()
+            ->hydrate(false)
+            ->setRewindable(false)
+            ->getQuery()
+            ->execute()
+            ->toArray();
+
+        $result = [];
+        foreach ($versions as $version) {
+            $row = [];
+            foreach ($fields as $field) {
+                $row[$field] = $version[$field];
+            }
+            $result[] = $row;
+        }
+
+        return $result;
     }
 
     /**
