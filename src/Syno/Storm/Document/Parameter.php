@@ -40,7 +40,7 @@ class Parameter implements JsonSerializable
      */
     private $value;
 
-    public function jsonSerialize()
+    public function jsonSerialize(): array
     {
         return [
             'name'     => $this->name,

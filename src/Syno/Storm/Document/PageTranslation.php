@@ -20,7 +20,7 @@ class PageTranslation implements JsonSerializable
      */
     private $content;
 
-    public function jsonSerialize()
+    public function jsonSerialize(): array
     {
         return [
             'content' => $this->content

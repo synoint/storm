@@ -31,7 +31,7 @@ class SurveyUrl implements JsonSerializable
      */
     private $url;
 
-    public function jsonSerialize()
+    public function jsonSerialize(): array
     {
         return [
             'type'   => $this->type,

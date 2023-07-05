@@ -31,7 +31,7 @@ class Language implements JsonSerializable
      */
     private $primary = false;
 
-    public function jsonSerialize()
+    public function jsonSerialize(): array
     {
         return [
             'locale'     => $this->locale,

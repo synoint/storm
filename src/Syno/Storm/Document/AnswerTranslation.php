@@ -34,7 +34,7 @@ class AnswerTranslation implements JsonSerializable, TranslationInterface
      */
     private $columnLabel;
 
-    public function jsonSerialize()
+    public function jsonSerialize(): array
     {
         return [
             'locale'      => $this->locale,
