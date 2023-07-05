@@ -36,7 +36,7 @@ class SurveyController extends AbstractController
         $response = $request->attributes->get(RequestHandler\Response::ATTR);
 
         $firstPage = $survey->getFirstPage();
-        if ($response->getSurveyPathId()) {
+        if ($response && $response->getSurveyPathId()) {
             $firstPage = $response->getSurveyPath()->first();
         }
 
@@ -72,7 +72,7 @@ class SurveyController extends AbstractController
         $response = $request->attributes->get(RequestHandler\Response::ATTR);
 
         $firstPage = $survey->getFirstPage();
-        if ($response->getSurveyPathId()) {
+        if ($response && $response->getSurveyPathId()) {
             $firstPage = $response->getSurveyPath()->first();
         }
 

@@ -109,7 +109,7 @@ class Response
     {
         $response->addUserAgent(
             $this->requestStack->getCurrentRequest()->getClientIp(),
-            $this->requestStack->getCurrentRequest()->headers->get('User-Agent')
+            $this->requestStack->getCurrentRequest()->headers->get('User-Agent', '')
         );
         $this->responseService->save($response);
     }

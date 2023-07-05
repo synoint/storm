@@ -201,6 +201,10 @@ class ResponseSubscriber implements EventSubscriberInterface
             return;
         }
 
+        if (!$event->getRequest()->isMethod('GET')) {
+            return;
+        }
+
         $this->logger->debug(__FUNCTION__);
 
         $surveyPath = null;
