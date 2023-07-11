@@ -40,6 +40,9 @@ footer {
   margin-right: auto;
   margin-left: auto;
 }
+.container.page-content {
+  margin-bottom: 80px;
+}
 
 .progress {
   margin-top: 1.15rem;
@@ -277,6 +280,10 @@ footer {
 }
 
 @media screen and (max-width: 768px) {
+  .container.page-content {
+    margin-bottom: 40px;
+  }
+
   .mt-4, .my-4 {
     margin-top: 0 !important;
   }
