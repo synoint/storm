@@ -42,7 +42,13 @@ class IndexController extends AbstractController
         if (!empty($url) && $request->getHost() === parse_url($url, PHP_URL_HOST)) {
             $route = $router->match(parse_url($url, PHP_URL_PATH));
             if (isset($route['_route']) && $this->isSurveyEntranceRoute($route['_route'])) {
-                $response = $this->redirect($url);
+                // Getting all params here because:
+                // $request->query->get cuts other params except first parameter because of ? symbol in inner url
+                $params = $request->query->all();
+                unset($params['url']);
+                $queryString = http_build_query($params);
+
+                $response = $this->redirect($url.'&'.$queryString);
             }
         }
 
