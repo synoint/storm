@@ -45,10 +45,10 @@ class IndexController extends AbstractController
                 // Getting all params here because:
                 // $request->query->get cuts other params except first parameter because of ? symbol in inner url
                 $params = $request->query->all();
-                unset($params['url']);
-                $queryString = http_build_query($params);
 
-                $response = $this->redirect($url.'&'.$queryString);
+                unset($params['url']);
+
+                $response = $this->redirect($url . '&' . http_build_query($params));
             }
         }
 
