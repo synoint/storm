@@ -48,7 +48,11 @@ class IndexController extends AbstractController
 
                 unset($params['url']);
 
-                $response = $this->redirect($url . '&' . http_build_query($params));
+                if($params) {
+                    $response = $this->redirect($url . '&' . http_build_query($params));
+                } else {
+                    $response = $this->redirect($url);
+                }
             }
         }
 
