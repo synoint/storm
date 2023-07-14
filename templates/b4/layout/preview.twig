@@ -20,7 +20,7 @@
             {% for style in survey.css %}
                 {% if true == style.default %}
                     <style>
-                        {{ style.css }}
+                        {{ style.css|raw }}
                     </style>
                 {% endif %}
             {% endfor %}
@@ -28,7 +28,7 @@
             {% for style in survey.css %}
                 {% if false == style.default and app.request.locale == style.language %}
                     <style>
-                        {{ style.css }}
+                        {{ style.css|raw }}
                     </style>
                 {% endif %}
             {% endfor %}
