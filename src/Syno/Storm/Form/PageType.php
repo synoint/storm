@@ -93,11 +93,13 @@ class PageType extends AbstractType
     {
         $questionAnswerIds = $answerMap ? array_keys($answerMap) : null;
 
-        $choices = [];
-        $data    = null;
+        $labels = [];
+        $codes  = [];
+        $data   = null;
 
         foreach ($question->getAnswers() as $answer) {
-            $choices[$answer->getLabel()] = $answer->getCode();
+            $labels[$answer->getAnswerId()] = $answer->getLabel();
+            $codes[$answer->getAnswerId()]  = $answer->getCode();
 
             if ($questionAnswerIds && in_array($answer->getAnswerId(), $questionAnswerIds)) {
                 $data = $answer->getCode();
@@ -105,12 +107,15 @@ class PageType extends AbstractType
         }
 
         $options = [
-            'choices'     => $choices,
+            'choices'     => $codes,
             'required'    => $question->isRequired(),
             'data'        => $data,
             'expanded'    => !$question->containsSelectField(),
             'placeholder' => null,
             'attr'        => ['class' => 'custom-control custom-radio custom-radio-filled'],
+            'choice_label' => function ($choice, $id) use ($labels) {
+                return $labels[$id];
+            },
             'choice_attr' => function () {
                 return ['class' => 'custom-control-input'];
             },

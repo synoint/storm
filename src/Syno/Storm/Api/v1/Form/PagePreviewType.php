@@ -14,6 +14,7 @@ class PagePreviewType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
+            ->add('locale', TextType::class)
             ->add('logoPath', TextType::class)
             ->add('page', CollectionType::class, [
                 'entry_type'   => PageType::class,

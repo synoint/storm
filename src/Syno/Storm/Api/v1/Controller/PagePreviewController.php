@@ -26,20 +26,12 @@ class PagePreviewController extends AbstractController implements TokenAuthentic
     use FormAware;
     use JsonRequestAware;
 
-    private ResponseEvent $responseEventService;
-
-    private Services\Survey $surveyService;
-
-    private ResponseSessionManager $responseSessionManager;
+    private Services\Translation $translationService;
 
     public function __construct(
-        ResponseEvent $responseEventService,
-        Services\Survey $surveyService,
-        ResponseSessionManager $responseSessionManager
+        Services\Translation $translationService
     ) {
-        $this->responseEventService   = $responseEventService;
-        $this->surveyService          = $surveyService;
-        $this->responseSessionManager = $responseSessionManager;
+        $this->translationService = $translationService;
     }
 
     /**
@@ -57,24 +49,28 @@ class PagePreviewController extends AbstractController implements TokenAuthentic
         $form->submit($this->getJson($request));
 
         if ($form->isValid()) {
+            $page = $pagePreview->getPage();
+            $this->translationService->setPageLocale($page, $pagePreview->getLocale());
+
             $form = $this->createForm(
                 PageType::class,
                 null,
                 [
-                    'questions' => $pagePreview->getPage()->getQuestions(),
+                    'questions' => $page->getQuestions(),
                 ]
             );
 
             $html = $this->render('b4/page/preview/display.twig', [
-                'survey'             => $pagePreview,
-                'page'               => $pagePreview->getPage(),
-                'questions'          => $pagePreview->getPage()->getQuestions(),
-                'form'               => $form->createView(),
+                'survey'    => $pagePreview,
+                'page'      => $page,
+                'questions' => $page->getQuestions(),
+                'form'      => $form->createView(),
             ]);
 
-            return $this->json($html,HttpResponse::HTTP_OK);
+            return $this->json($html, HttpResponse::HTTP_OK);
         }
 
-        return new ApiResponse('Page preview failed!', null, $this->getFormErrors($form), HttpResponse::HTTP_BAD_REQUEST);
+        return new ApiResponse('Page preview failed!', null, $this->getFormErrors($form),
+                               HttpResponse::HTTP_BAD_REQUEST);
     }
 }

@@ -22,6 +22,13 @@ class PagePreview
     private $logoPath;
 
     /**
+     * @var string
+     *
+     * @ODM\Field(type="string")
+     */
+    private $locale;
+
+    /**
      * @var Page
      *
      * @ODM\EmbedOne(targetDocument=Page::class)
@@ -95,5 +102,15 @@ class PagePreview
         $this->css = $css;
 
         return $this;
+    }
+
+    public function getLocale(): string
+    {
+        return $this->locale;
+    }
+
+    public function setLocale(string $locale): void
+    {
+        $this->locale = $locale;
     }
 }
