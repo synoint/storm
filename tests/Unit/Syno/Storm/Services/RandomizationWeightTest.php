@@ -13,12 +13,12 @@ final class RandomizationWeightTest extends TestCase
     use RandomizationSamples;
 
     private Document\Survey              $survey;
-    private Services\Permutation         $permutationService;
+    private Services\Combination         $permutationService;
     private Services\RandomizationWeight $randomizationWeightService;
 
     public function setUp(): void
     {
-        $this->permutationService         = new Services\Permutation();
+        $this->permutationService         = new Services\Combination();
         $this->randomizationWeightService = new Services\RandomizationWeight();
     }
 

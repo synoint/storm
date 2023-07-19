@@ -20,7 +20,7 @@ final class SurveyPathTest extends TestCase
 
     public function setUp(): void
     {
-        $permutationService         = new Services\Permutation();
+        $permutationService         = new Services\Combination();
         $randomizationWeightService = new Services\RandomizationWeight();
 
         $this->randomizationService = new Services\Randomization($permutationService, $randomizationWeightService);

@@ -7,12 +7,12 @@ use Syno\Storm\Document;
 
 class Randomization
 {
-    private Permutation         $permutationService;
+    private Combination         $combinationService;
     private RandomizationWeight $randomizationWeightService;
 
-    public function __construct(Permutation $permutationService, RandomizationWeight $randomizationWeightService)
+    public function __construct(Combination $combinationService, RandomizationWeight $randomizationWeightService)
     {
-        $this->permutationService         = $permutationService;
+        $this->combinationService         = $combinationService;
         $this->randomizationWeightService = $randomizationWeightService;
     }
 
@@ -21,13 +21,13 @@ class Randomization
         $weights['blocks'] = $this->randomizationWeightService->getWeights($survey, 'block');
         $weights['pages']  = $this->randomizationWeightService->getWeights($survey, 'page');
 
-        $permutatedItems['blocks'] = $this->getPermutatedBlockPages($survey, $weights);
-        $permutatedItems['pages']  = $this->getPermutatedPages($survey, $weights);
-//dd($permutatedItems['pages']);
+        $permutatedItems['blocks'] = $this->getBlocks($survey, $weights);
+        $permutatedItems['pages']  = $this->getPages($survey, $weights);
+
         return $this->createSurveyPathCombinations($survey, $permutatedItems);
     }
 
-    private function getPermutatedBlockPages(Document\Survey $survey, array $weights): array
+    private function getBlocks(Document\Survey $survey, array $weights): array
     {
         $blockPagesCombinations = [];
         $pages                  = $survey->getPlainPages();
@@ -41,7 +41,7 @@ class Randomization
 
         $combinationGroups = [];
         foreach ($randomizedBlockGroups as $blockId => $randomizedBlockGroup) {
-            $combinationGroups[$blockId] = $this->permutationService->permute($randomizedBlockGroup)->getResult();
+            $combinationGroups[$blockId] = $this->combinationService->findCombinations($randomizedBlockGroup);
         }
 
         $combinationGroups = $this->mergeBlockCombinations($combinationGroups);
@@ -78,7 +78,7 @@ class Randomization
         return $blockPagesCombinations;
     }
 
-    private function getPermutatedPages(Document\Survey $survey, array $weights): array
+    private function getPages(Document\Survey $survey, array $weights): array
     {
         $pages = $survey->getPlainPages();
 
@@ -86,7 +86,7 @@ class Randomization
         $pagesCombinations    = [];
 
         foreach ($this->findRandomizedPages($survey) as $randomizedPages) {
-            $permutatedItemGroups[] = $this->permutationService->permute($randomizedPages)->getResult();
+            $permutatedItemGroups[] = $this->combinationService->findCombinations($randomizedPages);
         }
 
         foreach ($permutatedItemGroups as $group => $permutatedItems) {
