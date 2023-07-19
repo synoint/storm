@@ -26,17 +26,9 @@ class PagePreviewController extends AbstractController implements TokenAuthentic
     use FormAware;
     use JsonRequestAware;
 
-    private Services\Translation $translationService;
-
-    public function __construct(
-        Services\Translation $translationService
-    ) {
-        $this->translationService = $translationService;
-    }
-
     /**
      * @Route(
-     *     "/preview",
+     *     "%app.route_prefix%/preview",
      *     name="storm_api.v1.page.preview",
      *     methods={"POST"}
      * )
@@ -50,7 +42,16 @@ class PagePreviewController extends AbstractController implements TokenAuthentic
 
         if ($form->isValid()) {
             $page = $pagePreview->getPage();
-            $this->translationService->setPageLocale($page, $pagePreview->getLocale());
+            $locale = $request->getLocale();
+            $page->setCurrentLocale($locale);
+
+            foreach ($page->getQuestions() as $question) {
+                $question->setCurrentLocale($locale);
+
+                foreach ($question->getAnswers() as $answer) {
+                    $answer->setCurrentLocale($locale);
+                }
+            }
 
             $form = $this->createForm(
                 PageType::class,

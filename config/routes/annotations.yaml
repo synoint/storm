@@ -7,3 +7,5 @@ storm_controllers:
 api_v1_controllers:
     resource: ../../src/Syno/Storm/Api/v1/Controller/
     type: annotation
+    requirements:
+        _locale: '%app.available_locales%'

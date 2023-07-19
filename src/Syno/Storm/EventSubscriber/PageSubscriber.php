@@ -9,25 +9,21 @@ use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\Routing\RouterInterface;
 use Syno\Storm\RequestHandler\Page;
 use Syno\Storm\RequestHandler\Survey;
-use Syno\Storm\Services\Translation;
 
 class PageSubscriber implements EventSubscriberInterface
 {
     private Page            $pageHandler;
     private Survey          $surveyHandler;
     private RouterInterface $router;
-    private Translation     $translationService;
 
     public function __construct(
         Page            $pageHandler,
         Survey          $surveyHandler,
-        RouterInterface $router,
-        Translation     $translationService
+        RouterInterface $router
     ) {
         $this->pageHandler        = $pageHandler;
         $this->surveyHandler      = $surveyHandler;
         $this->router             = $router;
-        $this->translationService = $translationService;
     }
 
     public function setPage(RequestEvent $event)
@@ -64,8 +60,14 @@ class PageSubscriber implements EventSubscriberInterface
 
         $page          = $this->pageHandler->getPage();
         $currentLocale = $event->getRequest()->getLocale();
+        $page->setCurrentLocale($currentLocale);
 
-        $this->translationService->setPageLocale($page, $currentLocale);
+        foreach ($page->getQuestions() as $question) {
+            $question->setCurrentLocale($currentLocale);
+            foreach ($question->getAnswers() as $answer) {
+                $answer->setCurrentLocale($currentLocale);
+            }
+        }
 
         $survey         = $this->surveyHandler->getSurvey();
         $fallbackLocale = $survey->getPrimaryLanguageLocale();
