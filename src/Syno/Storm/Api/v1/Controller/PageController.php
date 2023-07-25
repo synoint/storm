@@ -56,23 +56,4 @@ class PageController extends AbstractController implements TokenAuthenticatedCon
 
         return new ApiResponse('Survey creation failed!', null, $this->getFormErrors($form), 400);
     }
-
-    /**
-     * @Route(
-     *     "/{surveyId}/versions/{versionId}/pages",
-     *     name="storm_api.v1.survey.page.delete",
-     *     requirements={"surveyId"="\d+", "versionId"="\d+"},
-     *     methods={"DELETE"}
-     * )
-     */
-    public function delete(int $surveyId, int $versionId): JsonResponse
-    {
-        $survey = $this->surveyService->findBySurveyIdAndVersion($surveyId, $versionId);
-
-        $survey->getPages()->clear();
-
-        $this->surveyService->save($survey);
-
-        return $this->json('Pages deleted');
-    }
 }
