@@ -31,7 +31,7 @@ class PageController extends AbstractController implements TokenAuthenticatedCon
 
     /**
      * @Route(
-     *     "/{surveyId}/versions/{versionId}/pages/create",
+     *     "/{surveyId}/versions/{versionId}/pages",
      *     name="storm_api.v1.survey.page.create",
      *     requirements={"surveyId"="\d+", "versionId"="\d+"},
      *     methods={"POST"}
@@ -59,7 +59,7 @@ class PageController extends AbstractController implements TokenAuthenticatedCon
 
     /**
      * @Route(
-     *     "/{surveyId}/versions/{versionId}/pages/delete",
+     *     "/{surveyId}/versions/{versionId}/pages",
      *     name="storm_api.v1.survey.page.delete",
      *     requirements={"surveyId"="\d+", "versionId"="\d+"},
      *     methods={"DELETE"}
