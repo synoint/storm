@@ -84,12 +84,6 @@ class SurveyController extends AbstractController implements TokenAuthenticatedC
             $this->surveyService->save($survey);
             $this->surveyEventLoggerService->log(SurveyEventLogger::SURVEY_CREATED, $survey);
 
-            if ($survey->isRandomizationOn()) {
-                $randomizedCombinations = $this->randomizationService->getRandomizedPaths($survey);
-
-                $this->surveyPathService->save($survey, $randomizedCombinations);
-            }
-
             return $this->json($survey->getId(), 201);
         }
 
