@@ -31,16 +31,23 @@ class PageController extends AbstractController implements TokenAuthenticatedCon
 
     /**
      * @Route(
-     *     "/{surveyId}/versions/{versionId}/pages",
+     *     "/{surveyId}/versions/{version}/pages",
      *     name="storm_api.v1.survey.page.create",
      *     requirements={"surveyId"="\d+", "versionId"="\d+"},
      *     methods={"POST"}
      * )
      */
-    public function create(Request $request, int $surveyId, int $versionId): JsonResponse
+    public function create(Request $request, int $surveyId, int $version): JsonResponse
     {
         $data   = $this->getJson($request);
-        $survey = $this->surveyService->findBySurveyIdAndVersion($surveyId, $versionId);
+        $survey = $this->surveyService->findBySurveyIdAndVersion($surveyId, $version);
+
+        if(!$survey) {
+            return $this->json(
+                sprintf('Survey with ID: %d, version: %d was not found', $surveyId, $version),
+                404
+            );
+        }
 
         $page = new Document\Page();
 

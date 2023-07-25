@@ -74,6 +74,15 @@ class SurveyPath
         $this->dm->flush();
     }
 
+    public function deleteBySurveyId(int $surveyId)
+    {
+        $this->dm->createQueryBuilder(Document\SurveyPath::class)
+                 ->remove()
+                 ->field('surveyId')->equals($surveyId)
+                 ->getQuery()
+                 ->execute();
+    }
+
     public function getRandomWeightedElement(array $paths): ?Document\SurveyPath
     {
         $weightedValues = [];
