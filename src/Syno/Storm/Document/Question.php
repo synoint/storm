@@ -543,9 +543,10 @@ class Question
 
     public function hasMedia(): bool
     {
-        if (strpos($this->getText(), Page::VIDEO_TAG) !== false ||
-            strpos($this->getText(), Page::AUDIO_TAG) !== false) {
-            return true;
+        foreach ([Page::AUDIO_TAG, Page::VIDEO_TAG] as $mediaTag) {
+            if ($this->getText() && str_contains($this->getText(), $mediaTag)) {
+                return true;
+            }
         }
 
         foreach ($this->answers as $answer) {

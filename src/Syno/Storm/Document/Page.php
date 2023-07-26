@@ -196,13 +196,14 @@ class Page
 
     public function hasMedia(): bool
     {
-        if (strpos($this->getContent(), self::VIDEO_TAG) !== false ||
-            strpos($this->getContent(), self::AUDIO_TAG) !== false) {
-            return true;
+        foreach ([self::AUDIO_TAG, self::VIDEO_TAG] as $mediaTag) {
+            if ($this->getContent() && str_contains($this->getContent(), $mediaTag)) {
+                return true;
+            }
         }
 
         foreach ($this->getQuestions() as $question) {
-            if($question->hasMedia()) {
+            if ($question->hasMedia()) {
                 return true;
             }
         }

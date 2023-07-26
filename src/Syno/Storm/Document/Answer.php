@@ -376,12 +376,18 @@ class Answer
 
     public function hasMedia(): bool
     {
-        return
-            strpos($this->getLabel(), Page::VIDEO_TAG) !== false ||
-            strpos($this->getLabel(), Page::AUDIO_TAG) !== false ||
-            strpos($this->getRowLabel(), Page::VIDEO_TAG) !== false ||
-            strpos($this->getRowLabel(), Page::AUDIO_TAG) !== false ||
-            strpos($this->getColumnLabel(), Page::VIDEO_TAG) !== false ||
-            strpos($this->getColumnLabel(), Page::AUDIO_TAG) !== false;
+        foreach ([Page::AUDIO_TAG, Page::VIDEO_TAG] as $mediaTag) {
+            if ($this->getLabel() && str_contains($this->getLabel(), $mediaTag)) {
+                return true;
+            }
+            if ($this->getRowLabel() && str_contains($this->getRowLabel(), $mediaTag)) {
+                return true;
+            }
+            if ($this->getColumnLabel() && str_contains($this->getColumnLabel(), $mediaTag)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }
