@@ -9,7 +9,7 @@ error.one.option.in.each.row.required: 'Une option doit être sélectionnée dan
 error.one.option.required: 'Une option doit être sélectionnée'
 error.answer.required: "Cela doit être répondu"
 page.button.back: 'Retour'
-page.button.next: 'Prochain'
+page.button.next: 'Suivant'
 page.button.submit: 'Soumettre'
 survey_completed.answers_received: 'Vos réponses ont été reçues.'
 survey_screenouted.message: 'Cependant, nous vous remercions sincèrement pour votre temps, votre dévouement et votre participation continue à nos enquêtes en ligne.'
