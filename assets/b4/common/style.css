@@ -230,6 +230,11 @@ footer {
   background-color: var(--white);
 }
 
+.page-back-button, .page-next-button {
+  margin-left: 0.5rem;
+  margin-right: 0.5rem;
+}
+
 @media (min-width: 768px) {
   .matrix thead th {
     font-size: 14px;
@@ -363,5 +368,9 @@ footer {
 @media screen and (max-width: 475px) {
   .test-mode-footer-text {
     font-size: 1rem;
+  }
+  .page-back-button, .page-next-button {
+    margin-left: 0;
+    margin-right: 0;
   }
 }
