@@ -350,4 +350,18 @@ footer {
   .linear-scale__text-holder-bottom .linear-scale__text-1 {
     display: none;
   }
+
+  .container.page-content {
+    margin-bottom: 5rem;
+  }
+
+  .test-mode-footer-text {
+    font-size: 1.125rem;
+  }
+}
+
+@media screen and (max-width: 475px) {
+  .test-mode-footer-text {
+    font-size: 1rem;
+  }
 }
