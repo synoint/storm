@@ -76,7 +76,7 @@
                                 {% for answer in question.answers %}
                                     {% if '' != answer.label %}
                                         <div class="form-row">
-                                            <div class="col-12">{{ answer.label }}</div>
+                                            <div class="col-12">{{ answer.label | raw }}</div>
                                         </div>
                                     {% endif %}
                                     <div class="form-row">
