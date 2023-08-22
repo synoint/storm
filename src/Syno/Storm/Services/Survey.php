@@ -3,8 +3,6 @@
 namespace Syno\Storm\Services;
 
 use Doctrine\ODM\MongoDB\DocumentManager;
-use Doctrine\ODM\MongoDB\LockException;
-use Doctrine\ODM\MongoDB\Mapping\MappingException;
 use Syno\Storm\Document;
 
 class Survey
