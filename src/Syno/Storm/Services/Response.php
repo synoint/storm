@@ -152,6 +152,18 @@ class Response
         ];
     }
 
+    public function liveCountBySurveyAndVersion(int $surveyId, int $version): int
+    {
+        return $this->dm
+            ->createQueryBuilder(Document\Response::class)
+            ->field('surveyId')->equals($surveyId)
+            ->field('version')->equals($version)
+            ->field('mode')->equals(Document\Response::MODE_LIVE)
+            ->count()
+            ->getQuery()
+            ->execute();
+    }
+
     private function generateResponseId(): string
     {
         return uniqid($this->responseIdPrefix);

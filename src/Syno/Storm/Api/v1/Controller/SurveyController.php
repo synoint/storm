@@ -5,6 +5,7 @@ namespace Syno\Storm\Api\v1\Controller;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response as HttpResponse;
 use Symfony\Component\Routing\Annotation\Route;
 use Syno\Storm\Api\Controller\TokenAuthenticatedController;
 use Syno\Storm\Api\v1\Form;
@@ -47,7 +48,8 @@ class SurveyController extends AbstractController implements TokenAuthenticatedC
         SurveyPath        $surveyPathService,
         Randomization     $randomizationService,
         SurveyConfig      $surveyConfigService
-    ) {
+    )
+    {
         $this->responseService          = $responseService;
         $this->responseEventService     = $responseEventService;
         $this->surveyService            = $surveyService;
@@ -316,12 +318,51 @@ class SurveyController extends AbstractController implements TokenAuthenticatedC
                 $surveyConfig = $this->surveyConfigService->findBySurveyIdAndKey($surveyId, $key);
 
                 if ($surveyConfig) {
-                  $this->surveyConfigService->delete($surveyConfig);
+                    $this->surveyConfigService->delete($surveyConfig);
                 }
             }
         }
 
         return $this->json('ok');
+    }
+
+    /**
+     * @Route(
+     *     "/{surveyId}/{version}/cleanup",
+     *     name="storm_api.v1.survey.cleanup",
+     *     requirements={"id"="\d+"},
+     *     methods={"POST"}
+     * )
+     */
+    public function cleanup(int $surveyId, int $version): JsonResponse
+    {
+        $survey            = $this->surveyService->findBySurveyIdAndVersion($surveyId, $version);
+        $lastSurveyVersion = $this->surveyService->findLatestVersion($surveyId);
+
+        if (!$survey) {
+            return $this->json(
+                sprintf('Survey with ID: %d, version: %d was not found', $surveyId, $version),
+                404
+            );
+        }
+
+        if ($survey->isPublished()) {
+            return $this->json('Published survey can not be deleted', HttpResponse::HTTP_UNPROCESSABLE_ENTITY);
+        }
+
+        if ($lastSurveyVersion != $survey->getVersion()) {
+            $responses = $this->responseService->liveCountBySurveyAndVersion($survey->getSurveyId(), $survey->getVersion());
+
+            if (!$responses) {
+                $this->surveyService->delete($survey);
+
+                return $this->json(sprintf('Survey (surveyId: %d, version: %d) deleted', $surveyId, $version));
+            }
+
+            return $this->json('Survey can not be deleted because this survey version has responses', HttpResponse::HTTP_UNPROCESSABLE_ENTITY);
+        }
+
+        return $this->json('Latest survey version can not be deleted', HttpResponse::HTTP_UNPROCESSABLE_ENTITY);
     }
 
     protected function deleteSurvey(Document\Survey $survey)
