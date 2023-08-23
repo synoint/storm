@@ -54,14 +54,18 @@ class Response
     /**
      * @return Document\Response[]
      */
-    public function getAllBySurveyIdAndVersion(int $surveyId, int $version): array
+    public function getAllNotLiveResponsesBySurveyIdAndVersion(int $surveyId, int $version)
     {
-        return $this->dm->getRepository(Document\Response::class)->findBy(
-            [
-                'surveyId'      => $surveyId,
-                'surveyVersion' => $version,
-            ]
-        );
+        $qb = $this->dm->createQueryBuilder(Document\Response::class);
+
+        return $this->dm
+            ->createQueryBuilder(Document\Response::class)
+            ->field('surveyId')->equals($surveyId)
+            ->field('surveyVersion')->equals($version)
+            ->addOr($qb->expr()->field('mode')->equals(Document\Response::MODE_TEST))
+            ->addOr($qb->expr()->field('mode')->equals(Document\Response::MODE_DEBUG))
+            ->getQuery()
+            ->execute();
     }
 
     public function getAllByQuestionId(int $questionId, array $params = []): array
@@ -157,7 +161,7 @@ class Response
         return $this->dm
             ->createQueryBuilder(Document\Response::class)
             ->field('surveyId')->equals($surveyId)
-            ->field('version')->equals($version)
+            ->field('surveyVersion')->equals($version)
             ->field('mode')->equals(Document\Response::MODE_LIVE)
             ->count()
             ->getQuery()
