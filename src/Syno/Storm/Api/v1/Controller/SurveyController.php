@@ -142,9 +142,12 @@ class SurveyController extends AbstractController implements TokenAuthenticatedC
      *     methods={"DELETE"}
      * )
      */
-    public function delete(int $surveyId, int $version): JsonResponse
+    public function delete(Request $request, int $surveyId, int $version): JsonResponse
     {
-        $survey = $this->surveyService->findBySurveyIdAndVersion($surveyId, $version);
+        $deleteOnlyUnused  = $request->get('deleteOnlyUnused');
+        $survey            = $this->surveyService->findBySurveyIdAndVersion($surveyId, $version);
+        $lastSurveyVersion = $this->surveyService->findLatestVersion($surveyId);
+
         if (!$survey) {
             return $this->json(
                 sprintf('Survey with ID: %d, version: %d was not found', $surveyId, $version),
@@ -152,9 +155,34 @@ class SurveyController extends AbstractController implements TokenAuthenticatedC
             );
         }
 
+        if($deleteOnlyUnused) {
+            if ($survey->isPublished()) {
+                return $this->json(
+                    sprintf('Published survey (surveyId: %d, version: %d) can not be deleted', $surveyId, $version),
+                    HttpResponse::HTTP_UNPROCESSABLE_ENTITY
+                );
+            }
+
+            if ($lastSurveyVersion == $survey->getVersion()) {
+                return $this->json(
+                    sprintf('Survey (surveyId: %d, version: %d) Latest survey version can not be deleted', $surveyId, $version),
+                    HttpResponse::HTTP_UNPROCESSABLE_ENTITY
+                );
+            }
+
+            $responses = $this->responseService->liveCountBySurveyAndVersion($survey->getSurveyId(), $survey->getVersion());
+
+            if ($responses) {
+                return $this->json(
+                    sprintf('Survey (surveyId: %d, version: %d) can not be deleted because this survey version has responses', $surveyId, $version),
+                    HttpResponse::HTTP_UNPROCESSABLE_ENTITY
+                );
+            }
+        }
+
         $this->deleteSurvey($survey);
 
-        return $this->json('ok');
+        return $this->json(sprintf('Survey (surveyId: %d, version: %d) deleted', $surveyId, $version));
     }
 
     /**
@@ -324,45 +352,6 @@ class SurveyController extends AbstractController implements TokenAuthenticatedC
         }
 
         return $this->json('ok');
-    }
-
-    /**
-     * @Route(
-     *     "/{surveyId}/{version}/cleanup",
-     *     name="storm_api.v1.survey.cleanup",
-     *     requirements={"id"="\d+"},
-     *     methods={"POST"}
-     * )
-     */
-    public function cleanup(int $surveyId, int $version): JsonResponse
-    {
-        $survey            = $this->surveyService->findBySurveyIdAndVersion($surveyId, $version);
-        $lastSurveyVersion = $this->surveyService->findLatestVersion($surveyId);
-
-        if (!$survey) {
-            return $this->json(
-                sprintf('Survey with ID: %d, version: %d was not found', $surveyId, $version),
-                404
-            );
-        }
-
-        if ($survey->isPublished()) {
-            return $this->json('Published survey can not be deleted', HttpResponse::HTTP_UNPROCESSABLE_ENTITY);
-        }
-
-        if ($lastSurveyVersion != $survey->getVersion()) {
-            $responses = $this->responseService->liveCountBySurveyAndVersion($survey->getSurveyId(), $survey->getVersion());
-
-            if (!$responses) {
-                $this->surveyService->delete($survey);
-
-                return $this->json(sprintf('Survey (surveyId: %d, version: %d) deleted', $surveyId, $version));
-            }
-
-            return $this->json('Survey can not be deleted because this survey version has responses', HttpResponse::HTTP_UNPROCESSABLE_ENTITY);
-        }
-
-        return $this->json('Latest survey version can not be deleted', HttpResponse::HTTP_UNPROCESSABLE_ENTITY);
     }
 
     protected function deleteSurvey(Document\Survey $survey)
