@@ -195,8 +195,7 @@ class Response implements JsonSerializable
             'parameters'         => $this->parameters,
             'answers'            => $this->getAnswers(),
             'events'             => $this->events,
-            'surveyPathId'       => $this->surveyPathId,
-            'surveyPath'         => $this->surveyPath,
+            'surveyPathId'       => $this->surveyPathId
         ];
     }
 
