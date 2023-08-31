@@ -19,11 +19,6 @@ class SurveyType extends AbstractType
             ->add('surveyId', IntegerType::class)
             ->add('version', IntegerType::class)
             ->add('logoPath', TextType::class)
-            ->add('pages', CollectionType::class, [
-                'entry_type'   => PageType::class,
-                'by_reference' => false,
-                'allow_add'    => true
-            ])
             ->add('css', CollectionType::class, [
                 'entry_type'   => CssType::class,
                 'by_reference' => false,

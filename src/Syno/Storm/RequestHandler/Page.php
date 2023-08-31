@@ -16,17 +16,17 @@ class Page
         $this->requestStack = $requestStack;
     }
 
-    public function getPage(): Document\Page
+    public function getPage(): Document\SurveyPage
     {
         $page = $this->requestStack->getCurrentRequest()->attributes->get(self::ATTR);
-        if (!$page instanceof Document\Page) {
+        if (!$page instanceof Document\SurveyPage) {
             throw new \UnexpectedValueException('Page attribute is invalid');
         }
 
         return $page;
     }
 
-    public function setPage(Document\Page $page)
+    public function setPage(Document\SurveyPage $page)
     {
         $this->requestStack->getCurrentRequest()->attributes->set(self::ATTR, $page);
     }

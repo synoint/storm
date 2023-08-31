@@ -41,7 +41,7 @@ class ResponseDataLayer
     {
         $result = [];
 
-        /** @var Document\Page $page */
+        /** @var Document\SurveyPage $page */
         foreach ($survey->getPages() as $page) {
             /** @var Document\Question $question */
             foreach ($page->getQuestions() as $question) {

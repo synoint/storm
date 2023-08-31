@@ -10,6 +10,7 @@ use Syno\Storm\Api\Controller\TokenAuthenticatedController;
 use Syno\Storm\Api\v1\Form;
 use Syno\Storm\Api\v1\Http\ApiResponse;
 use Syno\Storm\Document;
+use Syno\Storm\Services\Page;
 use Syno\Storm\Services\Survey;
 use Syno\Storm\Traits\FormAware;
 use Syno\Storm\Traits\JsonRequestAware;
@@ -23,16 +24,18 @@ class PageController extends AbstractController implements TokenAuthenticatedCon
     use JsonRequestAware;
 
     private Survey $surveyService;
+    private Page $pageService;
 
-    public function __construct(Survey $surveyService)
+    public function __construct(Survey $surveyService, Page $pageService)
     {
         $this->surveyService = $surveyService;
+        $this->pageService   = $pageService;
     }
 
     /**
      * @Route(
      *     "/{surveyId}/versions/{version}/pages",
-     *     name="storm_api.v1.survey.page.create",
+     *     name="storm_api.v1.page.create",
      *     requirements={"surveyId"="\d+", "versionId"="\d+"},
      *     methods={"POST"}
      * )
@@ -49,7 +52,7 @@ class PageController extends AbstractController implements TokenAuthenticatedCon
             );
         }
 
-        $page = new Document\Page();
+        $page = new Document\SurveyPage();
 
         $form = $this->createForm(Form\PageType::class, $page);
         $form->submit($data);
@@ -58,9 +61,30 @@ class PageController extends AbstractController implements TokenAuthenticatedCon
             $survey->getPages()->add($page);
             $this->surveyService->save($survey);
 
-            return $this->json($survey->getId());
+            return $this->json($page->getPageId());
         }
 
         return new ApiResponse('Survey creation failed!', null, $this->getFormErrors($form), 400);
+    }
+
+    /**
+     * @Route(
+     *     "/{surveyId}/versions/{version}/pages",
+     *     name="storm_api.v1.page.retrieve_all",
+     *     requirements={"id"="\d+", "version"="\d+"},
+     *     methods={"GET"}
+     * )
+     */
+    public function retrieveAll(int $surveyId, int $version): JsonResponse
+    {
+        $survey = $this->surveyService->findBySurveyIdAndVersion($surveyId, $version);
+        if (!$survey) {
+            return $this->json(
+                sprintf('Survey with ID: %d, version: %d was not found', $surveyId, $version),
+                404
+            );
+        }
+
+        return $this->json($survey->getPages());
     }
 }

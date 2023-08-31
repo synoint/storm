@@ -9,10 +9,9 @@ use Symfony\Component\Validator\Constraints as Assert;
 use Syno\Storm\Traits\TranslatableTrait;
 
 /**
- * @ODM\Document(collection="page"))
- * @ODM\UniqueIndex(keys={"pageId"="asc", "surveyId"="asc", "version"="asc"})
+ * @ODM\EmbeddedDocument
  */
-class Page
+class SurveyPage
 {
     use TranslatableTrait;
 
@@ -31,22 +30,6 @@ class Page
      * @Assert\Positive
      */
     private $pageId;
-
-    /**
-     * @var int
-     *
-     * @ODM\Field(type="int")
-     * @Assert\Positive
-     */
-    private $surveyId;
-
-    /**
-     * @var int
-     *
-     * @ODM\Field(type="int")
-     * @Assert\Positive
-     */
-    private $version;
 
     /**
      * @ODM\Field(type="string")
@@ -103,7 +86,7 @@ class Page
     /**
      * @param mixed $id
      *
-     * @return Page
+     * @return SurveyPage
      */
     public function setId($id)
     {
@@ -123,33 +106,13 @@ class Page
     /**
      * @param int $pageId
      *
-     * @return Page
+     * @return SurveyPage
      */
-    public function setPageId(int $pageId): Page
+    public function setPageId(int $pageId): SurveyPage
     {
         $this->pageId = $pageId;
 
         return $this;
-    }
-
-    public function getSurveyId(): int
-    {
-        return $this->surveyId;
-    }
-
-    public function setSurveyId(int $surveyId): void
-    {
-        $this->surveyId = $surveyId;
-    }
-
-    public function getVersion(): int
-    {
-        return $this->version;
-    }
-
-    public function setVersion(int $version): void
-    {
-        $this->version = $version;
     }
 
     /**
@@ -163,7 +126,7 @@ class Page
     /**
      * @param mixed $code
      *
-     * @return Page
+     * @return SurveyPage
      */
     public function setCode($code)
     {
@@ -183,9 +146,9 @@ class Page
     /**
      * @param int $sortOrder
      *
-     * @return Page
+     * @return SurveyPage
      */
-    public function setSortOrder(int $sortOrder): Page
+    public function setSortOrder(int $sortOrder): SurveyPage
     {
         $this->sortOrder = $sortOrder;
 
@@ -207,21 +170,10 @@ class Page
         return $this->content;
     }
 
-    public function hasContent(): bool
-    {
-        /** @var PageTranslation $translation */
-        $translation = $this->getTranslation();
-        if (null !== $translation && !empty($translation->getContent())) {
-            return (bool)strlen(trim($translation->getContent()));
-        }
-
-        return (bool)strlen(trim($this->content));
-    }
-
     /**
      * @param mixed $content
      *
-     * @return Page
+     * @return SurveyPage
      */
     public function setContent($content)
     {
@@ -235,7 +187,7 @@ class Page
         return $this->javascript;
     }
 
-    public function setJavascript(?string $javascript): self
+    public function setJavascript(string $javascript): self
     {
         $this->javascript = $javascript;
 
@@ -290,15 +242,5 @@ class Page
         $this->questions = $questions;
 
         return $this;
-    }
-
-    public function getTranslations()
-    {
-        return $this->translations;
-    }
-
-    public function setTranslations($translations): void
-    {
-        $this->translations = $translations;
     }
 }

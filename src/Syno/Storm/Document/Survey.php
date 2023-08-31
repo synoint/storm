@@ -66,7 +66,7 @@ class Survey implements JsonSerializable
     /**
      * @var Collection
      *
-     * @ODM\EmbedMany(targetDocument=Page::class)
+     * @ODM\EmbedMany(targetDocument=SurveyPage::class)
      */
     private $pages;
 
@@ -240,7 +240,7 @@ class Survey implements JsonSerializable
     }
 
     /**
-     * @return Collection|Page[]
+     * @return Collection|SurveyPage[]
      */
     public function getPages(): Collection
     {
@@ -259,9 +259,9 @@ class Survey implements JsonSerializable
     }
 
 
-    public function getFirstPage(): Page
+    public function getFirstPage(): SurveyPage
     {
-        return $this->pages->filter(function (Page $page) {
+        return $this->pages->filter(function (SurveyPage $page) {
             return $page->getQuestions()->count() == 0 || $page->getVisibleQuestions()->count() > 0;
         })->first();
     }
@@ -273,7 +273,7 @@ class Survey implements JsonSerializable
         return $this;
     }
 
-    public function getPage(int $pageId): ?Page
+    public function getPage(int $pageId): ?SurveyPage
     {
         $result = null;
         foreach ($this->pages as $page) {
@@ -286,7 +286,7 @@ class Survey implements JsonSerializable
         return $result;
     }
 
-    public function getPageByQuestion(int $questionId): ?Page
+    public function getPageByQuestion(int $questionId): ?SurveyPage
     {
         $result = null;
         foreach ($this->pages as $page) {
@@ -308,7 +308,7 @@ class Survey implements JsonSerializable
     {
         $questions = new ArrayCollection();
 
-        /** @var Page $page */
+        /** @var SurveyPage $page */
         foreach ($this->pages as $page) {
             $questions = new ArrayCollection(array_merge($questions->toArray(), $page->getQuestions()->toArray()));
         }

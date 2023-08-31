@@ -543,7 +543,7 @@ class Question
 
     public function hasMedia(): bool
     {
-        foreach ([Page::AUDIO_TAG, Page::VIDEO_TAG] as $mediaTag) {
+        foreach ([SurveyPage::AUDIO_TAG, SurveyPage::VIDEO_TAG] as $mediaTag) {
             if ($this->getText() && str_contains($this->getText(), $mediaTag)) {
                 return true;
             }

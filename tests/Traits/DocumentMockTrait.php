@@ -23,9 +23,9 @@ trait DocumentMockTrait
         return $survey;
     }
 
-    public function mockPage(array $values = []): Document\Page
+    public function mockPage(array $values = []): Document\SurveyPage
     {
-        $page = new Document\Page();
+        $page = new Document\SurveyPage();
 
         $id     = rand(1, 1000);
         $pageId = $this->pageId;
