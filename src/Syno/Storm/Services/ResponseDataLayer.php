@@ -22,7 +22,7 @@ class ResponseDataLayer
         $responseSurvey = $this->surveyService->findBySurveyIdAndVersion($response->getSurveyId(), $response->getSurveyVersion());
 
         $result['answers'] = [];
-
+//dd($response->getAnswers());
         /** @var Document\ResponseAnswer $responseAnswer */
         foreach ($response->getAnswers() as $responseAnswer) {
             /** @var Document\ResponseAnswerValue $responseAnswerValue */
@@ -45,9 +45,12 @@ class ResponseDataLayer
         foreach ($survey->getPages() as $page) {
             /** @var Document\Question $question */
             foreach ($page->getQuestions() as $question) {
+                $question->setCurrentLocale($locale);
                 /** @var Document\Answer $answer */
                 foreach ($question->getAnswers() as $answer) {
                     if ($answer->getAnswerId() === $answerId) {
+                        $answer->setCurrentLocale($locale);
+
                         $result['pageCode'] = $page->getCode();
                         $result['questionCode'] = $question->getCode();
                         $result['questionText'] = $question->getText();
