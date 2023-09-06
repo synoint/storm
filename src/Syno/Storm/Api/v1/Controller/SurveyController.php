@@ -199,9 +199,22 @@ class SurveyController extends AbstractController implements TokenAuthenticatedC
                 404
             );
         }
-        $this->surveyService->publish($survey);
 
-        $this->surveyEventLoggerService->log(SurveyEventLogger::SURVEY_PUBLISHED, $survey);
+        $surveys = $this->surveyService->findAllBySurveyId($surveyId);
+
+        foreach ($surveys as $savedSurvey) {
+            if ($savedSurvey->getVersion() === $survey->getVersion()) {
+                $savedSurvey->setPublished(true);
+
+                $this->surveyService->save($savedSurvey);
+                $this->surveyEventLoggerService->log(SurveyEventLogger::SURVEY_PUBLISHED, $survey);
+            } elseif ($savedSurvey->isPublished()) {
+                $savedSurvey->setPublished(false);
+
+                $this->surveyService->save($savedSurvey);
+                $this->surveyEventLoggerService->log(SurveyEventLogger::SURVEY_UNPUBLISHED, $savedSurvey);
+            }
+        }
 
         return $this->json('ok');
     }
@@ -364,6 +377,5 @@ class SurveyController extends AbstractController implements TokenAuthenticatedC
 
         $this->surveyEventService->deleteEvents($survey->getSurveyId(), $survey->getVersion());
         $this->surveyService->delete($survey);
-        $this->surveyEventLoggerService->log(SurveyEventLogger::SURVEY_DELETED, $survey);
     }
 }

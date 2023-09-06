@@ -11,6 +11,7 @@ use Syno\Storm\Document;
 use Syno\Storm\Services\Response;
 use Syno\Storm\Services\ResponseEvent;
 use Syno\Storm\Services\ResponseEventLogger;
+use Syno\Storm\Services\Survey;
 use Syno\Storm\Traits\FormAware;
 use Syno\Storm\Traits\JsonRequestAware;
 
@@ -22,21 +23,18 @@ class ResponseController extends AbstractController implements TokenAuthenticate
     use FormAware;
     use JsonRequestAware;
 
+    private Survey              $surveyService;
     private Response            $responseService;
     private ResponseEvent       $responseEventService;
     private ResponseEventLogger $responseEventLogger;
 
-    /**
-     * @param Response $responseService
-     * @param ResponseEvent $responseEventService
-     * @param ResponseEventLogger $responseEventLogger
-     */
     public function __construct(
+        Survey              $surveyService,
         Response            $responseService,
         ResponseEvent       $responseEventService,
-        ResponseEventLogger $responseEventLogger
-    )
+        ResponseEventLogger $responseEventLogger)
     {
+        $this->surveyService        = $surveyService;
         $this->responseService      = $responseService;
         $this->responseEventService = $responseEventService;
         $this->responseEventLogger  = $responseEventLogger;
@@ -289,5 +287,27 @@ class ResponseController extends AbstractController implements TokenAuthenticate
         }
 
         return $this->json('Response data not found', 404);
+    }
+
+    /**
+     * @Route(
+     *     "/{surveyId}/versions/{version}/responses/live-count",
+     *     name="storm_api.v1.response.live_count",
+     *     requirements={"surveyId"="\d+", "version"="\d+"},
+     *     methods={"GET"}
+     * )
+     */
+    public function liveCount(int $surveyId, int $version): JsonResponse
+    {
+        $survey = $this->surveyService->findBySurveyIdAndVersion($surveyId, $version);
+
+        if (!$survey) {
+            return $this->json(
+                sprintf('Survey with ID: %d, version: %d was not found', $surveyId, $version),
+                404
+            );
+        }
+
+        return $this->json($this->responseService->fetchLiveCount($surveyId, $version));
     }
 }

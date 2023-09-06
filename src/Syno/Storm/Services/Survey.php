@@ -103,22 +103,6 @@ class Survey
         );
     }
 
-    public function publish(Document\Survey $survey)
-    {
-        $surveys = $this->dm->getRepository(Document\Survey::class)->findBy(
-            ['surveyId' => $survey->getSurveyId()]
-        );
-
-        foreach ($surveys as &$savedSurvey) {
-            if ($savedSurvey->getVersion() === $survey->getVersion()) {
-                $savedSurvey->setPublished(true);
-            } elseif ($savedSurvey->isPublished()) {
-                $savedSurvey->setPublished(false);
-            }
-        }
-        $this->dm->flush();
-    }
-
     public function delete(Document\Survey $survey)
     {
         $this->dm->remove($survey);
@@ -162,5 +146,15 @@ class Survey
         }
 
         return round(($completedQuestionCount / $questionCount) * 100);
+    }
+
+    /**
+     * @return Document\Survey[]
+     */
+    public function findAllBySurveyId(int $surveyId): array
+    {
+        return $this->dm->getRepository(Document\Survey::class)->findBy(
+            ['surveyId' => $surveyId]
+        );
     }
 }
