@@ -375,6 +375,7 @@ class SurveyController extends AbstractController implements TokenAuthenticatedC
             }
         }
 
+        $this->surveyPathService->deleteBySurveyIdAndVersion($survey->getSurveyId(), $survey->getVersion());
         $this->surveyEventService->deleteEvents($survey->getSurveyId(), $survey->getVersion());
         $this->surveyService->delete($survey);
     }

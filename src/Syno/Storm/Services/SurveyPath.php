@@ -68,21 +68,6 @@ class SurveyPath
         $this->dm->flush();
     }
 
-    public function delete(Document\SurveyPath $surveyPath)
-    {
-        $this->dm->remove($surveyPath);
-        $this->dm->flush();
-    }
-
-    public function deleteBySurveyId(int $surveyId)
-    {
-        $this->dm->createQueryBuilder(Document\SurveyPath::class)
-                 ->remove()
-                 ->field('surveyId')->equals($surveyId)
-                 ->getQuery()
-                 ->execute();
-    }
-
     public function getRandomWeightedElement(array $paths): ?Document\SurveyPath
     {
         $weightedValues = [];
@@ -103,5 +88,30 @@ class SurveyPath
         }
 
         throw new \Exception('Exception. Could not find path with random weight of ' . $randLog);
+    }
+
+    public function delete(Document\SurveyPath $surveyPath)
+    {
+        $this->dm->remove($surveyPath);
+        $this->dm->flush();
+    }
+
+    public function deleteBySurveyId(int $surveyId)
+    {
+        $this->dm->createQueryBuilder(Document\SurveyPath::class)
+                 ->remove()
+                 ->field('surveyId')->equals($surveyId)
+                 ->getQuery()
+                 ->execute();
+    }
+
+    public function deleteBySurveyIdAndVersion(int $surveyId, int $version)
+    {
+        $this->dm->createQueryBuilder(Document\SurveyPath::class)
+                 ->remove()
+                 ->field('surveyId')->equals($surveyId)
+                 ->field('version')->equals($version)
+                 ->getQuery()
+                 ->execute();
     }
 }
