@@ -23,18 +23,15 @@ class ResponseController extends AbstractController implements TokenAuthenticate
     use FormAware;
     use JsonRequestAware;
 
-    private Survey              $surveyService;
     private Response            $responseService;
     private ResponseEvent       $responseEventService;
     private ResponseEventLogger $responseEventLogger;
 
     public function __construct(
-        Survey              $surveyService,
         Response            $responseService,
         ResponseEvent       $responseEventService,
         ResponseEventLogger $responseEventLogger)
     {
-        $this->surveyService        = $surveyService;
         $this->responseService      = $responseService;
         $this->responseEventService = $responseEventService;
         $this->responseEventLogger  = $responseEventLogger;
