@@ -144,36 +144,12 @@ class SurveyController extends AbstractController implements TokenAuthenticatedC
      */
     public function delete(int $surveyId, int $version): JsonResponse
     {
-        $survey            = $this->surveyService->findBySurveyIdAndVersion($surveyId, $version);
-        $lastSurveyVersion = $this->surveyService->findLatestVersion($surveyId);
+        $survey = $this->surveyService->findBySurveyIdAndVersion($surveyId, $version);
 
         if (!$survey) {
             return $this->json(
                 sprintf('Survey with ID: %d, version: %d was not found', $surveyId, $version),
                 404
-            );
-        }
-
-        if ($survey->isPublished()) {
-            return $this->json(
-                sprintf('Published survey (surveyId: %d, version: %d) can not be deleted', $surveyId, $version),
-                HttpResponse::HTTP_UNPROCESSABLE_ENTITY
-            );
-        }
-
-        if ($lastSurveyVersion == $survey->getVersion()) {
-            return $this->json(
-                sprintf('Survey (surveyId: %d, version: %d) Latest survey version can not be deleted', $surveyId, $version),
-                HttpResponse::HTTP_UNPROCESSABLE_ENTITY
-            );
-        }
-
-        $responses = $this->responseService->liveCountBySurveyAndVersion($survey->getSurveyId(), $survey->getVersion());
-
-        if ($responses) {
-            return $this->json(
-                sprintf('Survey (surveyId: %d, version: %d) can not be deleted because this survey version has live responses', $surveyId, $version),
-                HttpResponse::HTTP_UNPROCESSABLE_ENTITY
             );
         }
 
@@ -366,7 +342,7 @@ class SurveyController extends AbstractController implements TokenAuthenticatedC
 
     protected function deleteSurvey(Document\Survey $survey)
     {
-        $responses = $this->responseService->getAllNotLiveResponsesBySurveyIdAndVersion($survey->getSurveyId(), $survey->getVersion());
+        $responses = $this->responseService->getAllBySurveyIdAndVersion($survey->getSurveyId(), $survey->getVersion());
 
         if ($responses) {
             foreach ($responses as $response) {
