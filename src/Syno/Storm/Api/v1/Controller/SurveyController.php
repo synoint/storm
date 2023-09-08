@@ -5,7 +5,6 @@ namespace Syno\Storm\Api\v1\Controller;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response as HttpResponse;
 use Symfony\Component\Routing\Annotation\Route;
 use Syno\Storm\Api\Controller\TokenAuthenticatedController;
 use Syno\Storm\Api\v1\Form;
@@ -176,21 +175,9 @@ class SurveyController extends AbstractController implements TokenAuthenticatedC
             );
         }
 
-        $surveys = $this->surveyService->findAllBySurveyId($surveyId);
+        $this->surveyService->publish($survey);
 
-        foreach ($surveys as $savedSurvey) {
-            if ($savedSurvey->getVersion() === $survey->getVersion()) {
-                $savedSurvey->setPublished(true);
-
-                $this->surveyService->save($savedSurvey);
-                $this->surveyEventLoggerService->log(SurveyEventLogger::SURVEY_PUBLISHED, $survey);
-            } elseif ($savedSurvey->isPublished()) {
-                $savedSurvey->setPublished(false);
-
-                $this->surveyService->save($savedSurvey);
-                $this->surveyEventLoggerService->log(SurveyEventLogger::SURVEY_UNPUBLISHED, $savedSurvey);
-            }
-        }
+        $this->surveyEventLoggerService->log(SurveyEventLogger::SURVEY_PUBLISHED, $survey);
 
         return $this->json('ok');
     }
@@ -338,6 +325,28 @@ class SurveyController extends AbstractController implements TokenAuthenticatedC
         }
 
         return $this->json('ok');
+    }
+
+    /**
+     * @Route(
+     *     "/{surveyId}/versions/{version}/responses/live-count",
+     *     name="storm_api.v1.response.live_count",
+     *     requirements={"surveyId"="\d+", "version"="\d+"},
+     *     methods={"GET"}
+     * )
+     */
+    public function liveResponseCount(int $surveyId, int $version): JsonResponse
+    {
+        $survey = $this->surveyService->findBySurveyIdAndVersion($surveyId, $version);
+
+        if (!$survey) {
+            return $this->json(
+                sprintf('Survey with ID: %d, version: %d was not found', $surveyId, $version),
+                404
+            );
+        }
+
+        return $this->json($this->responseService->fetchLiveCount($surveyId, $version));
     }
 
     protected function deleteSurvey(Document\Survey $survey)
