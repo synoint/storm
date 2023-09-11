@@ -215,7 +215,7 @@ class ResponseSessionManager
             if (
                 $this->conditionService->filterQuestionsByShowCondition(
                     $nextPage->getQuestions(), $this->responseHandler->getResponse()
-                )->isEmpty()
+                )->isEmpty() && !$nextPage->hasContent()
             ) {
                 $nextPage = $this->getNextPage($nextPage->getPageId());
             }
