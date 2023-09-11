@@ -277,14 +277,18 @@ class Randomization
 
         $paths = [];
         foreach ($randomizedPaths['paths'] as $path) {
+            $newPath = [];
+            $i = 0;
             foreach ($pages as $position => $val) {
-                if (!in_array($val, $path)) {
-                    $path[$position] = $val;
+                if (in_array($val, $path)) {
+                    $newPath[$position] = $path[$i];
+                    $i++;
+                } else {
+                    $newPath[$position] = $val;
                 }
             }
 
-            ksort($path);
-            $paths[] = $path;
+            $paths[] = $newPath;
         }
 
         $combinations = ['paths' => $paths, 'weights' => $randomizedPaths['weights']];
