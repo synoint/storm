@@ -2,6 +2,8 @@
 
 namespace Syno\Storm\Services;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ODM\MongoDB\DocumentManager;
 use Syno\Storm\Document;
 
@@ -18,5 +20,32 @@ class Page
     {
         $this->dm->persist($page);
         $this->dm->flush();
+    }
+
+    public function findBySurvey(Document\Survey $survey): Collection
+    {
+        $pages = $this->dm->getRepository(Document\Page::class)->findBy(
+            [
+                'surveyId' => $survey->getSurveyId(),
+                'version'  => $survey->getVersion(),
+            ]
+        );
+
+        if (!$pages) {
+            return $survey->getPages();
+        }
+
+        return new ArrayCollection($pages);
+    }
+
+    public function deleteBySurvey(Document\Survey $survey)
+    {
+        $pages = $this->findBySurvey($survey);
+
+        foreach ($pages as $page) {
+            $this->dm->remove($page);
+            $this->dm->flush();
+        }
+
     }
 }

@@ -38,14 +38,14 @@ class PageCreationCommand extends Command
 
         $surveys = $this->findSurveys();
 
-//        $this->deletePages(); for testing
+//       $this->deletePages(); //for testing
 
         foreach ($surveys as $survey) {
             $output->writeln(sprintf('Creating pages for survey ID: %d and version: %d', $survey->getSurveyId(), $survey->getVersion()));
 
             $surveyPages = $survey->getPages();
 
-            /** @var Document\SurveyPage $surveyPage */
+            /** @var Document\PageInterface $surveyPage */
             foreach ($surveyPages as $surveyPage) {
                 if (!$this->pageExists($surveyPage->getPageId(), $survey->getSurveyId(), $survey->getVersion())) {
                     $newPage = new Document\Page();
@@ -71,18 +71,13 @@ class PageCreationCommand extends Command
         return 0;
     }
 
-    /**
-     * @return Document\Survey[]
-     */
-    private function findSurveys(): array
+    private function findSurveys()
     {
         return $this->dm->createQueryBuilder(Document\Survey::class)
                         ->select()
                         ->field('pages')->exists(true)
-                        ->sort('version', -1)
                         ->getQuery()
-                        ->execute()
-                        ->toArray();
+                        ->execute();
     }
 
     private function savePage(Document\Page $surveyPage) {

@@ -12,7 +12,7 @@ use Syno\Storm\Traits\TranslatableTrait;
  * @ODM\Document(collection="page"))
  * @ODM\UniqueIndex(keys={"pageId"="asc", "surveyId"="asc", "version"="asc"})
  */
-class Page
+class Page implements PageInterface
 {
     use TranslatableTrait;
 

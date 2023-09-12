@@ -240,7 +240,7 @@ class Survey implements JsonSerializable
     }
 
     /**
-     * @return Collection|SurveyPage[]
+     * @return Collection|PageInterface[]
      */
     public function getPages(): Collection
     {
@@ -259,9 +259,9 @@ class Survey implements JsonSerializable
     }
 
 
-    public function getFirstPage(): SurveyPage
+    public function getFirstPage(): PageInterface
     {
-        return $this->pages->filter(function (SurveyPage $page) {
+        return $this->pages->filter(function (PageInterface $page) {
             return $page->getQuestions()->count() == 0 || $page->getVisibleQuestions()->count() > 0;
         })->first();
     }
@@ -273,7 +273,7 @@ class Survey implements JsonSerializable
         return $this;
     }
 
-    public function getPage(int $pageId): ?SurveyPage
+    public function getPage(int $pageId): ?PageInterface
     {
         $result = null;
         foreach ($this->pages as $page) {
@@ -286,7 +286,7 @@ class Survey implements JsonSerializable
         return $result;
     }
 
-    public function getPageByQuestion(int $questionId): ?SurveyPage
+    public function getPageByQuestion(int $questionId): ?PageInterface
     {
         $result = null;
         foreach ($this->pages as $page) {
@@ -308,7 +308,7 @@ class Survey implements JsonSerializable
     {
         $questions = new ArrayCollection();
 
-        /** @var SurveyPage $page */
+        /** @var PageInterface $page */
         foreach ($this->pages as $page) {
             $questions = new ArrayCollection(array_merge($questions->toArray(), $page->getQuestions()->toArray()));
         }

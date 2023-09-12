@@ -11,7 +11,7 @@ use Syno\Storm\Traits\TranslatableTrait;
 /**
  * @ODM\EmbeddedDocument
  */
-class SurveyPage
+class SurveyPage implements PageInterface
 {
     use TranslatableTrait;
 

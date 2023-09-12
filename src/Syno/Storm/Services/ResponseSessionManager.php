@@ -33,9 +33,14 @@ class ResponseSessionManager
         $this->responseSession  = $responseSession;
     }
 
-    public function getPage(): Document\SurveyPage
+    public function getPage(): Document\PageInterface
     {
         return $this->pageHandler->getPage();
+    }
+
+    public function getSurvey(): Document\Survey
+    {
+        return $this->surveyHandler->getSurvey();
     }
 
     public function getResponse(): Document\Response
@@ -175,7 +180,7 @@ class ResponseSessionManager
 
         $firstPageWithVisibleQuestions = null;
 
-        /** @var Document\SurveyPage $page */
+        /** @var Document\PageInterface $page */
         foreach ($pages as $page) {
             if ($page->getVisibleQuestions()->count()) {
                 $firstPageWithVisibleQuestions = $page;
@@ -190,7 +195,7 @@ class ResponseSessionManager
         return false;
     }
 
-    private function getNextPage(int $pageId): ?Document\SurveyPage
+    private function getNextPage(int $pageId): ?Document\PageInterface
     {
         $response = $this->responseHandler->getResponse();
 

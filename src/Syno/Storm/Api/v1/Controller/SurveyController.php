@@ -10,6 +10,7 @@ use Syno\Storm\Api\Controller\TokenAuthenticatedController;
 use Syno\Storm\Api\v1\Form;
 use Syno\Storm\Api\v1\Http\ApiResponse;
 use Syno\Storm\Document;
+use Syno\Storm\Services\Page;
 use Syno\Storm\Services\Randomization;
 use Syno\Storm\Services\Response;
 use Syno\Storm\Services\ResponseEvent;
@@ -37,6 +38,7 @@ class SurveyController extends AbstractController implements TokenAuthenticatedC
     private SurveyPath        $surveyPathService;
     private Randomization     $randomizationService;
     private SurveyConfig      $surveyConfigService;
+    private Page              $pageService;
 
     public function __construct(
         Response          $responseService,
@@ -46,7 +48,8 @@ class SurveyController extends AbstractController implements TokenAuthenticatedC
         SurveyEventLogger $surveyEventLoggerService,
         SurveyPath        $surveyPathService,
         Randomization     $randomizationService,
-        SurveyConfig      $surveyConfigService
+        SurveyConfig      $surveyConfigService,
+        Page              $pageService
     )
     {
         $this->responseService          = $responseService;
@@ -57,6 +60,7 @@ class SurveyController extends AbstractController implements TokenAuthenticatedC
         $this->surveyPathService        = $surveyPathService;
         $this->randomizationService     = $randomizationService;
         $this->surveyConfigService      = $surveyConfigService;
+        $this->pageService              = $pageService;
     }
 
     /**
@@ -129,6 +133,8 @@ class SurveyController extends AbstractController implements TokenAuthenticatedC
                 404
             );
         }
+
+        $survey->setPages($this->pageService->findBySurvey($survey));
 
         return $this->json($survey);
     }
@@ -362,6 +368,7 @@ class SurveyController extends AbstractController implements TokenAuthenticatedC
 
         $this->surveyPathService->deleteBySurveyIdAndVersion($survey->getSurveyId(), $survey->getVersion());
         $this->surveyEventService->deleteEvents($survey->getSurveyId(), $survey->getVersion());
+        $this->pageService->deleteBySurvey($survey);
         $this->surveyService->delete($survey);
     }
 }

@@ -30,7 +30,7 @@ class PageController extends AbstractController
      *     methods={"GET","POST"}
      * )
      */
-    public function index(Document\Survey $survey, Document\SurveyPage $page, Request $request): Response
+    public function index(Document\Survey $survey, Document\PageInterface $page, Request $request): Response
     {
         $filteredQuestions = $this->responseSessionManager->getQuestions();
 

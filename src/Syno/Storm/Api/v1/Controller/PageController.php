@@ -52,39 +52,17 @@ class PageController extends AbstractController implements TokenAuthenticatedCon
             );
         }
 
-        $page = new Document\SurveyPage();
+        $page = new Document\Page();
 
         $form = $this->createForm(Form\PageType::class, $page);
         $form->submit($data);
 
         if ($form->isValid()) {
-            $survey->getPages()->add($page);
-            $this->surveyService->save($survey);
+            $this->pageService->save($page);
 
             return $this->json($page->getPageId());
         }
 
         return new ApiResponse('Survey creation failed!', null, $this->getFormErrors($form), 400);
-    }
-
-    /**
-     * @Route(
-     *     "/{surveyId}/versions/{version}/pages",
-     *     name="storm_api.v1.page.retrieve_all",
-     *     requirements={"id"="\d+", "version"="\d+"},
-     *     methods={"GET"}
-     * )
-     */
-    public function retrieveAll(int $surveyId, int $version): JsonResponse
-    {
-        $survey = $this->surveyService->findBySurveyIdAndVersion($surveyId, $version);
-        if (!$survey) {
-            return $this->json(
-                sprintf('Survey with ID: %d, version: %d was not found', $surveyId, $version),
-                404
-            );
-        }
-
-        return $this->json($survey->getPages());
     }
 }

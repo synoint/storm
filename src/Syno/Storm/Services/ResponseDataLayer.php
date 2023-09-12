@@ -8,21 +8,19 @@ use Syno\Storm\Document;
 class ResponseDataLayer
 {
     private ResponseSessionManager $responseSessionManager;
-    private Survey                 $surveyService;
 
-    public function __construct(ResponseSessionManager $responseSessionManager, Survey $surveyService)
+    public function __construct(ResponseSessionManager $responseSessionManager)
     {
         $this->responseSessionManager = $responseSessionManager;
-        $this->surveyService          = $surveyService;
     }
 
     public function getData(): array
     {
-        $response = $this->responseSessionManager->getResponse();
-        $responseSurvey = $this->surveyService->findBySurveyIdAndVersion($response->getSurveyId(), $response->getSurveyVersion());
+        $response       = $this->responseSessionManager->getResponse();
+        $responseSurvey = $this->responseSessionManager->getSurvey();
 
         $result['answers'] = [];
-//dd($response->getAnswers());
+
         /** @var Document\ResponseAnswer $responseAnswer */
         foreach ($response->getAnswers() as $responseAnswer) {
             /** @var Document\ResponseAnswerValue $responseAnswerValue */
@@ -41,7 +39,7 @@ class ResponseDataLayer
     {
         $result = [];
 
-        /** @var Document\SurveyPage $page */
+        /** @var Document\PageInterface $page */
         foreach ($survey->getPages() as $page) {
             /** @var Document\Question $question */
             foreach ($page->getQuestions() as $question) {

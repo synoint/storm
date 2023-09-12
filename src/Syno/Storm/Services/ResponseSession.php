@@ -154,7 +154,7 @@ class ResponseSession
         return $response;
     }
 
-    public function saveProgress(Document\SurveyPage $page)
+    public function saveProgress(Document\PageInterface $page)
     {
         $response = $this->responseHandler->getResponse();
         if ($response->getPageId() !== $page->getPageId()) {

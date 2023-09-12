@@ -9,6 +9,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Syno\Storm\Api\Controller\TokenAuthenticatedController;
 use Syno\Storm\Api\v1\Form;
 use Syno\Storm\Api\v1\Http\ApiResponse;
+use Syno\Storm\Services\Page;
 use Syno\Storm\Services\Randomization;
 use Syno\Storm\Services\Survey;
 use Syno\Storm\Services\SurveyPath;
@@ -25,15 +26,19 @@ class RandomizationController extends AbstractController implements TokenAuthent
 
     private Survey        $surveyService;
     private SurveyPath    $surveyPathService;
+    private Page          $pageService;
     private Randomization $randomizationService;
 
     public function __construct(
         Survey        $surveyService,
         SurveyPath    $surveyPathService,
+        Page          $pageService,
         Randomization $randomizationService
-    ) {
+    )
+    {
         $this->surveyService        = $surveyService;
         $this->surveyPathService    = $surveyPathService;
+        $this->pageService          = $pageService;
         $this->randomizationService = $randomizationService;
     }
 
@@ -50,7 +55,7 @@ class RandomizationController extends AbstractController implements TokenAuthent
         $data   = $this->getJson($request);
         $survey = $this->surveyService->findBySurveyIdAndVersion($surveyId, $version);
 
-        if(!$survey) {
+        if (!$survey) {
             return $this->json(
                 sprintf('Survey with ID: %d, version: %d was not found', $surveyId, $version),
                 404
@@ -69,6 +74,7 @@ class RandomizationController extends AbstractController implements TokenAuthent
 
             $randomizedCombinations = $this->randomizationService->getRandomizedPaths($survey);
 
+            $survey->setPages($this->pageService->findBySurvey($survey));
             $this->surveyPathService->save($survey, $randomizedCombinations);
 
             return $this->json('Survey randomization is added', 201);

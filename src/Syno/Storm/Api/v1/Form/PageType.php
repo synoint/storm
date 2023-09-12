@@ -16,6 +16,8 @@ class PageType extends AbstractType
     {
         $builder
             ->add('pageId', IntegerType::class)
+            ->add('surveyId', IntegerType::class)
+            ->add('version', IntegerType::class)
             ->add('code', TextType::class)
             ->add('sortOrder', IntegerType::class)
             ->add('content', TextType::class, ['required' => false])
