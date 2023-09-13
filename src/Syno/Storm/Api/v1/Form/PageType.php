@@ -21,22 +21,23 @@ class PageType extends AbstractType
             ->add('content', TextType::class, ['required' => false])
             ->add('javascript', TextType::class, ['required' => false])
             ->add('translations', CollectionType::class, [
-                'entry_type' => PageTranslationType::class,
-                'by_reference'  => false,
-                'allow_add'     => true
+                'entry_type'   => PageTranslationType::class,
+                'by_reference' => false,
+                'allow_add'    => true
             ])
             ->add('questions', CollectionType::class, [
-                'entry_type' => QuestionType::class,
-                'by_reference'  => false,
-                'allow_add'     => true
+                'entry_type'   => QuestionType::class,
+                'by_reference' => false,
+                'allow_add'    => true
             ]);
     }
 
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
-           'data_class'      => Document\Page::class,
-           'csrf_protection' => false
+            'data_class'         => Document\Page::class,
+            'allow_extra_fields' => true,
+            'csrf_protection'    => false
         ]);
     }
 }
