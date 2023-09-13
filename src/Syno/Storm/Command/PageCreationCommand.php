@@ -57,6 +57,7 @@ class PageCreationCommand extends Command
                     $newPage->setSortOrder($surveyPage->getSortOrder());
                     $newPage->setTranslations($surveyPage->getTranslations());
                     $newPage->setJavascript($surveyPage->getJavascript());
+                    $newPage->setQuestions($surveyPage->getQuestions());
 
                     $this->savePage($newPage);
                 }
@@ -97,8 +98,8 @@ class PageCreationCommand extends Command
         return $this->dm->createQueryBuilder(Document\Page::class)
                         ->count()
                         ->field('pageId')->equals($pageId)
-            ->field('surveyId')->equals($surveyId)
-            ->field('version')->equals($version)
+                        ->field('surveyId')->equals($surveyId)
+                        ->field('version')->equals($version)
                         ->getQuery()
                         ->execute();
     }
