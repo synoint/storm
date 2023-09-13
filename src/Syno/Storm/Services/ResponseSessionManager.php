@@ -9,28 +9,32 @@ use Syno\Storm\RequestHandler;
 
 class ResponseSessionManager
 {
-    private Condition               $conditionService;
-    private RequestHandler\Answer   $answerHandler;
-    private RequestHandler\Page     $pageHandler;
-    private RequestHandler\Response $responseHandler;
-    private RequestHandler\Survey   $surveyHandler;
-    private ResponseSession         $responseSession;
-    private ?Collection             $questions = null;
+    private Condition                 $conditionService;
+    private RequestHandler\Answer     $answerHandler;
+    private RequestHandler\Page       $pageHandler;
+    private RequestHandler\Response   $responseHandler;
+    private RequestHandler\Survey     $surveyHandler;
+    private RequestHandler\SurveyPath $surveyPathHandler;
+    private ResponseSession           $responseSession;
+    private ?Collection               $questions = null;
 
     public function __construct(
-        Condition $conditionService,
-        RequestHandler\Answer $answerHandler,
-        RequestHandler\Page $pageHandler,
-        RequestHandler\Response $responseHandler,
-        RequestHandler\Survey $surveyHandler,
-        ResponseSession $responseSession
-    ) {
-        $this->conditionService = $conditionService;
-        $this->answerHandler    = $answerHandler;
-        $this->pageHandler      = $pageHandler;
-        $this->responseHandler  = $responseHandler;
-        $this->surveyHandler    = $surveyHandler;
-        $this->responseSession  = $responseSession;
+        Condition                 $conditionService,
+        RequestHandler\Answer     $answerHandler,
+        RequestHandler\Page       $pageHandler,
+        RequestHandler\Response   $responseHandler,
+        RequestHandler\Survey     $surveyHandler,
+        RequestHandler\SurveyPath $surveyPathHandler,
+        ResponseSession           $responseSession
+    )
+    {
+        $this->conditionService  = $conditionService;
+        $this->answerHandler     = $answerHandler;
+        $this->pageHandler       = $pageHandler;
+        $this->responseHandler   = $responseHandler;
+        $this->surveyHandler     = $surveyHandler;
+        $this->surveyPathHandler = $surveyPathHandler;
+        $this->responseSession   = $responseSession;
     }
 
     public function getPage(): Document\Page
@@ -197,15 +201,26 @@ class ResponseSessionManager
 
     public function getFirstPage(): RedirectResponse
     {
-        $response  = $this->responseHandler->getResponse();
         $survey    = $this->surveyHandler->getSurvey();
         $firstPage = $survey->getFirstPage();
+
+        if ($this->responseHandler->hasResponse()) {
+            $response = $this->responseHandler->getResponse();
+        } else {
+            $surveyPath = null;
+            if ($this->surveyPathHandler->hasSurveyPath()) {
+                $surveyPath = $this->surveyPathHandler->getSurveyPath();
+            }
+
+            $this->responseSession->createResponse($survey, $surveyPath);
+            $response = $this->responseHandler->getResponse();
+        }
 
         if ($response->getSurveyPathId()) {
             $firstPage = $response->getSurveyPath()->first();
         }
 
-        if($this->isPageEmpty($firstPage)) {
+        if ($this->isPageEmpty($firstPage)) {
             $nextPage = $this->getNextPage($firstPage->getPageId());
 
             if (!$nextPage) {
