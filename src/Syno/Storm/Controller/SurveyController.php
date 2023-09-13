@@ -52,8 +52,11 @@ class SurveyController extends AbstractController
             return $this->responseSession->complete($survey);
         }
 
-        $attr           = [];
-        $attr['pageId'] = $firstPage->getPageId();
+        $attr = [
+            'surveyId' => $survey->getSurveyId(),
+            'pageId'   => $firstPage->getPageId()
+        ];
+
 
         if ($request->query->has($request->getSession()->getName())) {
             $attr[$request->getSession()->getName()] = $request->getSession()->getId();
