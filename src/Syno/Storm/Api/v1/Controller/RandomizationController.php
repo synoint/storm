@@ -72,14 +72,14 @@ class RandomizationController extends AbstractController implements TokenAuthent
 
             $this->surveyService->save($survey);
 
+            $survey->setPages($this->pageService->findBySurvey($survey));
             $randomizedCombinations = $this->randomizationService->getRandomizedPaths($survey);
 
-            $survey->setPages($this->pageService->findBySurvey($survey));
             $this->surveyPathService->save($survey, $randomizedCombinations);
 
             return $this->json('Survey randomization is added', 201);
         }
 
-        return new ApiResponse('Survey creation failed!', null, $this->getFormErrors($form), 400);
+        return new ApiResponse('Survey randomization creation failed!', null, $this->getFormErrors($form), 400);
     }
 }

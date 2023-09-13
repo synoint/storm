@@ -259,11 +259,17 @@ class Survey implements JsonSerializable
     }
 
 
-    public function getFirstPage(): PageInterface
+    public function getFirstPage(): ?PageInterface
     {
-        return $this->pages->filter(function (PageInterface $page) {
+        $pages = $this->pages->filter(function (PageInterface $page) {
             return $page->getQuestions()->count() == 0 || $page->getVisibleQuestions()->count() > 0;
-        })->first();
+        });
+
+        if(!$pages->count()) {
+            return null;
+        }
+
+        return $pages->first();
     }
 
     public function setPages($pages): self

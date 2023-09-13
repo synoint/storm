@@ -63,6 +63,6 @@ class PageController extends AbstractController implements TokenAuthenticatedCon
             return $this->json($page->getPageId());
         }
 
-        return new ApiResponse('Survey creation failed!', null, $this->getFormErrors($form), 400);
+        return new ApiResponse('Page creation failed!', null, $this->getFormErrors($form), 400);
     }
 }

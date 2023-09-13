@@ -11,15 +11,19 @@ use Symfony\Component\Routing\Annotation\Route;
 use Syno\Storm\Document;
 use Syno\Storm\Form\PrivacyConsentType;
 use Syno\Storm\RequestHandler;
+use Syno\Storm\Services\ResponseSession;
 use Syno\Storm\Services\SurveyEndPage;
 
 class SurveyController extends AbstractController
 {
     private SurveyEndPage $surveyEndPageService;
 
-    public function __construct(SurveyEndPage $surveyEndPageService)
+    private ResponseSession $responseSession;
+
+    public function __construct(SurveyEndPage $surveyEndPageService, ResponseSession $responseSession)
     {
         $this->surveyEndPageService = $surveyEndPageService;
+        $this->responseSession      = $responseSession;
     }
 
     /**
@@ -35,24 +39,24 @@ class SurveyController extends AbstractController
         /** @var Document\Response $response */
         $response = $request->attributes->get(RequestHandler\Response::ATTR);
 
+        if ($survey->getConfig()->isPrivacyConsentEnabled()) {
+            return $this->redirectToRoute('survey.privacy_consent', ['surveyId' => $survey->getSurveyId()]);
+        }
+
         $firstPage = $survey->getFirstPage();
         if ($response && $response->getSurveyPathId()) {
             $firstPage = $response->getSurveyPath()->first();
         }
 
-        $attr = [
-            'surveyId' => $survey->getSurveyId(),
-            'pageId'   => $firstPage->getPageId(),
-        ];
+        if (!$firstPage) {
+            return $this->responseSession->complete($survey);
+        }
+
+        $attr           = [];
+        $attr['pageId'] = $firstPage->getPageId();
 
         if ($request->query->has($request->getSession()->getName())) {
             $attr[$request->getSession()->getName()] = $request->getSession()->getId();
-        }
-
-        if ($survey->getConfig()->isPrivacyConsentEnabled()) {
-            unset($attr['pageId']);
-
-            return $this->redirectToRoute('survey.privacy_consent', $attr);
         }
 
         return $this->redirectToRoute('page.index', $attr);
@@ -69,11 +73,15 @@ class SurveyController extends AbstractController
     public function test(Document\Survey $survey, Request $request): RedirectResponse
     {
         /** @var Document\Response $response */
-        $response = $request->attributes->get(RequestHandler\Response::ATTR);
-
+        $response  = $request->attributes->get(RequestHandler\Response::ATTR);
         $firstPage = $survey->getFirstPage();
+
         if ($response && $response->getSurveyPathId()) {
             $firstPage = $response->getSurveyPath()->first();
+        }
+
+        if (!$firstPage) {
+            return $this->responseSession->complete($survey);
         }
 
         return $this->redirectToRoute('page.index', [
@@ -105,6 +113,10 @@ class SurveyController extends AbstractController
             throw new HttpException(403, 'Invalid debug token');
         }
 
+        if (!$survey->getPages()->first()) {
+            return $this->responseSession->complete($survey);
+        }
+
         return $this->redirectToRoute('page.index', [
             'surveyId' => $survey->getSurveyId(),
             'pageId'   => $survey->getPages()->first()->getPageId()
@@ -127,9 +139,15 @@ class SurveyController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $firstPage = $survey->getFirstPage();
+
+            if (!$firstPage) {
+                return $this->responseSession->complete($survey);
+            }
+
             return $this->redirectToRoute('page.index', [
                 'surveyId' => $survey->getSurveyId(),
-                'pageId'   => $survey->getPages()->first()->getPageId()
+                'pageId'   => $firstPage->getPageId()
             ]);
         }
 
