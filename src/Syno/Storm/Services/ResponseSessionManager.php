@@ -220,7 +220,7 @@ class ResponseSessionManager
             if (
                 $this->conditionService->filterQuestionsByShowCondition(
                     $nextPage->getQuestions(), $this->responseHandler->getResponse()
-                )->isEmpty() && !$nextPage->hasContent()
+                )->isEmpty()
             ) {
                 $nextPage = $this->getNextPage($nextPage->getPageId());
             }
