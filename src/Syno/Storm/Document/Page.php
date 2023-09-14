@@ -10,7 +10,7 @@ use Syno\Storm\Traits\TranslatableTrait;
 
 /**
  * @ODM\Document(collection="page"))
- * @ODM\UniqueIndex(keys={"pageId"="asc", "surveyId"="asc", "version"="asc"})
+ * @ODM\UniqueIndex(keys={"surveyId"="asc", "version"="asc"})
  */
 class Page implements PageInterface
 {
