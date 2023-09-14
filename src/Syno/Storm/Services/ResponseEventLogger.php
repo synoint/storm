@@ -18,6 +18,7 @@ class ResponseEventLogger
     const SURVEY_VERSION_UNAVAILABLE = 'survey version unavailable';
 
     const RESPONSE_REMOVE            = 'removed';
+    const RESPONSE_RESTORE           = 'restored';
     const RESPONSE_COMPLETE          = 'updated to complete';
     const RESPONSE_SCREENOUT         = 'updated to screenout';
     const RESPONSE_QUALITY_SCREENOUT = 'updated to quality screenout';
@@ -65,6 +66,7 @@ class ResponseEventLogger
             case self::SURVEY_MODE_CHANGED:
             case self::JUMPED_TO_END_OF_SURVEY:
             case self::RESPONSE_REMOVE:
+            case self::RESPONSE_RESTORE:
             case self::RESPONSE_COMPLETE:
             case self::RESPONSE_SCREENOUT:
             case self::RESPONSE_QUALITY_SCREENOUT:

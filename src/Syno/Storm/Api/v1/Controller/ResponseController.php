@@ -284,4 +284,37 @@ class ResponseController extends AbstractController implements TokenAuthenticate
 
         return $this->json('Response data not found', 404);
     }
+
+    /**
+     * @Route(
+     *     "/{surveyId}/response/restore",
+     *     name="storm_api.v1.response.restore",
+     *     requirements={"surveyId"="\d+"},
+     *     methods={"POST"}
+     * )
+     */
+    public function restore(int $surveyId, Request $request): JsonResponse
+    {
+        $responseIds = json_decode($request->getContent());
+
+        if ($responseIds) {
+            foreach ($responseIds as $responseId) {
+
+                $response = $this->responseService->findBySurveyIdAndResponseId($surveyId, $responseId);
+
+                if ($response) {
+
+                    $response->setDeletedAt(null);
+
+                    $this->responseService->save($response);
+
+                    $this->responseEventLogger->log(ResponseEventLogger::RESPONSE_RESTORE, $response);
+                }
+            }
+
+            return $this->json(['message' => 'Restored!']);
+        }
+
+        return $this->json(['message' => 'Response ids is missing.'], 400);
+    }
 }

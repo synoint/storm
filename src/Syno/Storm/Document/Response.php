@@ -561,7 +561,7 @@ class Response implements JsonSerializable
         return $this;
     }
 
-    public function setDeletedAt(\DateTime $deletedAt): self
+    public function setDeletedAt(?\DateTime $deletedAt): self
     {
         $this->deletedAt = $deletedAt;
 
