@@ -207,6 +207,17 @@ class Page implements PageInterface
         return $this->content;
     }
 
+    public function hasContent(): bool
+    {
+        /** @var PageTranslation $translation */
+        $translation = $this->getTranslation();
+        if (null !== $translation && !empty($translation->getContent())) {
+            return (bool)strlen(trim($translation->getContent()));
+        }
+
+        return (bool)strlen(trim($this->content));
+    }
+
     /**
      * @param mixed $content
      *
