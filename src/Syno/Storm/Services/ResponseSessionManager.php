@@ -216,19 +216,17 @@ class ResponseSessionManager
             }
         }
 
-        if($nextPage) {
-            if($nextPage->getQuestions()->isEmpty() && !$nextPage->hasContent()) {
-                $nextPage = $this->getNextPage($nextPage->getPageId());
-            }
+        if ($nextPage &&$nextPage->getQuestions()->isEmpty() && !$nextPage->hasContent()) {
+            $nextPage = $this->getNextPage($nextPage->getPageId());
+        }
 
-            if (!$nextPage->getQuestions()->isEmpty()) {
-                if (
-                    $this->conditionService->filterQuestionsByShowCondition(
-                        $nextPage->getQuestions(), $this->responseHandler->getResponse()
-                    )->isEmpty()
-                ) {
-                    $nextPage = $this->getNextPage($nextPage->getPageId());
-                }
+        if ($nextPage && !$nextPage->getQuestions()->isEmpty()) {
+            if (
+                $this->conditionService->filterQuestionsByShowCondition(
+                    $nextPage->getQuestions(), $this->responseHandler->getResponse()
+                )->isEmpty()
+            ) {
+                $nextPage = $this->getNextPage($nextPage->getPageId());
             }
         }
 
