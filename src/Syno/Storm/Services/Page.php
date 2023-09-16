@@ -48,4 +48,15 @@ class Page
         }
 
     }
+
+    public function pageExists(int $pageId, int $surveyId, int $version)
+    {
+        return $this->dm->createQueryBuilder(Document\Page::class)
+                        ->count()
+                        ->field('pageId')->equals($pageId)
+                        ->field('surveyId')->equals($surveyId)
+                        ->field('version')->equals($version)
+                        ->getQuery()
+                        ->execute();
+    }
 }
