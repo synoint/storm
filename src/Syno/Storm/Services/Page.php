@@ -42,12 +42,16 @@ class Page
 
     public function deleteBySurvey(Document\Survey $survey)
     {
-        $pages = $this->findBySurvey($survey);
+        $pages = $this->dm->getRepository(Document\Page::class)->findBy(
+            [
+                'surveyId' => $survey->getSurveyId(),
+                'version'  => $survey->getVersion(),
+            ]
+        );
 
         foreach ($pages as $page) {
             $this->dm->remove($page);
             $this->dm->flush();
         }
-
     }
 }
