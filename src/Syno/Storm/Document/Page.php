@@ -12,7 +12,7 @@ use Syno\Storm\Traits\TranslatableTrait;
  * @ODM\Document(collection="page"))
  * @ODM\UniqueIndex(keys={"surveyId"="asc", "version"="asc"})
  */
-class Page implements PageInterface
+class Page
 {
     use TranslatableTrait;
 
@@ -92,20 +92,12 @@ class Page implements PageInterface
         $this->translations = new ArrayCollection();
     }
 
-    /**
-     * @return mixed
-     */
     public function getId()
     {
         return $this->id;
     }
 
-    /**
-     * @param mixed $id
-     *
-     * @return Page
-     */
-    public function setId($id)
+    public function setId($id): self
     {
         $this->id = $id;
 

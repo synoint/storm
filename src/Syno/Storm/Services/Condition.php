@@ -99,9 +99,8 @@ class Condition
                 }
             );
 
-            $filteredQuestion = clone $question;
-            $filteredQuestion = $filteredQuestion->setAnswers($answers);
-            $filteredResults->add($filteredQuestion);
+            $question = $question->setAnswers($answers);
+            $filteredResults->add($question);
         }
 
         return $filteredResults;

@@ -31,8 +31,10 @@ class Page
             ]
         );
 
-        if (!$pages) {
-            return $survey->getPages();
+        if($pages) {
+            foreach ($pages as $page) {
+                $this->dm->detach($page);
+            }
         }
 
         return new ArrayCollection($pages);
@@ -47,16 +49,5 @@ class Page
             $this->dm->flush();
         }
 
-    }
-
-    public function pageExists(int $pageId, int $surveyId, int $version)
-    {
-        return $this->dm->createQueryBuilder(Document\Page::class)
-                        ->count()
-                        ->field('pageId')->equals($pageId)
-                        ->field('surveyId')->equals($surveyId)
-                        ->field('version')->equals($version)
-                        ->getQuery()
-                        ->execute();
     }
 }

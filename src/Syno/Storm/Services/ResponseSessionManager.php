@@ -33,7 +33,7 @@ class ResponseSessionManager
         $this->responseSession  = $responseSession;
     }
 
-    public function getPage(): Document\PageInterface
+    public function getPage(): Document\Page
     {
         return $this->pageHandler->getPage();
     }
@@ -180,7 +180,7 @@ class ResponseSessionManager
 
         $firstPageWithVisibleQuestions = null;
 
-        /** @var Document\PageInterface $page */
+        /** @var Document\Page $page */
         foreach ($pages as $page) {
             if ($page->getVisibleQuestions()->count()) {
                 $firstPageWithVisibleQuestions = $page;
@@ -195,7 +195,7 @@ class ResponseSessionManager
         return false;
     }
 
-    private function getNextPage(int $pageId): ?Document\PageInterface
+    private function getNextPage(int $pageId): ?Document\Page
     {
         $response = $this->responseHandler->getResponse();
 
