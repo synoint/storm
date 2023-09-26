@@ -280,8 +280,7 @@ class Answer
         /** @var AnswerTranslation $translation */
         $translation = $this->getTranslation();
 
-        if (null !== $translation && trim(strlen($translation->getLabel()))) {
-            dump(strlen($translation->getLabel()));
+        if (null !== $translation && strlen(trim($translation->getLabel()))) {
             return $translation->getLabel();
         }
 
@@ -299,7 +298,7 @@ class Answer
     {
         /** @var AnswerTranslation $translation */
         $translation = $this->getTranslation();
-        if (null !== $translation && trim(strlen($translation->getRowLabel()))) {
+        if (null !== $translation && strlen(trim($translation->getRowLabel()))) {
 
             return $translation->getRowLabel();
         }
@@ -318,7 +317,7 @@ class Answer
     {
         /** @var AnswerTranslation $translation */
         $translation = $this->getTranslation();
-        if (null !== $translation && trim(strlen($translation->getColumnLabel()))) {
+        if (null !== $translation && strlen(trim($translation->getColumnLabel()))) {
 
             return $translation->getColumnLabel();
         }

@@ -191,8 +191,7 @@ class Page
     {
         /** @var PageTranslation $translation */
         $translation = $this->getTranslation();
-        if (null !== $translation && !empty($translation->getContent())) {
-
+        if (null !== $translation && strlen(trim($translation->getContent()))) {
             return $translation->getContent();
         }
 
@@ -203,7 +202,7 @@ class Page
     {
         /** @var PageTranslation $translation */
         $translation = $this->getTranslation();
-        if (null !== $translation && !empty($translation->getContent())) {
+        if (null !== $translation) {
             return (bool)strlen(trim($translation->getContent()));
         }
 
