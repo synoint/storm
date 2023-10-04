@@ -10,8 +10,6 @@ use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Syno\Storm\Document;
 use Syno\Storm\Form\PrivacyConsentType;
-use Syno\Storm\RequestHandler;
-use Syno\Storm\Services\ResponseSession;
 use Syno\Storm\Services\ResponseSessionManager;
 use Syno\Storm\Services\SurveyEndPage;
 
@@ -23,7 +21,7 @@ class SurveyController extends AbstractController
 
     public function __construct(SurveyEndPage $surveyEndPageService, ResponseSessionManager $responseSessionManager)
     {
-        $this->surveyEndPageService = $surveyEndPageService;
+        $this->surveyEndPageService   = $surveyEndPageService;
         $this->responseSessionManager = $responseSessionManager;
     }
 

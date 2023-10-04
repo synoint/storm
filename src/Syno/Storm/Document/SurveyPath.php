@@ -148,9 +148,11 @@ class SurveyPath implements JsonSerializable
 
     public function getFirstPage(): ?Page
     {
-        return $this->pages->filter(function (Page $page) {
-            return $page->getQuestions()->count() == 0 || $page->getVisibleQuestions()->count() > 0;
-        })->first();
+        if ($this->pages->count()) {
+            return $this->getPages()->first();
+        }
+
+        return null;
     }
 
     public function setPages($pages): self
