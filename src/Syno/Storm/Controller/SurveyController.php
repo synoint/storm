@@ -12,18 +12,19 @@ use Syno\Storm\Document;
 use Syno\Storm\Form\PrivacyConsentType;
 use Syno\Storm\RequestHandler;
 use Syno\Storm\Services\ResponseSession;
+use Syno\Storm\Services\ResponseSessionManager;
 use Syno\Storm\Services\SurveyEndPage;
 
 class SurveyController extends AbstractController
 {
     private SurveyEndPage $surveyEndPageService;
 
-    private ResponseSession $responseSession;
+    private ResponseSessionManager $responseSessionManager;
 
-    public function __construct(SurveyEndPage $surveyEndPageService, ResponseSession $responseSession)
+    public function __construct(SurveyEndPage $surveyEndPageService, ResponseSessionManager $responseSessionManager)
     {
         $this->surveyEndPageService = $surveyEndPageService;
-        $this->responseSession      = $responseSession;
+        $this->responseSessionManager = $responseSessionManager;
     }
 
     /**
@@ -34,35 +35,13 @@ class SurveyController extends AbstractController
      *     methods={"GET"}
      * )
      */
-    public function index(Document\Survey $survey, Request $request): RedirectResponse
+    public function index(Document\Survey $survey): RedirectResponse
     {
-        /** @var Document\Response $response */
-        $response = $request->attributes->get(RequestHandler\Response::ATTR);
-
         if ($survey->getConfig()->isPrivacyConsentEnabled()) {
             return $this->redirectToRoute('survey.privacy_consent', ['surveyId' => $survey->getSurveyId()]);
         }
 
-        $firstPage = $survey->getFirstPage();
-        if ($response && $response->getSurveyPathId()) {
-            $firstPage = $response->getSurveyPath()->first();
-        }
-
-        if (!$firstPage) {
-            return $this->responseSession->complete($survey);
-        }
-
-        $attr = [
-            'surveyId' => $survey->getSurveyId(),
-            'pageId'   => $firstPage->getPageId()
-        ];
-
-
-        if ($request->query->has($request->getSession()->getName())) {
-            $attr[$request->getSession()->getName()] = $request->getSession()->getId();
-        }
-
-        return $this->redirectToRoute('page.index', $attr);
+        return $this->responseSessionManager->getFirstPage();
     }
 
     /**
@@ -73,24 +52,9 @@ class SurveyController extends AbstractController
      *     methods={"GET"}
      * )
      */
-    public function test(Document\Survey $survey, Request $request): RedirectResponse
+    public function test(): RedirectResponse
     {
-        /** @var Document\Response $response */
-        $response  = $request->attributes->get(RequestHandler\Response::ATTR);
-        $firstPage = $survey->getFirstPage();
-
-        if ($response && $response->getSurveyPathId()) {
-            $firstPage = $response->getSurveyPath()->first();
-        }
-
-        if (!$firstPage) {
-            return $this->responseSession->complete($survey);
-        }
-
-        return $this->redirectToRoute('page.index', [
-            'surveyId' => $survey->getSurveyId(),
-            'pageId'   => $firstPage->getPageId()
-        ]);
+        return $this->responseSessionManager->getFirstPage();
     }
 
     /**
@@ -116,14 +80,7 @@ class SurveyController extends AbstractController
             throw new HttpException(403, 'Invalid debug token');
         }
 
-        if (!$survey->getPages()->first()) {
-            return $this->responseSession->complete($survey);
-        }
-
-        return $this->redirectToRoute('page.index', [
-            'surveyId' => $survey->getSurveyId(),
-            'pageId'   => $survey->getPages()->first()->getPageId()
-        ]);
+        return $this->responseSessionManager->getFirstPage();
     }
 
     /**
@@ -142,16 +99,7 @@ class SurveyController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $firstPage = $survey->getFirstPage();
-
-            if (!$firstPage) {
-                return $this->responseSession->complete($survey);
-            }
-
-            return $this->redirectToRoute('page.index', [
-                'surveyId' => $survey->getSurveyId(),
-                'pageId'   => $firstPage->getPageId()
-            ]);
+            return $this->responseSessionManager->getFirstPage();
         }
 
         return $this->render($survey->getConfig()->getTheme() . '/survey/privacy_consent.twig', [
@@ -170,7 +118,7 @@ class SurveyController extends AbstractController
     public function complete(Request $request, Document\Survey $survey): Response
     {
         return $this->render($survey->getConfig()->getTheme() . '/survey/complete.twig', [
-            'survey'        => $survey,
+            'survey' => $survey,
             'customContent' => $this->surveyEndPageService->getEndPageContentByLocale(
                 $survey,
                 $request->getLocale(), Document\SurveyEndPage::TYPE_COMPLETE
@@ -189,7 +137,7 @@ class SurveyController extends AbstractController
     public function screenOut(Request $request, Document\Survey $survey): Response
     {
         return $this->render($survey->getConfig()->getTheme() . '/survey/screenout.twig', [
-            'survey'        => $survey,
+            'survey' => $survey,
             'customContent' => $this->surveyEndPageService->getEndPageContentByLocale(
                 $survey,
                 $request->getLocale(), Document\SurveyEndPage::TYPE_SCREENOUT
@@ -208,7 +156,7 @@ class SurveyController extends AbstractController
     public function qualityScreenOut(Request $request, Document\Survey $survey): Response
     {
         return $this->render($survey->getConfig()->getTheme() . '/survey/quality_screenout.twig', [
-            'survey'        => $survey,
+            'survey' => $survey,
             'customContent' => $this->surveyEndPageService->getEndPageContentByLocale(
                 $survey,
                 $request->getLocale(), Document\SurveyEndPage::TYPE_QUALITY_SCREENOUT
@@ -227,7 +175,7 @@ class SurveyController extends AbstractController
     public function quotaFull(Request $request, Document\Survey $survey): Response
     {
         return $this->render($survey->getConfig()->getTheme() . '/survey/screenout.twig', [
-            'survey'        => $survey,
+            'survey' => $survey,
             'customContent' => $this->surveyEndPageService->getEndPageContentByLocale(
                 $survey,
                 $request->getLocale(), Document\SurveyEndPage::TYPE_QUOTA_FULL

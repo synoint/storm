@@ -195,6 +195,29 @@ class ResponseSessionManager
         return false;
     }
 
+    public function getFirstPage(): RedirectResponse
+    {
+        $response  = $this->responseHandler->getResponse();
+        $survey    = $this->surveyHandler->getSurvey();
+        $firstPage = $survey->getFirstPage();
+
+        if ($response->getSurveyPathId()) {
+            $firstPage = $response->getSurveyPath()->first();
+        }
+
+        if($this->isPageEmpty($firstPage)) {
+            $nextPage = $this->getNextPage($firstPage->getPageId());
+
+            if (!$nextPage) {
+                return $this->responseSession->complete($this->surveyHandler->getSurvey());
+            }
+
+            return $this->responseSession->nextPage($this->surveyHandler->getId(), $nextPage->getPageId());
+        }
+
+        return $this->responseSession->nextPage($this->surveyHandler->getId(), $firstPage->getPageId());
+    }
+
     private function getNextPage(int $pageId): ?Document\Page
     {
         $response = $this->responseHandler->getResponse();
@@ -216,20 +239,25 @@ class ResponseSessionManager
             }
         }
 
-        if ($nextPage &&$nextPage->getQuestions()->isEmpty() && !$nextPage->hasContent()) {
+        if ($nextPage && $this->isPageEmpty($nextPage)) {
             $nextPage = $this->getNextPage($nextPage->getPageId());
         }
 
-        if ($nextPage && !$nextPage->getQuestions()->isEmpty()) {
-            if (
-                $this->conditionService->filterQuestionsByShowCondition(
-                    $nextPage->getQuestions(), $this->responseHandler->getResponse()
-                )->isEmpty()
-            ) {
-                $nextPage = $this->getNextPage($nextPage->getPageId());
+        return $nextPage;
+    }
+
+    private function isPageEmpty(Document\Page $page): bool
+    {
+        if ($page->getVisibleQuestions()->isEmpty()) {
+            if (!$page->hasContent()) {
+                return true;
             }
+
+            return false;
         }
 
-        return $nextPage;
+        return $this->conditionService->filterQuestionsByShowCondition(
+            $page->getQuestions(), $this->responseHandler->getResponse()
+        )->isEmpty();
     }
 }
