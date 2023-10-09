@@ -19,13 +19,15 @@ class ResponseDataLayer
         $response       = $this->responseSessionManager->getResponse();
         $responseSurvey = $this->responseSessionManager->getSurvey();
 
-        $result['answers'] = [];
+        $result['responseId'] = $response->getResponseId();
+        $result['answers']    = [];
 
         /** @var Document\ResponseAnswer $responseAnswer */
         foreach ($response->getAnswers() as $responseAnswer) {
             /** @var Document\ResponseAnswerValue $responseAnswerValue */
             foreach ($responseAnswer->getAnswers() as $responseAnswerValue) {
-                $answerResponse = $this->getAnswerResponse($responseSurvey, $responseAnswerValue->getAnswerId(), $response->getLocale());
+                $answerResponse          = $this->getAnswerResponse($responseSurvey, $responseAnswerValue->getAnswerId(),
+                    $response->getLocale());
                 $answerResponse['value'] = ($responseAnswerValue->getValue()) ?: '';
 
                 $result['answers'][] = $answerResponse;
@@ -49,18 +51,18 @@ class ResponseDataLayer
                     if ($answer->getAnswerId() === $answerId) {
                         $answer->setCurrentLocale($locale);
 
-                        $result['pageCode'] = $page->getCode();
+                        $result['pageCode']     = $page->getCode();
                         $result['questionCode'] = $question->getCode();
                         $result['questionText'] = $question->getText();
                         $result['questionType'] = $question->getQuestionTypeId();
 
                         if ($answer->getRowCode() || $answer->getColumnCode()) {
-                            $result['rowCode'] = $answer->getRowCode();
-                            $result['rowLabel'] = $answer->getRowLabel();
-                            $result['columnCode'] = $answer->getColumnCode();
+                            $result['rowCode']     = $answer->getRowCode();
+                            $result['rowLabel']    = $answer->getRowLabel();
+                            $result['columnCode']  = $answer->getColumnCode();
                             $result['columnLabel'] = $answer->getColumnLabel();
                         } else {
-                            $result['code'] = $answer->getCode();
+                            $result['code']  = $answer->getCode();
                             $result['label'] = $answer->getLabel();
                         }
                     }
