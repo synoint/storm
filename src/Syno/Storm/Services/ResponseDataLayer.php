@@ -19,7 +19,7 @@ class ResponseDataLayer
         $response       = $this->responseSessionManager->getResponse();
         $responseSurvey = $this->responseSessionManager->getSurvey();
 
-        $result['responseId'] = $response->getResponseId();
+        $result['id'] = $response->getResponseId();
         $result['answers']    = [];
 
         /** @var Document\ResponseAnswer $responseAnswer */
