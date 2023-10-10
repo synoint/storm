@@ -204,6 +204,10 @@ class ResponseSessionManager
         $survey    = $this->surveyHandler->getSurvey();
         $firstPage = $survey->getFirstPage();
 
+        if(!$firstPage) {
+            return $this->responseSession->complete($survey);
+        }
+
         if($this->responseHandler->hasResponse()) {
             if ($this->surveyPathHandler->hasSurveyPath()) {
                 $surveyPathPage = $this->surveyPathHandler->getSurveyPath()->getFirstPage();
@@ -220,7 +224,7 @@ class ResponseSessionManager
             $nextPage = $this->getNextPage($firstPage->getPageId());
 
             if (!$nextPage) {
-                return $this->responseSession->complete($this->surveyHandler->getSurvey());
+                return $this->responseSession->complete($survey);
             }
 
             return $this->responseSession->nextPage($this->surveyHandler->getId(), $nextPage->getPageId());
