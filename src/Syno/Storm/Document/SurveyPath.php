@@ -146,7 +146,7 @@ class SurveyPath implements JsonSerializable
         return $this;
     }
 
-    public function getFirstPage(): ?Page
+    public function getFirstPage(): ?SurveyPathPage
     {
         if ($this->pages->count()) {
             return $this->getPages()->first();

@@ -9,14 +9,14 @@ use Syno\Storm\RequestHandler;
 
 class ResponseSessionManager
 {
-    private Condition                 $conditionService;
-    private RequestHandler\Answer     $answerHandler;
-    private RequestHandler\Page       $pageHandler;
-    private RequestHandler\Response   $responseHandler;
-    private RequestHandler\Survey     $surveyHandler;
+    private Condition               $conditionService;
+    private RequestHandler\Answer   $answerHandler;
+    private RequestHandler\Page     $pageHandler;
+    private RequestHandler\Response $responseHandler;
+    private RequestHandler\Survey   $surveyHandler;
     private RequestHandler\SurveyPath $surveyPathHandler;
-    private ResponseSession           $responseSession;
-    private ?Collection               $questions = null;
+    private ResponseSession         $responseSession;
+    private ?Collection             $questions = null;
 
     public function __construct(
         Condition                 $conditionService,
@@ -204,23 +204,15 @@ class ResponseSessionManager
         $survey    = $this->surveyHandler->getSurvey();
         $firstPage = $survey->getFirstPage();
 
-        if ($this->responseHandler->hasResponse()) {
-            $response = $this->responseHandler->getResponse();
-        } else {
-            $surveyPath = null;
-            if ($this->surveyPathHandler->hasSurveyPath()) {
-                $surveyPath = $this->surveyPathHandler->getSurveyPath();
+        if ($this->surveyPathHandler->hasSurveyPath()) {
+            $surveyPathPage = $this->surveyPathHandler->getSurveyPath()->getFirstPage();
+
+            if($surveyPathPage) {
+                $firstPage = $survey->getPage($surveyPathPage->getPageId());
             }
-
-            $this->responseSession->createResponse($survey, $surveyPath);
-            $response = $this->responseHandler->getResponse();
         }
 
-        if ($response->getSurveyPathId()) {
-            $firstPage = $response->getSurveyPath()->first();
-        }
-
-        if ($this->isPageEmpty($firstPage)) {
+        if($this->isPageEmpty($firstPage)) {
             $nextPage = $this->getNextPage($firstPage->getPageId());
 
             if (!$nextPage) {
