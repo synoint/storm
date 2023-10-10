@@ -212,7 +212,7 @@ class ResponseSessionManager
                 $firstPage = $response->getSurveyPath()->first();
             }
         } else {
-            return $this->responseSession->nextPage($this->surveyHandler->getId(), $firstPage->getPageId());
+            return $this->responseSession->nextPage($survey->getSurveyId(), $firstPage->getPageId());
         }
 
         if($this->isPageEmpty($firstPage)) {
@@ -222,10 +222,10 @@ class ResponseSessionManager
                 return $this->responseSession->complete($survey);
             }
 
-            return $this->responseSession->nextPage($this->surveyHandler->getId(), $nextPage->getPageId());
+            return $this->responseSession->nextPage($survey->getSurveyId(), $nextPage->getPageId());
         }
 
-        return $this->responseSession->nextPage($this->surveyHandler->getId(), $firstPage->getPageId());
+        return $this->responseSession->nextPage($survey->getSurveyId(), $firstPage->getPageId());
     }
 
     private function getNextPage(int $pageId): ?Document\Page
