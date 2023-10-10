@@ -14,7 +14,6 @@ class ResponseSessionManager
     private RequestHandler\Page     $pageHandler;
     private RequestHandler\Response $responseHandler;
     private RequestHandler\Survey   $surveyHandler;
-    private RequestHandler\SurveyPath $surveyPathHandler;
     private ResponseSession         $responseSession;
     private ?Collection             $questions = null;
 
@@ -24,7 +23,6 @@ class ResponseSessionManager
         RequestHandler\Page       $pageHandler,
         RequestHandler\Response   $responseHandler,
         RequestHandler\Survey     $surveyHandler,
-        RequestHandler\SurveyPath $surveyPathHandler,
         ResponseSession           $responseSession
     )
     {
@@ -33,7 +31,6 @@ class ResponseSessionManager
         $this->pageHandler       = $pageHandler;
         $this->responseHandler   = $responseHandler;
         $this->surveyHandler     = $surveyHandler;
-        $this->surveyPathHandler = $surveyPathHandler;
         $this->responseSession   = $responseSession;
     }
 
@@ -209,12 +206,10 @@ class ResponseSessionManager
         }
 
         if($this->responseHandler->hasResponse()) {
-            if ($this->surveyPathHandler->hasSurveyPath()) {
-                $surveyPathPage = $this->surveyPathHandler->getSurveyPath()->getFirstPage();
+            $response = $this->responseHandler->getResponse();
 
-                if($surveyPathPage) {
-                    $firstPage = $survey->getPage($surveyPathPage->getPageId());
-                }
+            if ($response->getSurveyPathId()) {
+                $firstPage = $response->getSurveyPath()->first();
             }
         } else {
             return $this->responseSession->nextPage($this->surveyHandler->getId(), $firstPage->getPageId());
