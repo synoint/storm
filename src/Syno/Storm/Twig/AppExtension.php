@@ -20,24 +20,24 @@ class AppExtension extends AbstractExtension
     {
         return [
             new TwigFunction(
-                'survey_progress', function (Document\Survey $survey, Document\Page $currentPage) {
-                return $this->getProgress($survey, $currentPage);
+                'survey_progress', function (Document\Response $response, Document\Survey $survey) {
+                return $this->getProgress($response, $survey);
             }),
             new TwigFunction(
-                'page_prefix', function (Document\Survey $survey, Document\Page $currentPage) {
-                return $this->getPagePrefix($survey, $currentPage);
+                'page_prefix', function (Document\Response $response, Document\Survey $survey) {
+                return $this->getPagePrefix($response, $survey);
             })
         ];
     }
 
-    public function getProgress(Document\Survey $survey, Document\Page $page): int
+    public function getProgress(Document\Response $response, Document\Survey $survey): int
     {
-        return $this->surveyService->getProgress($survey, $page);
+        return $this->surveyService->getProgress($response, $survey);
     }
 
-    public function getPagePrefix(Document\Survey $survey, Document\Page $page): string
+    public function getPagePrefix(Document\Response $response, Document\Survey $survey): string
     {
-        $progress = $this->surveyService->getProgress($survey, $page);
+        $progress = $this->surveyService->getProgress($response, $survey);
 
         if ($progress == 100) {
             $text = 'survey.thank_you';

@@ -142,15 +142,19 @@ class Survey
         $this->dm->flush();
     }
 
-    public function getProgress(Document\Survey $survey, Document\Page $currentPage): int
+    public function getProgress(Document\Response $response, Document\Survey $survey): int
     {
         $questionCount          = 0;
         $completedQuestionCount = 0;
         $pages                  = $survey->getPages();
 
+        if ($response->getSurveyPathId()) {
+            $pages = $response->getSurveyPath();
+        }
+
         /** @var Document\Page $page */
         foreach ($pages as $page) {
-            if ($page->getPageId() === $currentPage->getPageId()) {
+            if ($page->getPageId() === $response->getPageId()) {
                 $completedQuestionCount = $questionCount;
             }
 

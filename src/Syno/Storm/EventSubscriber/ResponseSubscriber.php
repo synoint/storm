@@ -11,6 +11,7 @@ use Symfony\Component\Routing\RouterInterface;
 use Syno\Storm\RequestHandler;
 use Syno\Storm\Services\ResponseSession;
 use Syno\Storm\Services\ResponseSessionManager;
+use Syno\Storm\Services;
 use Syno\Storm\Traits\RouteAware;
 
 class ResponseSubscriber implements EventSubscriberInterface
@@ -23,27 +24,28 @@ class ResponseSubscriber implements EventSubscriberInterface
     private RequestHandler\Survey     $surveyHandler;
     private ResponseSession           $responseSession;
     private ResponseSessionManager    $responseSessionManager;
+    private Services\SurveyPath       $surveyPathService;
     private RouterInterface           $router;
-    private RequestHandler\SurveyPath $surveyPathHandler;
 
     public function __construct(
-        LoggerInterface $logger,
-        RequestHandler\Page $pageHandler,
-        RequestHandler\Response $responseHandler,
-        RequestHandler\Survey $surveyHandler,
-        RequestHandler\SurveyPath $surveyPathHandler,
-        ResponseSession $responseSession,
-        ResponseSessionManager $responseSessionManager,
-        RouterInterface $router
-    ) {
+        LoggerInterface           $logger,
+        RequestHandler\Page       $pageHandler,
+        RequestHandler\Response   $responseHandler,
+        RequestHandler\Survey     $surveyHandler,
+        ResponseSession           $responseSession,
+        ResponseSessionManager    $responseSessionManager,
+        Services\SurveyPath       $surveyPathService,
+        RouterInterface           $router
+    )
+    {
         $this->logger                 = $logger;
         $this->pageHandler            = $pageHandler;
         $this->responseHandler        = $responseHandler;
         $this->surveyHandler          = $surveyHandler;
         $this->responseSession        = $responseSession;
         $this->responseSessionManager = $responseSessionManager;
+        $this->surveyPathService      = $surveyPathService;
         $this->router                 = $router;
-        $this->surveyPathHandler      = $surveyPathHandler;
     }
 
     public function setResponse(RequestEvent $event)
@@ -207,12 +209,10 @@ class ResponseSubscriber implements EventSubscriberInterface
 
         $this->logger->debug(__FUNCTION__);
 
-        $surveyPath = null;
-        if ($this->surveyPathHandler->hasSurveyPath()) {
-            $surveyPath = $this->surveyPathHandler->getSurveyPath();
-        }
+        $survey     = $this->surveyHandler->getSurvey();
+        $surveyPath = $this->surveyPathService->generateSurveyPath($survey);
 
-        $this->responseSession->createResponse($this->surveyHandler->getSurvey(), $surveyPath);
+        $this->responseSession->createResponse($survey, $surveyPath);
     }
 
     /**

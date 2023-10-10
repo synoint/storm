@@ -46,6 +46,7 @@ class SurveyPath
 
             $surveyPathPages  = new ArrayCollection();
             $pagePathCodeList = [];
+
             foreach ($combination as $pageId) {
                 $surveyPathPage = new Document\SurveyPathPage();
                 $surveyPathPage->setPageId($pageId);
@@ -113,5 +114,16 @@ class SurveyPath
                  ->field('version')->equals($version)
                  ->getQuery()
                  ->execute();
+    }
+
+    public function generateSurveyPath(Document\Survey $survey): ?Document\SurveyPath
+    {
+        $paths = $this->find($survey);
+
+        if (count($paths)) {
+            return $this->getRandomWeightedElement($paths);
+        }
+
+        return null;
     }
 }

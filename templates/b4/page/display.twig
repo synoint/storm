@@ -2,10 +2,10 @@
 {% form_theme form 'b4/form_theme/syno.twig' %}
 
 {% block title %}
-    {% if '0' != survey_progress(survey, page) and 100 != survey_progress(survey, page) %}
-        {{ survey_progress(survey, page) }}
+    {% if '0' != survey_progress(response, survey) and 100 != survey_progress(response, survey) %}
+        {{ survey_progress(response, survey, page) }}
     {% endif %}
-    {{ page_prefix(survey, page)|trans }}
+    {{ page_prefix(response, survey)|trans }}
     
     {% if survey.getPublicTitle() is not empty %}
         - {{ survey.getPublicTitle() }}
