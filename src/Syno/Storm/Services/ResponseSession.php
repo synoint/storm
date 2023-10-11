@@ -254,7 +254,7 @@ class ResponseSession
         throw new \UnexpectedValueException('Unknown jump type');
     }
 
-    public function nextPage(int $surveyId, int $pageId): RedirectResponse
+    public function redirectToPage(int $surveyId, int $pageId): RedirectResponse
     {
         return $this->responseRedirector->page($surveyId, $pageId);
     }

@@ -141,7 +141,7 @@ class ResponseSessionManager
             return $this->responseSession->complete($this->surveyHandler->getSurvey());
         }
 
-        return $this->responseSession->nextPage($this->surveyHandler->getId(), $nextPage->getPageId());
+        return $this->responseSession->redirectToPage($this->surveyHandler->getId(), $nextPage->getPageId());
     }
 
     public function answeredWithErrors()
@@ -196,14 +196,10 @@ class ResponseSessionManager
         return false;
     }
 
-    public function getFirstPage(): RedirectResponse
+    public function redirectToFirstPage(): RedirectResponse
     {
         $survey    = $this->surveyHandler->getSurvey();
         $firstPage = $survey->getFirstPage();
-
-        if(!$firstPage) {
-            return $this->responseSession->complete($survey);
-        }
 
         if($this->responseHandler->hasResponse()) {
             $response = $this->responseHandler->getResponse();
@@ -211,21 +207,17 @@ class ResponseSessionManager
             if ($response->getSurveyPathId()) {
                 $firstPage = $response->getSurveyPath()->first();
             }
-        } else {
-            return $this->responseSession->nextPage($survey->getSurveyId(), $firstPage->getPageId());
-        }
 
-        if($this->isPageEmpty($firstPage)) {
-            $nextPage = $this->getNextPage($firstPage->getPageId());
-
-            if (!$nextPage) {
-                return $this->responseSession->complete($survey);
+            if($firstPage && $this->isPageEmpty($firstPage)) {
+                $firstPage = $this->getNextPage($firstPage->getPageId());
             }
-
-            return $this->responseSession->nextPage($survey->getSurveyId(), $nextPage->getPageId());
         }
 
-        return $this->responseSession->nextPage($survey->getSurveyId(), $firstPage->getPageId());
+        if (!$firstPage) {
+            return $this->responseSession->complete($survey);
+        }
+
+        return $this->responseSession->redirectToPage($survey->getSurveyId(), $firstPage->getPageId());
     }
 
     private function getNextPage(int $pageId): ?Document\Page

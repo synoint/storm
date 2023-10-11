@@ -39,7 +39,7 @@ class SurveyController extends AbstractController
             return $this->redirectToRoute('survey.privacy_consent', ['surveyId' => $survey->getSurveyId()]);
         }
 
-        return $this->responseSessionManager->getFirstPage();
+        return $this->responseSessionManager->redirectToFirstPage();
     }
 
     /**
@@ -52,7 +52,7 @@ class SurveyController extends AbstractController
      */
     public function test(): RedirectResponse
     {
-        return $this->responseSessionManager->getFirstPage();
+        return $this->responseSessionManager->redirectToFirstPage();
     }
 
     /**
@@ -78,7 +78,7 @@ class SurveyController extends AbstractController
             throw new HttpException(403, 'Invalid debug token');
         }
 
-        return $this->responseSessionManager->getFirstPage();
+        return $this->responseSessionManager->redirectToFirstPage();
     }
 
     /**
@@ -97,7 +97,7 @@ class SurveyController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            return $this->responseSessionManager->getFirstPage();
+            return $this->responseSessionManager->redirectToFirstPage();
         }
 
         return $this->render($survey->getConfig()->getTheme() . '/survey/privacy_consent.twig', [
