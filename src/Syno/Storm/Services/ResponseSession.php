@@ -21,6 +21,7 @@ class ResponseSession
     private ResponseRedirector       $responseRedirector;
     private SurveyEventLogger        $surveyEventLogger;
     private Condition                $conditionService;
+    private SurveyPath               $surveyPathService;
     private EventDispatcherInterface $dispatcher;
 
     public function __construct(
@@ -29,13 +30,16 @@ class ResponseSession
         ResponseRedirector       $responseRedirector,
         SurveyEventLogger        $surveyEventLogger,
         Condition                $conditionService,
+        SurveyPath               $surveyPathService,
         EventDispatcherInterface $dispatcher
-    ) {
+    )
+    {
         $this->responseHandler     = $responseHandler;
         $this->responseEventLogger = $responseEventLogger;
         $this->responseRedirector  = $responseRedirector;
         $this->surveyEventLogger   = $surveyEventLogger;
         $this->conditionService    = $conditionService;
+        $this->surveyPathService   = $surveyPathService;
         $this->dispatcher          = $dispatcher;
     }
 
@@ -267,5 +271,10 @@ class ResponseSession
     public function redirectToSessionCookieCheck(int $surveyId): RedirectResponse
     {
         return $this->responseRedirector->sessionCookieCheck($surveyId);
+    }
+
+    public function generateSurveyPath(Document\Survey $survey): ?Document\SurveyPath
+    {
+        return $this->surveyPathService->generateSurveyPath($survey);
     }
 }

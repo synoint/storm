@@ -24,7 +24,6 @@ class ResponseSubscriber implements EventSubscriberInterface
     private RequestHandler\Survey     $surveyHandler;
     private ResponseSession           $responseSession;
     private ResponseSessionManager    $responseSessionManager;
-    private Services\SurveyPath       $surveyPathService;
     private RouterInterface           $router;
 
     public function __construct(
@@ -34,7 +33,6 @@ class ResponseSubscriber implements EventSubscriberInterface
         RequestHandler\Survey     $surveyHandler,
         ResponseSession           $responseSession,
         ResponseSessionManager    $responseSessionManager,
-        Services\SurveyPath       $surveyPathService,
         RouterInterface           $router
     )
     {
@@ -44,7 +42,6 @@ class ResponseSubscriber implements EventSubscriberInterface
         $this->surveyHandler          = $surveyHandler;
         $this->responseSession        = $responseSession;
         $this->responseSessionManager = $responseSessionManager;
-        $this->surveyPathService      = $surveyPathService;
         $this->router                 = $router;
     }
 
@@ -210,7 +207,7 @@ class ResponseSubscriber implements EventSubscriberInterface
         $this->logger->debug(__FUNCTION__);
 
         $survey     = $this->surveyHandler->getSurvey();
-        $surveyPath = $this->surveyPathService->generateSurveyPath($survey);
+        $surveyPath = $this->responseSession->generateSurveyPath($survey);
 
         $this->responseSession->createResponse($survey, $surveyPath);
     }
