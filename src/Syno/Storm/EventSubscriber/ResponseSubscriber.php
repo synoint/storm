@@ -11,7 +11,6 @@ use Symfony\Component\Routing\RouterInterface;
 use Syno\Storm\RequestHandler;
 use Syno\Storm\Services\ResponseSession;
 use Syno\Storm\Services\ResponseSessionManager;
-use Syno\Storm\Services;
 use Syno\Storm\Traits\RouteAware;
 
 class ResponseSubscriber implements EventSubscriberInterface
