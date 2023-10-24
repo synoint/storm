@@ -20,6 +20,13 @@ class ResponseDataLayer
         $responseSurvey = $this->responseSessionManager->getSurvey();
 
         $result['id'] = $response->getResponseId();
+        $result['parameters'] = [];
+
+        /** @var Document\Parameter $parameter */
+        foreach ($response->getParameters()->toArray() as $parameter) {
+            $result['parameters'][$parameter->getUrlParam()] = $parameter->getValue();
+        }
+
         $result['answers']    = [];
 
         /** @var Document\ResponseAnswer $responseAnswer */
