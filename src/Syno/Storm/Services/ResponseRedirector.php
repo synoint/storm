@@ -131,6 +131,10 @@ class ResponseRedirector
             $url = str_replace('[' . Parameter::PARAM_RESPONSE_ID . ']', $response->getResponseId(), $url);
         }
 
+        foreach ($response->getParameters() as $param) {
+            $url = str_replace('[' . $param->getCode() . ']', $param->getValue(), $url);
+        }
+
         return $url;
     }
 }
