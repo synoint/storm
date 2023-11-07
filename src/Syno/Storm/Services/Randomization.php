@@ -276,18 +276,21 @@ class Randomization
         }
 
         $paths = [];
+
         foreach ($randomizedPaths['paths'] as $path) {
             $newPath = [];
-            $i = 0;
+
             foreach ($pages as $position => $val) {
                 if (in_array($val, $path)) {
-                    $newPath[$position] = $path[$i];
-                    $i++;
+                    $index = array_search($val, $path);
+                    $newPath[$index] = $path[$index];
+
                 } else {
                     $newPath[$position] = $val;
                 }
             }
 
+            ksort($newPath);
             $paths[] = $newPath;
         }
 
