@@ -15,6 +15,14 @@ services:
         autowire: true      # Automatically injects dependencies in your services.
         autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
 
+    _instanceof:
+        Syno\Storm\Plugin\PluginInterface:
+            tags: [ 'survey.plugin' ]
+
+    # Plugins
+    Plugins\:
+        resource: '../src/Plugins/*'
+
     # Syno Storm
     Syno\Storm\:
         resource: '../src/Syno/Storm/*'
@@ -31,6 +39,9 @@ services:
     Syno\Storm\Api\EventSubscriber\ApiAuthenticationSubscriber:
         arguments:
             $apiAccessToken: '%env(STORM_API_TOKEN)%'
+
+    Syno\Storm\Plugin\PluginManager:
+        arguments: [ !tagged survey.plugin ]
 
     Syno\Storm\Services\Response:
         arguments:
