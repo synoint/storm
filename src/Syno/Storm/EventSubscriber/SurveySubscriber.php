@@ -7,6 +7,7 @@ use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Syno\Storm\RequestHandler\Survey;
+use Syno\Storm\Services\Page;
 use Syno\Storm\Services\SurveyEventLogger;
 use Syno\Storm\Traits\RouteAware;
 
@@ -14,11 +15,13 @@ class SurveySubscriber implements EventSubscriberInterface
 {
     use RouteAware;
 
+    private Page              $pageService;
     private Survey            $surveyHandler;
     private SurveyEventLogger $surveyEventLogger;
 
-    public function __construct(Survey $surveyHandler, SurveyEventLogger $surveyEventLogger)
+    public function __construct(Page $pageService, Survey $surveyHandler, SurveyEventLogger $surveyEventLogger)
     {
+        $this->pageService       = $pageService;
         $this->surveyHandler     = $surveyHandler;
         $this->surveyEventLogger = $surveyEventLogger;
     }
@@ -60,6 +63,7 @@ class SurveySubscriber implements EventSubscriberInterface
             throw new NotFoundHttpException('survey.unavailable');
         }
 
+        $survey->setPages($this->pageService->findBySurvey($survey));
         $this->surveyHandler->setSurvey($survey);
     }
 

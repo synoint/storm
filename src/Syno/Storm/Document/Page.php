@@ -9,8 +9,8 @@ use Symfony\Component\Validator\Constraints as Assert;
 use Syno\Storm\Traits\TranslatableTrait;
 
 /**
- * @ODM\Document(collection="page"))
- * @ODM\UniqueIndex(keys={"surveyId"="asc", "version"="asc"})
+ * @ODM\Document(collection="page", readOnly=true)
+ * @ODM\Index(keys={"surveyId"="desc", "version"="desc"})
  */
 class Page
 {
@@ -189,24 +189,28 @@ class Page
      */
     public function getContent()
     {
+        $result = $this->content;
+
         /** @var PageTranslation $translation */
         $translation = $this->getTranslation();
-        if (null !== $translation && strlen(trim($translation->getContent()))) {
-            return $translation->getContent();
+        if (null !== $translation && $translation->getContent()) {
+            $content = trim($translation->getContent());
+            if (strlen($content)) {
+                $result = $content;
+            }
         }
 
-        return $this->content;
+        return $result;
     }
 
     public function hasContent(): bool
     {
-        /** @var PageTranslation $translation */
-        $translation = $this->getTranslation();
-        if (null !== $translation) {
-            return (bool)strlen(trim($translation->getContent()));
+        $content = $this->getContent();
+        if ($content) {
+            $content = trim($content);
         }
 
-        return (bool)strlen(trim($this->content));
+        return $content && strlen($content);
     }
 
     /**

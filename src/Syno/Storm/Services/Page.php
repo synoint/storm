@@ -31,12 +31,6 @@ class Page
             ]
         );
 
-        if ($pages) {
-            foreach ($pages as $page) {
-                $this->dm->detach($page);
-            }
-        }
-
         return new ArrayCollection($pages);
     }
 

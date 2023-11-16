@@ -15,13 +15,11 @@ class Survey
 
     private RequestStack    $requestStack;
     private Services\Survey $surveyService;
-    private Services\Page   $pageService;
 
-    public function __construct(RequestStack $requestStack, Services\Survey $surveyService, Services\Page $pageService)
+    public function __construct(RequestStack $requestStack, Services\Survey $surveyService)
     {
         $this->requestStack  = $requestStack;
         $this->surveyService = $surveyService;
-        $this->pageService   = $pageService;
     }
 
     public function getSurvey(): Document\Survey
@@ -36,7 +34,6 @@ class Survey
 
     public function setSurvey(Document\Survey $survey)
     {
-        $survey->setPages($this->pageService->findBySurvey($survey));
         $this->requestStack->getCurrentRequest()->attributes->set(self::ATTR, $survey);
     }
 

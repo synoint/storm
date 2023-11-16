@@ -39,7 +39,7 @@ class PageController extends AbstractController
             null,
             [
                 'questions' => $filteredQuestions,
-                'answers'   => $this->responseSessionManager->getAnswerMap($request->request->get('p'))
+                'answers'   => $this->responseSessionManager->getAnswerMap($request->request->all('p'))
             ]
         );
 

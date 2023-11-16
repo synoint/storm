@@ -277,14 +277,18 @@ class Answer
 
     public function getLabel(): ?string
     {
+        $result = $this->label;
+
         /** @var AnswerTranslation $translation */
         $translation = $this->getTranslation();
-
-        if (null !== $translation && strlen(trim($translation->getLabel()))) {
-            return $translation->getLabel();
+        if ($translation && $translation->getLabel()) {
+            $translatedLabel = trim($translation->getLabel());
+            if (strlen($translatedLabel)) {
+                $result = $translatedLabel;
+            }
         }
 
-        return $this->label;
+        return $result;
     }
 
     public function setLabel(?string $label): self
@@ -296,14 +300,18 @@ class Answer
 
     public function getRowLabel(): ?string
     {
+        $result = $this->label;
+
         /** @var AnswerTranslation $translation */
         $translation = $this->getTranslation();
-        if (null !== $translation && strlen(trim($translation->getRowLabel()))) {
-
-            return $translation->getRowLabel();
+        if ($translation && $translation->getRowLabel()) {
+            $translatedLabel = trim($translation->getRowLabel());
+            if (strlen($translatedLabel)) {
+                $result = $translatedLabel;
+            }
         }
 
-        return $this->rowLabel;
+        return $result;
     }
 
     public function setRowLabel(?string $rowLabel): self
@@ -315,14 +323,18 @@ class Answer
 
     public function getColumnLabel(): ?string
     {
+        $result = $this->columnLabel;
+
         /** @var AnswerTranslation $translation */
         $translation = $this->getTranslation();
-        if (null !== $translation && strlen(trim($translation->getColumnLabel()))) {
-
-            return $translation->getColumnLabel();
+        if ($translation && $translation->getColumnLabel()) {
+            $translatedLabel = trim($translation->getColumnLabel());
+            if (strlen($translatedLabel)) {
+                $result = $translatedLabel;
+            }
         }
 
-        return $this->columnLabel;
+        return $result;
     }
 
     public function setColumnLabel(?string $columnLabel): self
