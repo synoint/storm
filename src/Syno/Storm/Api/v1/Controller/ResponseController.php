@@ -104,7 +104,6 @@ class ResponseController extends AbstractController implements TokenAuthenticate
                     $response->setQualityScreenedOut(false);
                     $response->setQuotaFull(false);
                     $response->setScreenedOut(false);
-
                     $response->setCompleted(true);
 
                     $this->responseService->save($response);
@@ -275,7 +274,10 @@ class ResponseController extends AbstractController implements TokenAuthenticate
 
         if ($response) {
             if ($response->isCompleted()) {
-                $response->setCompletedAt($this->responseEventService->getResponseCompletionTime($responseId));
+                $completedAt = $this->responseEventService->getResponseCompletionTime($responseId);
+                if ($completedAt) {
+                    $response->setCompletedAt($completedAt);
+                }
             }
             $response->setEvents($this->responseEventService->getEventsByResponseId($responseId));
 
