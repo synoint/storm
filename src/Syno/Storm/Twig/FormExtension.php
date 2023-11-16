@@ -52,6 +52,7 @@ class FormExtension extends AbstractExtension
     {
         $orig = array_flip($array);
         shuffle($array);
+        $data = [];
         foreach($array as $key=>$n) {
             $data[$n] = $orig[$n];
         }
