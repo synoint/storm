@@ -355,30 +355,6 @@ class SurveyController extends AbstractController implements TokenAuthenticatedC
         return $this->json($this->responseService->fetchLiveCount($surveyId, $version));
     }
 
-    /**
-     * @Route(
-     *     "/{surveyId}/versions/{version}/media-migration",
-     *     name="storm_api.v1.media_migration",
-     *     requirements={"surveyId"="\d+", "versionId"="\d+"},
-     *     methods={"POST"}
-     * )
-     */
-    public function mediaMigration(int $surveyId, int $version): JsonResponse
-    {
-        $survey = $this->surveyService->findBySurveyIdAndVersion($surveyId, $version);
-
-        if(!$survey) {
-            return $this->json(
-                sprintf('Survey with ID: %d, version: %d was not found', $surveyId, $version),
-                404
-            );
-        }
-
-        $this->pageService->media($survey);
-
-        return $this->json('ok');
-    }
-
     protected function deleteSurvey(Document\Survey $survey)
     {
         $responses = $this->responseService->getAllBySurveyIdAndVersion($survey->getSurveyId(), $survey->getVersion());
