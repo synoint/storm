@@ -4,17 +4,14 @@ namespace Plugins\Survey_172100;
 
 use Symfony\Component\HttpFoundation\Request;
 use Syno\Storm\Plugin\AbstractPlugin;
-use Syno\Storm\RequestHandler\Survey;
 use Syno\Storm\Services\ResponseSessionManager;
 
 class Plugin extends AbstractPlugin
 {
-    private Survey                 $surveyHandler;
     private ResponseSessionManager $responseSessionManager;
 
-    public function __construct(Survey $surveyHandler, ResponseSessionManager $responseSessionManager)
+    public function __construct(ResponseSessionManager $responseSessionManager)
     {
-        $this->surveyHandler          = $surveyHandler;
         $this->responseSessionManager = $responseSessionManager;
     }
 
@@ -22,6 +19,16 @@ class Plugin extends AbstractPlugin
     {
         $customId = $request->query->getAlnum('cid');
         if (!$customId) {
+            return;
+        }
+
+        $survey = $this->responseSessionManager->getSurvey();
+        if (!$survey) {
+            return;
+        }
+
+        $response = $this->responseSessionManager->getResponse();
+        if (!$response) {
             return;
         }
 
@@ -35,7 +42,7 @@ class Plugin extends AbstractPlugin
                 $data[$code] = $row[$dataFileColumnIndex];
             }
 
-            $this->responseSessionManager->saveAnswers($data, $this->surveyHandler->getSurvey()->getQuestions());
+            $this->responseSessionManager->saveAnswers($data, $survey->getQuestions());
             break;
         }
     }
