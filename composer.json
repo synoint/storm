@@ -2,13 +2,13 @@
   "type": "project",
   "license": "proprietary",
   "require": {
-    "php": "^7.4 || 8.0",
+    "php": "^7.4 || ^8.0",
     "ext-ctype": "*",
     "ext-curl": "*",
     "ext-iconv": "*",
     "ext-json": "*",
     "ext-mongodb": "^1.6",
-    "doctrine/mongodb-odm-bundle": "4.4.*",
+    "doctrine/mongodb-odm-bundle": "^4.6",
     "jwadhams/json-logic-php": "^1.4",
     "laminas/laminas-code": "^3.4 || ^4.0",
     "symfony/amazon-sqs-messenger": "5.4.*",
@@ -26,7 +26,7 @@
     "symfony/monolog-bundle": "^3.5",
     "symfony/serializer": "5.4.*",
     "symfony/translation": "5.4.*",
-    "symfony/twig-bridge": "5.4",
+    "symfony/twig-bridge": "5.4.*",
     "symfony/twig-bundle": "5.4.*",
     "symfony/validator": "5.4.*",
     "symfony/webpack-encore-bundle": "^1.7",
@@ -55,7 +55,7 @@
       "symfony/flex": true
     },
     "platform": {
-      "php": "8.0"
+      "php": "8.1"
     }
   },
   "autoload": {
