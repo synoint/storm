@@ -11,16 +11,16 @@ use Syno\Storm\Traits\TranslatableTrait;
 
 /**
  * @ODM\Document(collection="survey"))
- * @ODM\UniqueIndex(keys={"surveyId"="asc", "version"="asc"})
+ * @ODM\UniqueIndex(keys={"surveyId"="asc", "version"="desc"})
  */
 class Survey implements JsonSerializable
 {
     use TranslatableTrait;
 
-    const URL_TYPE_SCREENOUT = 'screenout';
+    const URL_TYPE_SCREENOUT         = 'screenout';
     const URL_TYPE_QUALITY_SCREENOUT = 'quality_screenout';
-    const URL_TYPE_COMPLETE = 'complete';
-    const URL_TYPE_QUOTA_FULL = 'quota_full';
+    const URL_TYPE_COMPLETE          = 'complete';
+    const URL_TYPE_QUOTA_FULL        = 'quota_full';
 
     /** @ODM\Id */
     private $id;

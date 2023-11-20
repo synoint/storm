@@ -16,12 +16,14 @@ yarn encore prod;
 . .env
 . .env.local
 # replace with New Relic license
-sed -i "s/_THIS_KEY_IS_REPLACED_DURING_DEPLOYMENT_/${NEW_RELIC_LICENSE}/" .ebextensions/07_newrelic.config
+sed -i "s/_THIS_KEY_IS_REPLACED_DURING_DEPLOYMENT_/${NEW_RELIC_LICENSE}/" .ebextensions/66_new_relic_php.config
+sed -i "s/_THIS_KEY_IS_REPLACED_DURING_DEPLOYMENT_/${NEW_RELIC_LICENSE}/" .ebextensions/67_newrelic_infra.config
 
-eb deploy survey-80;
+eb deploy survey-81;
 
 # restore replacement string
-sed -i "s/${NEW_RELIC_LICENSE}/_THIS_KEY_IS_REPLACED_DURING_DEPLOYMENT_/" .ebextensions/07_newrelic.config
+sed -i "s/${NEW_RELIC_LICENSE}/_THIS_KEY_IS_REPLACED_DURING_DEPLOYMENT_/" .ebextensions/66_new_relic_php.config
+sed -i "s/${NEW_RELIC_LICENSE}/_THIS_KEY_IS_REPLACED_DURING_DEPLOYMENT_/" .ebextensions/67_newrelic_infra.config
 
 ## Fix ODM permission bug
 chmod -R 777 ./var/cache/dev/doctrine

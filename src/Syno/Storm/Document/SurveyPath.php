@@ -9,8 +9,9 @@ use JsonSerializable;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * @ODM\Document(collection="survey_path"))
+ * @ODM\Document(collection="survey_path", readOnly=true)
  * @ODM\Index(keys={"surveyId"="asc", "version"="asc"})
+ * @ODM\UniqueIndex(keys={"surveyPathId"="asc"})
  */
 class SurveyPath implements JsonSerializable
 {

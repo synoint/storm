@@ -137,8 +137,6 @@ class Response implements JsonSerializable
 
     /**
      * @var array
-     *
-     * @ODM\EmbedMany(targetDocument=ResponseEvent::class)
      */
     private $events;
 
@@ -522,12 +520,7 @@ class Response implements JsonSerializable
         return $result;
     }
 
-    public function getEvents(): array
-    {
-        return $this->events;
-    }
-
-    public function setEvents(array $events): Response
+    public function setEvents(array $events): self
     {
         $this->events = $events;
 

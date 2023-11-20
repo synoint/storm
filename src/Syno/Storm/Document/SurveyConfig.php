@@ -5,7 +5,8 @@ namespace Syno\Storm\Document;
 use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
 
 /**
- * @ODM\Document(collection="survey_config"))
+ * @ODM\Document(collection="survey_config", readOnly=true)
+ * @ODM\UniqueIndex(keys={"surveyId"="desc", "key"="asc"})
  */
 class SurveyConfig
 {
@@ -17,14 +18,14 @@ class SurveyConfig
     /**
      * @var int
      *
-     * @ODM\Field(type="int") @ODM\Index
+     * @ODM\Field(type="int")
      */
     private $surveyId;
 
     /**
      * @var string
      *
-     * @ODM\Field(type="string") @ODM\Index
+     * @ODM\Field(type="string")
      */
     private $key;
 

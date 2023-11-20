@@ -7,6 +7,8 @@ use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
 use JsonSerializable;
 /**
  * @ODM\Document(collection="response_event"))
+ * @ODM\Index(keys={"responseId"="desc"})
+ * @ODM\Index(keys={"surveyId"="desc"})
  */
 class ResponseEvent implements JsonSerializable
 {
@@ -23,14 +25,14 @@ class ResponseEvent implements JsonSerializable
     /**
      * @var string
      *
-     * @ODM\Field(type="string") @ODM\Index
+     * @ODM\Field(type="string")
      */
     private $responseId;
 
     /**
      * @var int
      *
-     * @ODM\Field(type="int") @ODM\Index
+     * @ODM\Field(type="int")
      */
     private $surveyId;
 
