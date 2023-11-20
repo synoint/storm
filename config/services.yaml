@@ -46,3 +46,6 @@ services:
     Syno\Storm\Services\Response:
         arguments:
             $responseIdPrefix: '%env(APP_REGION)%'
+
+imports:
+    - { resource: ../src/NewRelic/services.yaml }

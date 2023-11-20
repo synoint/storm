@@ -60,9 +60,10 @@
   },
   "autoload": {
     "psr-4": {
+      "Cint\\": "src/Cint/",
+      "NewRelic\\": "src/NewRelic/",
       "Plugins\\": "src/Plugins/",
-      "Syno\\": "src/Syno/",
-      "Cint\\": "src/Cint/"
+      "Syno\\": "src/Syno/"
     }
   },
   "autoload-dev": {

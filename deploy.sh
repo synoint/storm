@@ -25,6 +25,9 @@ eb deploy survey-81;
 sed -i "s/${NEW_RELIC_LICENSE}/_THIS_KEY_IS_REPLACED_DURING_DEPLOYMENT_/" .ebextensions/66_new_relic_php.config
 sed -i "s/${NEW_RELIC_LICENSE}/_THIS_KEY_IS_REPLACED_DURING_DEPLOYMENT_/" .ebextensions/67_newrelic_infra.config
 
+# save deployment in NewRelic
+./bin/console nr:deploy
+
 ## Fix ODM permission bug
 chmod -R 777 ./var/cache/dev/doctrine
 composer dump-autoload
