@@ -8,9 +8,9 @@ fi
 git checkout master;
 git push;
 composer install;
-composer dump-autoload --no-dev --classmap-authoritative;
 yarn install;
 yarn encore prod;
+rm -rf ./var/cache/*
 
 # include local env for New Relic license
 . .env
@@ -28,9 +28,6 @@ sed -i "s/${NEW_RELIC_LICENSE}/_THIS_KEY_IS_REPLACED_DURING_DEPLOYMENT_/" .ebext
 # save deployment in NewRelic
 ./bin/console nr:deploy
 
-## Fix ODM permission bug
-chmod -R 777 ./var/cache/dev/doctrine
-composer dump-autoload
 echo "deployed!";
 echo "";
 exit 0;
