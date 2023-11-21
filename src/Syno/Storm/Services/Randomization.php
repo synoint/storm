@@ -71,6 +71,17 @@ class Randomization
 
                 asort($positionMap);
 
+                // assign correct position
+                $newCombination = [];
+                $oldCombination = $blockPagesCombinations[$group]['combinations'][$index];
+                $c = 0;
+
+                foreach ($positionMap as $position) {
+                    $newCombination[$position] = $oldCombination[$c];
+                    $c++;
+                }
+
+                $blockPagesCombinations[$group]['combinations'][$index] = $newCombination;
                 $blockPagesCombinations[$group]['position_map'] = $positionMap;
             }
         }
@@ -276,7 +287,6 @@ class Randomization
         }
 
         $paths = [];
-
         foreach ($randomizedPaths['paths'] as $path) {
             $newPath = [];
 
@@ -284,13 +294,13 @@ class Randomization
                 if (in_array($val, $path)) {
                     $index = array_search($val, $path);
                     $newPath[$index] = $path[$index];
-
                 } else {
                     $newPath[$position] = $val;
                 }
             }
 
             ksort($newPath);
+
             $paths[] = $newPath;
         }
 
@@ -304,7 +314,7 @@ class Randomization
         $randomizedPaths = [];
 
         foreach ($childCombinations as $childCombinationsIndex => $childCombinationItems) {
-            foreach ($childCombinationItems['combinations'] as $permutatedPageItemIndex => $pageItems) { // pirmi 2 elementai
+            foreach ($childCombinationItems['combinations'] as $permutatedPageItemIndex => $pageItems) { 
 
                 foreach ($allCombinations['combinations'] as $blockItemsIndex => $blockItems) {
                     $blockItemWeight      = $weights[$blockItemsIndex];
