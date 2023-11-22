@@ -86,7 +86,7 @@ f104a312bc1df7e147b652c2a5acb8de,2,Franchise North 2 Region,Franchise,843,Subic 
 94c72cb4dd2a97be4eb91f4d200a3a3b,2,Franchise North 2 Region,Franchise,455,Cabanatuan-Burgos
 b40a89123d4e9e58aea06b6a84ffb127,2,Franchise North 2 Region,Franchise,511,San Jose
 a9192f44d7fdde5f641f1fa94510fd12,2,Franchise North 2 Region,Franchise,546,MacArthur Bocaue-Lolomboy
-53fd52be82f33094f7c3c9dc6eaa87a5,2,Franchise North 2 Region,Franchise,692,"Primark, Gapan"
+"53fd52be82f33094f7c3c9dc6eaa87a5,2,Franchise North 2 Region,Franchise,692,""Primark, Gapan"""
 7a7ddad6d0ff46d4a058c633a71009e8,2,Franchise North 2 Region,Franchise,781,Balagtas
 0066b9c96b5c7f96e782eb3812aab3bc,2,Franchise North 2 Region,Franchise,883,Baliwag Highway
 9ae32a133f94b7412faff04f2f013ce0,2,Franchise North 2 Region,Franchise,254,VIGAN
@@ -280,7 +280,7 @@ abf50131745917dd608fd580660d73e9,4,Franchise South 2 Region,Franchise,432,ORTIGA
 caaea913ae4709afa709dedc054e20e8,4,Franchise South 2 Region,Franchise,591,RESTAURANTE MORIONES
 9c5bd85f5221054a8938775589be4d8e,4,Franchise South 2 Region,Franchise,699,KAMIAS QC
 762dcc204e753108e6cb4db63cbaf65d,4,Franchise South 2 Region,Franchise,125,UP VEGA
-ebd1b0426971cc958bb4e4ad21754bdf,4,Franchise South 2 Region,Franchise,234,"STA. CRUZ, LAGUNA"
+"ebd1b0426971cc958bb4e4ad21754bdf,4,Franchise South 2 Region,Franchise,234,""STA. CRUZ, LAGUNA"""
 4f6b0cfa9174c7dc2762132256ce771c,4,Franchise South 2 Region,Franchise,292,MARKET MARKET
 e4d7d48a21374224e20f42c9682a80a2,4,Franchise South 2 Region,Franchise,396,SM CALAMBA 
 9078f0eff0a7472cbf3547f4e3a919fc,4,Franchise South 2 Region,Franchise,448,CALAMBA HIGHWAY
@@ -681,4 +681,5 @@ cdee52ac2d48300b719a0fb603bcb43d,15,11-PC ELAINE,GADC,897,Zamboanga Tetuan
 661998926d353c12bb9bbbadb9baf587,99,GROUP-99,GADC,999,Test restaurant 99
 46625f118b5e352889d5565b6d422976,100,GROUP-100,Franchise,1000,Test restaurant 100
 5e706e02d1d685f17093415a73f9feb0,101,GROUP-101,Franchise,1001,Test restaurant 101
-3a7068c7fb44410343006a2167581d5a,4,Franchise South 2 Region	Franchise,393,MARCOS HIGHWAY ANTIPOLO
+3a7068c7fb44410343006a2167581d5a,4,Franchise South 2 Region,Franchise,393,MARCOS HIGHWAY ANTIPOLO
+5be43b7d23589b84f282aa2024b9d4b3,3,Franchise South 1 Region,Franchise,385,CASIMIRO
