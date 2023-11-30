@@ -39,7 +39,7 @@ class ResponseController extends AbstractController implements TokenAuthenticate
     /**
      * @Route(
      *     "/{surveyId}/responses",
-     *     name="storm_api.v1.responses.all",
+     *     name="storm_api.v1.response.all",
      *     requirements={"id"="\d+"},
      *     methods={"GET"}
      * )
@@ -315,6 +315,35 @@ class ResponseController extends AbstractController implements TokenAuthenticate
             }
 
             return $this->json(['message' => 'Restored!']);
+        }
+
+        return $this->json(['message' => 'Response ids is missing.'], 400);
+    }
+
+    /**
+     * @Route(
+     *     "/{surveyId}/responses",
+     *     name="storm_api.v1.response.delete",
+     *     requirements={"surveyId"="\d+"},
+     *     methods={"DELETE"}
+     * )
+     */
+    public function delete(int $surveyId, Request $request): JsonResponse
+    {
+        $deleted = 0;
+        $responseIds = json_decode($request->getContent());
+
+        if ($responseIds) {
+            foreach ($responseIds as $responseId) {
+                $response = $this->responseService->findBySurveyIdAndResponseId($surveyId, $responseId);
+                if ($response) {
+                    $this->responseEventService->deleteEvents($response->getResponseId());
+                    $this->responseService->delete($response);
+                    $deleted++;
+                }
+            }
+
+            return $this->json(['message' => $deleted]);
         }
 
         return $this->json(['message' => 'Response ids is missing.'], 400);
