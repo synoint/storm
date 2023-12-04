@@ -77,7 +77,8 @@ class SurveyController extends AbstractController implements TokenAuthenticatedC
         if (!empty($data['surveyId']) && !empty($data['version'])) {
             $survey = $this->surveyService->findBySurveyIdAndVersion($data['surveyId'], $data['version']);
             if ($survey) {
-                $this->deleteSurvey($survey);
+//                $this->deleteSurvey($survey);
+                return $this->json($survey->getId(), 201);
             }
         }
 
