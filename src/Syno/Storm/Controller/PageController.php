@@ -89,9 +89,4 @@ class PageController extends AbstractController
     {
         return $this->render(Document\Config::DEFAULT_THEME . '/page/unavailable.twig');
     }
-
-    private function enableBackButton(): bool
-    {
-
-    }
 }
