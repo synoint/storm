@@ -9,11 +9,11 @@ use Twig\TwigFunction;
 
 class AppExtension extends AbstractExtension
 {
-    private Services\Survey $surveyService;
+    private Services\Page $pageService;
 
-    public function __construct(Services\Survey $surveyService)
+    public function __construct(Services\Page $pageService)
     {
-        $this->surveyService = $surveyService;
+        $this->pageService = $pageService;
     }
 
     public function getFunctions(): array
@@ -26,18 +26,29 @@ class AppExtension extends AbstractExtension
             new TwigFunction(
                 'page_prefix', function (Document\Response $response, Document\Survey $survey) {
                 return $this->getPagePrefix($response, $survey);
+            }),
+            new TwigFunction(
+                'survey_pages_for_debug', function (Document\Survey $survey) {
+                return $this->getSurveyPagesForDebug($survey);
             })
         ];
     }
 
     public function getProgress(Document\Response $response, Document\Survey $survey): int
     {
-        return $this->surveyService->getProgress($response, $survey);
+        $result = 0;
+        $answered = $response->getNumberOfAnsweredQuestions();
+        if ($answered) {
+            $total = $this->pageService->getTotalQuestions($survey->getSurveyId(), $survey->getVersion());
+            $result = round(($answered / $total) * 100);
+        }
+
+        return $result;
     }
 
     public function getPagePrefix(Document\Response $response, Document\Survey $survey): string
     {
-        $progress = $this->surveyService->getProgress($response, $survey);
+        $progress = $this->getProgress($response, $survey);
 
         if ($progress == 100) {
             $text = 'survey.thank_you';
@@ -48,5 +59,10 @@ class AppExtension extends AbstractExtension
         }
 
         return $text;
+    }
+
+    public function getSurveyPagesForDebug(Document\Survey $survey): array
+    {
+        return $this->pageService->findAllForDebug($survey->getSurveyId(), $survey->getVersion());
     }
 }

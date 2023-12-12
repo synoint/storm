@@ -10,15 +10,18 @@ use Syno\Storm\RequestHandler;
 class ResponseSessionManager
 {
     private Condition               $conditionService;
+    private Page                    $pageService;
     private RequestHandler\Answer   $answerHandler;
     private RequestHandler\Page     $pageHandler;
     private RequestHandler\Response $responseHandler;
     private RequestHandler\Survey   $surveyHandler;
     private ResponseSession         $responseSession;
+
     private ?Collection             $questions = null;
 
     public function __construct(
         Condition                 $conditionService,
+        Page                      $pageService,
         RequestHandler\Answer     $answerHandler,
         RequestHandler\Page       $pageHandler,
         RequestHandler\Response   $responseHandler,
@@ -26,12 +29,13 @@ class ResponseSessionManager
         ResponseSession           $responseSession
     )
     {
-        $this->conditionService  = $conditionService;
-        $this->answerHandler     = $answerHandler;
-        $this->pageHandler       = $pageHandler;
-        $this->responseHandler   = $responseHandler;
-        $this->surveyHandler     = $surveyHandler;
-        $this->responseSession   = $responseSession;
+        $this->conditionService          = $conditionService;
+        $this->pageService               = $pageService;
+        $this->answerHandler             = $answerHandler;
+        $this->pageHandler               = $pageHandler;
+        $this->responseHandler           = $responseHandler;
+        $this->surveyHandler             = $surveyHandler;
+        $this->responseSession           = $responseSession;
     }
 
     public function getPage(): Document\Page
@@ -77,9 +81,20 @@ class ResponseSessionManager
         return $this->responseHandler->getResponse()->getAnswerIdValueMap();
     }
 
-    public function saveAnswers(array $formData, Collection $questions)
+    public function saveAnswersFromParams(array $formData)
     {
+        $survey = $this->getSurvey();
+        $questions = $this->pageService->getSurveyQuestions($survey->getSurveyId(), $survey->getVersion());
         $answers = $this->answerHandler->getAnswers($questions, $formData);
+
+        if (!$answers->isEmpty()) {
+            $this->responseSession->saveAnswers($this->responseHandler->getResponse(), $answers);
+        }
+    }
+
+    public function saveAnswers(array $formData)
+    {
+        $answers = $this->answerHandler->getAnswers($this->getQuestions(), $formData);
 
         if (!$answers->isEmpty()) {
             $this->responseSession->saveAnswers($this->responseHandler->getResponse(), $answers);
@@ -135,13 +150,12 @@ class ResponseSessionManager
 
     public function advance(): RedirectResponse
     {
-        $nextPage = $this->getNextPage($this->pageHandler->getId());
-
-        if (!$nextPage) {
+        $nextPageId = $this->pageHandler->getNextPageId();
+        if (!$nextPageId) {
             return $this->responseSession->complete($this->surveyHandler->getSurvey());
         }
 
-        return $this->responseSession->redirectToPage($this->surveyHandler->getId(), $nextPage->getPageId());
+        return $this->responseSession->redirectToPage($this->surveyHandler->getId(), $nextPageId);
     }
 
     public function answeredWithErrors()
@@ -156,110 +170,34 @@ class ResponseSessionManager
 
     public function isLastPage(int $pageId): bool
     {
-        $response = $this->responseHandler->getResponse();
-
-        $pages = $this->surveyHandler->getSurvey()->getPages();
-        if ($response->getSurveyPathId()) {
-            $pages = $response->getSurveyPath();
-        }
-
-        if ($pages->last()->getPageId() === $pageId) {
-            return true;
-        }
-
-        return false;
-    }
-
-    public function isFirstPage(int $pageId): bool
-    {
-        $response = $this->responseHandler->getResponse();
-
-        $pages = $this->surveyHandler->getSurvey()->getPages();
-        if ($response->getSurveyPathId()) {
-            $pages = $response->getSurveyPath();
-        }
-
-        $firstPageWithVisibleQuestions = null;
-
-        /** @var Document\Page $page */
-        foreach ($pages as $page) {
-            if ($page->getVisibleQuestions()->count()) {
-                $firstPageWithVisibleQuestions = $page;
-                break;
-            }
-        }
-
-        if ($firstPageWithVisibleQuestions && $firstPageWithVisibleQuestions->getPageId() === $pageId) {
-            return true;
-        }
-
-        return false;
+        return $pageId == $this->pageHandler->getLastPageId();
     }
 
     public function redirectToFirstPage(): RedirectResponse
     {
-        $survey    = $this->surveyHandler->getSurvey();
-        $firstPage = $survey->getFirstPage();
-
-        if($this->responseHandler->hasResponse()) {
-            $response = $this->responseHandler->getResponse();
-
-            if ($response->getSurveyPathId()) {
-                $firstPage = $response->getSurveyPath()->first();
-            }
-
-            if($firstPage && $this->isPageEmpty($firstPage)) {
-                $firstPage = $this->getNextPage($firstPage->getPageId());
-            }
+        $firstPageId = $this->pageHandler->getFirstPageId();
+        if (!$firstPageId) {
+            return $this->responseSession->redirectToPageUnavailable();
         }
 
-        if (!$firstPage) {
-            return $this->responseSession->complete($survey);
-        }
-
-        return $this->responseSession->redirectToPage($survey->getSurveyId(), $firstPage->getPageId());
+        return $this->responseSession->redirectToPage($this->surveyHandler->getId(), $firstPageId);
     }
 
-    private function getNextPage(int $pageId): ?Document\Page
+    public function enableBackButton(int $pageId): bool
     {
-        $response = $this->responseHandler->getResponse();
-
-        $pages = $this->surveyHandler->getSurvey()->getPages();
-        if ($response->getSurveyPathId()) {
-            $pages = $response->getSurveyPath();
-        }
-
-        $nextPage = null;
-        $pick     = false;
-        foreach ($pages as $page) {
-            if ($pick) {
-                $nextPage = $page;
-                break;
-            }
-            if ($pageId === $page->getPageId()) {
-                $pick = true;
-            }
-        }
-
-        if ($nextPage && $this->isPageEmpty($nextPage)) {
-            $nextPage = $this->getNextPage($nextPage->getPageId());
-        }
-
-        return $nextPage;
-    }
-
-    private function isPageEmpty(Document\Page $page): bool
-    {
-        if ($page->getVisibleQuestions()->isEmpty()) {
-            if (!$page->hasContent()) {
-                return true;
-            }
-
+        if ($pageId === $this->pageHandler->getFirstPageId()) {
             return false;
         }
 
-        return $this->conditionService->filterQuestionsByShowCondition(
-            $page->getQuestions(), $this->responseHandler->getResponse()
-        )->isEmpty();
+        $response = $this->responseHandler->getResponse();
+        if ($response->isDebug() || $response->isTest()) {
+            return true;
+        }
+
+        $survey = $this->surveyHandler->getSurvey();
+
+        return $survey->getConfig()->isBackButtonEnabled();
     }
+
+
 }

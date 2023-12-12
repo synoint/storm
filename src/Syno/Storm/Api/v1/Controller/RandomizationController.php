@@ -72,7 +72,7 @@ class RandomizationController extends AbstractController implements TokenAuthent
 
             $this->surveyService->save($survey);
 
-            $survey->setPages($this->pageService->findBySurvey($survey));
+            $survey->setPages($this->pageService->findAllBySurvey($survey));
             $randomizedCombinations = $this->randomizationService->getRandomizedPaths($survey);
 
             $this->surveyPathService->save($survey, $randomizedCombinations);

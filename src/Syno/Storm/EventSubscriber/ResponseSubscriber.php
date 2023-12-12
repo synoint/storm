@@ -169,7 +169,7 @@ class ResponseSubscriber implements EventSubscriberInterface
 
         $this->logger->debug(__FUNCTION__);
 
-        $redirect = $this->responseSession->resumeSurvey($this->surveyHandler->getSurvey());
+        $redirect = $this->responseSession->resumeSurvey();
 
         if ($redirect) {
             $event->setResponse($redirect);
@@ -205,10 +205,7 @@ class ResponseSubscriber implements EventSubscriberInterface
 
         $this->logger->debug(__FUNCTION__);
 
-        $survey     = $this->surveyHandler->getSurvey();
-        $surveyPath = $this->responseSession->generateSurveyPath($survey);
-
-        $this->responseSession->createResponse($survey, $surveyPath);
+        $this->responseSession->createResponse($this->surveyHandler->getSurvey());
     }
 
     /**
@@ -235,7 +232,7 @@ class ResponseSubscriber implements EventSubscriberInterface
             return;
         }
 
-        $this->responseSessionManager->saveAnswers($data, $this->surveyHandler->getSurvey()->getQuestions());
+        $this->responseSessionManager->saveAnswersFromParams($data);
     }
 
     public function logUserAgent(RequestEvent $event)

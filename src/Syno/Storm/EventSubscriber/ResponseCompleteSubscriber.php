@@ -40,7 +40,7 @@ class ResponseCompleteSubscriber implements EventSubscriberInterface
     {
         $survey   = $event->getSurvey();
         $response = $event->getResponse();
-        $answers  = $this->responseDataLayerService->getData();
+        $answers  = $this->responseDataLayerService->getData($survey, $response);
 
         if ($this->surveyConfigService->findBySurveyIdAndKey(
             $survey->getSurveyId(),

@@ -32,13 +32,11 @@ class PageController extends AbstractController
      */
     public function index(Document\Survey $survey, Document\Page $page, Request $request): Response
     {
-        $filteredQuestions = $this->responseSessionManager->getQuestions();
-
         $form = $this->createForm(
             PageType::class,
             null,
             [
-                'questions' => $filteredQuestions,
+                'questions' => $this->responseSessionManager->getQuestions(),
                 'answers'   => $this->responseSessionManager->getAnswerMap($request->request->all('p'))
             ]
         );
@@ -49,7 +47,7 @@ class PageController extends AbstractController
 
             if ($form->isValid()) {
 
-                $this->responseSessionManager->saveAnswers($form->getData(), $filteredQuestions);
+                $this->responseSessionManager->saveAnswers($form->getData());
 
                 $redirect = $this->responseSessionManager->redirectOnScreenOut();
                 if (!$redirect) {
@@ -70,15 +68,17 @@ class PageController extends AbstractController
             $this->responseSessionManager->saveProgress();
         }
 
+        $response = $this->responseSessionManager->getResponse();
+
         return $this->render($survey->getConfig()->getTheme() . '/page/display.twig', [
             'survey'             => $survey,
             'page'               => $page,
-            'questions'          => $filteredQuestions,
-            'response'           => $this->responseSessionManager->getResponse(),
+            'questions'          => $this->responseSessionManager->getQuestions(),
+            'response'           => $response,
             'form'               => $form->createView(),
-            'backButtonDisabled' => $this->responseSessionManager->isFirstPage($page->getPageId()),
+            'backButtonEnabled' =>  $this->responseSessionManager->enableBackButton($page->getPageId()),
             'isLastPage'         => $this->responseSessionManager->isLastPage($page->getPageId()),
-            'responseDataLayer'  => $this->responseDataLayer->getData(),
+            'responseDataLayer'  => $this->responseDataLayer->getData($survey, $response),
         ]);
     }
 
@@ -88,5 +88,10 @@ class PageController extends AbstractController
     public function unavailable(): Response
     {
         return $this->render(Document\Config::DEFAULT_THEME . '/page/unavailable.twig');
+    }
+
+    private function enableBackButton(): bool
+    {
+
     }
 }

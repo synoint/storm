@@ -8,13 +8,20 @@ use Syno\Storm\Document;
 class Randomization
 {
     private Combination         $combinationService;
+    private Page                $pageService;
     private RandomizationWeight $randomizationWeightService;
 
-    public function __construct(Combination $combinationService, RandomizationWeight $randomizationWeightService)
+    public function __construct(
+        Combination         $combinationService,
+        Page                $pageService,
+        RandomizationWeight $randomizationWeightService
+    )
     {
         $this->combinationService         = $combinationService;
+        $this->pageService                = $pageService;
         $this->randomizationWeightService = $randomizationWeightService;
     }
+
 
     public function getRandomizedPaths(Document\Survey $survey): array
     {
@@ -24,13 +31,16 @@ class Randomization
         $permutatedItems['blocks'] = $this->getBlocks($survey, $weights);
         $permutatedItems['pages']  = $this->getPages($survey, $weights);
 
-        return $this->createSurveyPathCombinations($survey, $permutatedItems);
+        return $this->createSurveyPathCombinations(
+              $this->pageService->findPageIds($survey->getSurveyId(), $survey->getVersion()),
+              $permutatedItems
+        );
     }
 
     private function getBlocks(Document\Survey $survey, array $weights): array
     {
         $blockPagesCombinations = [];
-        $pages                  = $survey->getPlainPages();
+        $pages                  = $this->pageService->findPageIds($survey->getSurveyId(), $survey->getVersion());
         $blocks                 = $survey->getRandomization()->toArray();
         $positionMap            = [];
         $randomizedBlockGroups  = $this->findRandomizedBlocks($survey);
@@ -91,7 +101,7 @@ class Randomization
 
     private function getPages(Document\Survey $survey, array $weights): array
     {
-        $pages = $survey->getPlainPages();
+        $pages = $this->pageService->findPageIds($survey->getSurveyId(), $survey->getVersion());
 
         $permutatedItemGroups = [];
         $pagesCombinations    = [];
@@ -232,10 +242,9 @@ class Randomization
         return $items;
     }
 
-    private function createSurveyPathCombinations(Document\Survey $survey, array $permutatedItems): array
+    private function createSurveyPathCombinations(array $pageIds, array $permutatedItems): array
     {
         $randomizedPaths = [];
-        $pages           = $survey->getPlainPages();
 
         if (count($permutatedItems['blocks']) && count($permutatedItems['pages'])) {
             $allCombinations = [];
@@ -290,12 +299,12 @@ class Randomization
         foreach ($randomizedPaths['paths'] as $path) {
             $newPath = [];
 
-            foreach ($pages as $position => $val) {
-                if (in_array($val, $path)) {
-                    $index = array_search($val, $path);
+            foreach ($pageIds as $position => $pageId) {
+                if (in_array($pageId, $path)) {
+                    $index = array_search($pageId, $path);
                     $newPath[$index] = $path[$index];
                 } else {
-                    $newPath[$position] = $val;
+                    $newPath[$position] = $pageId;
                 }
             }
 
@@ -306,7 +315,7 @@ class Randomization
 
         $combinations = ['paths' => $paths, 'weights' => $randomizedPaths['weights']];
 
-        return $this->reValidateCombinations($pages, $combinations);
+        return $this->reValidateCombinations(count($pageIds), $combinations);
     }
 
     private function mergeCombinations(array $allCombinations, array $childCombinations, array $weights): array
@@ -424,14 +433,13 @@ class Randomization
         return $result;
     }
 
-    private function reValidateCombinations(array $pages, array $combinations): array
+    private function reValidateCombinations($numberOfPages, array $combinations): array
     {
         $uniqueCombinations = [];
-        $pagesCount         = count($pages);
 
         $combinationsWithAllPages = [];
         foreach ($combinations['paths'] as $index => $combination) {
-            if ($pagesCount === count(array_unique($combination))) {
+            if ($numberOfPages === count(array_unique($combination))) {
                 $combinationsWithAllPages['paths'][]   = $combination;
                 $combinationsWithAllPages['weights'][] = $combinations['weights'][$index];
             }

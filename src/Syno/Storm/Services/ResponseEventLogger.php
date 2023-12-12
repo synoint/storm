@@ -15,6 +15,7 @@ class ResponseEventLogger
 
     const SURVEY_RESUMED             = 'survey resumed';
     const SURVEY_COMPLETED           = 'survey completed';
+    const SURVEY_PAGE_UNAVAILABLE    = 'survey page unavailable';
     const SURVEY_VERSION_UNAVAILABLE = 'survey version unavailable';
 
     const RESPONSE_REMOVE            = 'removed';
@@ -62,6 +63,7 @@ class ResponseEventLogger
             case self::SURVEY_SCREENOUTED_ON_SCREENOUT_CONDITION:
             case self::SURVEY_SCREENOUTED:
             case self::SURVEY_QUALITY_SCREENOUTED:
+            case self::SURVEY_PAGE_UNAVAILABLE:
             case self::SURVEY_VERSION_UNAVAILABLE:
             case self::SURVEY_MODE_CHANGED:
             case self::JUMPED_TO_END_OF_SURVEY:

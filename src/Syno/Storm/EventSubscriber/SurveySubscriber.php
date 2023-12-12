@@ -63,7 +63,6 @@ class SurveySubscriber implements EventSubscriberInterface
             throw new NotFoundHttpException('survey.unavailable');
         }
 
-        $survey->setPages($this->pageService->findBySurvey($survey));
         $this->surveyHandler->setSurvey($survey);
     }
 

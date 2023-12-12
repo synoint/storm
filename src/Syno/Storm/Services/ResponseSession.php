@@ -2,7 +2,6 @@
 
 namespace Syno\Storm\Services;
 
-use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -16,32 +15,36 @@ class ResponseSession
 {
     use RouteAware;
 
+    private Condition                $conditionService;
+    private EventDispatcherInterface $dispatcher;
+    private Page                     $pageService;
     private RequestHandler\Response  $responseHandler;
     private ResponseEventLogger      $responseEventLogger;
     private ResponseRedirector       $responseRedirector;
     private SurveyEventLogger        $surveyEventLogger;
-    private Condition                $conditionService;
     private SurveyPath               $surveyPathService;
-    private EventDispatcherInterface $dispatcher;
 
     public function __construct(
+        Condition                $conditionService,
+        EventDispatcherInterface $dispatcher,
+        Page                     $pageService,
         RequestHandler\Response  $responseHandler,
         ResponseEventLogger      $responseEventLogger,
         ResponseRedirector       $responseRedirector,
         SurveyEventLogger        $surveyEventLogger,
-        Condition                $conditionService,
-        SurveyPath               $surveyPathService,
-        EventDispatcherInterface $dispatcher
+        SurveyPath               $surveyPathService
     )
     {
+        $this->conditionService    = $conditionService;
+        $this->dispatcher          = $dispatcher;
+        $this->pageService         = $pageService;
         $this->responseHandler     = $responseHandler;
         $this->responseEventLogger = $responseEventLogger;
         $this->responseRedirector  = $responseRedirector;
         $this->surveyEventLogger   = $surveyEventLogger;
-        $this->conditionService    = $conditionService;
         $this->surveyPathService   = $surveyPathService;
-        $this->dispatcher          = $dispatcher;
     }
+
 
     public function isFinishedButLost(Document\Survey $survey, Request $request): ?RedirectResponse
     {
@@ -100,14 +103,22 @@ class ResponseSession
         return $redirect;
     }
 
-    public function resumeSurvey(Document\Survey $survey): ?RedirectResponse
+    public function resumeSurvey(): ?RedirectResponse
     {
         $response = $this->responseHandler->getResponse();
-        if ($response->getPageId() && null !== $survey->getPage($response->getPageId())) {
-            $this->responseEventLogger->log(ResponseEventLogger::SURVEY_RESUMED, $response);
-            $this->responseHandler->saveResponse($response, true);
 
-            return $this->responseRedirector->page($response->getSurveyId(), $response->getPageId());
+        if ($response->getPageId()) {
+            $page = $this->pageService->findPage(
+                $response->getSurveyId(),
+                $response->getSurveyVersion(),
+                $response->getPageId()
+            );
+            if ($page) {
+                $this->responseEventLogger->log(ResponseEventLogger::SURVEY_RESUMED, $response);
+                $this->responseHandler->saveResponse($response, true);
+
+                return $this->responseRedirector->page($response->getSurveyId(), $response->getPageId());
+            }
         }
 
         $this->responseEventLogger->log(ResponseEventLogger::SURVEY_ENTERED, $response);
@@ -115,24 +126,12 @@ class ResponseSession
         return null;
     }
 
-    public function createResponse(Document\Survey $survey, ?Document\SurveyPath $surveyPath = null)
+    public function createResponse(Document\Survey $survey)
     {
         $response = $this->responseHandler->getNew($survey);
 
+        $surveyPath = $this->surveyPathService->getRandomSurveyPath($survey);
         if ($surveyPath) {
-            $surveyPages     = $survey->getPages();
-            $surveyPathPages = $surveyPath->getPages();
-            $path            = new ArrayCollection();
-
-            foreach ($surveyPathPages as $surveyPathPage) {
-                foreach ($surveyPages as $surveyPage) {
-                    if ($surveyPathPage->getPageId() === $surveyPage->getPageId()) {
-                        $path->add($surveyPage);
-                    }
-                }
-            }
-
-            $response->setSurveyPath($path);
             $response->setSurveyPathId($surveyPath->getSurveyPathId());
         }
 
@@ -246,10 +245,14 @@ class ResponseSession
 
         if (Document\JumpToCondition::DESTINATION_TYPE_QUESTION == $jump->getDestinationType()) {
             $this->responseEventLogger->log(ResponseEventLogger::JUMPED_TO_PAGE, $response);
-            $jumpToPage = $survey->getPageByQuestion($jump->getDestination());
+            $jumpToPageId = $this->pageService->findPageIdByQuestionId(
+                $survey->getSurveyId(),
+                $survey->getVersion(),
+                $jump->getDestination()
+            );
 
-            if ($jumpToPage) {
-                return $this->responseRedirector->page($survey->getSurveyId(), $jumpToPage->getPageId());
+            if ($jumpToPageId) {
+                return $this->responseRedirector->page($survey->getSurveyId(), $jumpToPageId);
             }
 
             return $this->responseRedirector->pageUnavailable();
@@ -263,6 +266,16 @@ class ResponseSession
         return $this->responseRedirector->page($surveyId, $pageId);
     }
 
+    public function redirectToPageUnavailable(): RedirectResponse
+    {
+        $response = $this->responseHandler->getResponse();
+        if ($response) {
+            $this->responseEventLogger->log(ResponseEventLogger::SURVEY_PAGE_UNAVAILABLE, $response);
+        }
+
+        return $this->responseRedirector->pageUnavailable();
+    }
+
     public function answeredWithErrors()
     {
         $this->responseEventLogger->log(ResponseEventLogger::ANSWERS_ERROR, $this->responseHandler->getResponse());
@@ -271,10 +284,5 @@ class ResponseSession
     public function redirectToSessionCookieCheck(int $surveyId): RedirectResponse
     {
         return $this->responseRedirector->sessionCookieCheck($surveyId);
-    }
-
-    public function generateSurveyPath(Document\Survey $survey): ?Document\SurveyPath
-    {
-        return $this->surveyPathService->generateSurveyPath($survey);
     }
 }

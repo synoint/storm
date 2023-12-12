@@ -147,42 +147,23 @@ class SurveyPath implements JsonSerializable
         return $this;
     }
 
-    public function getFirstPage(): ?SurveyPathPage
-    {
-        if ($this->pages->count()) {
-            return $this->getPages()->first();
-        }
-
-        return null;
-    }
-
-    public function setPages($pages): self
-    {
-        $this->pages = $pages;
-
-        return $this;
-    }
-
-    public function getPage(int $pageId): ?Page
+    public function getFirstPageId(): ?int
     {
         $result = null;
-        foreach ($this->pages as $page) {
-            if ($pageId === $page->getPageId()) {
-                $result = $page;
-                break;
-            }
+        if (!$this->pages->isEmpty()) {
+            $result = $this->pages->first()->getPageId();
         }
 
         return $result;
     }
 
-    public function getNextPage(int $pageId): ?Page
+    public function getNextPageId(int $pageId): ?int
     {
         $result = null;
         $pick   = false;
         foreach ($this->pages as $page) {
             if ($pick) {
-                $result = $page;
+                $result = $page->getPageId();
                 break;
             }
             if ($pageId === $page->getPageId()) {
@@ -193,14 +174,21 @@ class SurveyPath implements JsonSerializable
         return $result;
     }
 
-    public function isFirstPage(int $pageId): bool
+    public function getLastPageId(): ?int
     {
-        return $pageId === $this->pages->first()->getPageId();
+        $result = null;
+        if (!$this->pages->isEmpty()) {
+            $result = $this->pages->last()->getPageId();
+        }
+
+        return $result;
     }
 
-    public function isLastPage(int $pageId): bool
+    public function setPages($pages): self
     {
-        return $pageId === $this->pages->last()->getPageId();
+        $this->pages = $pages;
+
+        return $this;
     }
 
     public function getWeight(): float

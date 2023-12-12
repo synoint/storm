@@ -10,10 +10,14 @@ use Syno\Storm\Document;
 class SurveyPath
 {
     private DocumentManager $dm;
+    private Page            $pageService;
 
-    public function __construct(DocumentManager $documentManager)
+    private array $cache = [];
+
+    public function __construct(DocumentManager $documentManager, Page $pageService)
     {
-        $this->dm = $documentManager;
+        $this->dm          = $documentManager;
+        $this->pageService = $pageService;
     }
 
     public function getNew(): Document\SurveyPath
@@ -24,21 +28,29 @@ class SurveyPath
         return $surveyPath;
     }
 
-    public function find(Document\Survey $survey): ?array
+    /**
+     * @return Document\SurveyPath|null
+     */
+    public function findOneById(string $surveyPathId):? object
     {
-        return $this->dm->getRepository(Document\SurveyPath::class)->findBy(
-            [
-                'surveyId' => $survey->getSurveyId(),
-                'version'  => $survey->getVersion()
-            ],
-            [
-                'version' => 'DESC'
-            ]
-        );
+        if (!isset($this->cache[$surveyPathId])) {
+            $path = $this->dm->getRepository(Document\SurveyPath::class)->findOneBy(
+                [
+                    'surveyPathId' => $surveyPathId
+                ]
+            );
+            if ($path) {
+                $this->cache[$surveyPathId] = $path;
+            }
+        }
+
+        return $this->cache[$surveyPathId] ?? null;
     }
 
     public function save(Document\Survey $survey, array $randomizedCombinations)
     {
+        $surveyPages = $this->pageService->findAllBySurvey($survey);
+
         foreach ($randomizedCombinations['paths'] as $index => $combination) {
             $surveyPath = $this->getNew();
             $surveyPath->setSurveyId($survey->getSurveyId());
@@ -52,7 +64,7 @@ class SurveyPath
                 $surveyPathPage->setPageId($pageId);
                 $surveyPathPages->add($surveyPathPage);
 
-                foreach ($survey->getPages() as $page) {
+                foreach ($surveyPages as $page) {
                     if ($page->getPageId() === $pageId) {
                         $pagePathCodeList[] = $page->getCode();
                     }
@@ -116,14 +128,27 @@ class SurveyPath
                  ->execute();
     }
 
-    public function generateSurveyPath(Document\Survey $survey): ?Document\SurveyPath
+    public function getRandomSurveyPath(Document\Survey $survey): ?Document\SurveyPath
     {
-        $paths = $this->find($survey);
+        $paths = $this->findAll($survey);
 
         if (count($paths)) {
             return $this->getRandomWeightedElement($paths);
         }
 
         return null;
+    }
+
+    private function findAll(Document\Survey $survey): ?array
+    {
+        return $this->dm->getRepository(Document\SurveyPath::class)->findBy(
+            [
+                'surveyId' => $survey->getSurveyId(),
+                'version'  => $survey->getVersion()
+            ],
+            [
+                'version' => 'DESC'
+            ]
+        );
     }
 }

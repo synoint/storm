@@ -42,7 +42,7 @@ class Plugin extends AbstractPlugin
                 $data[$code] = $row[$dataFileColumnIndex];
             }
 
-            $this->responseSessionManager->saveAnswers($data, $survey->getQuestions());
+            $this->responseSessionManager->saveAnswersFromParams($data);
             break;
         }
     }

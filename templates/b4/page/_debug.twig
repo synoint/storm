@@ -8,7 +8,7 @@
             <div class="form-group pt-3">
                 <label for="debugPage">Jump to page:</label>
                 <select class="form-control" id="debugPage" onchange="window.location.href=this.options[this.selectedIndex].value">
-                    {% for surveyPage in survey.pages %}
+                    {% for surveyPage in survey_pages_for_debug(survey) %}
                         <option value="{{ path('page.index', {surveyId: survey.surveyId, pageId: surveyPage.pageId}) }}"
                                 {% if page.id == surveyPage.id  %}selected="selected"{% endif %}>
                             {{ surveyPage.code }}

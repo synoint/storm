@@ -148,13 +148,6 @@ class Response implements JsonSerializable
     private $surveyPathId;
 
     /**
-     * @var Collection
-     *
-     * @ODM\EmbedMany(targetDocument=Page::class)
-     */
-    private $surveyPath;
-
-    /**
      * @ODM\Field(type="date")
      */
     private $deletedAt;
@@ -167,7 +160,6 @@ class Response implements JsonSerializable
         $this->answers    = new ArrayCollection();
         $this->createdAt  = new \DateTime();
         $this->events     = [];
-        $this->surveyPath = new ArrayCollection();
     }
 
     public function jsonSerialize(): array
@@ -539,21 +531,6 @@ class Response implements JsonSerializable
         return $this;
     }
 
-    /**
-     * @return Collection|Page[]
-     */
-    public function getSurveyPath(): ?Collection
-    {
-        return $this->surveyPath;
-    }
-
-    public function setSurveyPath($surveyPath): self
-    {
-        $this->surveyPath = $surveyPath;
-
-        return $this;
-    }
-
     public function setDeletedAt(?\DateTime $deletedAt): self
     {
         $this->deletedAt = $deletedAt;
@@ -571,18 +548,13 @@ class Response implements JsonSerializable
         return $this->completedAt;
     }
 
-    public function getForProfilingSurveyCallback(): array
+    public function getNumberOfAnsweredQuestions(): int
     {
-        return [
-            'responseId'  => $this->responseId,
-            'surveyId'    => $this->surveyId,
-            'mode'        => $this->mode,
-            'locale'      => $this->locale,
-            'completed'   => $this->completed,
-            'createdAt'   => $this->createdAt->getTimestamp(),
-            'completedAt' => $this->completedAt,
-            'parameters'  => $this->parameters,
-            'answers'     => $this->getAnswers(),
-        ];
+        $questions = [];
+        foreach ($this->answers as $responseAnswer) {
+            $questions[$responseAnswer->getQuestionId()] = 1;
+        }
+
+        return count($questions);
     }
 }

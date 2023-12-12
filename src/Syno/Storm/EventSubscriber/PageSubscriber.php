@@ -40,9 +40,8 @@ class PageSubscriber implements EventSubscriberInterface
             throw new \UnexpectedValueException('Survey attribute is not set');
         }
 
-        $pageId = $this->pageHandler->getId();
         $survey = $this->surveyHandler->getSurvey();
-        $page   = $survey->getPage($pageId);
+        $page = $this->pageHandler->findPage($survey->getSurveyId(), $survey->getVersion(), $this->pageHandler->getId());
         if (!$page) {
             $event->setResponse(new RedirectResponse($this->router->generate('page.unavailable')));
 

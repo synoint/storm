@@ -135,7 +135,7 @@ class SurveyController extends AbstractController implements TokenAuthenticatedC
             );
         }
 
-        $survey->setPages($this->pageService->findBySurvey($survey));
+        $survey->setPages($this->pageService->findAllBySurvey($survey));
 
         return $this->json($survey);
     }

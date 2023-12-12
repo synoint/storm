@@ -237,82 +237,11 @@ class Survey implements JsonSerializable
         return $this;
     }
 
-    /**
-     * @return Collection|Page[]
-     */
-    public function getPages(): Collection
-    {
-        return $this->pages;
-    }
-
-    public function getPlainPages(): array
-    {
-        $list = [];
-
-        foreach ($this->pages as $page) {
-            $list[] = (int) $page->getPageId();
-        }
-
-        return $list;
-    }
-
-    public function getFirstPage(): ?Page
-    {
-        if ($this->getPages()->count()) {
-            return $this->getPages()->first();
-        }
-
-        return null;
-    }
-
     public function setPages($pages): self
     {
         $this->pages = $pages;
 
         return $this;
-    }
-
-    public function getPage(int $pageId): ?Page
-    {
-        $result = null;
-        foreach ($this->pages as $page) {
-            if ($pageId === $page->getPageId()) {
-                $result = $page;
-                break;
-            }
-        }
-
-        return $result;
-    }
-
-    public function getPageByQuestion(int $questionId): ?Page
-    {
-        $result = null;
-        foreach ($this->pages as $page) {
-            foreach ($page->getQuestions() as $question) {
-                if ($questionId === $question->getQuestionId()) {
-                    $result = $page;
-                    break;
-                }
-            }
-        }
-
-        return $result;
-    }
-
-    /**
-     * @return Collection|Question[]
-     */
-    public function getQuestions(): Collection
-    {
-        $questions = new ArrayCollection();
-
-        /** @var Page $page */
-        foreach ($this->pages as $page) {
-            $questions = new ArrayCollection(array_merge($questions->toArray(), $page->getQuestions()->toArray()));
-        }
-
-        return $questions;
     }
 
     public function getConfig(): ?Config
@@ -457,16 +386,6 @@ class Survey implements JsonSerializable
         $this->randomization = $randomization;
 
         return $this;
-    }
-
-    public function isRandomizationOn(): bool
-    {
-        return $this->randomization->count();
-    }
-
-    public function isFirstPage(int $pageId): bool
-    {
-        return $pageId === $this->pages->first()->getPageId();
     }
 
     public function getSurveyCompleteCondition(): ?SurveyCompleteCondition
