@@ -11,6 +11,8 @@ class AppExtension extends AbstractExtension
 {
     private Services\Page $pageService;
 
+    private ?float $progress = null;
+
     public function __construct(Services\Page $pageService)
     {
         $this->pageService = $pageService;
@@ -36,14 +38,16 @@ class AppExtension extends AbstractExtension
 
     public function getProgress(Document\Response $response, Document\Survey $survey): int
     {
-        $result = 0;
-        $answered = $response->getNumberOfAnsweredQuestions();
-        if ($answered) {
-            $total = $this->pageService->getTotalQuestions($survey->getSurveyId(), $survey->getVersion());
-            $result = round(($answered / $total) * 100);
+        if (null === $this->progress) {
+            $this->progress = 0;
+            $answered = $response->getNumberOfAnsweredQuestions();
+            if ($answered) {
+                $total = $this->pageService->getTotalQuestions($survey->getSurveyId(), $survey->getVersion());
+                $this->progress = round(($answered / $total) * 100);
+            }
         }
 
-        return $result;
+        return $this->progress;
     }
 
     public function getPagePrefix(Document\Response $response, Document\Survey $survey): string
