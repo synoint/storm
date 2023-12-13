@@ -89,7 +89,7 @@ class ResponseDataLayer
                     $mapItem = [
                         'pageCode'     => $page['code'],
                         'questionCode' => $question['code'],
-                        'questionText' => $this->cleanMarkup($question['text']),
+                        'questionText' => !empty($question['text']) ? $this->cleanMarkup($question['text']) : '',
                         'questionType' => $question['questionTypeId']
                     ];
 
