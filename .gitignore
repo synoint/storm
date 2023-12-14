@@ -44,7 +44,6 @@ assets/bootstrap.js
 assets/controllers.json
 assets/controllers/
 assets/styles/
-config/packages/cache.yaml
 config/packages/prod/deprecations.yaml
 config/preload.php
 src/Controller/

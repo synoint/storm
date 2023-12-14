@@ -1,0 +1,7 @@
+framework:
+    cache:
+        pools:
+            survey.cache:
+                adapter: cache.adapter.redis_tag_aware
+                provider: '%env(REDIS_URL)%'
+                tags: true
