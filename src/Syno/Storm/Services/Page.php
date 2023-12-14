@@ -139,13 +139,19 @@ class Page
 
     public function findPage(int $surveyId, int $version, int $pageId):? Document\Page
     {
-        return $this->dm->getRepository(Document\Page::class)->findOneBy(
+        $page = $this->dm->getRepository(Document\Page::class)->findOneBy(
             [
                 'surveyId' => $surveyId,
                 'version'  => $version,
                 'pageId'   => $pageId
             ]
         );
+
+        if (!$page->getPageId()) {
+            $this->dm->refresh($page);
+        }
+
+        return $page;
     }
 
     public function findPageIdByQuestionId(int $surveyId, int $version, int $questionId):? int

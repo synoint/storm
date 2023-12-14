@@ -225,14 +225,13 @@ class ResponseSubscriber implements EventSubscriberInterface
             return;
         }
 
-        $this->logger->debug(__FUNCTION__);
-
         $data = $event->getRequest()->query->all("q");
-        if (!is_array($data)) {
-            return;
-        }
+        if (is_array($data) && !empty($data)) {
 
-        $this->responseSessionManager->saveAnswersFromParams($data);
+            $this->logger->debug(__FUNCTION__);
+
+            $this->responseSessionManager->saveAnswersFromParams($data);
+        }
     }
 
     public function logUserAgent(RequestEvent $event)
