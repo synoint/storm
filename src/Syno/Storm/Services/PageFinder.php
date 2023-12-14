@@ -85,17 +85,21 @@ class PageFinder
             return true;
         }
 
-        if ($page->getVisibleQuestions()->isEmpty()) {
-            if (!$page->hasContent()) {
-                return true;
-            }
-
-            return false;
+        if ($page->getVisibleQuestions()->isEmpty() && !$page->hasContent()) {
+            return true;
         }
 
-        return $this->conditionService->filterQuestionsByShowCondition(
-            $page->getQuestions(), $this->responseHandler->getResponse()
-        )->isEmpty();
+        if (!$this->responseHandler->hasResponse()) {
+            $response = $this->responseHandler->getSaved($survey->getSurveyId());
+            if ($response) {
+                $questions = $this->conditionService->filterQuestionsByShowCondition($page->getQuestions(), $response);
+                if (!$questions || $questions->isEmpty()) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 
 
