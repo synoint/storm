@@ -29,20 +29,12 @@ class Response
         );
     }
 
-    public function getAllBySurveyId(int $surveyId, int $limit = 1000, int $offset = 0, array $params = []): array
+    public function getAllBySurveyId(int $surveyId, int $limit = 1000, int $offset = 0): array
     {
-        $criteria['surveyId'] = $surveyId;
-
-        if (isset($params['mode'])) {
-            $criteria['mode'] = $params['mode'];
-        }
-
-        if (isset($params['completed'])) {
-            $criteria['completed'] = $params['completed'];
-        }
-
         return $this->dm->getRepository(Document\Response::class)->findBy(
-            $criteria,
+            [
+                'surveyId' => $surveyId
+            ],
             [
                 'id' => 'DESC',
             ],
@@ -62,21 +54,6 @@ class Response
                 'surveyVersion' => $version,
             ]
         );
-    }
-
-    public function getAllByQuestionId(int $questionId, array $params = []): array
-    {
-        $criteria['answers.questionId'] = $questionId;
-
-        if (isset($params['mode'])) {
-            $criteria['mode'] = $params['mode'];
-        }
-
-        if (isset($params['completed'])) {
-            $criteria['completed'] = $params['completed'];
-        }
-
-        return $this->dm->getRepository(Document\Response::class)->findBy($criteria);
     }
 
     public function count(int $surveyId): int

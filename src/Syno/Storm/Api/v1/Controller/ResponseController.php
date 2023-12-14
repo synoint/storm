@@ -19,6 +19,8 @@ use Syno\Storm\Traits\JsonRequestAware;
  */
 class ResponseController extends AbstractController implements TokenAuthenticatedController
 {
+    private const LIMIT = 1000;
+
     use FormAware;
     use JsonRequestAware;
 
@@ -38,32 +40,36 @@ class ResponseController extends AbstractController implements TokenAuthenticate
 
     /**
      * @Route(
-     *     "/{surveyId}/responses",
-     *     name="storm_api.v1.response.all",
+     *     "/{surveyId}/responses/total",
+     *     name="storm_api.v1.response.total",
      *     requirements={"id"="\d+"},
      *     methods={"GET"}
      * )
      */
-    public function all(int $surveyId, Request $request): JsonResponse
+    public function total(int $surveyId): JsonResponse
     {
-        $limit = $request->query->getInt('limit', 1000000);
+        return $this->json($this->responseService->count($surveyId));
+    }
 
-        $params = [];
-        if ($request->query->get('mode')) {
-            $params['mode'] = $request->query->get('mode');
-        }
+    /**
+     * @Route(
+     *     "/{surveyId}/responses/query",
+     *     name="storm_api.v1.response.query",
+     *     requirements={"id"="\d+"},
+     *     methods={"GET"}
+     * )
+     */
+    public function query(int $surveyId, Request $request): JsonResponse
+    {
+        $limit = $request->query->getInt('limit', self::LIMIT);
+        $limit = min($limit, self::LIMIT);
+        $limit = max($limit, 1);
 
-        if ($request->query->get('status')) {
-            $isCompleted = false;
-            if ('completed' === $request->query->get('status')) {
-                $isCompleted = true;
-            }
-            $params['completed'] = $isCompleted;
-        }
+        $offset = $request->query->getInt('offset');
+        $offset = max($offset, 0);
 
-        $responses = $this->responseService->getAllBySurveyId($surveyId, $limit, 0, $params);
-        $total     = count($responses);
-        $limit     = max($limit, 1);
+        $responses = $this->responseService->getAllBySurveyId($surveyId, $limit, $offset);
+        $total     = $this->responseService->count($surveyId);
 
         if ($total) {
             $completesMap = $this->responseEventService->getResponseCompletionTimeMap($surveyId);
@@ -77,11 +83,41 @@ class ResponseController extends AbstractController implements TokenAuthenticate
 
         return $this->json(
             [
-                'responses' => $responses,
+                'offset'    => $offset,
                 'limit'     => $limit,
-                'total'     => $total
+                'total'     => $total,
+                'responses' => $responses
             ]
         );
+    }
+
+    /**
+     * @Route(
+     *     "/{surveyId}/responses",
+     *     name="storm_api.v1.response.all",
+     *     requirements={"id"="\d+"},
+     *     methods={"GET"}
+     * )
+     */
+    public function all(int $surveyId, Request $request): JsonResponse
+    {
+        $limit = $request->query->getInt('limit', 1000000);
+        $limit = max($limit, 1);
+
+        $responses = $this->responseService->getAllBySurveyId($surveyId, $limit, 0, []);
+        $total     = count($responses);
+
+        if ($total) {
+            $completesMap = $this->responseEventService->getResponseCompletionTimeMap($surveyId);
+            /** @var Document\Response $response */
+            foreach ($responses as $response) {
+                if ($response->isCompleted()) {
+                    $response->setCompletedAt($completesMap[$response->getResponseId()] ?? 0);
+                }
+            }
+        }
+
+        return $this->json(['responses' => $responses]);
     }
 
     /**

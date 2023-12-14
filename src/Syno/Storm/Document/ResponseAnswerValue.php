@@ -34,9 +34,15 @@ class ResponseAnswerValue implements JsonSerializable
 
     public function jsonSerialize(): array
     {
+        if (null !== $this->value) {
+            return [
+                'answerId' => $this->answerId,
+                'value'    => $this->value
+            ];
+        }
+
         return [
-            'answerId' => $this->answerId,
-            'value'    => $this->value
+            'answerId' => $this->answerId
         ];
     }
 
