@@ -6,16 +6,20 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ODM\MongoDB\DocumentManager;
 use Syno\Storm\Document;
+use Symfony\Contracts\Cache\ItemInterface;
+use Symfony\Contracts\Cache\TagAwareCacheInterface;
 
 class Page
 {
-    private DocumentManager $dm;
+    private DocumentManager        $dm;
+    private TagAwareCacheInterface $cache;
 
     private array $pageIdCache = [];
 
-    public function __construct(DocumentManager $dm)
+    public function __construct(DocumentManager $dm, TagAwareCacheInterface $surveyCache)
     {
-        $this->dm = $dm;
+        $this->dm    = $dm;
+        $this->cache = $surveyCache;
     }
 
     public function save(Document\Page $page)
@@ -57,21 +61,28 @@ class Page
 
     public function findPageIds(int $surveyId, int $version): array
     {
-        $key = $surveyId . '_' . $version;
+        $key = 'survey:page:ids:' . $surveyId . '_' . $version;
         if (!isset($this->pageIdCache[$key])) {
-            $pages = $this->dm->createQueryBuilder(Document\Page::class)
-                ->hydrate(false)
-                ->select('pageId')
-                ->field('surveyId')->equals($surveyId)
-                ->field('version')->equals($version)
-                ->sort('sortOrder')
-                ->getQuery()
-                ->execute();
+            $result = $this->cache->get($key, function (ItemInterface $item) use ($surveyId, $version) {
+                $item->expiresAfter(300);
 
-            $result = [];
-            foreach ($pages as $page) {
-                $result[] = $page['pageId'];
-            }
+                $pages = $this->dm->createQueryBuilder(Document\Page::class)
+                    ->hydrate(false)
+                    ->select('pageId')
+                    ->field('surveyId')->equals($surveyId)
+                    ->field('version')->equals($version)
+                    ->sort('sortOrder')
+                    ->getQuery()
+                    ->execute();
+
+                $pageIds = [];
+                foreach ($pages as $page) {
+                    $pageIds[] = $page['pageId'];
+                }
+
+                return $pageIds;
+            });
+
             if ($result) {
                 $this->pageIdCache[$key] = $result;
             }
@@ -82,40 +93,27 @@ class Page
 
     public function findFirstPageId(int $surveyId, int $version):? int
     {
-        $result = $this->dm->createQueryBuilder(Document\Page::class)
-            ->hydrate(false)
-            ->select('pageId')
-            ->field('surveyId')->equals($surveyId)
-            ->field('version')->equals($version)
-            ->sort('sortOrder')
-            ->limit(1)
-            ->getQuery()
-            ->getSingleResult();
+        $result = null;
+        $pageIds = $this->findPageIds($surveyId, $version);
+        if ($pageIds) {
+            $result = $pageIds[0];
+        }
 
-        return $result['pageId'] ?? null;
+        return $result;
     }
 
-    public function findNextPageId(int $surveyId, int $version, int $pageId):? int
+    public function findNextPageId(int $surveyId, int $version, int $currentPageId):? int
     {
-        $pages = $this->dm->createQueryBuilder(Document\Page::class)
-            ->hydrate(false)
-            ->select('pageId')
-            ->field('surveyId')->equals($surveyId)
-            ->field('version')->equals($version)
-            ->sort('sortOrder')
-            ->getQuery()
-            ->execute();
-
+        $pageIds = $this->findPageIds($surveyId, $version);
         $result = null;
-        if ($pages) {
+        if ($pageIds) {
             $pick = false;
-            /** @var Document\Page $page */
-            foreach ($pages as $page) {
+            foreach ($pageIds as $pageId) {
                 if ($pick) {
-                    $result = $page['pageId'];
+                    $result = $pageId;
                     break;
                 }
-                $pick = ($page['pageId'] === $pageId);
+                $pick = ($pageId === $currentPageId);
             }
         }
 
@@ -124,17 +122,13 @@ class Page
 
     public function findLastPageId(int $surveyId, int $version):? int
     {
-        $result = $this->dm->createQueryBuilder(Document\Page::class)
-            ->hydrate(false)
-            ->select('pageId')
-            ->field('surveyId')->equals($surveyId)
-            ->field('version')->equals($version)
-            ->sort('sortOrder', -1)
-            ->limit(1)
-            ->getQuery()
-            ->getSingleResult();
+        $result = null;
+        $pageIds = $this->findPageIds($surveyId, $version);
+        if ($pageIds) {
+            $result = $pageIds[count($pageIds) - 1];
+        }
 
-        return $result['pageId'] ?? null;
+        return $result;
     }
 
     public function findPage(int $surveyId, int $version, int $pageId):? Document\Page
