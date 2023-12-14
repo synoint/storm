@@ -147,7 +147,7 @@ class Page
             ]
         );
 
-        if (!$page->getPageId()) {
+        if (null !== $page && !$page->getPageId()) {
             $this->dm->refresh($page);
         }
 
