@@ -88,7 +88,7 @@ class PageFinder
             return true;
         }
 
-        if ($page->hasContent()) {
+        if ($page->hasContent() && $page->getQuestions()->isEmpty()) {
             return false;
         }
 
