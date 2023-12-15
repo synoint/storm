@@ -81,6 +81,7 @@ class PageFinder
     {
         $survey = $this->surveyHandler->getSurvey();
         $page = $this->pageService->findPage($survey->getSurveyId(), $survey->getVersion(), $pageId);
+
         if (!$page) {
             return true;
         }
@@ -89,13 +90,16 @@ class PageFinder
             return true;
         }
 
-        if (!$this->responseHandler->hasResponse()) {
+        if ($this->responseHandler->hasResponse()) {
+            $response = $this->responseHandler->getResponse();
+        } else {
             $response = $this->responseHandler->getSaved($survey->getSurveyId());
-            if ($response) {
-                $questions = $this->conditionService->filterQuestionsByShowCondition($page->getQuestions(), $response);
-                if (!$questions || $questions->isEmpty()) {
-                    return true;
-                }
+        }
+
+        if ($response) {
+            $questions = $this->conditionService->filterQuestionsByShowCondition($page->getQuestions(), $response);
+            if (!$questions || $questions->isEmpty()) {
+                return true;
             }
         }
 
