@@ -88,8 +88,8 @@ class PageFinder
             return true;
         }
 
-        if ($page->getVisibleQuestions()->isEmpty() && !$page->hasContent()) {
-            return true;
+        if ($page->hasContent()) {
+            return false;
         }
 
         if ($this->responseHandler->hasResponse()) {
