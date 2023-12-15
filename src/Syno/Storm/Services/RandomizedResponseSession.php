@@ -13,60 +13,47 @@ class RandomizedResponseSession
     private RequestHandler\Response  $responseHandler;
     private SurveyPath               $surveyPathService;
 
+    private ?Document\SurveyPath $currentPath          = null;
+    private ?bool                $responseIsRandomized = null;
+
     public function __construct(RequestHandler\Response $responseHandler, SurveyPath $surveyPathService)
     {
         $this->responseHandler   = $responseHandler;
         $this->surveyPathService = $surveyPathService;
     }
 
-    public function getFirstPageId():? int
+    public function isRandomized(): bool
     {
-        $result = null;
-        if ($this->responseHandler->hasResponse()) {
-            $response = $this->responseHandler->getResponse();
-            if ($response->getSurveyPathId()) {
-                /** @var Document\SurveyPath $surveyPath */
-                $surveyPath = $this->surveyPathService->findOneById($response->getSurveyPathId());
-                if ($surveyPath) {
-                    $result = $surveyPath->getFirstPageId();
+        if (null === $this->responseIsRandomized) {
+            $this->responseIsRandomized = false;
+            if ($this->responseHandler->hasResponse()) {
+                $response = $this->responseHandler->getResponse();
+                if ($response->getSurveyPathId()) {
+                    /** @var Document\SurveyPath $surveyPath */
+                    $surveyPath = $this->surveyPathService->findOneById($response->getSurveyPathId());
+                    if ($surveyPath) {
+                        $this->currentPath = $surveyPath;
+                        $this->responseIsRandomized = true;
+                    }
                 }
             }
         }
 
-        return $result;
+        return $this->responseIsRandomized;
+    }
+
+    public function getFirstPageId():? int
+    {
+        return $this->currentPath->getFirstPageId();
     }
 
     public function getNextPageId(int $pageId):? int
     {
-        $result = null;
-        if ($this->responseHandler->hasResponse()) {
-            $response = $this->responseHandler->getResponse();
-            if ($response->getSurveyPathId()) {
-                /** @var Document\SurveyPath $surveyPath */
-                $surveyPath = $this->surveyPathService->findOneById($response->getSurveyPathId());
-                if ($surveyPath) {
-                    $result = $surveyPath->getNextPageId($pageId);
-                }
-            }
-        }
-
-        return $result;
+        return $this->currentPath->getNextPageId($pageId);
     }
 
     public function getLastPageId():? int
     {
-        $result = null;
-        if ($this->responseHandler->hasResponse()) {
-            $response = $this->responseHandler->getResponse();
-            if ($response->getSurveyPathId()) {
-                /** @var Document\SurveyPath $surveyPath */
-                $surveyPath = $this->surveyPathService->findOneById($response->getSurveyPathId());
-                if ($surveyPath) {
-                    $result = $surveyPath->getLastPageId();
-                }
-            }
-        }
-
-        return $result;
+        return $this->currentPath->getLastPageId();
     }
 }

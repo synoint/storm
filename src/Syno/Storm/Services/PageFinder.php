@@ -33,9 +33,10 @@ class PageFinder
 
     public function getFirstPageId():? int
     {
-        $survey = $this->surveyHandler->getSurvey();
-        $firstPageId = $this->randomizedResponseSession->getFirstPageId();
-        if (!$firstPageId) {
+        if ($this->randomizedResponseSession->isRandomized()) {
+            $firstPageId = $this->randomizedResponseSession->getFirstPageId();
+        } else {
+            $survey      = $this->surveyHandler->getSurvey();
             $firstPageId = $this->pageService->findFirstPageId($survey->getSurveyId(), $survey->getVersion());
         }
 
@@ -48,9 +49,10 @@ class PageFinder
 
     public function getNextPageId(int $pageId): ?int
     {
-        $survey = $this->surveyHandler->getSurvey();
-        $nextPageId = $this->randomizedResponseSession->getNextPageId($pageId);
-        if (!$nextPageId) {
+        if ($this->randomizedResponseSession->isRandomized()) {
+            $nextPageId = $this->randomizedResponseSession->getNextPageId($pageId);
+        } else {
+            $survey     = $this->surveyHandler->getSurvey();
             $nextPageId = $this->pageService->findNextPageId($survey->getSurveyId(), $survey->getVersion(), $pageId);
         }
 
@@ -63,13 +65,13 @@ class PageFinder
 
     public function getLastPageId():? int
     {
-        $lastPageId = $this->randomizedResponseSession->getLastPageId();
-        if (!$lastPageId) {
-            $survey = $this->surveyHandler->getSurvey();
-            $lastPageId = $this->pageService->findLastPageId($survey->getSurveyId(), $survey->getVersion());
+        if ($this->randomizedResponseSession->isRandomized()) {
+            return $this->randomizedResponseSession->getLastPageId();
         }
 
-        return $lastPageId;
+        $survey = $this->surveyHandler->getSurvey();
+
+        return $this->pageService->findLastPageId($survey->getSurveyId(), $survey->getVersion());
     }
 
     public function findPage(int $surveyId, int $version, int $pageId):? Document\Page
