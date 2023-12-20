@@ -32,7 +32,7 @@ class ResponseId
                 $result = null;
             } else {
                 $result = trim($result);
-                if (preg_match('/[^a-zA-Z0-9\-]/', $result)) {
+                if (preg_match('/[^a-zA-Z0-9_\-]/', $result)) {
                     $result = null;
                 }
             }
