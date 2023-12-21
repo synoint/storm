@@ -61,7 +61,7 @@ class Page
 
     public function findPageIds(int $surveyId, int $version): array
     {
-        $key = 'survey:page:ids:' . $surveyId . '_' . $version;
+        $key = 'survey_page_ids_' . $surveyId . '_' . $version;
         if (!isset($this->pageIdCache[$key])) {
             $result = $this->cache->get($key, function (ItemInterface $item) use ($surveyId, $version) {
                 $item->expiresAfter(300);

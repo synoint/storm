@@ -22,7 +22,7 @@ class SurveyAnswerMap
 
     public function get(int $surveyId, int $version, string $locale): array
     {
-        $key = 'answer:map:' . $surveyId . ':' . $version . ':' . $locale;
+        $key = 'answer_map_' . $surveyId . '_' . $version . '_' . $locale;
 
         return $this->cache->get($key, function (ItemInterface $item) use ($surveyId, $version, $locale) {
             $item->expiresAfter(900);
