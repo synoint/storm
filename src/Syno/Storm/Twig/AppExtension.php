@@ -43,7 +43,7 @@ class AppExtension extends AbstractExtension
             $answered = $response->getNumberOfAnsweredQuestions();
             if ($answered) {
                 $total = $this->pageService->getTotalQuestions($survey->getSurveyId(), $survey->getVersion());
-                $this->progress = round(($answered / $total) * 100);
+                $this->progress = ($total) ? round(($answered / $total) * 100) : 0;
             }
         }
 

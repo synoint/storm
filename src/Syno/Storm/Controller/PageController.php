@@ -71,14 +71,14 @@ class PageController extends AbstractController
         $response = $this->responseSessionManager->getResponse();
 
         return $this->render($survey->getConfig()->getTheme() . '/page/display.twig', [
-            'survey'             => $survey,
-            'page'               => $page,
-            'questions'          => $this->responseSessionManager->getQuestions(),
-            'response'           => $response,
-            'form'               => $form->createView(),
-            'backButtonEnabled' =>  $this->responseSessionManager->enableBackButton($page->getPageId()),
-            'isLastPage'         => $this->responseSessionManager->isLastPage($page->getPageId()),
-            'responseDataLayer'  => $this->responseDataLayer->getData($survey, $response),
+            'survey'            => $survey,
+            'page'              => $page,
+            'questions'         => $this->responseSessionManager->getQuestions(),
+            'response'          => $response,
+            'form'              => $form->createView(),
+            'backButtonEnabled' => $this->responseSessionManager->enableBackButton($page->getPageId()),
+            'isLastPage'        => $this->responseSessionManager->isLastPage($page->getPageId()),
+            'responseDataLayer' => $this->responseDataLayer->getData($survey, $response),
         ]);
     }
 

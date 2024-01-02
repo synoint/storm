@@ -43,7 +43,7 @@ class Page
     public function findAllForDebug(int $surveyId, int $version): array
     {
         $result = [];
-        $pages = $this->dm->createQueryBuilder(Document\Page::class)
+        $pages  = $this->dm->createQueryBuilder(Document\Page::class)
             ->select('pageId')
             ->select('code')
             ->field('surveyId')->equals($surveyId)
@@ -91,9 +91,9 @@ class Page
         return $this->pageIdCache[$key] ?? [];
     }
 
-    public function findFirstPageId(int $surveyId, int $version):? int
+    public function findFirstPageId(int $surveyId, int $version): ?int
     {
-        $result = null;
+        $result  = null;
         $pageIds = $this->findPageIds($surveyId, $version);
         if ($pageIds) {
             $result = $pageIds[0];
@@ -102,10 +102,10 @@ class Page
         return $result;
     }
 
-    public function findNextPageId(int $surveyId, int $version, int $currentPageId):? int
+    public function findNextPageId(int $surveyId, int $version, int $currentPageId): ?int
     {
         $pageIds = $this->findPageIds($surveyId, $version);
-        $result = null;
+        $result  = null;
         if ($pageIds) {
             $pick = false;
             foreach ($pageIds as $pageId) {
@@ -120,9 +120,9 @@ class Page
         return $result;
     }
 
-    public function findLastPageId(int $surveyId, int $version):? int
+    public function findLastPageId(int $surveyId, int $version): ?int
     {
-        $result = null;
+        $result  = null;
         $pageIds = $this->findPageIds($surveyId, $version);
         if ($pageIds) {
             $result = $pageIds[count($pageIds) - 1];
@@ -131,7 +131,7 @@ class Page
         return $result;
     }
 
-    public function findPage(int $surveyId, int $version, int $pageId):? Document\Page
+    public function findPage(int $surveyId, int $version, int $pageId): ?Document\Page
     {
         $page = $this->dm->getRepository(Document\Page::class)->findOneBy(
             [
@@ -148,7 +148,7 @@ class Page
         return $page;
     }
 
-    public function findPageIdByQuestionId(int $surveyId, int $version, int $questionId):? int
+    public function findPageIdByQuestionId(int $surveyId, int $version, int $questionId): ?int
     {
         $result = $this->dm->createQueryBuilder(Document\Page::class)
             ->hydrate(false)
@@ -179,16 +179,25 @@ class Page
         }
     }
 
-    public function getTotalQuestions(int $surveyId, int $version): int
+    public function getTotalQuestions(int $surveyId, int $version)
     {
-        return $this->dm->createQueryBuilder(Document\Page::class)
+        $builder = $this->dm->createAggregationBuilder(Document\Page::class);
+        $builder
             ->hydrate(false)
-            ->select('questions.questionId')
+            ->match()
             ->field('surveyId')->equals($surveyId)
             ->field('version')->equals($version)
-            ->getQuery()
-            ->execute()
-            ->count();
+            ->field('questions.hidden')->equals(false)
+            ->unwind('$questions')
+            ->match()
+            ->field('questions.hidden')->equals(false)
+            ->group()
+            ->field('id')->expression('$questions')
+            ->count('questions');
+
+        $total = $builder->getAggregation()->getIterator()->toArray();
+
+        return count($total) ? $total[0]['questions'] : 0;
     }
 
     public function getAnswersForDataLayer(int $surveyId, int $version)
