@@ -102,9 +102,9 @@ class ResponseController extends AbstractController implements TokenAuthenticate
     public function all(int $surveyId, Request $request): JsonResponse
     {
         $limit = $request->query->getInt('limit', 1000000);
-        $limit = max($limit, 1);
+        $offset = $request->query->getInt('offset', 0);
 
-        $responses = $this->responseService->getAllBySurveyId($surveyId, $limit, 0, []);
+        $responses = $this->responseService->getAllBySurveyId($surveyId, $limit, $offset, []);
         $total     = count($responses);
 
         if ($total) {
