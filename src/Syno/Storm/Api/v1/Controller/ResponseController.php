@@ -109,6 +109,7 @@ class ResponseController extends AbstractController implements TokenAuthenticate
 
         if ($total) {
             $completesMap = $this->responseEventService->getResponseCompletionTimeMap($surveyId);
+
             /** @var Document\Response $response */
             foreach ($responses as $response) {
                 if ($response->isCompleted()) {
@@ -309,13 +310,14 @@ class ResponseController extends AbstractController implements TokenAuthenticate
         $response = $this->responseService->findBySurveyIdAndResponseId($surveyId, $responseId);
 
         if ($response) {
+            $events = $this->responseEventService->getEventsByResponseId($surveyId, $responseId);
             if ($response->isCompleted()) {
-                $completedAt = $this->responseEventService->getResponseCompletionTime($responseId);
+                $completedAt = $this->responseEventService->getResponseCompletionTime($surveyId, $responseId);
                 if ($completedAt) {
                     $response->setCompletedAt($completedAt);
                 }
             }
-            $response->setEvents($this->responseEventService->getEventsByResponseId($responseId));
+            $response->setEvents($events);
 
             return $this->json($response);
         }

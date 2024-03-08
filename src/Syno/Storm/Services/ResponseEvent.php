@@ -56,11 +56,12 @@ class ResponseEvent
         return $result;
     }
 
-    public function getResponseCompletionTime(string $responseId): ?int
+    public function getResponseCompletionTime(int $surveyId, string $responseId): ?int
     {
         $event = $this->dm->getRepository(Document\ResponseEvent::class)->findOneBy(
             [
                 'responseId' => $responseId,
+                'surveyId' => $surveyId,
                 'message'    => ResponseEventLogger::SURVEY_COMPLETED,
             ]
         );
@@ -80,11 +81,12 @@ class ResponseEvent
     /**
      * @return Document\ResponseEvent[]
      */
-    public function getEventsByResponseId(string $responseId): array
+    public function getEventsByResponseId(int $surveyId, string $responseId): array
     {
         return $this->dm->getRepository(Document\ResponseEvent::class)->findBy(
             [
-                'responseId' => $responseId
+                'responseId' => $responseId,
+                'surveyId' => $surveyId,
             ]
         );
     }
