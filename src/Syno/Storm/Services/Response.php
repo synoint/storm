@@ -56,12 +56,61 @@ class Response
         );
     }
 
-    public function count(int $surveyId): int
+    public function countAll(int $surveyId): int
     {
         return $this->dm
             ->createQueryBuilder(Document\Response::class)
-            ->field('surveyId')
-            ->equals($surveyId)
+            ->field('surveyId')->equals($surveyId)
+            ->count()
+            ->getQuery()
+            ->execute();
+    }
+
+    public function countLiveCompletes(int $surveyId): int
+    {
+        return $this->dm
+            ->createQueryBuilder(Document\Response::class)
+            ->field('surveyId')->equals($surveyId)
+            ->field('mode')->equals('live')
+            ->field('completed')->equals(true)
+            ->count()
+            ->getQuery()
+            ->execute();
+    }
+
+    public function countLiveScreenouts(int $surveyId): int
+    {
+        return $this->dm
+            ->createQueryBuilder(Document\Response::class)
+            ->field('surveyId')->equals($surveyId)
+            ->field('mode')->equals('live')
+            ->field('screenedOut')->equals(true)
+            ->count()
+            ->getQuery()
+            ->execute();
+    }
+
+    public function countLiveQualityScreenouts(int $surveyId): int
+    {
+        return $this->dm
+            ->createQueryBuilder(Document\Response::class)
+            ->field('surveyId')->equals($surveyId)
+            ->field('mode')->equals('live')
+            ->field('qualityScreenedOut')->equals(true)
+            ->count()
+            ->getQuery()
+            ->execute();
+    }
+
+    public function countLivePartial(int $surveyId): int
+    {
+        return $this->dm
+            ->createQueryBuilder(Document\Response::class)
+            ->field('surveyId')->equals($surveyId)
+            ->field('mode')->equals('live')
+            ->field('completed')->equals(false)
+            ->field('screenedOut')->equals(false)
+            ->field('qualityScreenedOut')->equals(false)
             ->count()
             ->getQuery()
             ->execute();
