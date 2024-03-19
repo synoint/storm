@@ -40,67 +40,15 @@ class ResponseController extends AbstractController implements TokenAuthenticate
 
     /**
      * @Route(
-     *     "/{surveyId}/responses/total",
+     *     "/{surveyId}/responses/total/{filter}",
      *     name="storm_api.v1.response.total",
      *     requirements={"id"="\d+"},
      *     methods={"GET"}
      * )
      */
-    public function total(int $surveyId): JsonResponse
+    public function total(int $surveyId, string $filter = ''): JsonResponse
     {
-        return $this->json($this->responseService->countAll($surveyId));
-    }
-
-    /**
-     * @Route(
-     *     "/{surveyId}/responses/total-live-completes",
-     *     name="storm_api.v1.response.total_live_completes",
-     *     requirements={"id"="\d+"},
-     *     methods={"GET"}
-     * )
-     */
-    public function totalLiveCompletes(int $surveyId): JsonResponse
-    {
-        return $this->json($this->responseService->countLiveCompletes($surveyId));
-    }
-
-    /**
-     * @Route(
-     *     "/{surveyId}/responses/total-live-screenouts",
-     *     name="storm_api.v1.response.total_live_screenouts",
-     *     requirements={"id"="\d+"},
-     *     methods={"GET"}
-     * )
-     */
-    public function totalLiveScreenouts(int $surveyId): JsonResponse
-    {
-        return $this->json($this->responseService->countLiveScreenouts($surveyId));
-    }
-
-    /**
-     * @Route(
-     *     "/{surveyId}/responses/total-live-quality-screenouts",
-     *     name="storm_api.v1.response.total_live_quality_screenouts",
-     *     requirements={"id"="\d+"},
-     *     methods={"GET"}
-     * )
-     */
-    public function totalLiveQualityScreenouts(int $surveyId): JsonResponse
-    {
-        return $this->json($this->responseService->countLiveQualityScreenouts($surveyId));
-    }
-
-    /**
-     * @Route(
-     *     "/{surveyId}/responses/total-live-partial",
-     *     name="storm_api.v1.response.total_live_partial",
-     *     requirements={"id"="\d+"},
-     *     methods={"GET"}
-     * )
-     */
-    public function totalLivePartial(int $surveyId): JsonResponse
-    {
-        return $this->json($this->responseService->countLivePartial($surveyId));
+        return $this->json($this->responseService->countAll($surveyId, $filter));
     }
 
     /**
@@ -121,7 +69,7 @@ class ResponseController extends AbstractController implements TokenAuthenticate
         $offset = max($offset, 0);
 
         $responses = $this->responseService->getAllBySurveyId($surveyId, $limit, $offset);
-        $total     = $this->responseService->countAll($surveyId);
+        $total     = $this->responseService->countAll($surveyId, Response::LIVE_RESPONSES);
 
         if ($total) {
             $completesMap = $this->responseEventService->getResponseCompletionTimeMap($surveyId);

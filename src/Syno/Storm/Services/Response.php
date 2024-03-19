@@ -7,6 +7,11 @@ use Syno\Storm\Document;
 
 class Response
 {
+    public const LIVE_RESPONSES          = 'live-responses';
+    public const LIVE_COMPLETES          = 'live-completes';
+    public const LIVE_SCREENOUTS         = 'live-screenouts';
+    public const LIVE_QUALITY_SCREENOUTS = 'live-quality-screenouts';
+    public const LIVE_PARTIALS           = 'live-partials';
     private DocumentManager $dm;
     private string          $responseIdPrefix;
 
@@ -56,64 +61,45 @@ class Response
         );
     }
 
-    public function countAll(int $surveyId): int
+    public function countAll(int $surveyId, string $filter = ''): array
     {
-        return $this->dm
-            ->createQueryBuilder(Document\Response::class)
-            ->field('surveyId')->equals($surveyId)
-            ->count()
-            ->getQuery()
-            ->execute();
-    }
+        $result = [];
 
-    public function countLiveCompletes(int $surveyId): int
-    {
-        return $this->dm
-            ->createQueryBuilder(Document\Response::class)
-            ->field('surveyId')->equals($surveyId)
-            ->field('mode')->equals('live')
-            ->field('completed')->equals(true)
-            ->count()
-            ->getQuery()
-            ->execute();
-    }
+        if ($filter) {
+            switch ($filter) {
+                case self::LIVE_RESPONSES:
+                    $result['liveResponses'] = $this->countLiveResponses($surveyId);
+                    break;
 
-    public function countLiveScreenouts(int $surveyId): int
-    {
-        return $this->dm
-            ->createQueryBuilder(Document\Response::class)
-            ->field('surveyId')->equals($surveyId)
-            ->field('mode')->equals('live')
-            ->field('screenedOut')->equals(true)
-            ->count()
-            ->getQuery()
-            ->execute();
-    }
+                case self::LIVE_COMPLETES:
+                    $result['liveCompletes'] = $this->countLiveCompletes($surveyId);
+                    break;
 
-    public function countLiveQualityScreenouts(int $surveyId): int
-    {
-        return $this->dm
-            ->createQueryBuilder(Document\Response::class)
-            ->field('surveyId')->equals($surveyId)
-            ->field('mode')->equals('live')
-            ->field('qualityScreenedOut')->equals(true)
-            ->count()
-            ->getQuery()
-            ->execute();
-    }
+                case self::LIVE_SCREENOUTS:
+                    $result['liveScreenouts'] = $this->countLiveScreenouts($surveyId);
+                    break;
 
-    public function countLivePartial(int $surveyId): int
-    {
-        return $this->dm
-            ->createQueryBuilder(Document\Response::class)
-            ->field('surveyId')->equals($surveyId)
-            ->field('mode')->equals('live')
-            ->field('completed')->equals(false)
-            ->field('screenedOut')->equals(false)
-            ->field('qualityScreenedOut')->equals(false)
-            ->count()
-            ->getQuery()
-            ->execute();
+                case self::LIVE_QUALITY_SCREENOUTS:
+                    $result['liveQualityScreenouts'] = $this->countLiveQualityScreenouts($surveyId);
+                    break;
+
+                case self::LIVE_PARTIALS:
+                    $result['livePartials'] = $this->countLivePartials($surveyId);
+                    break;
+            }
+        }
+
+        if (empty($result)) {
+            $result = [
+                'liveResponses'         => $this->countLiveResponses($surveyId),
+                'liveCompletes'         => $this->countLiveCompletes($surveyId),
+                'liveScreenouts'        => $this->countLiveScreenouts($surveyId),
+                'liveQualityScreenouts' => $this->countLiveQualityScreenouts($surveyId),
+                'livePartials'          => $this->countLivePartials($surveyId)
+            ];
+        }
+
+        return $result;
     }
 
     public function getNew(string $responseId = null): Document\Response
@@ -193,5 +179,66 @@ class Response
     private function generateResponseId(): string
     {
         return uniqid($this->responseIdPrefix);
+    }
+
+    private function countLiveResponses(int $surveyId): int
+    {
+        return $this->dm
+            ->createQueryBuilder(Document\Response::class)
+            ->field('surveyId')->equals($surveyId)
+            ->field('mode')->equals('live')
+            ->count()
+            ->getQuery()
+            ->execute();
+    }
+
+    private function countLiveCompletes(int $surveyId): int
+    {
+        return $this->dm
+            ->createQueryBuilder(Document\Response::class)
+            ->field('surveyId')->equals($surveyId)
+            ->field('mode')->equals('live')
+            ->field('completed')->equals(true)
+            ->count()
+            ->getQuery()
+            ->execute();
+    }
+
+    private function countLiveScreenouts(int $surveyId): int
+    {
+        return $this->dm
+            ->createQueryBuilder(Document\Response::class)
+            ->field('surveyId')->equals($surveyId)
+            ->field('mode')->equals('live')
+            ->field('screenedOut')->equals(true)
+            ->count()
+            ->getQuery()
+            ->execute();
+    }
+
+    private function countLiveQualityScreenouts(int $surveyId): int
+    {
+        return $this->dm
+            ->createQueryBuilder(Document\Response::class)
+            ->field('surveyId')->equals($surveyId)
+            ->field('mode')->equals('live')
+            ->field('qualityScreenedOut')->equals(true)
+            ->count()
+            ->getQuery()
+            ->execute();
+    }
+
+    private function countLivePartials(int $surveyId): int
+    {
+        return $this->dm
+            ->createQueryBuilder(Document\Response::class)
+            ->field('surveyId')->equals($surveyId)
+            ->field('mode')->equals('live')
+            ->field('completed')->equals(false)
+            ->field('screenedOut')->equals(false)
+            ->field('qualityScreenedOut')->equals(false)
+            ->count()
+            ->getQuery()
+            ->execute();
     }
 }
