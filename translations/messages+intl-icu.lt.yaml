@@ -8,7 +8,6 @@ error.cant.be.blank: 'Šis laukelis negali būti tuščias'
 error.one.option.in.each.row.required: 'Kiekvienoje eilutėje turi būti pasirinktas vienas variantas.'
 error.one.option.required: 'Reikia pasirinkti vieną variantą'
 error.answer.required: "Šis klausimas turi būti atsakytas"
-error.selected.option.text.required: 'Užpildykite pasirinkto atsakymo teksto laukelį.'
 page.button.back: 'Atgal'
 page.button.next: 'Tęsti'
 page.button.submit: 'Pateikti'

@@ -8,7 +8,6 @@ error.cant.be.blank: 'Tätä kenttää ei voi jättää tyhjäksi'
 error.one.option.in.each.row.required: 'Valittava yksi vaihtoehto joka rivillä.'
 error.one.option.required: 'Valittava yksi vaihtoehto'
 error.answer.required: "Tähän on vastattava"
-error.selected.option.text.required: 'Täytä valitun vaihtoehdon tekstikenttä.'
 page.button.back: 'Takaisin'
 page.button.next: 'Seuraava'
 page.button.submit: 'Lähetä'
