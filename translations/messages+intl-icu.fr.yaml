@@ -8,6 +8,7 @@ error.cant.be.blank: 'Ce champ ne peut être vide'
 error.one.option.in.each.row.required: 'Une option doit être sélectionnée dans chaque ligne.'
 error.one.option.required: 'Une option doit être sélectionnée'
 error.answer.required: "Cela doit être répondu"
+error.selected.option.text.required: 'Veuillez remplir le champ de texte de votre réponse selectionnée.'
 page.button.back: 'Retour'
 page.button.next: 'Suivant'
 page.button.submit: 'Soumettre'

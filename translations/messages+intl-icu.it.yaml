@@ -8,6 +8,7 @@ error.cant.be.blank: 'Questo spazio non può essere lasciato vuoto'
 error.one.option.in.each.row.required: "Si prega di selezionare un'opzione in ogni riga."
 error.one.option.required: 'Si prega di selezionare almeno un elemento'
 error.answer.required: "A questo bisogna rispondere"
+error.selected.option.text.required: "Compila il campo di testo dell'opzione selezionata."
 page.button.back: 'Indietro'
 page.button.next: 'Avanti'
 page.button.submit: 'Invia'

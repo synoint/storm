@@ -8,6 +8,7 @@ error.cant.be.blank: 'Dette felt kan ikke stå tomt'
 error.one.option.in.each.row.required: 'Du må velge ett alternativ i hver rad.'
 error.one.option.required: 'Du må velge ett alternativ'
 error.answer.required: "Dette må besvares"
+error.selected.option.text.required: 'Fyll ut tekstfeltet for det valgte alternativet.'
 page.button.back: 'Tilbake'
 page.button.next: 'Neste'
 page.button.submit: 'Send inn'

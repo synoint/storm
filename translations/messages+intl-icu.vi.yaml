@@ -8,6 +8,7 @@ error.cant.be.blank: 'Trường này không được để trống'
 error.one.option.in.each.row.required: 'Một tùy chọn phải được chọn trong mỗi hàng.'
 error.one.option.required: 'Một tùy chọn phải được chọn'
 error.answer.required: "Điều này phải được trả lời"
+error.selected.option.text.required: 'Vui lòng điền trường văn bản của câu trả lời bạn đã chọn.'
 page.button.back: 'Mặt sau'
 page.button.next: 'Tiếp theo'
 page.button.submit: 'Kết thúc'

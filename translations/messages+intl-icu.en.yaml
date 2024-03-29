@@ -47,3 +47,4 @@ error.at.least.one.option.in.each.row.required: 'At least one option in each row
 error.one.option.in.each.row.required: 'One option must be selected in each row.'
 question.button.label.yes: 'Yes'
 question.button.label.no: 'No'
+error.selected.option.text.required: 'Please fill in the text field of the selected option.'
