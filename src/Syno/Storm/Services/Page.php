@@ -185,15 +185,13 @@ class Page
         $builder
             ->hydrate(false)
             ->match()
-            ->field('surveyId')->equals($surveyId)
-            ->field('version')->equals($version)
-            ->field('questions.hidden')->equals(false)
+                ->field('surveyId')->equals($surveyId)
+                ->field('version')->equals($version)
+                ->field('questions.hidden')->equals(false)
             ->unwind('$questions')
-            ->match()
-            ->field('questions.hidden')->equals(false)
             ->group()
-            ->field('id')->expression('$questions')
-            ->count('questions');
+                ->field('id')->expression('$questions')
+                ->count('questions');
 
         $total = $builder->getAggregation()->getIterator()->toArray();
 
