@@ -311,14 +311,17 @@ class ResponseController extends AbstractController implements TokenAuthenticate
 
         if ($response) {
             $events = $this->responseEventService->getEventsByResponseId($surveyId, $responseId);
+
             if ($response->isCompleted()) {
                 $completedAt = $this->responseEventService->getResponseCompletionTime($surveyId, $responseId);
+
                 if ($completedAt) {
                     $response->setCompletedAt($completedAt);
                 }
             }
-            $response->setEvents($events);
 
+            $response->setEvents($events);
+            
             return $this->json($response);
         }
 

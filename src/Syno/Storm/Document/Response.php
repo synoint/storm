@@ -477,6 +477,10 @@ class Response implements JsonSerializable
 
         /** @var ResponseAnswer $newAnswer */
         foreach ($answers as $newAnswer) {
+            // trying hard to catch null answer submit
+            if (null === $newAnswer) {
+                throw new \InvalidArgumentException();
+            }
             $this->answers[] = $newAnswer;
         }
     }
