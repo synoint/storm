@@ -181,21 +181,29 @@ class Page
 
     public function getTotalQuestions(int $surveyId, int $version)
     {
-        $builder = $this->dm->createAggregationBuilder(Document\Page::class);
-        $builder
-            ->hydrate(false)
-            ->match()
-                ->field('surveyId')->equals($surveyId)
-                ->field('version')->equals($version)
-                ->field('questions.hidden')->equals(false)
-            ->unwind('$questions')
-            ->group()
-                ->field('id')->expression('$questions')
-                ->count('questions');
+        $key = 'survey_question_count_' . $surveyId . '_' . $version;
 
-        $total = $builder->getAggregation()->getIterator()->toArray();
+        return $this->cache->get($key, function (ItemInterface $item) use ($surveyId, $version) {
+            $item->expiresAfter(900);
 
-        return count($total) ? $total[0]['questions'] : 0;
+            $builder = $this->dm->createAggregationBuilder(Document\Page::class);
+            $builder
+                ->hydrate(false)
+                ->match()
+                    ->field('surveyId')->equals($surveyId)
+                    ->field('version')->equals($version)
+                    ->field('questions.hidden')->equals(false)
+                ->unwind('$questions')
+                ->match()
+                    ->field('questions.hidden')->equals(false)
+                ->group()
+                    ->field('id')->expression('$questions')
+                    ->count('questions');
+
+            $total = $builder->getAggregation()->getIterator()->toArray();
+
+            return count($total) ? $total[0]['questions'] : 0;
+        });
     }
 
     public function getAnswersForDataLayer(int $surveyId, int $version)
