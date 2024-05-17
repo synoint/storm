@@ -108,8 +108,7 @@ class Config implements JsonSerializable
 
     public function isPrivacyConsentEnabled(): bool
     {
-        //Temporary show consent for all surveys
-        return true; //$this->privacyConsentEnabled;
+        return $this->privacyConsentEnabled;
     }
 
     public function setPrivacyConsentEnabled(bool $privacyConsentEnabled): self
