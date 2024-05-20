@@ -47,5 +47,9 @@ services:
         arguments:
             $responseIdPrefix: '%env(APP_REGION)%'
 
+    Syno\Storm\Services\PrivacyConsentCookie:
+      arguments:
+        $version: 'v1'
+
 imports:
     - { resource: ../src/NewRelic/services.yaml }
