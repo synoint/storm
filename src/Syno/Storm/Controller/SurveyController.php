@@ -17,7 +17,6 @@ use Syno\Storm\Services\PrivacyConsentCookie;
 class SurveyController extends AbstractController
 {
     private SurveyEndPage $surveyEndPageService;
-    
     private ResponseSessionManager $responseSessionManager;
     private PrivacyConsentCookie   $privacyConsentCookie;
     

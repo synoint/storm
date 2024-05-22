@@ -8,7 +8,7 @@ use Symfony\Component\HttpFoundation\Cookie;
 
 class PrivacyConsentCookie
 {
-    private const COOKIE_NAME = 'privacy_consent_accepted_';
+    private const COOKIE_NAME = 'privacy_consent_accepted_v';
     private string $version;
     
     public function __construct(string $version)
@@ -31,10 +31,6 @@ class PrivacyConsentCookie
     {
         $cookie = $request->cookies->get(self::COOKIE_NAME . $this->version);
         
-        if (is_null($cookie)) {
-            return false;
-        }
-        
-        return true;
+        return !is_null($cookie);
     }
 }
