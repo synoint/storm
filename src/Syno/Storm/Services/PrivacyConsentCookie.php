@@ -18,7 +18,7 @@ class PrivacyConsentCookie
     
     public function setCookie(Response $response): Response
     {
-        $cookie = Cookie::create(self::COOKIE_NAME . $this->version)
+        $cookie = Cookie::create($this->getCookieName())
             ->withValue(true)
             ->withDomain($_SERVER['HTTP_HOST']);
         
@@ -29,8 +29,13 @@ class PrivacyConsentCookie
     
     public function isCookieSet(Request $request): bool
     {
-        $cookie = $request->cookies->get(self::COOKIE_NAME . $this->version);
+        $cookie = $request->cookies->get($this->getCookieName());
         
         return !is_null($cookie);
+    }
+    
+    private function getCookieName(): string
+    {
+        return self::COOKIE_NAME . $this->version;
     }
 }
