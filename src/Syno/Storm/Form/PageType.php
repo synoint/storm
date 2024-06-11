@@ -413,6 +413,7 @@ class PageType extends AbstractType
                     break;
                 case Document\Answer::FIELD_TYPE_TEXT:
                 case Document\Answer::FIELD_TYPE_FIRST_LAST_NAME:
+                case Document\Answer::FIELD_TYPE_OTHER:
                     $builder->add($question->getInputName($answer->getCode()), TextType::class, $options);
                     break;
                 default:
