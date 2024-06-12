@@ -42,6 +42,7 @@ class PageSubscriber implements EventSubscriberInterface
 
         $survey = $this->surveyHandler->getSurvey();
         $page = $this->pageHandler->findPage($survey->getSurveyId(), $survey->getVersion(), $this->pageHandler->getId());
+        
         if (!$page) {
             $event->setResponse(new RedirectResponse($this->router->generate('page.unavailable')));
 
