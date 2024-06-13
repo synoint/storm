@@ -8,21 +8,22 @@ use Syno\Storm\Document;
 class ResponseDataLayer
 {
     private SurveyAnswerMap $surveyAnswerMap;
-
+    
     public function __construct(SurveyAnswerMap $surveyAnswerMap)
     {
         $this->surveyAnswerMap = $surveyAnswerMap;
     }
-
+    
     public function getData(Document\Survey $survey, Document\Response $response): array
     {
         return [
             'id'         => $response->getResponseId(),
+            'mode'       => $response->getMode(),
             'parameters' => $this->getParameters($response),
             'answers'    => $this->getAnswers($survey, $response),
         ];
     }
-
+    
     private function getParameters(Document\Response $response): array
     {
         $result = [];
@@ -30,21 +31,21 @@ class ResponseDataLayer
         foreach ($response->getParameters() as $parameter) {
             $result[$parameter->getUrlParam()] = $parameter->getValue();
         }
-
+        
         return $result;
     }
-
+    
     private function getAnswers(Document\Survey $survey, Document\Response $response): array
     {
         $result = [];
-
+        
         if (!$response->getAnswers()->isEmpty()) {
             $surveyAnswerMap = $this->surveyAnswerMap->get(
                 $survey->getSurveyId(),
                 $survey->getVersion(),
                 $response->getLocale()
             );
-
+            
             /** @var Document\ResponseAnswer $responseAnswer */
             foreach ($response->getAnswers() as $responseAnswer) {
                 /** @var Document\ResponseAnswerValue $responseAnswerValue */
@@ -57,9 +58,9 @@ class ResponseDataLayer
                 }
             }
         }
-
+        
         return $result;
     }
-
-
+    
+    
 }
