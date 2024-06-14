@@ -85,6 +85,16 @@ class PageFinder
             return true;
         }
         
+        if (($page->hasContent() || $page->hasJavascript())
+            && ($page->getQuestions()->isEmpty() || !$page->getVisibleQuestions()->count())) {
+            return false;
+        }
+        
+        if (!$page->hasContent() && !$page->hasJavascript()
+            && ($page->getQuestions()->isEmpty() || !$page->getVisibleQuestions()->count())) {
+            return true;
+        }
+        
         if ($this->responseHandler->hasResponse()) {
             $response = $this->responseHandler->getResponse();
         } else {
@@ -96,14 +106,6 @@ class PageFinder
             if (!$questions || $questions->isEmpty()) {
                 return true;
             }
-        }
-        
-        if ($page->hasContent()) {
-            return false;
-        }
-        
-        if ($page->getQuestions()->isEmpty() || !$page->getVisibleQuestions()->count()) {
-            return true;
         }
         
         return false;

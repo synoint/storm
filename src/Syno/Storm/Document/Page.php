@@ -206,11 +206,23 @@ class Page
     public function hasContent(): bool
     {
         $content = $this->getContent();
+        
         if ($content) {
             $content = trim($content);
         }
 
         return $content && strlen($content);
+    }
+    
+    public function hasJavascript(): bool
+    {
+        $javascript = $this->getJavascript();
+        
+        if ($javascript) {
+            $javascript = trim($javascript);
+        }
+        
+        return $javascript && strlen($javascript);
     }
 
     /**
