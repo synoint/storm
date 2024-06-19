@@ -85,11 +85,6 @@ class PageFinder
             return true;
         }
         
-        if ($page->hasContent() && $page->getQuestions()->isEmpty()) {
-            return false;
-        }
-        
-        /*
         if (($page->hasContent() || $page->hasJavascript())
             && ($page->getQuestions()->isEmpty() || !$page->getVisibleQuestions()->count())) {
             return false;
@@ -99,7 +94,6 @@ class PageFinder
             && ($page->getQuestions()->isEmpty() || !$page->getVisibleQuestions()->count())) {
             return true;
         }
-        */
         
         if ($this->responseHandler->hasResponse()) {
             $response = $this->responseHandler->getResponse();
