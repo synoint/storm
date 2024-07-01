@@ -3,7 +3,6 @@ import Plyr from "plyr";
 
 class MediaPlayer {
 	constructor(el, required) {
-
 		let options = {};
 
 		if(required) {
@@ -23,8 +22,9 @@ class MediaPlayer {
 }
 
 (function () {
-
 	const containers = document.getElementsByClassName('media-player');
+
+    let requiredVideoCount = 0;
 
 	Array.prototype.forEach.call(containers, function(el, index, array) {
 		const required = el.getAttribute("data-required");
@@ -39,11 +39,16 @@ class MediaPlayer {
 		}
 
 		if (required === "true") {
+            requiredVideoCount++;
 			const button = document.querySelector("#p_next");
 			button.setAttribute("disabled", "true");
 
 			mediaPlayer.player.on("ended", (ev) => {
-				button.removeAttribute("disabled");
+                requiredVideoCount--;
+
+                if (0 === requiredVideoCount) {
+                    button.removeAttribute("disabled");
+                }
 			});
 		}
 	});
@@ -51,7 +56,6 @@ class MediaPlayer {
 	const container = document.querySelector("#media-player");
 
 	if(container !== null){
-
 		const required = container.getAttribute("data-required");
 		const autoplay = container.getAttribute("data-autoplay");
 		const mediaPlayer = new MediaPlayer(container, required);
@@ -68,7 +72,7 @@ class MediaPlayer {
 			button.setAttribute("disabled", "true");
 
 			mediaPlayer.player.on("ended", (ev) => {
-				button.removeAttribute("disabled");
+                button.removeAttribute("disabled");
 			});
 		}
 	}
