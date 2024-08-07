@@ -300,7 +300,7 @@ class PageType extends AbstractType
                 'choices'     => $choices,
                 'multiple'    => $multiple,
                 'expanded'    => true,
-                'data'        => $data,
+                'data'        => $data !== false ? $data : null,
                 'placeholder' => null,
                 'label_html'  => true,
                 'required'    => $question->isRequired(),
