@@ -131,6 +131,7 @@ class Answer
                     if (isset($formData[$key]) && '' != trim($formData[$key]) && is_string($formData[$key])) {
                         $value    = trim($formData[$key]);
                         $value    = filter_var($value, FILTER_SANITIZE_STRING);
+                        $value    = str_replace("&#39;", "'", $value); // Restore single quotes
                         $value    = mb_substr($value, 0, 10000, 'UTF-8');
                         $result[] = new ResponseAnswerValue($answer->getAnswerId(), $value);
                     }
@@ -186,6 +187,7 @@ class Answer
         if (!empty($formData[$valueKey]) && is_string($formData[$valueKey])) {
             $value = trim($formData[$valueKey]);
             $value = filter_var($value, FILTER_SANITIZE_STRING);
+            $value = str_replace("&#39;", "'", $value); // Restore single quotes
 
             return mb_substr($value, 0, 10000, 'UTF-8');
         }
