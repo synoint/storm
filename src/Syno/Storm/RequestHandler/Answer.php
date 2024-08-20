@@ -132,6 +132,7 @@ class Answer
                         $value    = trim($formData[$key]);
                         $value    = filter_var($value, FILTER_SANITIZE_STRING);
                         $value    = str_replace("&#39;", "'", $value); // Restore single quotes
+                        $value    = str_replace("&#34;", '"', $value); // Restore double quotes
                         $value    = mb_substr($value, 0, 10000, 'UTF-8');
                         $result[] = new ResponseAnswerValue($answer->getAnswerId(), $value);
                     }
@@ -188,6 +189,7 @@ class Answer
             $value = trim($formData[$valueKey]);
             $value = filter_var($value, FILTER_SANITIZE_STRING);
             $value = str_replace("&#39;", "'", $value); // Restore single quotes
+            $value = str_replace("&#34;", '"', $value); // Restore double quotes
 
             return mb_substr($value, 0, 10000, 'UTF-8');
         }
