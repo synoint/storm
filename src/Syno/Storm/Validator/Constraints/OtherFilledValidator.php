@@ -14,7 +14,7 @@ class OtherFilledValidator extends ConstraintValidator
             $answerIsSelected = in_array($constraint->answer->getAnswerId(), $respondentAnswerIds);
         }
 
-        if($answerIsSelected && empty($value)){
+        if($answerIsSelected &&  $value === null){
             $this->context->buildViolation($constraint->message)->addViolation();
         }
     }
