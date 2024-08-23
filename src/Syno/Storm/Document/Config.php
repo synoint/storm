@@ -45,11 +45,6 @@ class Config implements JsonSerializable
     private $colorTheme = 'default';
 
     /**
-     * @ODM\Field(type="string")
-     */
-    private $cintDemandApiKey;
-
-    /**
      * @var bool
      *
      * @ODM\Field(type="bool")
@@ -76,7 +71,6 @@ class Config implements JsonSerializable
             'privacyConsentEnabled'      => $this->isPrivacyConsentEnabled(),
             'theme'                      => $this->getTheme(),
             'colorTheme'                 => $this->getColorTheme(),
-            'cintDemandApiKey'           => $this->getCintDemandApiKey(),
             'backButtonEnabled'          => $this->isBackButtonEnabled(),
             'profilingSurveyCallbackUrl' => $this->getProfilingSurveyCallbackUrl()
         ];
@@ -138,18 +132,6 @@ class Config implements JsonSerializable
     public function setColorTheme(string $colorTheme): self
     {
         $this->colorTheme = $colorTheme;
-
-        return $this;
-    }
-
-    public function getCintDemandApiKey()
-    {
-        return $this->cintDemandApiKey;
-    }
-
-    public function setCintDemandApiKey($cintDemandApiKey)
-    {
-        $this->cintDemandApiKey = $cintDemandApiKey;
 
         return $this;
     }
