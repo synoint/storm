@@ -91,11 +91,6 @@ class Response
         return $result;
     }
 
-    public function getParameters(Collection $surveyParameters): Collection
-    {
-        return $this->parameterUnifier->unify($this->extractParameters($surveyParameters));
-    }
-
     public function extractParameters(Collection $surveyParameters): Collection
     {
         $result = new ArrayCollection();
@@ -111,7 +106,7 @@ class Response
             }
         }
 
-        return $result;
+        return $this->parameterUnifier->unify($result);
     }
 
     public function addUserAgent(Document\Response $response)
