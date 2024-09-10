@@ -25,17 +25,19 @@ class CintConverter extends AbstractConverter
         return $this->convert($parameters, self::CONVERTERS);
     }
 
-    protected function convertGender(string $genderCode): string
+    protected function convertGender(string $gender): string
     {
-        switch ($genderCode) {
+        switch ($gender) {
             case self::MALE_VALUE:
-                $genderCode = self::PARAM_MALE_VALUE;
+                $gender = self::PARAM_MALE_VALUE;
                 break;
             case self::FEMALE_VALUE:
-                $genderCode = self::PARAM_FEMALE_VALUE;
+                $gender = self::PARAM_FEMALE_VALUE;
                 break;
+            default:
+                $gender = null;
         }
 
-        return $genderCode;
+        return $gender;
     }
 }
