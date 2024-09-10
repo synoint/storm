@@ -1,6 +1,6 @@
 <?php
 
-namespace Syno\Storm\RequestHandler\Parameter;
+namespace Syno\Storm\RequestHandler\Parameter\Converter;
 
 use Doctrine\Common\Collections\Collection;
 use Syno\Storm\Document\Parameter;

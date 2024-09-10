@@ -19,7 +19,7 @@ services:
         Syno\Storm\Plugin\PluginInterface:
             tags: [ 'survey.plugin' ]
 
-        Syno\Storm\RequestHandler\Parameter\AbstractConverter:
+        Syno\Storm\RequestHandler\Parameter\Converter\AbstractConverter:
             tags: [ 'syno.response_perameters_converter' ]
 
     # Plugins
@@ -43,7 +43,7 @@ services:
         arguments:
             $apiAccessToken: '%env(STORM_API_TOKEN)%'
 
-    Syno\Storm\RequestHandler\Parameter\ConverterRegistry:
+    Syno\Storm\RequestHandler\Parameter\Converter\ConverterRegistry:
         arguments: [ !tagged 'syno.response_perameters_converter' ]
 
     Syno\Storm\Plugin\PluginManager:

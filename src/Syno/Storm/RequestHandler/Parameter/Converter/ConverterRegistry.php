@@ -1,6 +1,6 @@
 <?php
 
-namespace Syno\Storm\RequestHandler\Parameter;
+namespace Syno\Storm\RequestHandler\Parameter\Converter;
 
 class ConverterRegistry
 {

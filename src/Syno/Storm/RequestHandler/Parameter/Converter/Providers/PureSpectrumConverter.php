@@ -1,18 +1,19 @@
 <?php
 
-namespace Syno\Storm\RequestHandler\Parameter\Providers;
+namespace Syno\Storm\RequestHandler\Parameter\Converter\Providers;
 
 use Doctrine\Common\Collections\Collection;
-use Syno\Storm\RequestHandler\Parameter\AbstractConverter;
+use Syno\Storm\RequestHandler\Parameter\Converter\AbstractConverter;
 
-class SynoPanelConverter extends AbstractConverter
+class PureSpectrumConverter extends AbstractConverter
 {
-    public const  SOURCE_ID    = 3;
-    private const MALE_VALUE   = 'M';
-    private const FEMALE_VALUE = 'F';
+    public const  SOURCE_ID    = 11;
+    private const MALE_VALUE   = 111;
+    private const FEMALE_VALUE = 112;
     private const CONVERTERS   =
         [
-            'G' => 'convertGender'
+            'G'   => 'convertGender',
+            'YOB' => 'convertAge'
         ];
 
     public function getId(): ?int
@@ -25,9 +26,14 @@ class SynoPanelConverter extends AbstractConverter
         return $this->convert($parameters, self::CONVERTERS);
     }
 
+    protected function convertAge(string $age): ?string
+    {
+        return ((int)$age) ? date("Y") - $age : null;
+    }
+
     protected function convertGender(string $gender): ?string
     {
-        switch ($gender) {
+        switch ((int)$gender) {
             case self::MALE_VALUE:
                 $gender = self::PARAM_MALE_VALUE;
                 break;

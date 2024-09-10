@@ -4,6 +4,7 @@ namespace Syno\Storm\RequestHandler\Parameter;
 
 use Doctrine\Common\Collections\Collection;
 use Syno\Storm\Document\Parameter;
+use Syno\Storm\RequestHandler\Parameter\Converter\ConverterRegistry;
 
 class Unifier
 {

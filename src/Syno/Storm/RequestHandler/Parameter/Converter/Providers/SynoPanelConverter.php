@@ -1,15 +1,15 @@
 <?php
 
-namespace Syno\Storm\RequestHandler\Parameter\Providers;
+namespace Syno\Storm\RequestHandler\Parameter\Converter\Providers;
 
 use Doctrine\Common\Collections\Collection;
-use Syno\Storm\RequestHandler\Parameter\AbstractConverter;
+use Syno\Storm\RequestHandler\Parameter\Converter\AbstractConverter;
 
-class CintConverter extends AbstractConverter
+class SynoPanelConverter extends AbstractConverter
 {
-    public const  SOURCE_ID    = 2;
-    private const MALE_VALUE   = 1;
-    private const FEMALE_VALUE = 2;
+    public const  SOURCE_ID    = 3;
+    private const MALE_VALUE   = 'M';
+    private const FEMALE_VALUE = 'F';
     private const CONVERTERS   =
         [
             'G' => 'convertGender'
@@ -25,7 +25,7 @@ class CintConverter extends AbstractConverter
         return $this->convert($parameters, self::CONVERTERS);
     }
 
-    protected function convertGender(string $gender): string
+    protected function convertGender(string $gender): ?string
     {
         switch ($gender) {
             case self::MALE_VALUE:
