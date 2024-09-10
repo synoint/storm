@@ -14,6 +14,10 @@ class Parameter implements JsonSerializable
     public const PARAM_GENDER      = 'G';
     public const PARAM_YOB         = 'YOB';
     public const PARAM_RESPONSE_ID = 'ID';
+
+    public const PARAM_MALE_VALUE = 'Male';
+
+    public const PARAM_FEMALE_VALUE = 'Female';
     /**
      * @var string
      *
@@ -125,7 +129,7 @@ class Parameter implements JsonSerializable
      *
      * @return self
      */
-    public function setValue(string $value)
+    public function setValue(?string $value)
     {
         $this->value = $value;
 
