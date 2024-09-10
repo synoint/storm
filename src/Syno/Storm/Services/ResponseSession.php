@@ -136,7 +136,7 @@ class ResponseSession
         }
 
         $response->setParameters(
-            $this->responseHandler->extractParameters(
+            $this->responseHandler->getParameters(
                 $survey->getParameters()
             )
         );

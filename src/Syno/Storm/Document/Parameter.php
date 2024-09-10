@@ -11,6 +11,8 @@ use JsonSerializable;
 class Parameter implements JsonSerializable
 {
     public const PARAM_SOURCE      = 'SOURCE';
+    public const PARAM_GENDER      = 'G';
+    public const PARAM_YOB         = 'YOB';
     public const PARAM_RESPONSE_ID = 'ID';
     /**
      * @var string

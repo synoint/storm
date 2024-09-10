@@ -15,15 +15,19 @@ class Response
     private RequestStack      $requestStack;
     private ResponseId        $responseId;
     private Services\Response $responseService;
+    private Parameter\Unifier $parameterUnifier;
 
     public function __construct(
-        RequestStack $requestStack,
-        ResponseId $responseId,
-        Services\Response $responseService
-    ) {
-        $this->requestStack    = $requestStack;
-        $this->responseId      = $responseId;
-        $this->responseService = $responseService;
+        RequestStack      $requestStack,
+        ResponseId        $responseId,
+        Services\Response $responseService,
+        Parameter\Unifier $parameterUnifier
+    )
+    {
+        $this->requestStack     = $requestStack;
+        $this->responseId       = $responseId;
+        $this->responseService  = $responseService;
+        $this->parameterUnifier = $parameterUnifier;
     }
 
     public function getResponse(): Document\Response
@@ -85,6 +89,11 @@ class Response
             ->setLocale($this->requestStack->getCurrentRequest()->attributes->get('_locale'));
 
         return $result;
+    }
+
+    public function getParameters(Collection $surveyParameters): Collection
+    {
+        return $this->parameterUnifier->unify($this->extractParameters($surveyParameters));
     }
 
     public function extractParameters(Collection $surveyParameters): Collection
