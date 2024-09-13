@@ -27,6 +27,10 @@ class SynoPanelConverter extends AbstractConverter
 
     protected function convertGender(string $gender): ?string
     {
+        if(in_array($gender, [self::PARAM_MALE_VALUE, self::PARAM_FEMALE_VALUE])){
+            return $gender;
+        }
+
         switch ($gender) {
             case self::MALE_VALUE:
                 $gender = self::PARAM_MALE_VALUE;
