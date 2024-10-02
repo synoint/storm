@@ -93,16 +93,32 @@ class Response
 
     public function extractParameters(Collection $surveyParameters): Collection
     {
-        $result = new ArrayCollection();
+        $result            = new ArrayCollection();
+        $requestParameters = $this->requestStack->getCurrentRequest()->query;
+
         /** @var Document\Parameter $surveyParameter */
         foreach ($surveyParameters as $surveyParameter) {
-            if ($this->requestStack->getCurrentRequest()->query->has($surveyParameter->getUrlParam())) {
+            if ($requestParameters->has($surveyParameter->getUrlParam())) {
 
                 if (!is_array($this->requestStack->getCurrentRequest()->query->get($surveyParameter->getUrlParam()))) {
                     $value = clone $surveyParameter;
                     $value->setValue($this->requestStack->getCurrentRequest()->query->get($value->getUrlParam()));
                     $result[] = $value;
                 }
+
+                $requestParameters->remove($surveyParameter->getUrlParam());
+            }
+        }
+
+        if (!empty($requestParameters)) {
+            foreach ($requestParameters as $requestParameterName => $requestParameterValue) {
+
+                $additionalParameter = new Document\Parameter();
+
+                $additionalParameter->setCode($this->sanitizeString($requestParameterName));
+                $additionalParameter->setValue($this->sanitizeString($requestParameterValue));
+
+                $result[] = $additionalParameter;
             }
         }
 
@@ -123,5 +139,12 @@ class Response
         return $surveyMode !== $this->responseService->getModeByRoute(
                 $this->requestStack->getCurrentRequest()->attributes->get('_route')
             );
+    }
+
+    private function sanitizeString(string $string): string
+    {
+        $dangerous_chars = ["'", '"', '\\', ';', '--', '#', '*', ',', '.', '=', ':'];
+
+        return trim(str_replace($dangerous_chars, '', $string));
     }
 }
