@@ -103,7 +103,7 @@ class Response
                 if (!is_array($this->requestStack->getCurrentRequest()->query->get($surveyParameter->getUrlParam()))) {
                     $value = clone $surveyParameter;
                     $value->setValue($this->requestStack->getCurrentRequest()->query->get($value->getUrlParam()));
-                    $result[] = $value;
+                    $result->add($value);
                 }
 
                 $requestParameters->remove($surveyParameter->getUrlParam());
@@ -118,7 +118,7 @@ class Response
                 $additionalParameter->setCode($this->sanitizeString($requestParameterName));
                 $additionalParameter->setValue($this->sanitizeString($requestParameterValue));
 
-                $result[] = $additionalParameter;
+                $result->add($additionalParameter);
             }
         }
 
@@ -143,8 +143,8 @@ class Response
 
     private function sanitizeString(string $string): string
     {
-        $dangerous_chars = ["'", '"', '\\', ';', '--', '#', '*', ',', '.', '=', ':'];
+        $dangerousChars = ["'", '"', '\\', ';', '--', '#', '*', ',', '.', '=', ':'];
 
-        return trim(str_replace($dangerous_chars, '', $string));
+        return trim(str_replace($dangerousChars, '', $string));
     }
 }
