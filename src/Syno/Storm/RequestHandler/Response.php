@@ -115,13 +115,28 @@ class Response
 
                 $additionalParameter = new Document\Parameter();
 
-                $additionalParameter->setCode($this->sanitizeString($requestParameterName));
-                $additionalParameter->setValue($this->sanitizeString($requestParameterValue));
+                if(is_array($requestParameterValue)){
+                    foreach($requestParameterValue as $valueKey => $value){
 
-                $result->add($additionalParameter);
+                        $additionalParameter = new Document\Parameter();
+
+                        $additionalParameter->setCode($this->sanitizeString($requestParameterName.'['.$valueKey.']'));
+                        $additionalParameter->setValue($this->sanitizeString($value));
+
+                        $result->add($additionalParameter);
+                    }
+
+                } else {
+                    $additionalParameter = new Document\Parameter();
+
+                    $additionalParameter->setCode($this->sanitizeString($requestParameterName));
+                    $additionalParameter->setValue($this->sanitizeString($requestParameterValue));
+
+                    $result->add($additionalParameter);
+                }
             }
         }
-
+       
         return $this->parameterUnifier->unify($result);
     }
 
