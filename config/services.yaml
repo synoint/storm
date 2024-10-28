@@ -55,7 +55,7 @@ services:
 
     Syno\Storm\Services\PrivacyConsentCookie:
       arguments:
-        $version: '1'
+        $version: '2'
 
 imports:
     - { resource: ../src/NewRelic/services.yaml }
