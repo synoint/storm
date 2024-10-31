@@ -10,16 +10,16 @@ class Combination
      */
     public function findCombinations($elements = []): array
     {
-        $result = [];
+        $result         = [];
         $numberElements = count($elements);
-
+        
         if (0 < $numberElements) {
-            for ($i=0; $i<$numberElements; $i++) {
+            for ($i = 0; $i < $numberElements; $i++) {
                 $result[] = $elements;
                 array_unshift($elements, array_pop($elements));
             }
         }
-
+        
         return $result;
     }
 }
