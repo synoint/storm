@@ -30,7 +30,7 @@ privacy_consent.p4: 'Wir bitten Sie, unserer Verarbeitung Ihrer personenbezogene
 privacy_consent.your_consent_and_permission: 'Ihre Zustimmung und Erlaubnis'
 privacy_consent.p5: 'Durch Klicken auf „Akzeptieren“ bestätigen Sie:'
 privacy_consent.p6: '- dass Sie die <a href="https://www.synoint.com/privacy-policy/" target="_blank">Datenschutzerklärung</a> gelesen haben und den {terms} sowie den in diesen Dokumenten festgelegten Inhalten und Bedingungen zustimmen;'
-privacy_consent.p7: '- dass Sie zugestimmt haben, dass im Rahmen dieser Umfrage Ihre personenbezogenen Daten (PII) (z. B. Name, Nachname, Telefonnummer, E-Mail usw.) ekönnen erfasst werden und dass die Informationen 180 Tage nach dem Datum Ihrer Antwort gespeichert werden, sofern sie nicht früher gelöscht werden Ihre Anfrage. Die Informationen werden nur für die Ihnen in der Umfrage erläuterten Zwecke verwendet.'
+privacy_consent.p7: '- dass Sie zugestimmt haben, dass im Rahmen dieser Umfrage Ihre personenbezogenen Daten (PII) (z. B. Name, Nachname, Telefonnummer, E-Mail usw.) können erfasst werden und dass die Informationen 180 Tage nach dem Datum Ihrer Antwort gespeichert werden, sofern sie nicht früher gelöscht werden Ihre Anfrage. Die Informationen werden nur für die Ihnen in der Umfrage erläuterten Zwecke verwendet.'
 privacy_consent.p8: 'Sie können Ihre Einwilligung jederzeit per E-Mail an {email} widerrufen.'
 privacy_consent.privacy_policy: 'Datenschutzbestimmungen'
 privacy_consent.terms_and_conditions: 'Allgemeinen Geschäftsbedingungen'

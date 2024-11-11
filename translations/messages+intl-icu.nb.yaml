@@ -30,7 +30,7 @@ privacy_consent.p4: 'Vi ber deg om å samtykke i vår behandling av dine persono
 privacy_consent.your_consent_and_permission: 'Your consent and permission'
 privacy_consent.p5: 'Ved å klikke "Aksepterer" bekrefter du:'
 privacy_consent.p6: '- at du har lest {privacy} og at du godtar <a href="https://www.synoint.com/terms-and-conditions-for-panellists/" target="_blank">vilkårene</a>, innholdet og betingelsene beskrevet i disse dokumentene;'
-privacy_consent.p7: '- at du godtar at denne undersøkelsen kan innhenter personlig identifiserbar informasjon (PII) (som ditt fornavn, etternavn, telefonnummer, e-post osv.) og at informasjonen kan lagres i 180 dager etter dato for registrering, eller slettes før den tid dersom du ber om det. Informasjonen skal kun brukes til de formål som er beskrevet i undersøkelsen. '
+privacy_consent.p7: '- at du godtar at denne undersøkelsen kan innhente personlig identifiserbar informasjon (PII) (som ditt fornavn, etternavn, telefonnummer, e-post osv.) og at informasjonen kan lagres i 180 dager etter dato for registrering, eller slettes før den tid dersom du ber om det. Informasjonen skal kun brukes til de formål som er beskrevet i undersøkelsen. '
 privacy_consent.p8: 'Du kan når som helst trekke tilbake ditt samtykke ved å sende en e-post til {email}.'
 privacy_consent.privacy_policy: 'Personvernregler'
 privacy_consent.terms_and_conditions: 'vilkår'
