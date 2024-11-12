@@ -112,14 +112,9 @@ class Response
 
         if (!empty($requestParameters)) {
             foreach ($requestParameters as $requestParameterName => $requestParameterValue) {
-
-                $additionalParameter = new Document\Parameter();
-
                 if(is_array($requestParameterValue)){
                     foreach($requestParameterValue as $valueKey => $value){
-
                         if(is_array($value)){
-
                             foreach($value as $singleValueKey => $singleValue) {
 
                                 $additionalParameter = new Document\Parameter();
@@ -138,7 +133,6 @@ class Response
                             $result->add($additionalParameter);
                         }
                     }
-
                 } else {
                     $additionalParameter = new Document\Parameter();
 
