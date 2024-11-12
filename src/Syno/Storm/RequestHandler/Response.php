@@ -118,12 +118,25 @@ class Response
                 if(is_array($requestParameterValue)){
                     foreach($requestParameterValue as $valueKey => $value){
 
-                        $additionalParameter = new Document\Parameter();
+                        if(is_array($value)){
 
-                        $additionalParameter->setCode($this->sanitizeString($requestParameterName.'['.$valueKey.']'));
-                        $additionalParameter->setValue($this->sanitizeString($value));
+                            foreach($value as $singleValueKey => $singleValue) {
 
-                        $result->add($additionalParameter);
+                                $additionalParameter = new Document\Parameter();
+
+                                $additionalParameter->setCode($this->sanitizeString($requestParameterName . '[' . $valueKey . ']['.$singleValueKey.']'));
+                                $additionalParameter->setValue($this->sanitizeString($singleValue));
+
+                                $result->add($additionalParameter);
+                            }
+                        } else {
+                            $additionalParameter = new Document\Parameter();
+
+                            $additionalParameter->setCode($this->sanitizeString($requestParameterName.'['.$valueKey.']'));
+                            $additionalParameter->setValue($this->sanitizeString($value));
+
+                            $result->add($additionalParameter);
+                        }
                     }
 
                 } else {
