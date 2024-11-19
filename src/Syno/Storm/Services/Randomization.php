@@ -8,6 +8,7 @@ use Syno\Storm\Document;
 class Randomization
 {
     private const MAX_RANDOMIZED_PATHS = 500;
+    private const MAX_MERGES = 500;
     private Combination         $combinationService;
     private Page                $pageService;
     private RandomizationWeight $randomizationWeightService;
@@ -29,7 +30,7 @@ class Randomization
         
         $permutatedItems['blocks'] = $this->getBlocks($survey, $weights);
         $permutatedItems['pages']  = $this->getPages($survey, $weights);
-
+        
         return $this->createSurveyPathCombinations(
             $this->pageService->findPageIds($survey->getSurveyId(), $survey->getVersion()),
             $permutatedItems
@@ -260,7 +261,7 @@ class Randomization
             
             $res = $this->mergeCombinations($randomizedPaths['blocks'], $permutatedItems['pages'],
                 $randomizedPaths['blocks']['item_weights']);
-            
+
             $randomizedPaths['paths']   = $res['paths'];
             $randomizedPaths['weights'] = $res['weights'];
         }
@@ -311,7 +312,7 @@ class Randomization
             
             $paths[] = $newPath;
         }
-        
+
         $paths = $this->pickRandomPaths($paths);
         
         $combinations = ['paths' => $paths, 'weights' => $randomizedPaths['weights']];
@@ -321,7 +322,6 @@ class Randomization
     
     private function pickRandomPaths(array $paths): array
     {
-
         if (count($paths) > self::MAX_RANDOMIZED_PATHS) {
             $randomKeys = array_rand($paths, self::MAX_RANDOMIZED_PATHS);
 
@@ -336,7 +336,8 @@ class Randomization
     private function mergeCombinations(array $allCombinations, array $childCombinations, array $weights): array
     {
         $randomizedPaths = [];
-        
+
+        $i = 0;
         foreach ($childCombinations as $childCombinationsIndex => $childCombinationItems) {
             foreach ($childCombinationItems['combinations'] as $permutatedPageItemIndex => $pageItems) {
                 
@@ -359,20 +360,24 @@ class Randomization
             }
             
             unset($childCombinations[$childCombinationsIndex]);
-            if (count($childCombinations)) {
+            
+            if (count($childCombinations) && $i > self::MAX_MERGES) {
                 $allCombinations = $randomizedPaths;
                 $weights         = $randomizedPaths['weights'];
                 $this->mergeCombinations($allCombinations, $childCombinations, $weights);
+                $i++;
             }
+            
+            
         }
-        
+
         $result = [];
         
         foreach ($randomizedPaths['combinations'] as $key => $val) {
             $result['paths'][]   = $val;
             $result['weights'][] = $randomizedPaths['weights'][$key];
         }
-        
+
         return $result;
     }
     

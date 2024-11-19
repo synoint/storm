@@ -47,7 +47,7 @@ class SurveyPath
         return $this->cache[$surveyPathId] ?? null;
     }
 
-    public function save(Document\Survey $survey, array $randomizedCombinations)
+    public function save(Document\Survey $survey, array $randomizedCombinations): int
     {
         $surveyPages = $this->pageService->findAllBySurvey($survey);
 
@@ -79,6 +79,8 @@ class SurveyPath
         }
 
         $this->dm->flush();
+        
+        return count($randomizedCombinations['paths']);
     }
 
     public function getRandomWeightedElement(array $paths): ?Document\SurveyPath
