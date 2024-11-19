@@ -7,7 +7,7 @@ use Syno\Storm\Document;
 
 class Randomization
 {
-    private const MAX_RANDOMIZED_PATHS = 250;
+    private const MAX_RANDOMIZED_PATHS = 500;
     private Combination         $combinationService;
     private Page                $pageService;
     private RandomizationWeight $randomizationWeightService;
@@ -127,9 +127,9 @@ class Randomization
                 $pagesCombinations[$group]['item_weights'][] = round($weight / $pageCombinationCount, 2,
                     PHP_ROUND_HALF_DOWN);
             }
-            
+
             asort($positionMap);
-            
+
             // assign correct position
             $permutatedItemsWithOriginalPosition = [];
             foreach ($permutatedItems as $permutatedItemsIndex => $items) {
@@ -315,20 +315,21 @@ class Randomization
         $paths = $this->pickRandomPaths($paths);
         
         $combinations = ['paths' => $paths, 'weights' => $randomizedPaths['weights']];
-
+        
         return $this->reValidateCombinations(count($pageIds), $combinations);
     }
     
     private function pickRandomPaths(array $paths): array
     {
+
         if (count($paths) > self::MAX_RANDOMIZED_PATHS) {
             $randomKeys = array_rand($paths, self::MAX_RANDOMIZED_PATHS);
-        
-            return array_map(function($key) use ($paths) {
+
+            return array_map(function ($key) use ($paths) {
                 return $paths[$key];
             }, $randomKeys);
         }
-        
+
         return $paths;
     }
     
@@ -374,7 +375,7 @@ class Randomization
         
         return $result;
     }
-
+    
     /**
      * Blocks might contain of other blocks that has blocks
      * Then these block items must replace parents blocks and be removed from combinations
@@ -409,7 +410,7 @@ class Randomization
         
         return $result;
     }
-
+    
     private function mergePageCombinations(array &$combinations, array &$result = [])
     {
         for ($i = 0; $i < count($combinations); $i++) {
@@ -446,11 +447,11 @@ class Randomization
         
         return $result;
     }
-
+    
     private function reValidateCombinations($numberOfPages, array $combinations): array
     {
         $uniqueCombinations = [];
-
+        
         $combinationsWithAllPages = [];
         foreach ($combinations['paths'] as $index => $combination) {
             if ($numberOfPages === count(array_unique($combination))) {
@@ -458,7 +459,7 @@ class Randomization
                 $combinationsWithAllPages['weights'][] = $combinations['weights'][$index];
             }
         }
-
+        
         $combinationStrings = [];
         foreach ($combinationsWithAllPages['paths'] as $index => $combination) {
             $combinationString = implode(', ', $combination);
@@ -468,10 +469,10 @@ class Randomization
                 $uniqueCombinations['weights'][] = $combinationsWithAllPages['weights'][$index];
             }
         }
-
+        
         return $uniqueCombinations;
     }
-
+    
     private function replaceElements($randomizedPath, $newCombination): array
     {
         $result   = $randomizedPath;
@@ -499,7 +500,7 @@ class Randomization
         
         return $resultWithPositions;
     }
-
+    
     private function getPositionMapIndexOf($map, $position): int
     {
         $indexOf   = 0;
@@ -513,6 +514,6 @@ class Randomization
             $iteration++;
         }
         
-        return $indexOf;
+        return (int) $indexOf;
     }
 }
