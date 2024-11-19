@@ -7,7 +7,7 @@ use Syno\Storm\Document;
 
 class Randomization
 {
-    private const MAX_RANDOMIZED_PATHS = 500;
+    private const MAX_RANDOMIZED_PATHS = 250;
     private Combination         $combinationService;
     private Page                $pageService;
     private RandomizationWeight $randomizationWeightService;
