@@ -1,6 +1,6 @@
 <?php
 
-namespace Plugins\Survey_449653;
+namespace Plugins\Survey_148266;
 
 use Symfony\Component\HttpFoundation\Request;
 use Syno\Storm\Plugin\AbstractPlugin;
