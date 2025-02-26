@@ -75,7 +75,7 @@
     <div style="border-top:1px solid #ebebeb;" class="pt-4 pb-4">
         <div class="row">
             <div class="col text-center my-auto">
-                <h6 class="mb-4 p-0"> {{ form.vars.label }}</h6>
+                <h6 class="mb-4 p-0"> {{ form.vars.label | raw }}</h6>
                 {{ form_widget(form) }}
             </div>
         </div>
