@@ -87,7 +87,15 @@
         <div class="linear-scale__text-holder linear-scale__text-holder-top d-none mt-1">
             {% set choiceKey = 1 %}
             {% for key,choice in form.vars.choices %}
-                {% if choice.data.columnLabel is not empty %}
+                {% if loop.first and choice.data.columnLabel is not empty %}
+                    <div class="linear-scale__text-{{ choiceKey }} col text-center ">
+                        <label class="text-nowrap text-muted font-weight-normal" for="{{ choice.data.id }}">
+                            <span class="d-sm-none">{{ choice.data.columnCode }} - </span>{{ choice.data.columnLabel|raw }}
+                        </label>
+                    </div>
+                    {% set choiceKey = choiceKey + 1 %}
+                {% endif %}
+                {% if loop.last and choice.data.columnLabel is not empty %}
                     <div class="linear-scale__text-{{ choiceKey }} col text-center ">
                         <label class="text-nowrap text-muted font-weight-normal" for="{{ choice.data.id }}">
                             <span class="d-sm-none">{{ choice.data.columnCode }} - </span>{{ choice.data.columnLabel|raw }}
@@ -116,7 +124,15 @@
         <div class="linear-scale__text-holder linear-scale__text-holder-bottom mt-1">
             {% set choiceKey = 1 %}
             {% for key,choice in form.vars.choices %}
-                {% if choice.data.columnLabel is not empty %}
+                {% if loop.first and choice.data.columnLabel is not empty %}
+                    <div class="linear-scale__text-{{ choiceKey }} col text-center ">
+                        <label class="text-nowrap text-muted font-weight-normal" for="{{ choice.data.id }}">
+                            <span class="d-sm-none">{{ choice.data.columnCode }} - </span>{{ choice.data.columnLabel|raw }}..
+                        </label>
+                    </div>
+                    {% set choiceKey = choiceKey + 1 %}
+                {% endif %}
+                {% if loop.last and choice.data.columnLabel is not empty %}
                     <div class="linear-scale__text-{{ choiceKey }} col text-center ">
                         <label class="text-nowrap text-muted font-weight-normal" for="{{ choice.data.id }}">
                             <span class="d-sm-none">{{ choice.data.columnCode }} - </span>{{ choice.data.columnLabel|raw }}
