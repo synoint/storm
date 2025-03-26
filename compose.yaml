@@ -1,0 +1,44 @@
+networks:
+  syno_network:
+    external: true
+
+services:
+  survey-php:
+    build:
+      context: ./docker
+      dockerfile: Dockerfile.backend
+    container_name: survey-php
+    restart: always
+    working_dir: /var/www/html
+    volumes:
+      - .:/var/www/html
+    networks:
+      - syno_network
+    extra_hosts:
+      - "panel-api.dev.syno.space:host-gateway"
+      - "distribution-api.dev.syno.space:host-gateway"
+      - "rewards-api.dev.syno.space:host-gateway"
+      - "syno-api.dev.syno.space:host-gateway"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.survey.rule=Host(`survey.dev.syno.space`)"
+      - "traefik.http.routers.survey.entrypoints=websecure"
+      - "traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https"
+      - "traefik.http.routers.survey.middlewares=redirect-to-https"
+      - "traefik.docker.network=syno_network"
+      - "traefik.http.routers.survey.tls=true"
+      - "traefik.http.services.survey.loadbalancer.server.port=80"
+
+  survey-frontend:
+    build:
+      context: .
+      dockerfile: ./docker/Dockerfile.frontend
+    container_name: survey-fe
+    networks:
+      - syno_network
+    volumes:
+      - ./assets:/app/assets
+      - ./package.json:/app/package.json
+      - ./yarn.lock:/app/yarn.lock
+      - ./webpack.config.js:/app/webpack.config.js
+      - ./public:/app/public
