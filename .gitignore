@@ -49,3 +49,8 @@ config/preload.php
 src/Controller/
 src/Document/
 templates/base.html.twig
+
+supervisord.log
+supervisord.pid
+
+docker/cert/*

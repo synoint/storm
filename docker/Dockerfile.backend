@@ -1,0 +1,38 @@
+FROM php:8.3-fpm-alpine
+
+RUN apk add --no-cache \
+    nginx \
+    curl \
+    git \
+    unzip \
+    supervisor \
+    bash \
+    libpng-dev \
+    libjpeg-turbo-dev \
+    freetype-dev \
+    libzip-dev \
+    icu-dev \
+    shadow \
+    openssl-dev
+
+COPY --from=composer:latest /usr/bin/composer /usr/local/bin/composer
+
+COPY ./php/custom.ini /usr/local/etc/php/conf.d/99-custom.ini
+RUN mv "$PHP_INI_DIR/php.ini-development" "$PHP_INI_DIR/php.ini"
+
+COPY --from=mlocati/php-extension-installer /usr/bin/install-php-extensions /usr/local/bin/
+RUN install-php-extensions zip redis gd pdo_mysql pdo intl xdebug bcmath mongodb
+
+RUN useradd -m -s /bin/bash nginxuser
+
+COPY ./nginx/nginx.conf /etc/nginx/nginx.conf
+COPY ./supervisor/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+
+COPY ./cert/dev.syno.space.cer /usr/local/share/ca-certificates/dev.syno.space.crt
+RUN update-ca-certificates
+
+RUN chown -R nginxuser:nginxuser /var/www/html
+
+EXPOSE 80
+
+CMD ["supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
